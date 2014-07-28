@@ -131,6 +131,10 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 
 			resultMap.sort() // 根据key排序
 
+			resultMap.sort().reverseEach {
+
+			}
+
 //			selfService.saveQuestionnaireAndUserAnswer(user, self, questions, questionOptions)
 
 			return resultMap

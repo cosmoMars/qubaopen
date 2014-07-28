@@ -17,6 +17,7 @@ import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
 import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
 import com.qubaopen.survey.repository.self.SelfRepository
+import com.qubaopen.survey.repository.self.SelfResultOptionRepository
 import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
 import com.qubaopen.survey.service.self.SelfService
 
@@ -38,6 +39,9 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 
 	@Autowired
 	SelfRepository selfRepository
+
+	@Autowired
+	SelfResultOptionRepository selfResultOptionRepository
 
 	@Autowired
 	SelfService selfService
@@ -104,7 +108,7 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 			questionOptions.each {
 				def questionType = it.selfQuestion.selfQuestionType.name
 
-				if (optionMap.get(questionType)) { // 按照问题类型分类
+				if (optionMap.get(questionType)) { // key: 种类, value: 题目
 					optionMap.get(questionType) << it
 				} else {
 					def optionList = []
@@ -120,7 +124,7 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 				v.each {
 					score = score + it.score
 				}
-				if (resultMap.get(score)) { // key: 分数, value: 类型
+				if (resultMap.get(score)) { // key: 分数, value: 种类
 					resultMap.get(score) << k
 				} else {
 					def typeList = []
@@ -129,13 +133,27 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 				}
 			}
 
-			resultMap.sort() // 根据key排序
+			def resultName = []
 
-			resultMap.sort().reverseEach {
+			resultMap.sort().reverseEach { k, v ->// 根据key排序,且逆序
+				if (resultName.size < 3) {
+					def list = v as List
+					resultName += list
+				}
+			}
+//			def random = new Random(),
+//				name = '' + reslutList[0] + reslutList[1] + reslutList[2]
 
+			def resultList = selfResultOptionRepository.findAll()
+			def result = null
+			resultList.find {
+				if (it.contains(reslutList[0]) && it.contains(reslutList[1]) && it.contains(reslutList[2])) {
+					result = it
+				}
 			}
 
-//			selfService.saveQuestionnaireAndUserAnswer(user, self, questions, questionOptions)
+
+			selfService.saveQuestionnaireAndUserAnswer(user, self, questions, questionOptions, result)
 
 			return resultMap
 		} else if (selfType.name == 'PDP') {

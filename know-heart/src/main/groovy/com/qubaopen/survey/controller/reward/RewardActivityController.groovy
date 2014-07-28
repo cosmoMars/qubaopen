@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.reward.RewardActivity
 import com.qubaopen.survey.repository.reward.RewardActivityRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
@@ -33,8 +33,8 @@ public class RewardActivityController extends AbstractBaseController<RewardActiv
 	 * 获取当天上线奖品活动
 	 * @return
 	 */
-	@RequestMapping(value = 'findOnlineReward/{userId}', method = RequestMethod.GET)
-	findOnlineReward(@PathVariable long userId) {
+	@RequestMapping(value = 'retrieveOnlineReward/{userId}', method = RequestMethod.GET)
+	retrieveOnlineReward(@PathVariable long userId) {
 
 		logger.trace ' -- 获取上线奖品活动 -- '
 

@@ -20,6 +20,11 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	private static final long serialVersionUID = 5574360831856505640L;
 
 	/**
+	 * 结果名称
+	 */
+	private String name;
+
+	/**
 	 * 内容
 	 */
 	private String content;
@@ -50,6 +55,14 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	 * 最高分数
 	 */
 	private int highestScore;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getContent() {
 		return content;

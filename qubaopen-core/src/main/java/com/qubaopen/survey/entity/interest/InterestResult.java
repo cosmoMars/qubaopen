@@ -1,9 +1,9 @@
 package com.qubaopen.survey.entity.interest;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,12 +24,22 @@ public class InterestResult extends AbstractPersistable<Long> {
 	@JoinColumn(name = "interest_id")
 	private Interest interest;
 
+//	/**
+//	 * 问卷类型
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "interest_result_type_id")
+//	private InterestResultType interestResultType;
+
 	/**
 	 * 问卷类型
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "interest_result_type_id")
-	private InterestResultType interestResultType;
+	@Enumerated
+	private ResultType resultType;
+
+	private enum ResultType {
+		OREDER, POINTS
+	}
 
 	/**
 	 * 标题
@@ -44,12 +54,12 @@ public class InterestResult extends AbstractPersistable<Long> {
 		this.interest = interest;
 	}
 
-	public InterestResultType getInterestResultType() {
-		return interestResultType;
+	public ResultType getResultType() {
+		return resultType;
 	}
 
-	public void setInterestResultType(InterestResultType interestResultType) {
-		this.interestResultType = interestResultType;
+	public void setResultType(ResultType resultType) {
+		this.resultType = resultType;
 	}
 
 	public String getTitle() {

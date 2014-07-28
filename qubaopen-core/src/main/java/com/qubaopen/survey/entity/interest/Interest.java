@@ -32,6 +32,16 @@ public class Interest extends AbstractBaseEntity<Long> {
 	private InterestType interestType;
 
 	/**
+	 * 问卷类型 SINGLE, MULTIPLE, QA, SORT
+	 */
+	@Enumerated
+	private Type type;
+
+	private enum Type {
+		SINGLE, MULTIPLE, QA, SORT
+	}
+
+	/**
 	 * 标题
 	 */
 	private String titile;
@@ -65,25 +75,30 @@ public class Interest extends AbstractBaseEntity<Long> {
 	private Integer totalRespondentsCount;
 
 	/**
-	 * 兴趣问卷内容类型表
-	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "interest_Option_type_id")
-	private InterestOptionType interestOptionType;
-
-	/**
 	 * 推荐值
 	 */
 	private Integer recommendedValue;
-
-	// @OneToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "interest_result_id", nullable = false, unique = true)
-	// private InterestResult interestResult;
 
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private byte[] pic;
+
+	public InterestType getInterestType() {
+		return interestType;
+	}
+
+	public void setInterestType(InterestType interestType) {
+		this.interestType = interestType;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
 
 	public String getTitile() {
 		return titile;
@@ -99,30 +114,6 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setGolds(Integer golds) {
 		this.golds = golds;
-	}
-
-	public InterestType getInterestType() {
-		return interestType;
-	}
-
-	public void setInterestType(InterestType interestType) {
-		this.interestType = interestType;
-	}
-
-	public Integer getRecommendedValue() {
-		return recommendedValue;
-	}
-
-	public void setRecommendedValue(Integer recommendedValue) {
-		this.recommendedValue = recommendedValue;
-	}
-
-	public Integer getTotalRespondentsCount() {
-		return totalRespondentsCount;
-	}
-
-	public void setTotalRespondentsCount(Integer totalRespondentsCount) {
-		this.totalRespondentsCount = totalRespondentsCount;
 	}
 
 	public Status getStatus() {
@@ -141,13 +132,21 @@ public class Interest extends AbstractBaseEntity<Long> {
 		this.remark = remark;
 	}
 
-	// public InterestResult getInterestResult() {
-	// return interestResult;
-	// }
-	//
-	// public void setInterestResult(InterestResult interestResult) {
-	// this.interestResult = interestResult;
-	// }
+	public Integer getTotalRespondentsCount() {
+		return totalRespondentsCount;
+	}
+
+	public void setTotalRespondentsCount(Integer totalRespondentsCount) {
+		this.totalRespondentsCount = totalRespondentsCount;
+	}
+
+	public Integer getRecommendedValue() {
+		return recommendedValue;
+	}
+
+	public void setRecommendedValue(Integer recommendedValue) {
+		this.recommendedValue = recommendedValue;
+	}
 
 	public byte[] getPic() {
 		return pic;
@@ -155,14 +154,6 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setPic(byte[] pic) {
 		this.pic = pic;
-	}
-
-	public InterestOptionType getInterestOptionType() {
-		return interestOptionType;
-	}
-
-	public void setInterestOptionType(InterestOptionType interestOptionType) {
-		this.interestOptionType = interestOptionType;
 	}
 
 }

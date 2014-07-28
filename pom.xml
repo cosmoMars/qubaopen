@@ -10,6 +10,7 @@
     <module>qubaopen-parent</module>
     <module>qubaopen-core</module>
     <module>know-heart</module>
+    <module>customer-system</module>
   </modules>
 
 </project>

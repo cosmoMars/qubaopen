@@ -25,11 +25,21 @@ public class Self extends AbstractBaseEntity<Long> {
 	private static final long serialVersionUID = 4650668582375674301L;
 
 	/**
-	 * 问卷类型
+	 * 问卷类型 SDS, PDP
 	 */
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "self_type_id")
 	private SelfType selfType;
+
+	/**
+	 * 问卷类型 SINGLE, MULTIPLE, QA, SORT
+	 */
+	@Enumerated
+	private Type type;
+
+	private enum Type {
+		SINGLE, MULTIPLE, QA, SORT
+	}
 
 	/**
 	 * 标题
@@ -65,13 +75,6 @@ public class Self extends AbstractBaseEntity<Long> {
 	private Integer totalRespondentsCount;
 
 	/**
-	 * 兴趣问卷内容类型表
-	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "self_option_type")
-	private SelfOptionType selfOptionType;
-
-	/**
 	 * 推荐值
 	 */
 	private Integer recommendedValue;
@@ -87,6 +90,14 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setSelfType(SelfType selfType) {
 		this.selfType = selfType;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public String getTitile() {
@@ -127,14 +138,6 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setTotalRespondentsCount(Integer totalRespondentsCount) {
 		this.totalRespondentsCount = totalRespondentsCount;
-	}
-
-	public SelfOptionType getSelfOptionType() {
-		return selfOptionType;
-	}
-
-	public void setSelfOptionType(SelfOptionType selfOptionType) {
-		this.selfOptionType = selfOptionType;
 	}
 
 	public Integer getRecommendedValue() {

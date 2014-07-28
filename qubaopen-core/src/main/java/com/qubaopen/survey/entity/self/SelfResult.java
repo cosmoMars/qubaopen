@@ -36,6 +36,16 @@ public class SelfResult extends AbstractPersistable<Long> {
 	 */
 	private String title;
 
+	/**
+	 * 名称
+	 */
+	private String name;
+
+	/**
+	 * 备注
+	 */
+	private String remark;
+
 	public Self getSelf() {
 		return self;
 	}
@@ -58,6 +68,22 @@ public class SelfResult extends AbstractPersistable<Long> {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
 }

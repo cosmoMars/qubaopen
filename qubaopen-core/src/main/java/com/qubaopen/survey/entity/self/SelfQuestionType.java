@@ -7,7 +7,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
- * @author mars 自测问卷问题类型码表
+ * @author mars 自测问题类型码表
  */
 @Entity
 @Table(name = "self_question_type")

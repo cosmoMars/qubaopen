@@ -35,7 +35,7 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	private Self self;
 
 	/**
-	 * 问卷类型
+	 * 问题类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "self_question_type_id")

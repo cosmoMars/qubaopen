@@ -1,7 +1,10 @@
-build
 target
+build
 .settings
 .classpath
 .project
 .DS_Store
+.gradle
+.idea
+*.iml
 know-heart.log*

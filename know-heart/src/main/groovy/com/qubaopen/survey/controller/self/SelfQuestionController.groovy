@@ -99,11 +99,11 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 			ids += it.choiceIds as List
 		}
 
-		def questionOptions = selfQuestionOptionRepository.findAll(ids)
-
 		def selfType = self.selfType
 
-		if (selfType.name == 'SDS') {
+		if (selfType.name == 'SDS') { // SDS测试
+
+			def questionOptions = selfQuestionOptionRepository.findAll(ids)
 			def optionMap = [:]
 			questionOptions.each {
 				def questionType = it.selfQuestion.selfQuestionType.name
@@ -127,9 +127,9 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 				if (resultMap.get(score)) { // key: 分数, value: 种类
 					resultMap.get(score) << k
 				} else {
-					def typeList = []
-					typeList << k
-					resultMap.put(score, typeList)
+					def typeNameList = []
+					typeNameList << k
+					resultMap.put(score, typeNameList)
 				}
 			}
 
@@ -141,23 +141,55 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 					resultName += list
 				}
 			}
-//			def random = new Random(),
-//				name = '' + reslutList[0] + reslutList[1] + reslutList[2]
-
-			def resultList = selfResultOptionRepository.findAll()
-			def result = null
-			resultList.find {
-				if (it.contains(reslutList[0]) && it.contains(reslutList[1]) && it.contains(reslutList[2])) {
-					result = it
-				}
-			}
-
+			def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 			selfService.saveQuestionnaireAndUserAnswer(user, self, questions, questionOptions, result)
 
 			return resultMap
-		} else if (selfType.name == 'PDP') {
+		} else if (selfType.name == 'PDP') { // PDP测试
 
+			def questionOptions = selfQuestionOptionRepository.findAll(ids)
+			def optionMap = [:]
+			questionOptions.each {
+				def questionType = it.selfQuestion.selfQuestionType
+
+				if (optionMap.get(questionType)) { // key: 种类, value: 题目
+					optionMap.get(questionType) << it
+				} else {
+					def optionList = []
+					optionList << it
+					optionMap.put(questionType, optionList)
+				}
+			}
+			def resultMap = [:]
+
+			optionMap.each { k, v -> // 计算每一个类型的分数
+				def score = 0
+				v.each {
+					score = score + it.score
+				}
+				if (resultMap.get(score)) { // key: 分数, value: 种类
+					resultMap.get(score) << k
+				} else {
+					def typeList = []
+					typeList << k
+					resultMap.put(score, typeList)
+				}
+			}
+			resultMap.sort().get(resultMap.size())
+
+
+		} else if (selfType.name == 'AB' || selfType.name == 'C' || selfType.name == 'D') { // AB,C,D 测试
+			def score = selfResultOptionRepository.sumSelfOptions(ids)
+
+			if (selfType.name == 'AB') {
+				score = score * 3
+			}
+			def result = selfResultOptionRepository.findOneByFilters(
+				'selfResult.self' : self,
+				highestScore_greaterThanOrEqualTo : score,
+				lowestScore_lessThanOrEqualTo : score
+			)
 		}
 
 	}

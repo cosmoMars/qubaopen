@@ -21,11 +21,6 @@ public class QuestionVo implements Serializable {
 	 */
 	private String content;
 
-	/**
-	 * 排序答案
-	 */
-	private long[] orderIds;
-
 	public long getQuestionId() {
 		return questionId;
 	}
@@ -44,14 +39,6 @@ public class QuestionVo implements Serializable {
 
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public long[] getOrderIds() {
-		return orderIds;
-	}
-
-	public void setOrderIds(long[] orderIds) {
-		this.orderIds = orderIds;
 	}
 
 	public void setQuestionId(long questionId) {

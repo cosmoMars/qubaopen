@@ -32,13 +32,13 @@ public class Self extends AbstractBaseEntity<Long> {
 	private SelfType selfType;
 
 	/**
-	 * 问卷类型 SINGLE, MULTIPLE, QA, SORT
+	 * 问卷类型  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
 	 */
 	@Enumerated
 	private Type type;
 
 	private enum Type {
-		SINGLE, MULTIPLE, QA, SORT
+		DISOREDER, SORCE, DISORDERSCORE
 	}
 
 	/**

@@ -4,22 +4,26 @@ import static com.qubaopen.survey.utils.ValidateUtil.*
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
-import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.util.StringUtils
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserCaptcha
 import com.qubaopen.survey.repository.user.UserCaptchaRepository
+import com.qubaopen.survey.repository.user.UserIDCardBindRepository
+import com.qubaopen.survey.repository.user.UserInfoRepository
+import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.service.SmsService
+import com.qubaopen.survey.utils.DateCommons
 
 /**
  * @author mars 用户表
@@ -33,6 +37,15 @@ class UserController extends AbstractBaseController<User, Long> {
 
 	@Autowired
 	UserCaptchaRepository userCaptchaRepository
+
+	@Autowired
+	UserInfoRepository userInfoRepository
+
+	@Autowired
+	UserReceiveAddressRepository userReceiveAddressRepository
+
+	@Autowired
+	UserIDCardBindRepository userIDCardBindRepository
 
 	@Autowired
 	SmsService smsService
@@ -55,7 +68,38 @@ class UserController extends AbstractBaseController<User, Long> {
 		def loginUser = userRepository.login(user.phone,  DigestUtils.md5Hex(user.password))
 
 		if (loginUser) {
-			return loginUser
+
+			def userInfo = userInfoRepository.findOne(loginUser.id),
+				userReceiveAddress = userReceiveAddressRepository.findByUserAndDefaultAddress(loginUser,true),
+				userIdCardBind = userIDCardBindRepository.findByUser(loginUser)
+
+			def result = [
+				'success' : 1,
+				'message' : '登录成功',
+				'userId' : loginUser.id,
+				'phone' : loginUser.phone ?: '',
+				'name' : userInfo.name ?: '',
+				'sex' : userInfo.sex ?: '',
+				'nickName' : userInfo.nickName ?: '',
+				'bloodType' : userInfo.bloodType.toString() ?: '',
+				'district' : '',
+				'email' : loginUser.email ?: '',
+				'address' : userReceiveAddress?.detialAddress ?: '',
+				'defaultAddressId' : userReceiveAddress?.id ?: '',
+				'consignee' : userReceiveAddress?.consignee ?: '',
+				'defaultAddressPhone' : userReceiveAddress?.phone ?: ''
+			]
+			if (userIdCardBind && userIdCardBind.userIDCard) {
+				result << ['idCard' : userIdCardBind.userIDCard.IDCard ?: '']
+			} else {
+				result << ['idCard' : '']
+			}
+			if (userInfo?.birthday) {
+				result << ['birthday' : DateCommons.Date2String(userInfo.birthday,'yyyy-MM-dd')]
+			} else {
+				result << ['birthday' : '']
+			}
+			return result
 		}
 
 		'{"success" : 0, "message": "用户不存在"}'

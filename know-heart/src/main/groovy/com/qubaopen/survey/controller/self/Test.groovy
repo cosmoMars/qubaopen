@@ -13,6 +13,8 @@ public class Test {
 		map.put('S', 5)
 
 
+		println map.sort()
+
 		def resultMap = [:]
 
 		map.each { k, v -> // 计算每一个类型的分数
@@ -44,13 +46,14 @@ public class Test {
 		map2.put(7, 'C')
 		map2.put(4 ,'E')
 		map2.put(3, 'R')
-//		def list = map2.get(7) as List
-//		list.add('I')
-		map2.put(7, 'I')
+		def list = map2.get(7) as List
+		list.add('I')
+//		map2.put(7, 'I')
 		map2.put(2, 'A')
 		map2.put(5, 'S')
-
-
+		println ''
+		println resultMap.sort()
+		println resultMap.size()
 
 //		def list = []
 //		list << ['C':7]
@@ -69,8 +72,5 @@ public class Test {
 //			println "$k" + "$v"
 //		}
 //		println list.sort()
-
-
-//		int i = [1,2,3,4,5,6,7,8,9]
 	}
 }

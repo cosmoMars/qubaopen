@@ -53,9 +53,17 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 问卷结果选项
 	 */
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "self_result_option_id")
 	private SelfResultOption selfResultOption;
+
+	/**
+	 * 问卷结果选项
+	 */
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "self_question_type_id")
+	private SelfQuestionType selfQuestionType;
+
 
 	/**
 	 * 时间
@@ -152,6 +160,14 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 
 	public void setSelfResultOption(SelfResultOption selfResultOption) {
 		this.selfResultOption = selfResultOption;
+	}
+
+	public SelfQuestionType getSelfQuestionType() {
+		return selfQuestionType;
+	}
+
+	public void setSelfQuestionType(SelfQuestionType selfQuestionType) {
+		this.selfQuestionType = selfQuestionType;
 	}
 
 	public Boolean getIsPublic() {

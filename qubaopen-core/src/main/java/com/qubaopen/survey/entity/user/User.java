@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
@@ -30,7 +29,7 @@ public class User extends AbstractBaseEntity<Long> {
 	/**
 	 * 密码
 	 */
-	@Size(min = 6, max = 16, message = "{\"success\" : 0, \"message\": \"密码长度为6-16个字符\"}")
+	@Pattern(regexp = "^[a-zA-Z0-9_]{8,30}$", message = "{\"success\" : 0, \"message\": \"密码格式不正确\"}")
 	private String password;
 
 	/**

@@ -3,7 +3,6 @@ package com.qubaopen.survey.entity.self;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -25,11 +24,13 @@ public class SelfResult extends AbstractPersistable<Long> {
 	private Self self;
 
 	/**
-	 * 问卷类型
+	 * ORDER 顺序得出结果, SCORE 积分得出结果
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "self_result_type_id")
-	private SelfResultType selfResultType;
+	private Type type;
+
+	private enum Type {
+		ORDER, SCORE
+	}
 
 	/**
 	 * 标题
@@ -54,12 +55,12 @@ public class SelfResult extends AbstractPersistable<Long> {
 		this.self = self;
 	}
 
-	public SelfResultType getSelfResultType() {
-		return selfResultType;
+	public Type getType() {
+		return type;
 	}
 
-	public void setSelfResultType(SelfResultType selfResultType) {
-		this.selfResultType = selfResultType;
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public String getTitle() {

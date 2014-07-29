@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -25,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Audited
 public class SelfQuestion extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -8135012000102117725L;
+	private static final long serialVersionUID = -5980064307408704531L;
 
 	/**
 	 * 问卷id
@@ -40,6 +41,17 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "self_question_type_id")
 	private SelfQuestionType selfQuestionType;
+
+	/**
+	 * 问卷类型  单选 SINGLE, 多选 MULTIPLE, 问答 QA, 排序 SORT, 打分 SCORE
+	 */
+	@Enumerated
+	private Type type;
+
+	private enum Type {
+		SINGLE, MULTIPLE, QA, SORT, SCORE
+	}
+
 
 	/**
 	 * 选项数量
@@ -88,6 +100,14 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 
 	public void setSelfQuestionType(SelfQuestionType selfQuestionType) {
 		this.selfQuestionType = selfQuestionType;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public Integer getOptionCount() {
@@ -145,5 +165,6 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	public void setSelfQuestionOptions(Set<SelfQuestionOption> selfQuestionOptions) {
 		this.selfQuestionOptions = selfQuestionOptions;
 	}
+
 
 }

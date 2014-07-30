@@ -29,7 +29,7 @@ public class InterestService {
 	InterestUserAnswerRepository interestUserAnswerRepository
 
 	@Transactional
-	void saveQuestionnaireAndUserAnswers(User user, Interest interest, List<QuestionVo> questionVos, List<InterestQuestionOption> options, InterestResultOption resultOption) {
+	void saveQuestionnaireAndUserAnswers(User user, Interest interest, List<QuestionVo> questionVos, List<InterestQuestion> questions, List<InterestQuestionOption> options, InterestResultOption resultOption) {
 
 		def interestUserQuestionnaire = new InterestUserQuestionnaire(
 			user : user,
@@ -43,44 +43,69 @@ public class InterestService {
 
 		def userAnswers = []
 
-		questionVos.each { vo ->
-			def question = new InterestQuestion(id : vo.questionId)
-			if (vo.choiceIds && vo.choiceIds.length > 0) { // 单选或多选
-				vo.choiceIds.find { cId ->
-					def option = null
-					options.find { o ->
-						if (o.id == cId) {
-							option = o
+		questions.each { q ->
+			def type = q.type.toString()
+			def answer = null, option = null
+			questionVos.find { vo ->
+				if (vo.questionId == q.id) {
+					if (type == InterestQuestion.Type.SINGLE.toString() && vo.choiceIds.length <= q.optionCount) { // 单选
+						options.find { o ->
+							if (o.id == vo.choiceIds[0]) {
+								option = o
+							}
 						}
-					}
-					def answer = new InterestUserAnswer(
-						user : user,
-						interestUserQuestionnaire : interestUserQuestionnaire,
-						interestQuestionOption : option,
-						interestQuestion : question,
-						score : option.score
-					)
-					userAnswers << answer
-				}
-			} else if (vo.content && !vo.content.isEmpty) { //问答题
-				def answer = new InterestUserAnswer(
-					user : user,
-					interestUserQuestionnaire : interestUserQuestionnaire,
-					interestQuestion : question,
-					content : vo.content
-				)
-				userAnswers << answer
-			} else if (vo.orderIds && vo.orderIds.length > 0) {
-				vo.orderIds.eachWithIndex { oId, index ->
-					def option = new InterestQuestionOption(id : oId),
 						answer = new InterestUserAnswer(
 							user : user,
 							interestUserQuestionnaire : interestUserQuestionnaire,
-							interestQuestion : question,
 							interestQuestionOption : option,
-							turn : index + 1
+							interestQuestion : q,
+							score : option.score
 						)
-					userAnswers << answer
+						userAnswers << answer
+					}
+					if (type == InterestQuestion.Type.MULTIPLE.toString() && vo.choiceIds.length <= q.optionCount) { // 多选
+						vo.choiceIds.each { cId ->
+							options.find { o ->
+								if (o.id == cId) {
+									option = o
+								}
+							}
+							answer = new InterestUserAnswer(
+								user : user,
+								interestUserQuestionnaire : interestUserQuestionnaire,
+								interestQuestionOption : option,
+								interestQuestion : q,
+								score : option.score
+							)
+							userAnswers << answer
+						}
+					}
+					if (type == InterestQuestion.Type.QA.toString() && !vo.content.empty) { // 问答题
+							answer = new InterestUserAnswer(
+								user : user,
+								interestUserQuestionnaire : interestUserQuestionnaire,
+								interestQuestion : q,
+								content : vo.content
+							)
+							userAnswers << answer
+					}
+					if (type == InterestQuestion.Type.SORT.toString() && vo.orderIds.length <= q.optionCount) { // 排序
+						vo.orderIds.eachWithIndex { oId, index ->
+							options.find { o ->
+								if (oId == o.id) {
+									option = o
+								}
+							}
+							answer = new InterestUserAnswer(
+								user : user,
+								interestUserQuestionnaire : interestUserQuestionnaire,
+								interestQuestionOption : option,
+								interestQuestion : q,
+								turn : index + 1
+							)
+							userAnswers << answer
+						}
+					}
 				}
 			}
 		}

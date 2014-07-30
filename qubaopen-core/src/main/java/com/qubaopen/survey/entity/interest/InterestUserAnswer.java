@@ -63,7 +63,7 @@ public class InterestUserAnswer extends AbstractPersistable<Long> {
 	/**
 	 * 分数
 	 */
-	private Integer score;
+	private int score;
 
 	public User getUser() {
 		return user;
@@ -113,11 +113,11 @@ public class InterestUserAnswer extends AbstractPersistable<Long> {
 		this.turn = turn;
 	}
 
-	public Integer getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
 

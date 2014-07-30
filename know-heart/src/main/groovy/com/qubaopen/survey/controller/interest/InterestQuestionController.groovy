@@ -88,16 +88,18 @@ public class InterestQuestionController extends AbstractBaseController<InterestQ
 			user = new User(id : userId)
 
 		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
-		def questions = objectMapper.readValue(questionJson, javaType)
+		def questionVos = objectMapper.readValue(questionJson, javaType)
 
-		def ids = []
-		questions.each {
-			ids += it.choiceIds as List
+		def questionIds = [], optionIds = []
+
+		questionVos.each {
+			questionIds << it.questionId
+			optionIds += it.choiceIds as List
 		}
 
 //		def score = interestQuestionOptionRepository.sumQuestionOptions(ids as long[])
-
-		def questionOptions = interestQuestionOptionRepository.findAll(ids)
+		def questions = interestQuestionRepository.findAll(questionIds),
+			questionOptions = interestQuestionOptionRepository.findAll(optionIds)
 
 		def score = 0
 		questionOptions.each {
@@ -113,7 +115,7 @@ public class InterestQuestionController extends AbstractBaseController<InterestQ
 		)
 
 		// 保存用户问卷答卷，以及用户问卷问题
-		interestService.saveQuestionnaireAndUserAnswers(user, interest, questions, questionOptions, resultOption)
+		interestService.saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, resultOption)
 
 		resultOption
 	}

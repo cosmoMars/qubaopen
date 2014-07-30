@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -49,12 +50,22 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	 */
 	private Integer optionCount;
 
+//	/**
+//	 * 题目类型 选择 问答 排序 打分
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+//	@JoinColumn(name = "survey_question_type_id")
+//	private SurveyQuestionType surveyQuestionType;
+
 	/**
-	 * 题目类型 选择 问答 排序 打分
+	 * 问卷类型  单选 SINGLE, 多选 MULTIPLE, 问答 QA, 排序 SORT, 打分 SCORE
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "survey_question_type_id")
-	private SurveyQuestionType surveyQuestionType;
+	@Enumerated
+	private Type type;
+
+	private enum Type {
+		SINGLE, MULTIPLE, QA, SORT, SCORE
+	}
 
 	/**
 	 * 是否为性格题
@@ -120,13 +131,21 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	public void setOptionCount(Integer optionCount) {
 		this.optionCount = optionCount;
 	}
+//
+//	public SurveyQuestionType getSurveyQuestionType() {
+//		return surveyQuestionType;
+//	}
+//
+//	public void setSurveyQuestionType(SurveyQuestionType surveyQuestionType) {
+//		this.surveyQuestionType = surveyQuestionType;
+//	}
 
-	public SurveyQuestionType getSurveyQuestionType() {
-		return surveyQuestionType;
+	public Type getType() {
+		return type;
 	}
 
-	public void setSurveyQuestionType(SurveyQuestionType surveyQuestionType) {
-		this.surveyQuestionType = surveyQuestionType;
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public Integer getSelectionLimit() {

@@ -53,7 +53,17 @@ public class Test {
 		map2.put(5, 'S')
 		println ''
 		println resultMap.sort()
+		println '--------------------------------'
+
+		println resultMap.values().sort().reverse().sum()
+		println resultMap.sort().values().sum() as List
+		def temp = (resultMap.sort().values().sum() as List).reverse()
+
+		println temp
 		println resultMap.size()
+
+		println resultMap.get(resultMap.keySet().max())
+
 
 //		def list = []
 //		list << ['C':7]

@@ -21,8 +21,17 @@ public class QuestionVo implements Serializable {
 	 */
 	private String content;
 
+	/**
+	 * 排序题答案
+	 */
+	private long[] orderIds;
+
 	public long getQuestionId() {
 		return questionId;
+	}
+
+	public void setQuestionId(long questionId) {
+		this.questionId = questionId;
 	}
 
 	public long[] getChoiceIds() {
@@ -41,8 +50,12 @@ public class QuestionVo implements Serializable {
 		this.content = content;
 	}
 
-	public void setQuestionId(long questionId) {
-		this.questionId = questionId;
+	public long[] getOrderIds() {
+		return orderIds;
+	}
+
+	public void setOrderIds(long[] orderIds) {
+		this.orderIds = orderIds;
 	}
 
 }

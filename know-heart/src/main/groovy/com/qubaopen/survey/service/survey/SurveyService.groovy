@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.qubaopen.survey.controller.survey.SurveyQuestionController
+import com.qubaopen.survey.entity.interest.InterestQuestion
 import com.qubaopen.survey.entity.survey.Survey
 import com.qubaopen.survey.entity.survey.SurveyQuestion
 import com.qubaopen.survey.entity.survey.SurveyQuestionOption
@@ -28,49 +29,67 @@ public class SurveyService {
 	SurveyUserAnswerRepository surveyUserAnswerRepository
 
 	@Transactional
-	void saveQuestionnaireAndUserAnswer(User user, Survey survey, List<QuestionVo> questionVos) {
+	void saveQuestionnaireAndUserAnswer(User user, Survey survey, List<InterestQuestion> questions, List<QuestionVo> questionVos) {
 
 		def surveyUserQuestionnaire = new SurveyUserQuestionnaire(
 			survey : survey,
 			user : user,
-			createDate : new Date(),
-			status : SurveyUserQuestionnaire.status.ADUITING,
+			createdDate : new Date(),
+			status : SurveyUserQuestionnaire.Status.ADUITING,
 			transmit : SurveyUserQuestionnaire.Transmit.NOTRANSMIT
 		)
 		surveyUserQuestionnaire = surveyUserQuestionnaireRepository.save(surveyUserQuestionnaire)
 
 		def userAnswers = []
 
-		questionVos.each { vo ->
-			def question = new SurveyQuestion(id : vo.questionId)
-			if (vo.choiceIds && vo.choiceIds.length > 0) { // 单选或多选
-				vo.choiceIds.each { cId ->
-					def answer = new SurveyUserAnswer(
-						user : user,
-						surveyUserQuestionnaire : surveyUserQuestionnaire,
-						surveyQuestion : question,
-						surveyQuestionOption : new SurveyQuestionOption(id : cId)
-					)
-					userAnswers << answer
-				}
-			} else if (vo.content && !vo.content.isEmpty) { // 问答题
-				def answer = new SurveyUserAnswer(
-					user : user,
-					surveyUserQuestionnaire : surveyUserQuestionnaire,
-					surveyQuestion : question,
-					content : vo.content
-				)
-				userAnswers << answer
-			} else if (vo.orderIds && vo.orderIds.length > 0) { // 排序题
-				vo.orderIds.eachWithIndex { oId, index ->
-					def answer = new SurveyUserAnswer(
-						user : user,
-						surveyUserQuestionnaire : surveyUserQuestionnaire,
-						surveyQuestion : question,
-						surveyQuestionOption : new SurveyQuestionOption(id : oId),
-						turn : index + 1
-					)
-					userAnswers << answer
+		questions.each { q ->
+			def type = q.type.toString()
+
+			def answer = null
+
+			questionVos.find { vo ->
+				if (vo.questionId == q.id) {
+					if (type == SurveyQuestion.Type.SINGLE.toString() && vo.choiceIds.length <= q.optionCount) { // 单选
+						answer = new SurveyUserAnswer(
+							user : user,
+							surveyUserQuestionnaire : surveyUserQuestionnaire,
+							surveyQuestion : q,
+							surveyQuestionOption : new SurveyQuestionOption(id : vo.choiceIds[0])
+						)
+						userAnswers << answer
+					}
+					if (type == SurveyQuestion.Type.MULTIPLE.toString() && vo.choiceIds.length <= q.optionCount) { // 多选
+						vo.choiceIds.each { cId ->
+							answer = new SurveyUserAnswer(
+								user : user,
+								surveyUserQuestionnaire : surveyUserQuestionnaire,
+								surveyQuestion : q,
+								surveyQuestionOption : new SurveyQuestionOption(id : cId)
+							)
+							userAnswers << answer
+						}
+					}
+					if (type == SurveyQuestion.Type.QA.toString() && !vo.content.empty) { // 问答
+						answer = new SurveyUserAnswer(
+							user : user,
+							surveyUserQuestionnaire : surveyUserQuestionnaire,
+							surveyQuestion : q,
+							content : vo.content
+						)
+						userAnswers << answer
+					}
+					if (type == SurveyQuestion.Type.SORT.toString() && vo.orderIds.length <= q.optionCount) { // 排序
+						vo.orderIds.eachWithIndex { oId, index ->
+						answer = new SurveyUserAnswer(
+							user : user,
+							surveyUserQuestionnaire : surveyUserQuestionnaire,
+							surveyQuestion : q,
+							surveyQuestionOption : new SurveyQuestionOption(id : oId),
+							turn : index + 1
+						)
+						userAnswers << answer
+						}
+					}
 				}
 			}
 			surveyUserAnswerRepository.save(userAnswers)

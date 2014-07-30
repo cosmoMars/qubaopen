@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -40,6 +41,17 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "interest_question_type_id")
 	private InterestQuestionType interestQuestionType;
+
+	/**
+	 * 问卷类型  单选 SINGLE, 多选 MULTIPLE, 问答 QA, 排序 SORT, 打分 SCORE
+	 */
+	@Enumerated
+	private Type type;
+
+	private enum Type {
+		SINGLE, MULTIPLE, QA, SORT, SCORE
+	}
+
 
 	/**
 	 * 选项数量
@@ -104,6 +116,14 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 
 	public void setInterestQuestionType(InterestQuestionType interestQuestionType) {
 		this.interestQuestionType = interestQuestionType;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public Integer getOptionCount() {

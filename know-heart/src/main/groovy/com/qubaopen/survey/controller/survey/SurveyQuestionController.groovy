@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.survey.Survey
 import com.qubaopen.survey.entity.survey.SurveyQuestion
 import com.qubaopen.survey.entity.user.User
@@ -86,9 +86,16 @@ public class SurveyQuestionController extends AbstractBaseController<SurveyQuest
 			survey = new Survey(id : surveyId)
 
 		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
-		def questions = objectMapper.readValue(questionJson, javaType)
+		def questionVos = objectMapper.readValue(questionJson, javaType)
 
-		surveyService.saveQuestionnaireAndUserAnswer(user, survey, questions)
+		def ids = []
+		questionVos.each {
+			ids << it.questionId
+		}
+
+		def questions = surveyQuestionRepository.findAll(ids)
+
+		surveyService.saveQuestionnaireAndUserAnswer(user, survey, questions, questionVos)
 
 		return '{"success" : 1}'
 	}

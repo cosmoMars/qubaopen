@@ -91,19 +91,26 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 		def user = new User(id : userId),
 			self = selfRepository.findOne(selfId)
 
-		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
-		def questions = objectMapper.readValue(questionJson, javaType)
-
-		def ids = []
-		questions.each {
-			ids += it.choiceIds as List
+		if (!self) {
+			return '{"success": 0, "error": "err122"}'
 		}
+
+		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
+		def questionVos = objectMapper.readValue(questionJson, javaType)
+
+		def questionIds = [], optionIds = []
+		questionVos.each {
+			questionIds << it.questionId
+			optionIds += it.choiceIds as List
+		}
+
+		def questions = selfQuestionRepository.findAll(questionIds)
+		def questionOptions = selfQuestionOptionRepository.findAll(optionIds)
 
 		def selfType = self.selfType
 
 		if (selfType.name == 'SDS') { // SDS测试
 
-			def questionOptions = selfQuestionOptionRepository.findAll(ids)
 			def optionMap = [:]
 			questionOptions.each {
 				def questionType = it.selfQuestion.selfQuestionType.name
@@ -133,32 +140,31 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 				}
 			}
 
-			def resultName = []
+			def resultName = (resultMap.sort().values().sum() as List).reverse()
 
-			resultMap.sort().reverseEach { k, v ->// 根据key排序,且逆序
-				if (resultName.size < 3) {
-					def list = v as List
-					resultName += list
-				}
-			}
 			def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
-			selfService.saveQuestionnaireAndUserAnswer(user, self, questions, questionOptions, result)
+			if (!result) {
+				return '{"success": 0, "error": "err2323"}'
+			}
 
-			return resultMap
+			selfService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
+
+			return result[0]
+
 		} else if (selfType.name == 'PDP') { // PDP测试
 
-			def questionOptions = selfQuestionOptionRepository.findAll(ids)
+
 			def optionMap = [:]
 			questionOptions.each {
-				def questionType = it.selfQuestion.selfQuestionType
+				def selfResultOption = it.selfResultOption
 
-				if (optionMap.get(questionType)) { // key: 种类, value: 题目
-					optionMap.get(questionType) << it
+				if (optionMap.get(selfResultOption)) { // key: 种类, value: 题目
+					optionMap.get(selfResultOption) << it
 				} else {
 					def optionList = []
 					optionList << it
-					optionMap.put(questionType, optionList)
+					optionMap.put(selfResultOption, optionList)
 				}
 			}
 			def resultMap = [:]
@@ -166,7 +172,7 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 			optionMap.each { k, v -> // 计算每一个类型的分数
 				def score = 0
 				v.each {
-					score = score + it.score
+					score += it.score
 				}
 				if (resultMap.get(score)) { // key: 分数, value: 种类
 					resultMap.get(score) << k
@@ -176,11 +182,22 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 					resultMap.put(score, typeList)
 				}
 			}
-			resultMap.sort().get(resultMap.size())
+			def result = resultMap.get(resultMap.keySet().max()) as List
+
+			selfService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
+
+			return result[0]
 
 
 		} else if (selfType.name == 'AB' || selfType.name == 'C' || selfType.name == 'D') { // AB,C,D 测试
-			def score = selfResultOptionRepository.sumSelfOptions(ids)
+
+//			def score = selfResultOptionRepository.sumSelfOptions(optionIds)
+
+			def score = 0
+
+			questionOptions.each {
+			 	score += it.score
+			}
 
 			if (selfType.name == 'AB') {
 				score = score * 3
@@ -190,8 +207,8 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 				highestScore_greaterThanOrEqualTo : score,
 				lowestScore_lessThanOrEqualTo : score
 			)
+			selfService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
-
 	}
 
 }

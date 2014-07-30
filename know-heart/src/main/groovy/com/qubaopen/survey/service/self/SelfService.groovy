@@ -2,8 +2,8 @@ package com.qubaopen.survey.service.self
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
-import com.qubaopen.survey.entity.interest.InterestUserQuestionnaire
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
@@ -24,58 +24,80 @@ public class SelfService {
 	@Autowired
 	SelfUserAnswerRepository selfUserAnswerRepository
 
-	void saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> quesitonVos, List<SelfQuestionOption> options, SelfResultOption resultOption) {
+	@Transactional
+	void saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption) {
 
 		def selfUserQuestionnaire = new SelfUserQuestionnaire(
 			user : user,
 			self : self,
 			selfResultOption : resultOption,
-			status : InterestUserQuestionnaire.Status.COMPLETED,
-			transmit : InterestUserQuestionnaire.Transmit.NOTRANSMIT,
+			status : SelfUserQuestionnaire.Status.COMPLETED,
+			transmit : SelfUserQuestionnaire.Transmit.NOTRANSMIT,
 			time : new Date()
 		)
 		selfUserQuestionnaire = selfUserQuestionnaireRepository.save(selfUserQuestionnaire)
 
 		def userAnswers = []
-		quesitonVos.each { vo ->
 
-			def question = new SelfQuestion(id : vo.questionId)
-
-			if (vo.choiceIds && vo.choiceIds.length > 0) { //单选或多选
-				def option = null
-				vo.choiceIds.each { cId ->
-					options.find { o ->
-						if (o.id == cId) {
-							option = o
+		questions.each { q ->
+			def type = q.type.SINGLE.toString()
+			def answer = null, option = null
+			questionVos.find { vo ->
+				if (q.id == vo.questionId) {
+					if (type == SelfQuestion.Type.SINGLE.toString() && vo.choiceIds.length <= q.optionCount) { // 单选
+						options.find { o ->
+							if (o.id == vo.choiceIds[0]) {
+								option = o
+							}
 						}
-					}
-					def answer = new SelfUserAnswer(
-						user : user,
-						selfUserQuestionnaire : selfUserQuestionnaire,
-						selfQuestionOption : option,
-						score : option.score
-					)
-					userAnswers << answer
-				}
-			} else if (vo.content && !vo.content.isEmpty()) { // 问答题
-				def answer = new SelfUserAnswer(
-					user : user,
-					selfUserQuestionnaire : selfUserQuestionnaire,
-					interestQuestion : question,
-					content : vo.content
-				)
-				userAnswers << answer
-			} else if (vo.orderIds && vo.orderIds.length > 0) { //排序题
-				vo.orderIds.eachWithIndex { oId, index ->
-					def selfQuestionOption = new SelfQuestionOption(id : oId),
 						answer = new SelfUserAnswer(
 							user : user,
 							selfUserQuestionnaire : selfUserQuestionnaire,
-							interestQuestion : question,
-							selfQuestionOption : selfQuestionOption,
-							turn : index + 1
+							selfQuestionOption : option,
+							score : option.score
 						)
-					userAnswers << answer
+						userAnswers << answer
+					}
+					if (type == SelfQuestion.Type.MULTIPLE.toString() && vo.choiceIds.length <= q.optionCount) { // 多选
+						vo.choiceIds.each { cId ->
+							options.find { o ->
+								if (o.id == cId) {
+									option = o
+								}
+							}
+							answer = new SelfUserAnswer(
+								user : user,
+								selfUserQuestionnaire : selfUserQuestionnaire,
+								selfQuestionOption : option,
+								score : option.score
+							)
+							userAnswers << answer
+						}
+					}
+					if (type == SelfQuestion.Type.QA.toString() && !vo.content.empty) { // 问答
+						answer = new SelfUserAnswer(
+							user : user,
+							selfUserQuestionnaire : selfUserQuestionnaire,
+							content : vo.content
+						)
+						userAnswers << answer
+					}
+					if (type == SelfQuestion.Type.SORT.toString() && vo.orderIds.length <= q.optionCount) { // 排序
+						vo.orderIds.eachWithIndex { oId, index ->
+							options.find { o ->
+								if(o.id == oId) {
+									option = o
+								}
+							}
+							answer = new SelfUserAnswer(
+								user : user,
+								selfUserQuestionnaire : selfUserQuestionnaire,
+								selfQuestionOption : option,
+								turn : index + 1
+							)
+							userAnswers << answer
+						}
+					}
 				}
 			}
 		}

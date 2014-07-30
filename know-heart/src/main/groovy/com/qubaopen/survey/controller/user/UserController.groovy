@@ -102,7 +102,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			return result
 		}
 
-		'{"success" : 0, "message": "用户不存在"}'
+		'{"success" : 0, "error": "err001"}'
 	}
 
 	/**
@@ -116,22 +116,22 @@ class UserController extends AbstractBaseController<User, Long> {
 		logger.trace ' -- 添加用户注册记录 -- '
 
 		if (!validatePhone(phone)) {
-			return '{"success" : 0, "message": "手机号码为空或格式不正确"}'
+			return '{"success" : 0, "error": "err003"}'
 		}
 
 		if (!validatePwd(password)) {
-			return '{"success": 0, "message": "密码格式不正确"}'
+			return '{"success": 0, "error": "err004"}'
 		}
 
 		def u = userRepository.findByPhone(phone)
 		if (u) {
 			if (u.activated) {
-				return '{"success": 0, "message": "用户已经注册了"}'
+				return '{"success": 0, "errror": "err005"}'
 			}
 
 			def userCaptcha = userCaptchaRepository.findOne(u.id)
 			if (userCaptcha?.captcha != captcha) {
-				return '{"success": 0, "message": "xxxxxx"}'
+				return '{"success": 0, "errror": "err006"}'
 			}
 
 			u.password = DigestUtils.md5Hex(password)
@@ -140,7 +140,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			return userRepository.save(u)
 		}
 
-		'{"success": 0, "message": "还未获取过短信验证码"}'
+		'{"success": 0, "errror": "err007"}'
 	}
 
 	/**
@@ -155,7 +155,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		logger.trace "phone := $phone"
 
 		if (!validatePhone(phone)) { // 验证用户手机号是否无效
-			return '{"success" : 0, "message": "手机号码为空或格式不正确"}'
+			return '{"success" : 0, "errror": "err003"}'
 		}
 
 		// 判断用户是否存在
@@ -172,11 +172,11 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (userCaptcha) {
 			def lastSentDate = userCaptcha.lastSentDate
 			if ((today.time - lastSentDate.time) < 60000) {
-				return '{"success": 0, "message": "错误原因：xxxxxx"}'
+				return '{"success": 0, "error": "err008"}'
 			}
 
 			if (userCaptcha.sentNum > 10) {
-				return '{"success": 0, "message": "错误原因：yyyyyy"}'
+				return '{"success": 0, "error": "err009"}'
 			}
 		}
 
@@ -185,7 +185,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		// 给指定的用户手机号发送6位随机数的验证码
 		def success = smsService.sendCaptcha(phone, captcha)
 		if (!success) {
-			return '{"success": 0, "message": "短信验证码发送失败"}'
+			return '{"success": 0, "message": "err010"}'
 		}
 
 		if (userCaptcha) {
@@ -220,29 +220,30 @@ class UserController extends AbstractBaseController<User, Long> {
 	resetPassword(@RequestParam long userId, @RequestParam String password, @RequestParam String captcha) {
 
 		if (StringUtils.isEmpty(captcha)) {
-			return '{"success": 0, "message": "验证码为空"}'
+			return '{"success": 0, "message": "err011"}'
 		}
 
 		if (!validatePwd(password)) {
-			return '{"success": 0, "message": "err002"}'
+			return '{"success": 0, "message": "err004"}'
 		}
 
 		def user = userRepository.findOne(userId)
 		if (!user) {
-			return '{"success": 0, "message": "没有该用户"}'
+			return '{"success": 0, "message": "err001"}'
 		}
 
 		def userCaptcha = userCaptchaRepository.findOne(userId)
 		if (!userCaptcha) {
-			return '{"success": 0, "message": "请重新申请验证码"}'
+			return '{"success": 0, "message": "err012"}'
 		}
 
 		if (captcha == userCaptcha.captcha) {
 			user.password = DigestUtils.md5Hex(password)
-			return userRepository.save(user)
+			userRepository.save(user)
+			return '{"success": 1}'
 		}
 
-		'{"success": 0, "message": "输入验证码有误"}'
+		'{"success": 0, "message": "err006"}'
 	}
 
 }

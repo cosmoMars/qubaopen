@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -23,6 +24,7 @@ import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.service.SmsService
+import com.qubaopen.survey.service.user.UserService
 import com.qubaopen.survey.utils.DateCommons
 
 /**
@@ -49,6 +51,9 @@ class UserController extends AbstractBaseController<User, Long> {
 
 	@Autowired
 	SmsService smsService
+
+	@Autowired
+	UserService userService
 
 	@Override
 	protected MyRepository<User, Long> getRepository() {
@@ -110,8 +115,8 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value ='register', method = RequestMethod.POST)
-	register(@RequestParam phone, @RequestParam password, @RequestParam captcha) {
+	@RequestMapping(value ='register', method = RequestMethod.POST, consumes = 'multipart/form-data')
+	register(@RequestParam phone, @RequestParam password, @RequestParam captcha, @RequestParam MultipartFile avatar) {
 
 		logger.trace ' -- 添加用户注册记录 -- '
 
@@ -136,8 +141,9 @@ class UserController extends AbstractBaseController<User, Long> {
 
 			u.password = DigestUtils.md5Hex(password)
 			u.activated = true
+			userService.saveUserAndUserAvatar(u, avatar)
 
-			return userRepository.save(u)
+			return '{"success": 1}'
 		}
 
 		'{"success": 0, "errror": "err007"}'
@@ -218,6 +224,8 @@ class UserController extends AbstractBaseController<User, Long> {
 	 */
 	@RequestMapping(value = 'resetPassword', method = RequestMethod.POST)
 	resetPassword(@RequestParam long userId, @RequestParam String password, @RequestParam String captcha) {
+
+		logger.trace(" -- 忘记密码重置 -- ")
 
 		if (StringUtils.isEmpty(captcha)) {
 			return '{"success": 0, "message": "err011"}'

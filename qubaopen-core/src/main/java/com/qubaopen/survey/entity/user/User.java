@@ -29,7 +29,7 @@ public class User extends AbstractBaseEntity<Long> {
 	/**
 	 * 密码
 	 */
-	@Pattern(regexp = "^[a-zA-Z0-9_]{8,30}$", message = "{\"success\" : 0, \"message\": \"密码格式不正确\"}")
+//	@Pattern(regexp = "^[a-zA-Z0-9_]{8,30}$", message = "{\"success\" : 0, \"message\": \"密码格式不正确\"}")
 	private String password;
 
 	/**

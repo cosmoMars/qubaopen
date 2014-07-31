@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository
@@ -69,7 +69,9 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 * @param avatar
 	 */
 	@RequestMapping(value = 'uploadAvatar', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	void uploadAvatar(@RequestParam long userId, @RequestParam MultipartFile avatar) {
+	uploadAvatar(@RequestParam long userId, @RequestParam MultipartFile avatar) {
+
+		logger.trace(' -- 上传头像 -- ')
 
 //		def width = 128,
 //			height = 128
@@ -91,6 +93,8 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		userInfo.avatar = avatar.bytes
 
 		userInfoRepository.save(userInfo)
+
+		return '{"success": 1}'
 	}
 
 	/**
@@ -101,6 +105,9 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 */
 	@RequestMapping(value = 'retrieveAvatar', method = RequestMethod.GET)
 	retrieveAvatar(@RequestParam long userId, OutputStream output) {
+
+		logger.trace(' -- 显示头像 -- ')
+
 		def userInfo = userInfoRepository.findOne(userId)
 		output.write(userInfo.avatar)
 	}

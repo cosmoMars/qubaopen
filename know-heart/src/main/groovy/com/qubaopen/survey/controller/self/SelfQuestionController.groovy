@@ -59,6 +59,8 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 	@RequestMapping(value =  'findBySelf/{selfId}', method = RequestMethod.GET)
 	findBySelf(@PathVariable long selfId) {
 
+		logger.trace ' -- 获取自测问卷 -- '
+
 		def self = new Self(id : selfId)
 
 		def questions = selfQuestionRepository.findAllBySelf(self),
@@ -87,6 +89,8 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 	 */
 	@RequestMapping(value = 'calculateSelfResult', method = RequestMethod.GET)
 	calculateSelfReslut(@RequestParam long userId, @RequestParam long selfId, @RequestParam String questionJson) {
+
+		logger.trace ' -- 计算自测结果选项 -- '
 
 		def user = new User(id : userId),
 			self = selfRepository.findOne(selfId)

@@ -56,6 +56,8 @@ public class SurveyQuestionController extends AbstractBaseController<SurveyQuest
 	@RequestMapping(value = 'findBySurvey/{surveyId}', method = RequestMethod.GET)
 	findBySurvey(@PathVariable long surveyId) {
 
+		logger.trace(" -- 查询问卷选项以及逻辑 -- ")
+
 		def survey = new Survey(id : surveyId),
 			surveyQuestions = surveyQuestionRepository.findAllBySurvey(survey)
 
@@ -81,6 +83,8 @@ public class SurveyQuestionController extends AbstractBaseController<SurveyQuest
 	 */
 	@RequestMapping(value = 'saveSurveyResult', method = RequestMethod.GET)
 	saveSurveyResult(@RequestParam long userId, @RequestParam long surveyId, @RequestParam String questionJson) {
+
+		logger.trace(" -- 保存调研问卷结果 -- ")
 
 		def user = new User(id : userId),
 			survey = new Survey(id : surveyId)

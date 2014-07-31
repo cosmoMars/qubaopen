@@ -39,6 +39,8 @@ public class SurveyController extends AbstractBaseController<Survey, Long> {
 	@RequestMapping(value = 'retrieveSurvey/{userId}', method = RequestMethod.GET)
 	retrieveSurvey(@PathVariable long userId) {
 
+		logger.trace ' -- 查找用户的问卷 -- '
+
 		def userQuota = userQuotaRepository.findOne(userId)
 
 		def surveyNoQuota = surveyRepository.findSurveyWithoutQuota()

@@ -55,6 +55,9 @@ public class InterestQuestionController extends AbstractBaseController<InterestQ
 	 */
 	@RequestMapping(value = 'findByInterest/{interestId}', method = RequestMethod.GET)
 	findByInterest(@PathVariable long interestId) {
+
+		logger.trace ' -- 通过问卷查询问卷问题，问题顺序，特殊问题插入 -- '
+
 		def interest = new Interest(id : interestId),
 		 	questions = interestQuestionRepository.findByInterest(interest),
 			questionOrders = []
@@ -83,6 +86,8 @@ public class InterestQuestionController extends AbstractBaseController<InterestQ
 		@RequestParam long userId,
 		@RequestParam long interestId,
 		@RequestParam String questionJson) {
+
+		logger.trace ' -- 通过用户问题选项，计算得到结果选项 -- '
 
 		def interest = new Interest(id : interestId),
 			user = new User(id : userId)

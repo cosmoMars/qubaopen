@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.UserReceiveAddress
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.service.user.UserReceiveAddressService
@@ -63,7 +63,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody @Valid UserReceiveAddress userReceiveAddress, BindingResult result) {
+	modify(@RequestBody @Valid UserReceiveAddress userReceiveAddress) {
 
 		logger.trace ' -- 修改收货地址 -- '
 

@@ -44,7 +44,7 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 	/**
 	 * 是否跳过
 	 */
-	private boolean isJump;
+	private boolean jump;
 
 	public String getQuestionNum() {
 		return questionNum;
@@ -79,11 +79,11 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 	}
 
 	public boolean isJump() {
-		return isJump;
+		return jump;
 	}
 
-	public void setJump(boolean isJump) {
-		this.isJump = isJump;
+	public void setJump(boolean jump) {
+		this.jump = jump;
 	}
 
 }

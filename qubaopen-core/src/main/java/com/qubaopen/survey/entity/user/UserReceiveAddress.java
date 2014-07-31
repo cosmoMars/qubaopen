@@ -58,7 +58,15 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 	/**
 	 * 默认地址
 	 */
-	private boolean isDefaultAddress;
+	private boolean defaultAddress;
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public String getConsignee() {
 		return consignee;
@@ -101,19 +109,11 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 	}
 
 	public boolean isDefaultAddress() {
-		return isDefaultAddress;
+		return defaultAddress;
 	}
 
-	public void setDefaultAddress(boolean isDefaultAddress) {
-		this.isDefaultAddress = isDefaultAddress;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
+	public void setDefaultAddress(boolean defaultAddress) {
+		this.defaultAddress = defaultAddress;
 	}
 
 }

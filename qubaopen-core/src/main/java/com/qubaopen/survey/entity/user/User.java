@@ -9,6 +9,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
@@ -29,7 +30,9 @@ public class User extends AbstractBaseEntity<Long> {
 	/**
 	 * 密码
 	 */
-//	@Pattern(regexp = "^[a-zA-Z0-9_]{8,30}$", message = "{\"success\" : 0, \"message\": \"密码格式不正确\"}")
+	// @Pattern(regexp = "^[a-zA-Z0-9_]{8,30}$", message =
+	// "{\"success\" : 0, \"message\": \"密码格式不正确\"}")
+	@JsonIgnore
 	private String password;
 
 	/**
@@ -50,7 +53,8 @@ public class User extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否激活
 	 */
-	private boolean isActivated;
+	@JsonIgnore
+	private boolean activated;
 
 	public String getUserName() {
 		return userName;
@@ -85,11 +89,11 @@ public class User extends AbstractBaseEntity<Long> {
 	}
 
 	public boolean isActivated() {
-		return isActivated;
+		return activated;
 	}
 
-	public void setActivated(boolean isActivated) {
-		this.isActivated = isActivated;
+	public void setActivated(boolean activated) {
+		this.activated = activated;
 	}
 
 }

@@ -12,6 +12,9 @@ import com.qubaopen.survey.entity.interest.InterestUserAnswer
 import com.qubaopen.survey.entity.interest.InterestUserQuestionnaire
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
+import com.qubaopen.survey.repository.interest.InterestQuestionOptionRepository
+import com.qubaopen.survey.repository.interest.InterestQuestionOrderRepository
+import com.qubaopen.survey.repository.interest.InterestResultOptionRepository
 import com.qubaopen.survey.repository.interest.InterestSpecialInsertRepository
 import com.qubaopen.survey.repository.interest.InterestUserAnswerRepository
 import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository
@@ -20,13 +23,22 @@ import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireReposito
 public class InterestService {
 
 	@Autowired
-	InterestSpecialInsertRepository interestSpecialInsertRepository
-
-	@Autowired
 	InterestUserQuestionnaireRepository interestUserQuestionnaireRepository
 
 	@Autowired
 	InterestUserAnswerRepository interestUserAnswerRepository
+
+	@Autowired
+	InterestResultOptionRepository interestResultOptionRepository
+
+	@Autowired
+	InterestQuestionOrderRepository interestQuestionOrderRepository
+
+	@Autowired
+	InterestSpecialInsertRepository interestSpecialInsertRepository
+
+	@Autowired
+	InterestQuestionOptionRepository interestQuestionOptionRepository
 
 	@Transactional
 	void saveQuestionnaireAndUserAnswers(User user, Interest interest, List<QuestionVo> questionVos, List<InterestQuestion> questions, List<InterestQuestionOption> options, InterestResultOption resultOption) {

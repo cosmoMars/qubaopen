@@ -16,6 +16,7 @@ import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
+import com.qubaopen.survey.utils.DateCommons
 
 @RestController
 @RequestMapping("userInfos")
@@ -48,16 +49,18 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		def userInfo = userInfoRepository.findOne(userId)
 
 		def user = new User(id : userId),
-			defaultAddress = userReceiveAddressRepository.findByUserAndDefaultAddress(user, true)
+			defaultAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
 
 		def result = [
 			'userId' : userId,
+			'name' : userInfo.name ?: '',
 			'sex' : userInfo.sex ?: '',
-			'birthday' : userInfo?.birthday ?: '',
+			'birthday' : DateCommons.Date2String(userInfo?.birthday, 'yyyy-MM-dd') ?: '',
 			'bloodType' : userInfo?.bloodType ?: '',
 			'email' : userInfo.user.email ?: '',
 			'defaultAddress' : defaultAddress.detialAddress ?: '',
-			'IDCard' : userIdCardBind?.userIDCard?.IDCard ?: ''
+			'IdCard' : userIdCardBind?.userIDCard?.IDCard ?: '',
+			"district" : ''
 		]
 
 		result

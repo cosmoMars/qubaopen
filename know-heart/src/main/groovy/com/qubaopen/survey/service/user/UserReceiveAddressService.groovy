@@ -16,7 +16,7 @@ public class UserReceiveAddressService {
 	@Transactional
 	modifyAddress(UserReceiveAddress userReceiveAddress) {
 
-		def addressList = userReceiveAddressRepository.findByUserAndIsDefaultAddress(userReceiveAddress.user, true)
+		def addressList = userReceiveAddressRepository.findByUserAndDefaultAddress(userReceiveAddress.user, true)
 
 		addressList.each {
 			it.defaultAddress = false

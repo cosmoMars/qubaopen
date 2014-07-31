@@ -51,12 +51,12 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 	/**
 	 * 是否推送
 	 */
-	private boolean isPush;
+	private boolean push;
 
 	/**
 	 * 是否确认
 	 */
-	private boolean isConfirm;
+	private boolean confirmed;
 
 	/**
 	 * 用户来源
@@ -66,7 +66,23 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 	/**
 	 * 过时 设置新alias失败，此alias无效
 	 */
-	private boolean isOutDate;
+	private boolean outDate;
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getUdid() {
+		return udid;
+	}
+
+	public void setUdid(String udid) {
+		this.udid = udid;
+	}
 
 	public Date getStartTime() {
 		return startTime;
@@ -84,6 +100,22 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 		this.endTime = endTime;
 	}
 
+	public boolean isPush() {
+		return push;
+	}
+
+	public void setPush(boolean push) {
+		this.push = push;
+	}
+
+	public boolean isConfirmed() {
+		return confirmed;
+	}
+
+	public void setConfirmed(boolean confirmed) {
+		this.confirmed = confirmed;
+	}
+
 	public String getUserSource() {
 		return userSource;
 	}
@@ -92,44 +124,12 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 		this.userSource = userSource;
 	}
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public boolean isPush() {
-		return isPush;
-	}
-
-	public void setPush(boolean isPush) {
-		this.isPush = isPush;
-	}
-
-	public boolean isConfirm() {
-		return isConfirm;
-	}
-
-	public void setConfirm(boolean isConfirm) {
-		this.isConfirm = isConfirm;
-	}
-
 	public boolean isOutDate() {
-		return isOutDate;
+		return outDate;
 	}
 
-	public void setOutDate(boolean isOutDate) {
-		this.isOutDate = isOutDate;
-	}
-
-	public String getUdid() {
-		return udid;
-	}
-
-	public void setUdid(String udid) {
-		this.udid = udid;
+	public void setOutDate(boolean outDate) {
+		this.outDate = outDate;
 	}
 
 }

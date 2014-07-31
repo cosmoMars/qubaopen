@@ -71,7 +71,7 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 是否性格特殊问题
 	 */
-	private boolean isSpecial;
+	private boolean special;
 
 	/**
 	 * 答题时间限制
@@ -135,11 +135,11 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	}
 
 	public boolean isSpecial() {
-		return isSpecial;
+		return special;
 	}
 
-	public void setSpecial(boolean isSpecial) {
-		this.isSpecial = isSpecial;
+	public void setSpecial(boolean special) {
+		this.special = special;
 	}
 
 	public Integer getAnswerTimeLimit() {

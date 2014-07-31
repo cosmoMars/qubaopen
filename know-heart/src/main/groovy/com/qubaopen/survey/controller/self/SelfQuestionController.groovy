@@ -11,8 +11,6 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
-import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
 import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
@@ -92,12 +90,11 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 
 		logger.trace ' -- 计算自测结果选项 -- '
 
+		selfService.calculateSelfReslut(userId, selfId, questionJson)
+
+/*
 		def user = new User(id : userId),
 			self = selfRepository.findOne(selfId)
-
-		if (!self) {
-			return '{"success": 0, "error": "err122"}'
-		}
 
 		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
 		def questionVos = objectMapper.readValue(questionJson, javaType)
@@ -212,7 +209,7 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 				lowestScore_lessThanOrEqualTo : score
 			)
 			selfService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
-		}
+		}*/
 	}
 
 }

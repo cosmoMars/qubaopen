@@ -70,28 +70,28 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 是否在新浪微博分享 0否 1是
 	 */
-	private boolean isSharedSina;
+	private boolean sharedSina;
 
 	/**
 	 * 是否在腾讯微博分享 0否 1是
 	 */
-	private boolean isSharedTencent;
+	private boolean sharedTencent;
 
 	/**
 	 * 是否在QQ空间分享 0否 1是
 	 */
-	@Column(name = "is_shared_qq_space")
-	private boolean isSharedQQSpace;
+	@Column(name = "shared_qq_space")
+	private boolean sharedQQSpace;
 
 	/**
 	 * 是否在微信分享 0否 1是
 	 */
-	private boolean isSharedWeChat;
+	private boolean sharedWeChat;
 
 	/**
 	 * 是否在微信朋友圈分享 0否 1是
 	 */
-	private boolean isSharedWeChatFriend;
+	private boolean sharedWeChatFriend;
 
 	public Survey getSurvey() {
 		return survey;
@@ -107,6 +107,14 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	public Status getStatus() {
@@ -126,51 +134,43 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 	}
 
 	public boolean isSharedSina() {
-		return isSharedSina;
+		return sharedSina;
 	}
 
-	public void setSharedSina(boolean isSharedSina) {
-		this.isSharedSina = isSharedSina;
+	public void setSharedSina(boolean sharedSina) {
+		this.sharedSina = sharedSina;
 	}
 
 	public boolean isSharedTencent() {
-		return isSharedTencent;
+		return sharedTencent;
 	}
 
-	public void setSharedTencent(boolean isSharedTencent) {
-		this.isSharedTencent = isSharedTencent;
+	public void setSharedTencent(boolean sharedTencent) {
+		this.sharedTencent = sharedTencent;
 	}
 
 	public boolean isSharedQQSpace() {
-		return isSharedQQSpace;
+		return sharedQQSpace;
 	}
 
-	public void setSharedQQSpace(boolean isSharedQQSpace) {
-		this.isSharedQQSpace = isSharedQQSpace;
+	public void setSharedQQSpace(boolean sharedQQSpace) {
+		this.sharedQQSpace = sharedQQSpace;
 	}
 
 	public boolean isSharedWeChat() {
-		return isSharedWeChat;
+		return sharedWeChat;
 	}
 
-	public void setSharedWeChat(boolean isSharedWeChat) {
-		this.isSharedWeChat = isSharedWeChat;
+	public void setSharedWeChat(boolean sharedWeChat) {
+		this.sharedWeChat = sharedWeChat;
 	}
 
 	public boolean isSharedWeChatFriend() {
-		return isSharedWeChatFriend;
+		return sharedWeChatFriend;
 	}
 
-	public void setSharedWeChatFriend(boolean isSharedWeChatFriend) {
-		this.isSharedWeChatFriend = isSharedWeChatFriend;
-	}
-
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
+	public void setSharedWeChatFriend(boolean sharedWeChatFriend) {
+		this.sharedWeChatFriend = sharedWeChatFriend;
 	}
 
 }

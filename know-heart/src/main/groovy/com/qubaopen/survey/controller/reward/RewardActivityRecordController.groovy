@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.reward.RewardActivity
 import com.qubaopen.survey.entity.reward.RewardActivityRecord
 import com.qubaopen.survey.entity.user.User
@@ -98,7 +98,7 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody @Valid RewardActivityRecord rewardActivityRecord, BindingResult result) {
+	modify(@RequestBody @Valid RewardActivityRecord rewardActivityRecord) {
 
 		logger.trace ' -- 修改用户参与活动记录，改变状态为confirming时，创建奖品分发记录 -- '
 

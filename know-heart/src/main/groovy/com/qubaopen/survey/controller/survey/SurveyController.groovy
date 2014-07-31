@@ -51,7 +51,7 @@ public class SurveyController extends AbstractBaseController<Survey, Long> {
 
 		def userAge = (int)(((new Date()).time - userQuota.birthday.time)/1000/60/60/24/365)
 
-		def surveyQuotas = surveyQuotaRepository.findAllByIsActivated(true)
+		def surveyQuotas = surveyQuotaRepository.findAllByActivated(true)
 
 		def resultSurvey = [] as Set
 

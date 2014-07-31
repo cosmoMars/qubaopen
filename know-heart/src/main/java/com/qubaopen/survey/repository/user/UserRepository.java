@@ -10,7 +10,7 @@ public interface UserRepository extends MyRepository<User, Long> {
 
 	User findByPhone(String phone);
 
-	@Query("from User u where u.phone = :phone and u.password = :password and u.isActivated = true")
+	@Query("from User where phone = :phone and password = :password and activated = true")
 	User login(@Param("phone") String phone, @Param("password") String password);
 
 }

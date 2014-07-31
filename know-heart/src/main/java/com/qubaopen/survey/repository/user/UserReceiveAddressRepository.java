@@ -15,12 +15,12 @@ public interface UserReceiveAddressRepository extends MyRepository<UserReceiveAd
 
 	List<UserReceiveAddress> findByUser(User user);
 
-	@Query("from UserReceiveAddress ura where ura.user = :user and ura.isDefaultAddress = :defaultAddress")
-	UserReceiveAddress findByUserAndDefaultAddress(@Param("user")User user, @Param("defaultAddress") boolean defaultAddress);
+	@Query("from UserReceiveAddress ura where ura.user = :user and ura.defaultAddress = :defaultAddress")
+	UserReceiveAddress findByUserAndTrueAddress(@Param("user")User user, @Param("defaultAddress") boolean defaultAddress);
 
-	List<UserReceiveAddress> findByUserAndIsDefaultAddress(User user, boolean defaultAddress);
+	List<UserReceiveAddress> findByUserAndDefaultAddress(User user, boolean defaultAddress);
 
-	@Query("from UserReceiveAddress ura where ura.user.id = :userId and ura.isDefaultAddress = true")
+	@Query("from UserReceiveAddress ura where ura.user.id = :userId and ura.defaultAddress = true")
 	UserReceiveAddress findDefaultAddressByUserId(@Param("userId") long userId);
 
 }

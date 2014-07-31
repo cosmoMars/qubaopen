@@ -16,6 +16,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
  * 地区表
+ *
  * @author mars
  */
 @Entity
@@ -39,7 +40,7 @@ public class AreaCode extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否显示
 	 */
-	private boolean isShow;
+	private boolean display;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AreaCode parent;
@@ -66,12 +67,12 @@ public class AreaCode extends AbstractBaseEntity<Long> {
 		this.code = code;
 	}
 
-	public boolean isShow() {
-		return isShow;
+	public boolean isDisplay() {
+		return display;
 	}
 
-	public void setShow(boolean isShow) {
-		this.isShow = isShow;
+	public void setDisplay(boolean display) {
+		this.display = display;
 	}
 
 	public AreaCode getParent() {

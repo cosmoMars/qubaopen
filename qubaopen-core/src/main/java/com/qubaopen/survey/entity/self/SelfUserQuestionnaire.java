@@ -73,28 +73,28 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 新浪分享
 	 */
-	private boolean isSharedSina;
+	private boolean sharedSina;
 
 	/**
 	 * 腾讯分享
 	 */
-	private boolean isSharedTencent;
+	private boolean sharedTencent;
 
 	/**
 	 * 微信朋友圈分享
 	 */
-	private boolean isSharedWeChatFriend;
+	private boolean sharedWeChatFriend;
 
 	/**
 	 * QQ空间分享
 	 */
-	@Column(name = "is_shared_qq_space")
-	private boolean isSharedQQSpace;
+	@Column(name = "shared_qq_space")
+	private boolean sharedQQSpace;
 
 	/**
 	 * 微信分享
 	 */
-	private boolean isSharedWeChat;
+	private boolean sharedWeChat;
 
 	/**
 	 * 用户历史问卷，同步发送标志位 0 未发送 1发送中 2 已发送
@@ -112,7 +112,7 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 是否公开 0 不公开 1 公开 默认为空
 	 */
-	private Boolean isPublic;
+	private Boolean publicToAll;
 
 	public User getUser() {
 		return user;
@@ -138,22 +138,6 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 		this.self = self;
 	}
 
-	public Date getTime() {
-		return time;
-	}
-
-	public void setTime(Date time) {
-		this.time = time;
-	}
-
-	public Transmit getTransmit() {
-		return transmit;
-	}
-
-	public void setTransmit(Transmit transmit) {
-		this.transmit = transmit;
-	}
-
 	public SelfResultOption getSelfResultOption() {
 		return selfResultOption;
 	}
@@ -170,60 +154,68 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 		this.selfQuestionType = selfQuestionType;
 	}
 
-	public Boolean getIsPublic() {
-		return isPublic;
+	public Date getTime() {
+		return time;
 	}
 
-	public void setIsPublic(Boolean isPublic) {
-		this.isPublic = isPublic;
+	public void setTime(Date time) {
+		this.time = time;
 	}
 
 	public boolean isSharedSina() {
-		return isSharedSina;
+		return sharedSina;
 	}
 
-	public void setSharedSina(boolean isSharedSina) {
-		this.isSharedSina = isSharedSina;
+	public void setSharedSina(boolean sharedSina) {
+		this.sharedSina = sharedSina;
 	}
 
 	public boolean isSharedTencent() {
-		return isSharedTencent;
+		return sharedTencent;
 	}
 
-	public void setSharedTencent(boolean isSharedTencent) {
-		this.isSharedTencent = isSharedTencent;
+	public void setSharedTencent(boolean sharedTencent) {
+		this.sharedTencent = sharedTencent;
 	}
 
 	public boolean isSharedWeChatFriend() {
-		return isSharedWeChatFriend;
+		return sharedWeChatFriend;
 	}
 
-	public void setSharedWeChatFriend(boolean isSharedWeChatFriend) {
-		this.isSharedWeChatFriend = isSharedWeChatFriend;
+	public void setSharedWeChatFriend(boolean sharedWeChatFriend) {
+		this.sharedWeChatFriend = sharedWeChatFriend;
 	}
 
 	public boolean isSharedQQSpace() {
-		return isSharedQQSpace;
+		return sharedQQSpace;
 	}
 
-	public void setSharedQQSpace(boolean isSharedQQSpace) {
-		this.isSharedQQSpace = isSharedQQSpace;
+	public void setSharedQQSpace(boolean sharedQQSpace) {
+		this.sharedQQSpace = sharedQQSpace;
 	}
 
 	public boolean isSharedWeChat() {
-		return isSharedWeChat;
+		return sharedWeChat;
 	}
 
-	public void setSharedWeChat(boolean isSharedWeChat) {
-		this.isSharedWeChat = isSharedWeChat;
+	public void setSharedWeChat(boolean sharedWeChat) {
+		this.sharedWeChat = sharedWeChat;
 	}
 
-	public Boolean isPublic() {
-		return isPublic;
+	public Transmit getTransmit() {
+		return transmit;
 	}
 
-	public void setPublic(Boolean isPublic) {
-		this.isPublic = isPublic;
+	public void setTransmit(Transmit transmit) {
+		this.transmit = transmit;
+	}
+
+	public Boolean getPublicToAll() {
+		return publicToAll;
+	}
+
+	public void setPublicToAll(Boolean publicToAll) {
+		this.publicToAll = publicToAll;
 	}
 
 }

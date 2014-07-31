@@ -70,7 +70,7 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 	/**
 	 * 是否激活（控制是否启用） 1启用 0不启用
 	 */
-	private boolean isActivated;
+	private boolean activated;
 
 	public Survey getSurvey() {
 		return survey;
@@ -129,11 +129,11 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 	}
 
 	public boolean isActivated() {
-		return isActivated;
+		return activated;
 	}
 
-	public void setActivated(boolean isActivated) {
-		this.isActivated = isActivated;
+	public void setActivated(boolean activated) {
+		this.activated = activated;
 	}
 
 }

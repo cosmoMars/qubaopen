@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.utils.BeanUtils
 
 
 abstract class AbstractBaseController<T, ID extends Serializable> {
@@ -49,30 +50,37 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 
 	@RequestMapping(method = RequestMethod.POST)
 	add(@RequestBody @Valid T entity, BindingResult result) {
-		if (result.hasErrors()) {
-			def fieldError = result.fieldError,
-				msg = fieldError.defaultMessage
-
-			return msg
-		}
-		getRepository().save(entity)
+		save(entity, result)
 	}
 
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody @Valid T entity, BindingResult result) {
-		if (result.hasErrors()) {
-			def fieldError = result.fieldError,
-				msg = fieldError.defaultMessage
+	modify(@RequestBody T entity) {
+		def repository = getRepository(),
+			record = repository.findOne(entity.id)
 
-			return msg
-		}
-		getRepository().save(entity)
+		BeanUtils.copyProperties(entity, record)
+		repository.save(record)
 	}
 
 	@RequestMapping(value = '{id}', method = RequestMethod.DELETE)
 	void delete(@PathVariable ID id) {
 		def entity = getRepository().findOne(id)
 		getRepository().delete(entity)
+	}
+
+	private save(T entity, BindingResult result) {
+		if (result.hasErrors()) {
+			def fieldError = result.fieldError,
+				msg = fieldError.defaultMessage
+
+			return msg
+		}
+
+		def repository = getRepository(),
+			record = repository.findOne(entity.id)
+
+		BeanUtils.copyProperties(entity, record)
+		repository.save(record)
 	}
 
 }

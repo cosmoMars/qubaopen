@@ -11,6 +11,8 @@ import org.joda.time.DateTime
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 @MappedSuperclass
 abstract class AbstractBaseEntity2<ID extends Serializable> implements Serializable {
 
@@ -19,17 +21,21 @@ abstract class AbstractBaseEntity2<ID extends Serializable> implements Serializa
 	@Id
 	Long id
 
+	@JsonIgnore
 	Long createdBy
 
 	@CreatedDate
 	@Temporal(TIMESTAMP)
 	@Column(updatable = false)
+	@JsonIgnore
 	Date createdDate
 
+	@JsonIgnore
 	Long lastModifiedBy
 
 	@LastModifiedDate
 	@Temporal(TIMESTAMP)
+	@JsonIgnore
 	Date lastModifiedDate
 
 	DateTime getCreatedDate() {

@@ -41,7 +41,7 @@ public class CityCode extends AbstractPersistable<Long> {
 	/**
 	 * 是否显示
 	 */
-	private boolean isShow;
+	private boolean display;
 
 	public String getCode() {
 		return code;
@@ -67,12 +67,12 @@ public class CityCode extends AbstractPersistable<Long> {
 		this.provinceCode = provinceCode;
 	}
 
-	public boolean isShow() {
-		return isShow;
+	public boolean isDisplay() {
+		return display;
 	}
 
-	public void setShow(boolean isShow) {
-		this.isShow = isShow;
+	public void setDisplay(boolean display) {
+		this.display = display;
 	}
 
 }

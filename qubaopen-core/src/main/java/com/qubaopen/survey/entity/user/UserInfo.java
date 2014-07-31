@@ -89,28 +89,28 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 新浪微博软件分享
 	 */
-	private boolean isSharedSina;
+	private boolean sharedSina;
 
 	/**
 	 * 腾讯微博软件分享
 	 */
-	private boolean isSharedTencent;
+	private boolean sharedTencent;
 
 	/**
 	 * 微信朋友圈分享
 	 */
-	private boolean isSharedWeChatFriend;
+	private boolean sharedWeChatFriend;
 
 	/**
 	 * QQ空间分享
 	 */
-	@Column(name = "is_shared_qq_space")
-	private boolean isSharedQQSpace;
+	@Column(name = "shared_qq_space")
+	private boolean sharedQQSpace;
 
 	/**
 	 * 微信分享
 	 */
-	private boolean isSharedWeChat;
+	private boolean sharedWeChat;
 
 	/**
 	 * 好友数量
@@ -120,22 +120,22 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 向萌主公开测试答案
 	 */
-	private boolean isPublicAnswersToChief;
+	private boolean publicAnswersToChief;
 
 	/**
 	 * 开启省流量模式
 	 */
-	private boolean isSaveFlow;
+	private boolean saveFlow;
 
 	/**
 	 * 向好友公开最新动态
 	 */
-	private boolean isPublicMovementToFriend;
+	private boolean publicMovementToFriend;
 
 	/**
 	 * 向好友公开测试答案
 	 */
-	private boolean isPublicAnswersToFriend;
+	private boolean publicAnswersToFriend;
 
 	public User getUser() {
 		return user;
@@ -151,6 +151,22 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public Sex getSex() {
+		return sex;
+	}
+
+	public void setSex(Sex sex) {
+		this.sex = sex;
 	}
 
 	public Date getBirthday() {
@@ -185,6 +201,46 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		this.signature = signature;
 	}
 
+	public boolean isSharedSina() {
+		return sharedSina;
+	}
+
+	public void setSharedSina(boolean sharedSina) {
+		this.sharedSina = sharedSina;
+	}
+
+	public boolean isSharedTencent() {
+		return sharedTencent;
+	}
+
+	public void setSharedTencent(boolean sharedTencent) {
+		this.sharedTencent = sharedTencent;
+	}
+
+	public boolean isSharedWeChatFriend() {
+		return sharedWeChatFriend;
+	}
+
+	public void setSharedWeChatFriend(boolean sharedWeChatFriend) {
+		this.sharedWeChatFriend = sharedWeChatFriend;
+	}
+
+	public boolean isSharedQQSpace() {
+		return sharedQQSpace;
+	}
+
+	public void setSharedQQSpace(boolean sharedQQSpace) {
+		this.sharedQQSpace = sharedQQSpace;
+	}
+
+	public boolean isSharedWeChat() {
+		return sharedWeChat;
+	}
+
+	public void setSharedWeChat(boolean sharedWeChat) {
+		this.sharedWeChat = sharedWeChat;
+	}
+
 	public int getFriendNum() {
 		return friendNum;
 	}
@@ -193,92 +249,36 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		this.friendNum = friendNum;
 	}
 
-	public String getNickName() {
-		return nickName;
-	}
-
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
-
-	public Sex getSex() {
-		return sex;
-	}
-
-	public void setSex(Sex sex) {
-		this.sex = sex;
-	}
-
-	public boolean isSharedSina() {
-		return isSharedSina;
-	}
-
-	public void setSharedSina(boolean isSharedSina) {
-		this.isSharedSina = isSharedSina;
-	}
-
-	public boolean isSharedTencent() {
-		return isSharedTencent;
-	}
-
-	public void setSharedTencent(boolean isSharedTencent) {
-		this.isSharedTencent = isSharedTencent;
-	}
-
-	public boolean isSharedWeChatFriend() {
-		return isSharedWeChatFriend;
-	}
-
-	public void setSharedWeChatFriend(boolean isSharedWeChatFriend) {
-		this.isSharedWeChatFriend = isSharedWeChatFriend;
-	}
-
-	public boolean isSharedQQSpace() {
-		return isSharedQQSpace;
-	}
-
-	public void setSharedQQSpace(boolean isSharedQQSpace) {
-		this.isSharedQQSpace = isSharedQQSpace;
-	}
-
-	public boolean isSharedWeChat() {
-		return isSharedWeChat;
-	}
-
-	public void setSharedWeChat(boolean isSharedWeChat) {
-		this.isSharedWeChat = isSharedWeChat;
-	}
-
 	public boolean isPublicAnswersToChief() {
-		return isPublicAnswersToChief;
+		return publicAnswersToChief;
 	}
 
-	public void setPublicAnswersToChief(boolean isPublicAnswersToChief) {
-		this.isPublicAnswersToChief = isPublicAnswersToChief;
-	}
-
-	public boolean isPublicMovementToFriend() {
-		return isPublicMovementToFriend;
-	}
-
-	public void setPublicMovementToFriend(boolean isPublicMovementToFriend) {
-		this.isPublicMovementToFriend = isPublicMovementToFriend;
-	}
-
-	public boolean isPublicAnswersToFriend() {
-		return isPublicAnswersToFriend;
-	}
-
-	public void setPublicAnswersToFriend(boolean isPublicAnswersToFriend) {
-		this.isPublicAnswersToFriend = isPublicAnswersToFriend;
+	public void setPublicAnswersToChief(boolean publicAnswersToChief) {
+		this.publicAnswersToChief = publicAnswersToChief;
 	}
 
 	public boolean isSaveFlow() {
-		return isSaveFlow;
+		return saveFlow;
 	}
 
-	public void setSaveFlow(boolean isSaveFlow) {
-		this.isSaveFlow = isSaveFlow;
+	public void setSaveFlow(boolean saveFlow) {
+		this.saveFlow = saveFlow;
+	}
+
+	public boolean isPublicMovementToFriend() {
+		return publicMovementToFriend;
+	}
+
+	public void setPublicMovementToFriend(boolean publicMovementToFriend) {
+		this.publicMovementToFriend = publicMovementToFriend;
+	}
+
+	public boolean isPublicAnswersToFriend() {
+		return publicAnswersToFriend;
+	}
+
+	public void setPublicAnswersToFriend(boolean publicAnswersToFriend) {
+		this.publicAnswersToFriend = publicAnswersToFriend;
 	}
 
 }

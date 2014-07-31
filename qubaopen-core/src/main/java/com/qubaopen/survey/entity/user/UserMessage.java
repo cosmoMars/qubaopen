@@ -43,12 +43,12 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否推送
 	 */
-	private boolean isPush;
+	private boolean push;
 
 	/**
 	 * 是否已读
 	 */
-	private boolean isRead;
+	private boolean readed;
 
 	/**
 	 * 站内信类型
@@ -102,20 +102,28 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 		this.content = content;
 	}
 
+	public boolean isPush() {
+		return push;
+	}
+
+	public void setPush(boolean push) {
+		this.push = push;
+	}
+
+	public boolean isReaded() {
+		return readed;
+	}
+
+	public void setReaded(boolean readed) {
+		this.readed = readed;
+	}
+
 	public Integer getMessageType() {
 		return messageType;
 	}
 
 	public void setMessageType(Integer messageType) {
 		this.messageType = messageType;
-	}
-
-	public Date getPushTime() {
-		return pushTime;
-	}
-
-	public void setPushTime(Date pushTime) {
-		this.pushTime = pushTime;
 	}
 
 	public Transmit getTransmit() {
@@ -134,19 +142,12 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 		this.sendSource = sendSource;
 	}
 
-	public boolean isPush() {
-		return isPush;
+	public Date getPushTime() {
+		return pushTime;
 	}
 
-	public void setPush(boolean isPush) {
-		this.isPush = isPush;
+	public void setPushTime(Date pushTime) {
+		this.pushTime = pushTime;
 	}
 
-	public boolean isRead() {
-		return isRead;
-	}
-
-	public void setRead(boolean isRead) {
-		this.isRead = isRead;
-	}
 }

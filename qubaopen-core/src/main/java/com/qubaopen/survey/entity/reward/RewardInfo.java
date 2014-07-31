@@ -64,7 +64,7 @@ public class RewardInfo extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否被使用
 	 */
-	private boolean isUsed;
+	private boolean used;
 
 	public Reward getReward() {
 		return reward;
@@ -123,11 +123,11 @@ public class RewardInfo extends AbstractBaseEntity<Long> {
 	}
 
 	public boolean isUsed() {
-		return isUsed;
+		return used;
 	}
 
-	public void setUsed(boolean isUsed) {
-		this.isUsed = isUsed;
+	public void setUsed(boolean used) {
+		this.used = used;
 	}
 
 }

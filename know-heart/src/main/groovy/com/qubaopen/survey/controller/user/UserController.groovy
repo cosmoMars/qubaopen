@@ -75,7 +75,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (loginUser) {
 
 			def userInfo = userInfoRepository.findOne(loginUser.id),
-				userReceiveAddress = userReceiveAddressRepository.findByUserAndDefaultAddress(loginUser,true),
+				userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true),
 				userIdCardBind = userIDCardBindRepository.findByUser(loginUser)
 
 			def result = [
@@ -89,7 +89,7 @@ class UserController extends AbstractBaseController<User, Long> {
 				'bloodType' : userInfo.bloodType.toString() ?: '',
 				'district' : '',
 				'email' : loginUser.email ?: '',
-				'address' : userReceiveAddress?.detialAddress ?: '',
+				'defaultAddress' : userReceiveAddress?.detialAddress ?: '',
 				'defaultAddressId' : userReceiveAddress?.id ?: '',
 				'consignee' : userReceiveAddress?.consignee ?: '',
 				'defaultAddressPhone' : userReceiveAddress?.phone ?: ''

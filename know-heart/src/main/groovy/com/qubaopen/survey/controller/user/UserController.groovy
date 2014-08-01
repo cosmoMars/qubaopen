@@ -198,7 +198,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			userCaptcha.captcha = captcha
 			userCaptcha.lastSentDate = today
 			if (DateUtils.isSameDay(today, userCaptcha.lastSentDate)) {
-				userCaptcha.sentNum++
+				userCaptcha.sentNum ++
 			} else {
 				userCaptcha.sentNum = 0
 			}

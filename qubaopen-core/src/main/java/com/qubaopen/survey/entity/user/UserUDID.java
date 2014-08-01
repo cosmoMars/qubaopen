@@ -39,13 +39,13 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 	/**
 	 * 提醒开始时间
 	 */
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIME)
 	private Date startTime;
 
 	/**
 	 * 提醒结束时间
 	 */
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIME)
 	private Date endTime;
 
 	/**

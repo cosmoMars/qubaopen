@@ -80,7 +80,7 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 是否在QQ空间分享 0否 1是
 	 */
-	@Column(name = "shared_qq_space")
+	@Column(name = "shared_qq_space", nullable = false)
 	private boolean sharedQQSpace;
 
 	/**

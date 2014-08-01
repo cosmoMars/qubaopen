@@ -80,7 +80,7 @@ public class InterestUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * QQ空间分享
 	 */
-	@Column(name = "shared_qq_space")
+	@Column(name = "shared_qq_space", nullable = false)
 	private boolean sharedQQSpace;
 
 	/**

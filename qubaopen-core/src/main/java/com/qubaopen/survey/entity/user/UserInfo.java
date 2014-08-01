@@ -60,14 +60,13 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	private Date birthday;
 
 	/**
-	 * 血型
+	 * 血型 A, B, AB, O
 	 */
 	@Enumerated
 	private BloodType bloodType;
 
 	/**
 	 * A, B, AB, O
-	 *
 	 */
 	private enum BloodType {
 		A, B, AB, O
@@ -104,7 +103,7 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * QQ空间分享
 	 */
-	@Column(name = "shared_qq_space")
+	@Column(name = "shared_qq_space", nullable = false)
 	private boolean sharedQQSpace;
 
 	/**

@@ -50,7 +50,13 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 
 	@RequestMapping(method = RequestMethod.POST)
 	add(@RequestBody @Valid T entity, BindingResult result) {
-		save(entity, result)
+		if (result.hasErrors()) {
+			def fieldError = result.fieldError,
+				msg = fieldError.defaultMessage
+
+			return msg
+		}
+		getRepository().save(entity)
 	}
 
 	@RequestMapping(method = RequestMethod.PUT)
@@ -68,7 +74,7 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 		getRepository().delete(entity)
 	}
 
-	private save(T entity, BindingResult result) {
+	/*private save(T entity, BindingResult result) {
 		if (result.hasErrors()) {
 			def fieldError = result.fieldError,
 				msg = fieldError.defaultMessage
@@ -81,6 +87,6 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 
 		BeanUtils.copyProperties(entity, record)
 		repository.save(record)
-	}
+	}*/
 
 }

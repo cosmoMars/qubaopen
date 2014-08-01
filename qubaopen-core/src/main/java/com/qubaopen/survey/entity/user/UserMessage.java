@@ -52,8 +52,14 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 
 	/**
 	 * 站内信类型
+	 *
+	 * 0 系统信息 1 中奖信息 2 私信 3 好友请求 4 调研问卷跳转 5奖品跳转 (4,5不存在站内信)
 	 */
-	private Integer messageType;
+	private MessageType messageType;
+
+	private enum MessageType {
+		SYSTEM, REWARD, PRIVATE, FRIEND, SURVEYJUMP, REWARDJUMP
+	}
 
 	/**
 	 * 发送标志 0未发送 1发送中 2已发送
@@ -118,11 +124,11 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 		this.readed = readed;
 	}
 
-	public Integer getMessageType() {
+	public MessageType getMessageType() {
 		return messageType;
 	}
 
-	public void setMessageType(Integer messageType) {
+	public void setMessageType(MessageType messageType) {
 		this.messageType = messageType;
 	}
 

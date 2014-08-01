@@ -143,7 +143,8 @@ class UserController extends AbstractBaseController<User, Long> {
 			u.activated = true
 			userService.saveUserAndUserAvatar(u, avatar)
 
-			return '{"success": 1}'
+
+			return ['userId' : u.id]
 		}
 
 		'{"success": 0, "errror": "err007"}'

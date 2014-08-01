@@ -78,7 +78,7 @@ public class SelfService {
 			questionOptions.each {
 				def questionType = it.selfQuestion.selfQuestionType.name
 
-				if (optionMap.get(questionType)) { // key: 种类, value: 题目
+				if (optionMap.get(questionType)) { // key: 种类 : I A C, value: 题目
 					optionMap.get(questionType) << it
 				} else {
 					def optionList = []
@@ -112,7 +112,7 @@ public class SelfService {
 				return '{"success": 0, "error": "err2323"}'
 			}
 
-//			saveMapStatistics(user, selfId, optionMap.toString(), result.id) // 保存心理地图
+			saveMapStatistics(user, selfId, resultMap.toString(), result.id) // 保存心理地图
 
 			saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 
@@ -152,7 +152,7 @@ public class SelfService {
 			}
 			def result = resultMap.get(resultMap.keySet().max()) as List
 
-//			saveMapStatistics(user, selfId, null, result[0].id) // 保存心理地图
+			saveMapStatistics(user, selfId, null, result[0].id) // 保存心理地图
 
 			saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 
@@ -177,8 +177,11 @@ public class SelfService {
 				highestScore_greaterThanOrEqualTo : score,
 				lowestScore_lessThanOrEqualTo : score
 			)
+			saveMapStatistics(user, selfId, null, result.id)
+
 			saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
+
 	}
 
 
@@ -221,6 +224,7 @@ public class SelfService {
 							user : user,
 							selfUserQuestionnaire : selfUserQuestionnaire,
 							selfQuestionOption : option,
+							selfQuestion : q,
 							score : option.score
 						)
 						userAnswers << answer
@@ -236,6 +240,7 @@ public class SelfService {
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
 								selfQuestionOption : option,
+								selfQuestion : q,
 								score : option.score
 							)
 							userAnswers << answer
@@ -245,6 +250,7 @@ public class SelfService {
 						answer = new SelfUserAnswer(
 							user : user,
 							selfUserQuestionnaire : selfUserQuestionnaire,
+							selfQuestion : q,
 							content : vo.content
 						)
 						userAnswers << answer
@@ -260,6 +266,7 @@ public class SelfService {
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
 								selfQuestionOption : option,
+								selfQuestion : q,
 								turn : index + 1
 							)
 							userAnswers << answer
@@ -278,11 +285,13 @@ public class SelfService {
 	 * @param id
 	 * @param result
 	 */
-	void saveMapStatistics(User user, long id, String result) {
+	void saveMapStatistics(User user, long id, String result, long resultId) {
 		def mapStatistics = new MapStatistics(
 			user : user,
 			questionnaireId : id,
-			result : result
+			result : result,
+			resultId : resultId,
+			type : MapStatistics.Type.SELF
 		)
 		mapStatisticsRepository.save(mapStatistics)
 	}

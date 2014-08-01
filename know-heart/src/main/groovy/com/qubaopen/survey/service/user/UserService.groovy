@@ -51,6 +51,7 @@ public class UserService {
 
 		userInfoRepository.save(userInfo)
 		userUDIDRepository.save(userUdid)
+
 	}
 
 }

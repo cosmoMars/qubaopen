@@ -2,6 +2,7 @@ package com.qubaopen.survey.controller.user
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -39,6 +40,11 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		userInfoRepository
 	}
 
+	/**
+	 * 获取个人信息
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping(value = 'retrievePersonalInfo/{userId}', method = RequestMethod.GET)
 	retrievePersonalInfo(@PathVariable long userId) {
 
@@ -64,6 +70,20 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		]
 
 		result
+	}
+
+	/**
+	 * 修改个人信息
+	 * @param userId
+	 * @return
+	 */
+	@Override
+	@RequestMapping(method = RequestMethod.PUT)
+	modify(@RequestBody UserInfo userInfo) {
+
+		userInfoRepository.save(userInfo)
+
+		'{"success": 1}'
 	}
 
 	/**

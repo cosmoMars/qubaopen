@@ -39,7 +39,7 @@ public class User extends AbstractBaseEntity<Long> {
 	 * 电话
 	 */
 	@NotEmpty(message = "{\"success\" : 0, \"errCode\": \"101\", \"message\": \"手机号码为空或格式不正确\"}")
-	@Pattern(regexp = "^1[3458][0-9]{9}$", message = "{\"success\" : 0, \"message\": \"手机号码为空或格式不正确\"}")
+	@Pattern(regexp = "^1[0-9]{10}$", message = "{\"success\" : 0, \"message\": \"手机号码为空或格式不正确\"}")
 	@Column(unique = true, length = 11)
 	private String phone;
 

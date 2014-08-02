@@ -128,7 +128,7 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 		}
 
 		// DELIVERING 发货中, CONFIRMING 待确认, CONFIRMED 已确认, PROCESSING 处理中
-		def rewardStatus
+		def rewardStatus = null
 		switch(status) {
 			case 'DELIVERING' :
 				rewardStatus = RewardActivityRecord.Status.DELIVERING

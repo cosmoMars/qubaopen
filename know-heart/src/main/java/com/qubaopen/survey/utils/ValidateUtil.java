@@ -8,7 +8,7 @@ public class ValidateUtil {
 	 * 判断是否为合法的手机号码
 	 */
 	public static boolean validatePhone(String phone) {
-		return isNotEmpty(phone) && phone.matches("^1[3458][0-9]{9}$");
+		return isNotEmpty(phone) && phone.matches("^1[0-9]{10}$");
 	}
 
 	/**

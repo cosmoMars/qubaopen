@@ -50,15 +50,25 @@ public class SelfService {
 	@Autowired
 	MapStatisticsRepository mapStatisticsRepository
 
+	@Autowired
+	ObjectMapper objectMapper
 
+
+	/**
+	 * 计算保存问卷信息
+	 * @param userId
+	 * @param selfId
+	 * @param questionJson
+	 * @param refresh
+	 * @return
+	 */
 	@Transactional
-	calculateSelfReslut(long userId, long selfId, String questionJson) {
+	calculateSelfReslut(long userId, long selfId, String questionJson, boolean refresh) {
 
 		def user = new User(id : userId),
 			self = selfRepository.findOne(selfId)
 
-		def objectMapper = new ObjectMapper(),
-			javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class),
+		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class),
 			questionVos = objectMapper.readValue(questionJson, javaType)
 
 		def questionIds = [], optionIds = []
@@ -107,19 +117,19 @@ public class SelfService {
 
 			def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
-
 			if (!result) {
 				return '{"success": 0, "error": "err2323"}'
 			}
 
-			saveMapStatistics(user, selfId, resultMap.toString(), result.id) // 保存心理地图
+			if (refresh) {
+				saveMapStatistics(user, self, objectMapper.writeValueAsString(resultMap), result) // 保存心理地图
 
-			saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
+				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0], 0)
+			}
 
 			return result[0]
 
 		} else if (selfType.name == 'PDP') { // PDP测试
-
 
 			def optionMap = [:]
 			questionOptions.each {
@@ -152,9 +162,12 @@ public class SelfService {
 			}
 			def result = resultMap.get(resultMap.keySet().max()) as List
 
-			saveMapStatistics(user, selfId, null, result[0].id) // 保存心理地图
 
-			saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
+			if (refresh) {
+				saveMapStatistics(user, self, null, result) // 保存心理地图
+
+				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0], 0)
+			}
 
 			return result[0]
 
@@ -177,9 +190,14 @@ public class SelfService {
 				highestScore_greaterThanOrEqualTo : score,
 				lowestScore_lessThanOrEqualTo : score
 			)
-			saveMapStatistics(user, selfId, null, result.id)
 
-			saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			if (refresh) {
+				saveMapStatistics(user, selfId, null, result, score)
+
+				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			}
+
+			return result
 		}
 
 	}
@@ -285,14 +303,42 @@ public class SelfService {
 	 * @param id
 	 * @param result
 	 */
-	void saveMapStatistics(User user, long id, String result, long resultId) {
-		def mapStatistics = new MapStatistics(
-			user : user,
-			questionnaireId : id,
-			result : result,
-			resultId : resultId,
-			type : MapStatistics.Type.SELF
-		)
+	void saveMapStatistics(User user, Self self, String result, SelfResultOption selfResultOption, int score) {
+
+		def selfType = self.selfType.name
+		def type = null
+		switch (selfType) {
+			case "SDS" :
+				type = MapStatistics.Type.SDS
+			case "AB" :
+				type = MapStatistics.Type.ABCD
+			case "C" :
+				type = MapStatistics.Type.ABCD
+			case "D" :
+				type = MapStatistics.Type.ABCD
+			case "PDP" :
+				type = MapStatistics.Type.PDP
+			case "MBTI" :
+				type = MapStatistics.Type.MBTI
+		}
+
+		def mapStatistics = mapStatisticsRepository.findByUserAndSelf(user, self)
+		if (mapStatistics) {
+			mapStatistics.result = result
+			mapStatistics.selfResultOption = selfResultOption
+			if (score != 0) {
+				mapStatistics.score = score
+			}
+		} else {
+			mapStatistics = new MapStatistics(
+				user : user,
+				self : self,
+				type : type,
+				result : result,
+				selfResultOption : selfResultOption,
+				score : score != 0 ? score : null
+			)
+		}
 		mapStatisticsRepository.save(mapStatistics)
 	}
 }

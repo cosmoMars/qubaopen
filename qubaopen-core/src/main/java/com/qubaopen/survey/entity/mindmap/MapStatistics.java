@@ -5,17 +5,21 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.self.Self;
+import com.qubaopen.survey.entity.self.SelfResultOption;
 import com.qubaopen.survey.entity.user.User;
 
 /**
  * 心理地图统计
- *
  * @author mars
  *
  */
 @Entity
 @Table(name = "map_statistics")
+@Audited
 public class MapStatistics extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = -3138111352912710215L;
@@ -26,10 +30,8 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
-	/**
-	 * 问卷 调研，自测，兴趣
-	 */
-	private long questionnaireId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Self self;
 
 	/**
 	 * 图形结果
@@ -39,16 +41,22 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	/**
 	 * 单个结果
 	 */
-	private long resultId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private SelfResultOption selfResultOption;
 
 	/**
-	 * INTEREST, SURVEY, SELF
+	 * SDS, ABCD, PDP, MBTI
 	 */
 	private Type type;
 
-	private enum Type {
-		INTEREST, SURVEY, SELF
+	public enum Type {
+		SDS, ABCD, PDP, MBTI
 	}
+
+	/**
+	 * 分数
+	 */
+	private Integer score;
 
 	public User getUser() {
 		return user;
@@ -58,12 +66,12 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 		this.user = user;
 	}
 
-	public long getQuestionnaireId() {
-		return questionnaireId;
+	public Self getSelf() {
+		return self;
 	}
 
-	public void setQuestionnaireId(long questionnaireId) {
-		this.questionnaireId = questionnaireId;
+	public void setSelf(Self self) {
+		this.self = self;
 	}
 
 	public String getResult() {
@@ -74,12 +82,12 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 		this.result = result;
 	}
 
-	public long getResultId() {
-		return resultId;
+	public SelfResultOption getSelfResultOption() {
+		return selfResultOption;
 	}
 
-	public void setResultId(long resultId) {
-		this.resultId = resultId;
+	public void setSelfResultOption(SelfResultOption selfResultOption) {
+		this.selfResultOption = selfResultOption;
 	}
 
 	public Type getType() {
@@ -89,5 +97,15 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	public void setType(Type type) {
 		this.type = type;
 	}
+
+	public Integer getScore() {
+		return score;
+	}
+
+	public void setScore(Integer score) {
+		this.score = score;
+	}
+
+
 
 }

@@ -5,6 +5,4 @@ import com.qubaopen.survey.entity.self.SelfUserQuestionnaire;
 
 public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQuestionnaire, Long> {
 
-
-
 }

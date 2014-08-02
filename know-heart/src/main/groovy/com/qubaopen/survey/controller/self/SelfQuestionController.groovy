@@ -86,11 +86,11 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 	 * @return
 	 */
 	@RequestMapping(value = 'calculateSelfResult', method = RequestMethod.GET)
-	calculateSelfReslut(@RequestParam long userId, @RequestParam long selfId, @RequestParam String questionJson) {
+	calculateSelfReslut(@RequestParam long userId, @RequestParam long selfId, @RequestParam String questionJson, @RequestParam boolean refresh) {
 
 		logger.trace ' -- 计算自测结果选项 -- '
 
-		selfService.calculateSelfReslut(userId, selfId, questionJson)
+		selfService.calculateSelfReslut(userId, selfId, questionJson, refresh)
 
 /*
 		def user = new User(id : userId),

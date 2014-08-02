@@ -27,10 +27,18 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 		mapStatisticsRepository
 	}
 
-	@RequestMapping(value = 'calculateMapStatistcs', method = RequestMethod.GET)
-	calculateMapStatistics(@RequestParam long userId, @RequestParam long questionnaireId, @RequestParam String type) {
+	/**
+	 * 获取心理地图信息
+	 * @param userId
+	 * @param selfId
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveMapStatistics', method = RequestMethod.GET)
+	retrieveMapStatistics(@RequestParam long userId, @RequestParam String type) {
 
-		mapStatisticsService.calculateMapStatistics(userId, questionnaireId, type)
+		logger.trace(' -- 获取心理地图信息 -- ')
+
+		mapStatisticsService.retrieveMapStatistics(userId, type)
 	}
 
 }

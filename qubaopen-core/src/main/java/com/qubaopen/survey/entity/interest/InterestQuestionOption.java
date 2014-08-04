@@ -43,7 +43,7 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 	/**
 	 * 题号
 	 */
-	private String questionNum;
+	private String optionNum;
 
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
@@ -74,12 +74,12 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 		this.score = score;
 	}
 
-	public String getQuestionNum() {
-		return questionNum;
+	public String getOptionNum() {
+		return optionNum;
 	}
 
-	public void setQuestionNum(String questionNum) {
-		this.questionNum = questionNum;
+	public void setOptionNum(String optionNum) {
+		this.optionNum = optionNum;
 	}
 
 	public byte[] getPic() {

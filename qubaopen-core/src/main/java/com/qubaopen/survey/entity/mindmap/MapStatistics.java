@@ -1,6 +1,7 @@
 package com.qubaopen.survey.entity.mindmap;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -47,6 +48,7 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	/**
 	 * SDS, ABCD, PDP, MBTI
 	 */
+	@Enumerated
 	private Type type;
 
 	public enum Type {

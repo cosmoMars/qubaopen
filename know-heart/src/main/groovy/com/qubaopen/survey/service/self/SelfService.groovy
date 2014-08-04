@@ -117,14 +117,14 @@ public class SelfService {
 
 			def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
-			if (!result) {
+			if (result.empty) {
 				return '{"success": 0, "error": "err2323"}'
 			}
 
 			if (refresh) {
-				saveMapStatistics(user, self, objectMapper.writeValueAsString(resultMap), result) // 保存心理地图
+				saveMapStatistics(user, self, objectMapper.writeValueAsString(resultMap), result[0], 0) // 保存心理地图
 
-				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0], 0)
+				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 			}
 
 			return result[0]
@@ -164,9 +164,9 @@ public class SelfService {
 
 
 			if (refresh) {
-				saveMapStatistics(user, self, null, result) // 保存心理地图
+				saveMapStatistics(user, self, null, result[0], 0) // 保存心理地图
 
-				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0], 0)
+				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 			}
 
 			return result[0]
@@ -198,6 +198,57 @@ public class SelfService {
 			}
 
 			return result
+		} else if (selfType.name == 'MBTI') {
+			def optionMap = [:]
+			questionOptions.each {
+				def questionType = it.selfQuestion.selfQuestionType.name
+
+				if (optionMap.get(questionType)) {
+					optionMap.get(questionType) << it
+				} else {
+					def list = []
+					list << it
+					optionMap.put(questionType, list)
+				}
+			}
+
+			optionMap.each { k, v ->
+				def score = 0
+				v.each {
+					score += it.score
+				}
+				optionMap.remove(k)
+				optionMap.put(k, score)
+			}
+			def resultName = ''
+			if (optionMap.get('E') >= optionMap.get('I')) {
+				resultName += 'E'
+			} else {
+				resultName += 'I'
+			}
+			if (optionMap.get('N') >= optionMap.get('S')) {
+				resultName += 'N'
+			} else {
+				resultName += 'S'
+			}
+			if (optionMap.get('F') >= optionMap.get('T')) {
+				resultName += 'F'
+			} else {
+				resultName += 'T'
+			}
+			if (optionMap.get('P') >= optionMap.get('J')) {
+				resultName += 'P'
+			} else {
+				resultName += 'J'
+			}
+			def result = selfResultOptionRepository.findByName(resultName)
+
+			if (refresh) {
+				saveMapStatistics(user, selfId, objectMapper.writeValueAsString(optionMap), result, 0)
+
+				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			}
+			result
 		}
 
 	}
@@ -303,6 +354,7 @@ public class SelfService {
 	 * @param id
 	 * @param result
 	 */
+	@Transactional
 	void saveMapStatistics(User user, Self self, String result, SelfResultOption selfResultOption, int score) {
 
 		def selfType = self.selfType.name

@@ -14,6 +14,12 @@ public class MapStatisticsService {
 	@Autowired
 	MapStatisticsRepository mapStatisticsRepository
 
+	/**
+	 * 获取心理地图
+	 * @param userId
+	 * @param type
+	 * @return
+	 */
 	@Transactional
 	retrieveMapStatistics(long userId, String type) {
 

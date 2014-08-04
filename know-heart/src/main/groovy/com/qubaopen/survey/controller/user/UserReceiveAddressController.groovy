@@ -40,22 +40,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 
 		logger.trace ' -- 新增收货地址 -- '
 
-		def count = userReceiveAddressRepository.countByUser(userReceiveAddress.user)
-
-		if (count >= 10) {
-			return '{"success": 0, "message": "收获地址过多"}'
-		}
-
-		if (count == 0) { // 没有收货地址
-			userReceiveAddress.defaultAddress = true
-			return userReceiveAddressRepository.save(userReceiveAddress)
-		}
-
-		if (!userReceiveAddress.defaultAddress) { // 不是默认收货地址
-			return userReceiveAddressRepository.save(userReceiveAddress)
-		}
-
-		userReceiveAddressService.modifyAddress(userReceiveAddress)
+		userReceiveAddressService.add(userReceiveAddress)
 	}
 
 	/**
@@ -67,17 +52,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 
 		logger.trace ' -- 修改收货地址 -- '
 
-		if(!userReceiveAddress.defaultAddress) {
-			userReceiveAddressRepository.save(userReceiveAddress)
-		}
-
-		def address = userReceiveAddressRepository.findOne(userReceiveAddress.id)
-
-		if (address.defaultAddress == userReceiveAddress.defaultAddress) {
-			userReceiveAddressRepository.save(userReceiveAddress)
-		}
-
-		userReceiveAddressService.modifyAddress(userReceiveAddress)
+		userReceiveAddressService.modify(userReceiveAddress)
 
 	}
 

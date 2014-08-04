@@ -11,13 +11,9 @@ import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserInfo
-import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
-import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
-import com.qubaopen.survey.repository.user.UserRepository
-import com.qubaopen.survey.utils.DateCommons
+import com.qubaopen.survey.service.user.UserInfoService
 
 @RestController
 @RequestMapping("userInfos")
@@ -27,13 +23,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	UserInfoRepository userInfoRepository
 
 	@Autowired
-	UserRepository userRepository
-
-	@Autowired
-	UserIDCardBindRepository userIDCardBindRepository
-
-	@Autowired
-	UserReceiveAddressRepository userReceiveAddressRepository
+	UserInfoService userInfoService
 
 	@Override
 	protected MyRepository<UserInfo, Long> getRepository() {
@@ -50,26 +40,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 		logger.trace ' -- 获得用户个人信息 -- '
 
-		def userIdCardBind = userIDCardBindRepository.findByUserId(userId)
-
-		def userInfo = userInfoRepository.findOne(userId)
-
-		def user = new User(id : userId),
-			defaultAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
-
-		def result = [
-			'userId' : userId,
-			'name' : userInfo.name ?: '',
-			'sex' : userInfo.sex ?: '',
-			'birthday' : DateCommons.Date2String(userInfo?.birthday, 'yyyy-MM-dd') ?: '',
-			'bloodType' : userInfo?.bloodType ?: '',
-			'email' : userInfo.user.email ?: '',
-			'defaultAddress' : defaultAddress.detialAddress ?: '',
-			'IdCard' : userIdCardBind?.userIDCard?.IDCard ?: '',
-			"district" : ''
-		]
-
-		result
+		userInfoService.retrievePersonalInfo(userId)
 	}
 
 	/**

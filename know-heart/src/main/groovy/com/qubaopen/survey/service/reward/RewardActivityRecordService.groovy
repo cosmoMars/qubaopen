@@ -7,12 +7,15 @@ import org.springframework.transaction.annotation.Transactional
 import com.qubaopen.survey.entity.reward.RewardActivity
 import com.qubaopen.survey.entity.reward.RewardActivityRecord
 import com.qubaopen.survey.entity.reward.RewardAssignRecord
+import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserReceiveAddress
 import com.qubaopen.survey.repository.reward.RewardActivityRecordRepository
+import com.qubaopen.survey.repository.reward.RewardActivityRepository
 import com.qubaopen.survey.repository.reward.RewardAssignRecordRepository
 import com.qubaopen.survey.repository.reward.RewardInfoRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
+import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 
 @Service
 public class RewardActivityRecordService {
@@ -28,6 +31,124 @@ public class RewardActivityRecordService {
 
 	@Autowired
 	RewardActivityRecordRepository rewardActivityRecordRepository
+
+	@Autowired
+	RewardActivityRepository rewardActivityRepository
+
+	@Autowired
+	UserReceiveAddressRepository userReceiveAddressRepository
+
+
+	/**
+	 * 兑换奖品
+	 * @param userId
+	 * @param activityId
+	 * @param addressId
+	 * @return
+	 */
+	@Transactional
+	exchangeReward(long userId, long activityId, long addressId) {
+
+		def rewardActivity = rewardActivityRepository.findOne(activityId)
+
+		if (rewardActivity != null && rewardActivity.status != RewardActivity.Status.ONLINE) {
+			return '{"success": 0, "message": "活动未上线或已结束"}'
+		}
+
+		if (rewardActivity.currentCount >= rewardActivity.totalCountLimit) {
+			return '{"success": 0, "message": "该活动已售完"}'
+		}
+
+		def user = new User(id : userId),
+			activityCount = rewardActivityRecordRepository.countByUser(user)
+
+		if (rewardActivity.eachCountLimit != 0 && activityCount > rewardActivity.eachCountLimit) {
+			return '{"success": 0, "message": "兑奖次数已用完"}'
+		}
+
+		def userGold = userGoldRepository.findOne(userId)
+
+		if (userGold.currentGold < rewardActivity.requireGold) {
+			return '{"success": 0, "message": "当前金币不足"}'
+		}
+
+		def address = userReceiveAddressRepository.findOne(addressId)
+
+		saveRecordAndGold(rewardActivity, userGold, address)
+
+		'{"success": 1}'
+	}
+
+	/**
+	 * 修改奖品记录
+	 * @param rewardActivityRecord
+	 * @return
+	 */
+	@Transactional
+	modify(RewardActivityRecord rewardActivityRecord) {
+		def existRecord = rewardActivityRecordRepository.findOne(rewardActivityRecord.id)
+
+		if (existRecord.status != rewardActivityRecord.status && rewardActivityRecord.status == RewardActivityRecord.Status.CONFIRMING) {
+
+			modifyRecord(rewardActivityRecord)
+
+		}
+
+		'{"success": 1}'
+	}
+
+	/**
+	 * 根据状态查找奖品记录
+	 * @param userId
+	 * @param status
+	 * @return
+	 */
+	@Transactional
+	findByStatus(long userId, String status) {
+
+		def user = new User(id : userId)
+		if (status.isEmpty() || ''.is(status)) {
+			return rewardActivityRecordRepository.findAllByUser(user)
+		}
+
+		// DELIVERING 发货中, CONFIRMING 待确认, CONFIRMED 已确认, PROCESSING 处理中
+		def rewardStatus = null
+		switch(status) {
+			case 'DELIVERING' :
+				rewardStatus = RewardActivityRecord.Status.DELIVERING
+				break
+			case 'CONFIRMING' :
+				rewardStatus = RewardActivityRecord.Status.CONFIRMING
+				break
+			case 'CONFIRMED' :
+				rewardStatus = RewardActivityRecord.Status.CONFIRMED
+				break
+			case 'PROCESSING' :
+				rewardStatus = RewardActivityRecord.Status.PROCESSING
+				break
+			case 'REWARD' :
+				rewardStatus = RewardActivityRecord.Status.REWARD
+				break
+		}
+
+		if (RewardActivityRecord.Status.REWARD == rewardStatus) {
+			def activityRequireds = rewardActivityRecordRepository.findAllByUser(user),
+				 rewardInfos
+			activityRequireds.each {
+				if (it.rewardInfo) {
+					rewardInfos << it.rewardInfo
+				}
+			}
+			return rewardInfos
+		}
+
+		return rewardActivityRecordRepository.findAll(
+			[
+				user_equal : user,
+				status_equal : rewardStatus
+			]
+		)
+	}
 
 	/**
 	 * 扣除参与活动金币，活动＋1，并保存用户金币，以及活动记录

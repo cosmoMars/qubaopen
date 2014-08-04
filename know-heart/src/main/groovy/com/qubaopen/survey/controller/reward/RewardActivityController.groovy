@@ -1,6 +1,5 @@
 package com.qubaopen.survey.controller.reward
 
-import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -11,7 +10,7 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.reward.RewardActivity
 import com.qubaopen.survey.repository.reward.RewardActivityRepository
-import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
+import com.qubaopen.survey.service.reward.RewardActivityService
 
 @RestController
 @RequestMapping("rewardActivitys")
@@ -21,7 +20,7 @@ public class RewardActivityController extends AbstractBaseController<RewardActiv
 	RewardActivityRepository rewardActivityRepository
 
 	@Autowired
-	UserReceiveAddressRepository userReceiveAddressRepository
+	RewardActivityService rewardActivityService
 
 	@Override
 	protected MyRepository<RewardActivity, Long> getRepository() {
@@ -38,20 +37,7 @@ public class RewardActivityController extends AbstractBaseController<RewardActiv
 
 		logger.trace ' -- 获取上线奖品活动 -- '
 
-		def defaultAddress = userReceiveAddressRepository.findDefaultAddressByUserId(userId),
-			today = DateFormatUtils.format(new Date(), "yyyy-MM-dd"),
-			rewardList = rewardActivityRepository.findAll(
-				[
-					startTime_lessThan: today,
-					endTime_greaterThan: today,
-					status_equal: RewardActivity.Status.ONLINE
-				]
-			)
-		def result = [
-				'addressId': defaultAddress.id ?: '',
-				'rewardList': rewardList ?: []
-			]
-		result
+		rewardActivityService.retrieveOnlineReward(userId)
 	}
 
 }

@@ -12,6 +12,7 @@ import com.qubaopen.survey.entity.survey.Survey
 import com.qubaopen.survey.repository.survey.SurveyQuotaRepository
 import com.qubaopen.survey.repository.survey.SurveyRepository
 import com.qubaopen.survey.repository.user.UserQuotaRepository
+import com.qubaopen.survey.service.survey.SurveyService
 
 @RestController
 @RequestMapping("surveys")
@@ -26,63 +27,25 @@ public class SurveyController extends AbstractBaseController<Survey, Long> {
 	@Autowired
 	UserQuotaRepository userQuotaRepository
 
+	@Autowired
+	SurveyService surveyService
+
 	@Override
 	protected MyRepository<Survey, Long> getRepository() {
 		surveyRepository
 	}
 
 	/**
-	 * 查找用户的问卷
+	 * 获取用户的问卷
 	 * @param userId
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveSurvey/{userId}', method = RequestMethod.GET)
 	retrieveSurvey(@PathVariable long userId) {
 
-		logger.trace ' -- 查找用户的问卷 -- '
+		logger.trace ' -- 获取用户的问卷 -- '
 
-		def userQuota = userQuotaRepository.findOne(userId)
-
-		def surveyNoQuota = surveyRepository.findSurveyWithoutQuota()
-
-		if (!userQuota) {
-			return surveyNoQuota
-		}
-
-		def userAge = (int)(((new Date()).time - userQuota.birthday.time)/1000/60/60/24/365)
-
-		def surveyQuotas = surveyQuotaRepository.findAllByActivated(true)
-
-		def resultSurvey = [] as Set
-
-		surveyQuotas.each {
-			def isMatch = true
-			if (isMatch && it.sex) {
-				if (userQuota.sex.toString() != it.sex.toString()) {
-					isMatch = false
-				}
-			}
-			if (isMatch && it.minAge) {
-				if (userAge < it.minAge - 1) {
-					isMatch = false
-				}
-			}
-			if (isMatch && it.maxAge) {
-				if (userAge > it.maxAge + 1) {
-					isMatch = false
-				}
-			}
-			if (isMatch && it.provinceCode) {
-				if (userQuota.regionCode != it.provinceCode) {
-					isMatch = false
-				}
-			}
-			if (isMatch) {
-				resultSurvey = resultSurvey + it.survey
-			}
-		}
-
-		return resultSurvey
+		surveyService.retrieveSurvey(userId)
 	}
 
 }

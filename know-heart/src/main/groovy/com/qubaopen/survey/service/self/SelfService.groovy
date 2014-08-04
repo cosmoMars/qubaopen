@@ -53,6 +53,31 @@ public class SelfService {
 	@Autowired
 	ObjectMapper objectMapper
 
+	/**
+	 * 查找自测问卷
+	 * @param selfId
+	 * @return
+	 */
+	@Transactional
+	findBySelf(long selfId) {
+		def self = new Self(id : selfId)
+
+		def questions = selfQuestionRepository.findAllBySelf(self),
+			questionOrders = []
+
+		if (questions) {
+			questionOrders = selfQuestionOrderRepository.findAllBySelfQuestions(questions)
+		}
+
+		def specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
+
+		def result = [
+			'questions'	: questions,
+		'questionOrders' : questionOrders,
+		'specialInserts' : specialInserts
+		]
+		return result
+	}
 
 	/**
 	 * 计算保存问卷信息

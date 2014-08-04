@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
@@ -47,23 +46,7 @@ public class SelfQuestionController extends AbstractBaseController<SelfQuestion,
 
 		logger.trace ' -- 获取自测问卷 -- '
 
-		def self = new Self(id : selfId)
-
-		def questions = selfQuestionRepository.findAllBySelf(self),
-			questionOrders = []
-
-		if (questions) {
-			questionOrders = selfQuestionOrderRepository.findAllBySelfQuestions(questions)
-		}
-
-		def specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
-
-		def result = [
-			'questions'	: questions,
-			'questionOrders' : questionOrders,
-			'specialInserts' : specialInserts
-		]
-		return result
+		selfService.findBySelf(selfId)
 	}
 
 	/**

@@ -15,8 +15,11 @@ import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.survey.SurveyLogicRepository
 import com.qubaopen.survey.repository.survey.SurveyQuestionRepository
+import com.qubaopen.survey.repository.survey.SurveyQuotaRepository
+import com.qubaopen.survey.repository.survey.SurveyRepository
 import com.qubaopen.survey.repository.survey.SurveyUserAnswerRepository
 import com.qubaopen.survey.repository.survey.SurveyUserQuestionnaireRepository
+import com.qubaopen.survey.repository.user.UserQuotaRepository
 
 @Service
 public class SurveyService {
@@ -34,10 +37,70 @@ public class SurveyService {
 	SurveyLogicRepository surveyLogicRepository
 
 	@Autowired
+	UserQuotaRepository userQuotaRepository
+
+	@Autowired
+	SurveyRepository surveyRepository
+
+	@Autowired
+	SurveyQuotaRepository surveyQuotaRepository
+
+	@Autowired
 	ObjectMapper objectMapper
 
 	/**
-	 * 查找survey问卷
+	 * 获取调研问卷
+	 * @param userId
+	 * @return
+	 */
+	@Transactional
+	retrieveSurvey(long userId){
+		def userQuota = userQuotaRepository.findOne(userId)
+
+		def surveyNoQuota = surveyRepository.findSurveyWithoutQuota()
+
+		if (!userQuota) {
+			return surveyNoQuota
+		}
+
+		def userAge = (int)(((new Date()).time - userQuota.birthday.time)/1000/60/60/24/365)
+
+		def surveyQuotas = surveyQuotaRepository.findAllByActivated(true)
+
+		def resultSurvey = [] as Set
+
+		surveyQuotas.each {
+			def isMatch = true
+			if (isMatch && it.sex) {
+				if (userQuota.sex.toString() != it.sex.toString()) {
+					isMatch = false
+				}
+			}
+			if (isMatch && it.minAge) {
+				if (userAge < it.minAge - 1) {
+					isMatch = false
+				}
+			}
+			if (isMatch && it.maxAge) {
+				if (userAge > it.maxAge + 1) {
+					isMatch = false
+				}
+			}
+			if (isMatch && it.provinceCode) {
+				if (userQuota.regionCode != it.provinceCode) {
+					isMatch = false
+				}
+			}
+			if (isMatch) {
+				resultSurvey = resultSurvey + it.survey
+			}
+		}
+
+		return resultSurvey
+	}
+
+	/**
+	 * 查询问卷选项以及逻辑
 	 * @param surveyId
 	 * @return
 	 */

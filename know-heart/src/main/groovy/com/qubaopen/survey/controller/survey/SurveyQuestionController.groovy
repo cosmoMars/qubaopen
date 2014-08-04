@@ -9,15 +9,8 @@ import org.springframework.web.bind.annotation.RestController
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.survey.Survey
 import com.qubaopen.survey.entity.survey.SurveyQuestion
-import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.entity.vo.QuestionVo
-import com.qubaopen.survey.repository.survey.SurveyLogicRepository
 import com.qubaopen.survey.repository.survey.SurveyQuestionRepository
-import com.qubaopen.survey.repository.survey.SurveyUserAnswerRepository
-import com.qubaopen.survey.repository.survey.SurveyUserQuestionnaireRepository
-import com.qubaopen.survey.repository.survey.SurveyUserQuestionnaireTypeRepository
 import com.qubaopen.survey.service.survey.SurveyService
 
 @RestController
@@ -26,18 +19,6 @@ public class SurveyQuestionController extends AbstractBaseController<SurveyQuest
 
 	@Autowired
 	SurveyQuestionRepository surveyQuestionRepository
-
-	@Autowired
-	SurveyLogicRepository surveyLogicRepository
-
-	@Autowired
-	SurveyUserQuestionnaireRepository surveyUserQuestionnaireRepository
-
-	@Autowired
-	SurveyUserQuestionnaireTypeRepository surveyUserQuestionnaireTypeRepository
-
-	@Autowired
-	SurveyUserAnswerRepository surveyUserAnswerRepository
 
 	@Autowired
 	SurveyService surveyService
@@ -58,19 +39,7 @@ public class SurveyQuestionController extends AbstractBaseController<SurveyQuest
 
 		logger.trace(" -- 查询问卷选项以及逻辑 -- ")
 
-		def survey = new Survey(id : surveyId),
-			surveyQuestions = surveyQuestionRepository.findAllBySurvey(survey)
-
-		def surveyLogics = []
-
-		if (surveyQuestions) {
-			surveyLogics = surveyLogicRepository.findAlLBySurveyQuestions(surveyQuestions)
-		}
-
-		def result = [
-			'surveyQuestions' : surveyQuestions,
-			'surveyLogics' : surveyLogics
-		]
+		surveyService.findBySurvey(surveyId)
 	}
 
 	/**
@@ -86,22 +55,8 @@ public class SurveyQuestionController extends AbstractBaseController<SurveyQuest
 
 		logger.trace(" -- 保存调研问卷结果 -- ")
 
-		def user = new User(id : userId),
-			survey = new Survey(id : surveyId)
+		surveyService.saveSurveyResult(userId, surveyId, questionJson)
 
-		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
-		def questionVos = objectMapper.readValue(questionJson, javaType)
-
-		def ids = []
-		questionVos.each {
-			ids << it.questionId
-		}
-
-		def questions = surveyQuestionRepository.findAll(ids)
-
-		surveyService.saveQuestionnaireAndUserAnswer(user, survey, questions, questionVos)
-
-		return '{"success" : 1}'
 	}
 
 }

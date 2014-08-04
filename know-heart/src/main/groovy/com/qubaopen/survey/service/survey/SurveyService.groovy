@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-import com.qubaopen.survey.controller.survey.SurveyQuestionController
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.interest.InterestQuestion
 import com.qubaopen.survey.entity.survey.Survey
 import com.qubaopen.survey.entity.survey.SurveyQuestion
@@ -13,6 +13,8 @@ import com.qubaopen.survey.entity.survey.SurveyUserAnswer
 import com.qubaopen.survey.entity.survey.SurveyUserQuestionnaire
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
+import com.qubaopen.survey.repository.survey.SurveyLogicRepository
+import com.qubaopen.survey.repository.survey.SurveyQuestionRepository
 import com.qubaopen.survey.repository.survey.SurveyUserAnswerRepository
 import com.qubaopen.survey.repository.survey.SurveyUserQuestionnaireRepository
 
@@ -20,14 +22,77 @@ import com.qubaopen.survey.repository.survey.SurveyUserQuestionnaireRepository
 public class SurveyService {
 
 	@Autowired
-	SurveyQuestionController surveyQuestionController
-
-	@Autowired
 	SurveyUserQuestionnaireRepository surveyUserQuestionnaireRepository
 
 	@Autowired
 	SurveyUserAnswerRepository surveyUserAnswerRepository
 
+	@Autowired
+	SurveyQuestionRepository surveyQuestionRepository
+
+	@Autowired
+	SurveyLogicRepository surveyLogicRepository
+
+	@Autowired
+	ObjectMapper objectMapper
+
+	/**
+	 * 查找survey问卷
+	 * @param surveyId
+	 * @return
+	 */
+	@Transactional
+	findBySurvey(long surveyId) {
+		def survey = new Survey(id : surveyId),
+		surveyQuestions = surveyQuestionRepository.findAllBySurvey(survey)
+
+		def surveyLogics = []
+
+		if (surveyQuestions) {
+			surveyLogics = surveyLogicRepository.findAlLBySurveyQuestions(surveyQuestions)
+		}
+
+		def result = [
+			'surveyQuestions' : surveyQuestions,
+			'surveyLogics' : surveyLogics
+		]
+	}
+
+	/**
+	 *
+	 * 保存调研问卷
+	 * @param userId
+	 * @param surveyId
+	 * @param questionJson
+	 * @return
+	 */
+	@Transactional
+	saveSurveyResult(long userId, long surveyId, String questionJson) {
+		def user = new User(id : userId),
+		survey = new Survey(id : surveyId)
+
+		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
+		def questionVos = objectMapper.readValue(questionJson, javaType)
+
+		def ids = []
+		questionVos.each {
+			ids << it.questionId
+		}
+
+		def questions = surveyQuestionRepository.findAll(ids)
+
+		saveQuestionnaireAndUserAnswer(user, survey, questions, questionVos)
+
+		return '{"success" : 1}'
+
+	}
+
+	/**
+	 * @param user
+	 * @param survey
+	 * @param questions
+	 * @param questionVos
+	 */
 	@Transactional
 	void saveQuestionnaireAndUserAnswer(User user, Survey survey, List<InterestQuestion> questions, List<QuestionVo> questionVos) {
 

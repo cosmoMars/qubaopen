@@ -130,7 +130,6 @@ public class UserService {
 			u.activated = true
 			saveUserAndUserAvatar(u, avatar)
 
-
 			return [
 				'success': 1,
 				'userId' : u.id

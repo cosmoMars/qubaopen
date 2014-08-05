@@ -23,7 +23,7 @@ public class UserReceiveAddressService {
 		def count = userReceiveAddressRepository.countByUser(userReceiveAddress.user)
 
 		if (count >= 10) {
-			return '{"success": 0, "message": "收获地址过多"}'
+			return '{"success": "0", "message": "err101"}'
 		}
 
 		if (count == 0) { // 没有收货地址

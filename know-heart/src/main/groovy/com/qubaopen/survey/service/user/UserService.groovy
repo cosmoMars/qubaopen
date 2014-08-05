@@ -92,7 +92,7 @@ public class UserService {
 			return result
 		}
 
-		'{"success" : 0, "error": "err001"}'
+		'{"success" : "0", "message": "err001"}'
 	}
 
 
@@ -108,22 +108,22 @@ public class UserService {
 	register(String phone, String password, String captcha, MultipartFile avatar) {
 
 		if (!validatePhone(phone)) {
-			return '{"success" : 0, "error": "err003"}'
+			return '{"success" : "0", "message": "err003"}'
 		}
 
 		if (!validatePwd(password)) {
-			return '{"success": 0, "error": "err004"}'
+			return '{"success": "0", "message": "err004"}'
 		}
 
 		def u = userRepository.findByPhone(phone)
 		if (u) {
 			if (u.activated) {
-				return '{"success": 0, "errror": "err005"}'
+				return '{"success": "0", "message": "err005"}'
 			}
 
 			def userCaptcha = userCaptchaRepository.findOne(u.id)
 			if (userCaptcha?.captcha != captcha) {
-				return '{"success": 0, "errror": "err006"}'
+				return '{"success": "0", "message": "err006"}'
 			}
 
 			u.password = DigestUtils.md5Hex(password)
@@ -131,12 +131,12 @@ public class UserService {
 			saveUserAndUserAvatar(u, avatar)
 
 			return [
-				'success': 1,
+				'success': '1',
 				'userId' : u.id
 			]
 		}
 
-		'{"success": 0, "errror": "err007"}'
+		'{"success": "0", "message": "err007"}'
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class UserService {
 	@Transactional
 	sendCaptcha(String phone) {
 		if (!validatePhone(phone)) { // 验证用户手机号是否无效
-			return '{"success" : 0, "errror": "err003"}'
+			return '{"success" : "0", "message": "err003"}'
 		}
 
 		// 判断用户是否存在
@@ -164,11 +164,11 @@ public class UserService {
 		if (userCaptcha) {
 			def lastSentDate = userCaptcha.lastSentDate
 			if ((today.time - lastSentDate.time) < 60000) {
-				return '{"success": 0, "error": "err008"}'
+				return '{"success": "0", "message": "err008"}'
 			}
 
 			if (userCaptcha.sentNum > 10) {
-				return '{"success": 0, "error": "err009"}'
+				return '{"success": "0", "message": "err009"}'
 			}
 		}
 
@@ -177,7 +177,7 @@ public class UserService {
 		// 给指定的用户手机号发送6位随机数的验证码
 		def success = smsService.sendCaptcha(phone, captcha)
 		if (!success) {
-			return '{"success": 0, "message": "err010"}'
+			return '{"success": "0", "message": "err010"}'
 		}
 
 		if (userCaptcha) {
@@ -198,7 +198,7 @@ public class UserService {
 		}
 
 		userCaptchaRepository.save(userCaptcha)
-		'{"success": 1}'
+		'{"success": "1"}'
 	}
 
 	/**
@@ -212,30 +212,30 @@ public class UserService {
 	resetPassword(long userId, String password, String captcha) {
 
 		if (StringUtils.isEmpty(captcha)) {
-			return '{"success": 0, "message": "err011"}'
+			return '{"success": "0", "message": "err011"}'
 		}
 
 		if (!validatePwd(password)) {
-			return '{"success": 0, "message": "err004"}'
+			return '{"success": "0", "message": "err004"}'
 		}
 
 		def user = userRepository.findOne(userId)
 		if (!user) {
-			return '{"success": 0, "message": "err001"}'
+			return '{"success": "0", "message": "err001"}'
 		}
 
 		def userCaptcha = userCaptchaRepository.findOne(userId)
 		if (!userCaptcha) {
-			return '{"success": 0, "message": "err012"}'
+			return '{"success": "0", "message": "err012"}'
 		}
 
 		if (captcha == userCaptcha.captcha) {
 			user.password = DigestUtils.md5Hex(password)
 			userRepository.save(user)
-			return '{"success": 1}'
+			return '{"success": "1"}'
 		}
 
-		'{"success": 0, "message": "err006"}'
+		'{"success": "0", "message": "err006"}'
 
 	}
 

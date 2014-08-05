@@ -23,8 +23,14 @@ public class UserInfoService {
 	UserReceiveAddressRepository userReceiveAddressRepository
 
 
+	/**
+	 * 获取个人信息
+	 * @param userId
+	 * @return
+	 */
 	@Transactional
 	retrievePersonalInfo(long userId) {
+
 		def userIdCardBind = userIDCardBindRepository.findByUserId(userId)
 
 		def userInfo = userInfoRepository.findOne(userId)

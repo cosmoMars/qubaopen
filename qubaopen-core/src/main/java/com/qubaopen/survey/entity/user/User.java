@@ -32,7 +32,6 @@ public class User extends AbstractBaseEntity<Long> {
 	 */
 	// @Pattern(regexp = "^[a-zA-Z0-9_]{8,30}$", message =
 	// "{\"success\" : 0, \"message\": \"密码格式不正确\"}")
-	@JsonIgnore
 	private String password;
 
 	/**

@@ -51,6 +51,9 @@ public class UserReceiveAddressService {
 		}
 
 		def address = userReceiveAddressRepository.findOne(userReceiveAddress.id)
+		if (!address) {
+			return '{"success": "0", "message": "err102"}'
+		}
 
 		if (address.defaultAddress == userReceiveAddress.defaultAddress) {
 			userReceiveAddressRepository.save(userReceiveAddress)
@@ -83,15 +86,20 @@ public class UserReceiveAddressService {
 	@Transactional
 	deleteUserReceiveAddress(long id) {
 		def userReceiveAddress = userReceiveAddressRepository.findOne(id)
+
+		if(!userReceiveAddress) {
+			return '{"success": "0", "message": "err102"}'
+		}
+
 		if (userReceiveAddress && !userReceiveAddress.defaultAddress) {
 			userReceiveAddressRepository.delete(userReceiveAddress)
-			return
+			return '{"success": "1"}'
 		}
 
 		def userReceiveAddresses = userReceiveAddressRepository.findByUser(userReceiveAddress.user)
 		if (userReceiveAddresses.size == 1) {
 			userReceiveAddressRepository.delete(userReceiveAddress)
-			return
+			return '{"success": "1"}'
 		}
 
 		userReceiveAddresses.remove(userReceiveAddress)

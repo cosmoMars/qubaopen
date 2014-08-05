@@ -55,6 +55,14 @@ public class UserService {
 	@Transactional
 	login(User user) {
 
+		if (!validatePhone(user.phone)) {
+			return '{"success" : "0", "message": "err003"}'
+		}
+
+		if (!validatePwd(user.password)) {
+			return '{"success": "0", "message": "err004"}'
+		}
+
 		def loginUser = userRepository.login(user.phone,  DigestUtils.md5Hex(user.password))
 
 		if (loginUser) {
@@ -64,7 +72,7 @@ public class UserService {
 				userIdCardBind = userIDCardBindRepository.findByUser(loginUser)
 
 			def result = [
-				'success' : 1,
+				'success' : "1",
 				'message' : '登录成功',
 				'userId' : loginUser.id,
 				'phone' : loginUser.phone ?: '',

@@ -37,7 +37,6 @@ public class UserReceiveAddressService {
 
 		modifyAddress(userReceiveAddress)
 
-		'{"success": 1}'
 	}
 
 	/**
@@ -59,7 +58,6 @@ public class UserReceiveAddressService {
 
 		modifyAddress(userReceiveAddress)
 
-		'{"success": 1}'
 	}
 	/**
 	 * @param userReceiveAddress

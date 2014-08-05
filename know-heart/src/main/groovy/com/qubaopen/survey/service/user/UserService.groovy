@@ -131,7 +131,10 @@ public class UserService {
 			saveUserAndUserAvatar(u, avatar)
 
 
-			return ['userId' : u.id]
+			return [
+				'success': 1,
+				'userId' : u.id
+			]
 		}
 
 		'{"success": 0, "errror": "err007"}'
@@ -251,7 +254,7 @@ public class UserService {
 		def userInfo = new UserInfo(
 			id : user.id,
 			publicAnswersToFriend : true,
-			avatar : avatar.bytes
+			avatar : avatar?.bytes ?: null
 		)
 		def userUdid = new UserUDID(
 			id : user.id,

@@ -59,6 +59,15 @@ class UserController extends AbstractBaseController<User, Long> {
 		userService.register(phone, password, captcha, avatar)
 	}
 
+	@RequestMapping(value ='register', method = RequestMethod.POST)
+	register(@RequestParam String phone, @RequestParam String password, @RequestParam String captcha) {
+
+		logger.trace ' -- 添加用户注册记录 -- '
+
+		userService.register(phone, password, captcha, null)
+	}
+
+
 	/**
 	 * @author blues
 	 * @param phone 用户手机号

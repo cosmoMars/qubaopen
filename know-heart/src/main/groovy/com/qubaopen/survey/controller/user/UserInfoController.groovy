@@ -52,9 +52,16 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody UserInfo userInfo) {
 
-		userInfoRepository.save(userInfo)
+		try {
+			userInfoRepository.save(userInfo)
+			'{"success": 1}'
+		} catch (Exception e) {
+//			e.printStackTrace()
+			'{"success": 0}'
+		}
 
-		'{"success": 1}'
+
+
 	}
 
 	/**

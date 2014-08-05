@@ -40,7 +40,9 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 
 		logger.trace ' -- 新增收货地址 -- '
 
-		userReceiveAddressService.add(userReceiveAddress)
+		def address = userReceiveAddressService.add(userReceiveAddress)
+
+		['addressId' :address.id ]
 	}
 
 	/**
@@ -53,6 +55,8 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 		logger.trace ' -- 修改收货地址 -- '
 
 		userReceiveAddressService.modify(userReceiveAddress)
+
+		'{"success": 1}'
 
 	}
 

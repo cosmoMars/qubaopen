@@ -2,6 +2,7 @@ package com.qubaopen.survey.controller.reward
 
 import javax.validation.Valid
 
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,7 +18,7 @@ import com.qubaopen.survey.repository.reward.RewardActivityRecordRepository
 import com.qubaopen.survey.service.reward.RewardActivityRecordService
 
 @RestController
-@RequestMapping("rewardActivityRecords")
+@RequestMapping('rewardActivityRecords')
 public class RewardActivityRecordController extends AbstractBaseController<RewardActivityRecord, Long> {
 
 	@Autowired
@@ -39,9 +40,17 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	 * @return
 	 */
 	@RequestMapping(value = 'exchangeReward', method = RequestMethod.POST)
-	exchangeReward(@RequestParam long userId, @RequestParam long activityId, @RequestParam long addressId) {
+	exchangeReward(@RequestParam long userId, @RequestParam(required = false) long activityId, @RequestParam(required = false) long addressId) {
 
 		logger.trace ' -- 创建兑奖信息记录 -- '
+
+		if (!activityId) {
+			return '{"success": "0", "message": "err305"}'
+		}
+
+		if (!addressId) {
+			return '{"success": "0", "message": "err306"}'
+		}
 
 		rewardActivityRecordService.exchangeReward(userId, activityId, addressId)
 	}
@@ -51,9 +60,13 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody @Valid RewardActivityRecord rewardActivityRecord) {
+	modify(@RequestBody(required = false) @Valid RewardActivityRecord rewardActivityRecord) {
 
 		logger.trace ' -- 修改用户参与活动记录，改变状态为confirming时，创建奖品分发记录 -- '
+
+		if (!rewardActivityRecord) {
+			return '{"success": "0", "message": "err307"}'
+		}
 
 		rewardActivityRecordService.modify(rewardActivityRecord)
 
@@ -66,9 +79,13 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	 * @return
 	 */
 	@RequestMapping(value = 'findByStatus', method = RequestMethod.GET)
-	findByStatus(@RequestParam long userId, @RequestParam String status) {
+	findByStatus(@RequestParam long userId, @RequestParam(required = false) String status) {
 
 		logger.trace ' -- 根据状态位查找用户活动记录 -- '
+
+		if (StringUtils.isEmpty(status)) {
+			return '{"success": "0", "message": "err308"}'
+		}
 
 		rewardActivityRecordService.findByStatus(userId, status)
 	}

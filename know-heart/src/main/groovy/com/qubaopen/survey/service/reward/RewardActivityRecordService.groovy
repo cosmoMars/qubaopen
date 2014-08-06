@@ -52,24 +52,24 @@ public class RewardActivityRecordService {
 		def rewardActivity = rewardActivityRepository.findOne(activityId)
 
 		if (rewardActivity != null && rewardActivity.status != RewardActivity.Status.ONLINE) {
-			return '{"success": 0, "message": "活动未上线或已结束"}'
+			return '{"success": 0, "message": "err301"}'
 		}
 
 		if (rewardActivity.currentCount >= rewardActivity.totalCountLimit) {
-			return '{"success": 0, "message": "该活动已售完"}'
+			return '{"success": 0, "message": "err302"}'
 		}
 
 		def user = new User(id : userId),
 			activityCount = rewardActivityRecordRepository.countByUser(user)
 
 		if (rewardActivity.eachCountLimit != 0 && activityCount > rewardActivity.eachCountLimit) {
-			return '{"success": 0, "message": "兑奖次数已用完"}'
+			return '{"success": 0, "message": "err303"}'
 		}
 
 		def userGold = userGoldRepository.findOne(userId)
 
 		if (userGold.currentGold < rewardActivity.requireGold) {
-			return '{"success": 0, "message": "当前金币不足"}'
+			return '{"success": 0, "message": "err304"}'
 		}
 
 		def address = userReceiveAddressRepository.findOne(addressId)

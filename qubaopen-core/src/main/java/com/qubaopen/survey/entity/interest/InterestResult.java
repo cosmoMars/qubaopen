@@ -21,7 +21,7 @@ public class InterestResult extends AbstractPersistable<Long> {
 	private static final long serialVersionUID = 692329675843837712L;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "interest_id")
+	@JoinColumn(name = "interest_id", nullable = false)
 	private Interest interest;
 
 //	/**
@@ -32,13 +32,13 @@ public class InterestResult extends AbstractPersistable<Long> {
 //	private InterestResultType interestResultType;
 
 	/**
-	 * 问卷类型
+	 * 问卷类型 ORDER 顺序得答案, SCORE 积分得答案
 	 */
 	@Enumerated
 	private ResultType resultType;
 
 	private enum ResultType {
-		OREDER, POINTS
+		OREDER, SCORE
 	}
 
 	/**

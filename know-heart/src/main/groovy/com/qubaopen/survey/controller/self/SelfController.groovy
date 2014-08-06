@@ -10,7 +10,7 @@ import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.repository.self.SelfRepository
 
 @RestController
-@RequestMapping("selfs")
+@RequestMapping('selfs')
 public class SelfController extends AbstractBaseController<Self, Long> {
 
 	@Autowired

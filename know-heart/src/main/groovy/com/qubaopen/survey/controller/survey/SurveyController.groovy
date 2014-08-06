@@ -15,7 +15,7 @@ import com.qubaopen.survey.repository.user.UserQuotaRepository
 import com.qubaopen.survey.service.survey.SurveyService
 
 @RestController
-@RequestMapping("surveys")
+@RequestMapping('surveys')
 public class SurveyController extends AbstractBaseController<Survey, Long> {
 
 	@Autowired

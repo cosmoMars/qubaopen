@@ -15,7 +15,7 @@ import com.qubaopen.survey.service.interest.InterestService
 
 
 @RestController
-@RequestMapping("interestQuestions")
+@RequestMapping('interestQuestions')
 public class InterestQuestionController extends AbstractBaseController<InterestQuestion, Long> {
 
 	@Autowired
@@ -51,10 +51,11 @@ public class InterestQuestionController extends AbstractBaseController<InterestQ
 	@RequestMapping(value = 'calculateInterestResult', method = RequestMethod.GET)
 	calculateInterestResult(
 		@RequestParam long userId,
-		@RequestParam long interestId,
-		@RequestParam String questionJson) {
+		@RequestParam(required = false) long interestId,
+		@RequestParam(required = false) String questionJson) {
 
 		logger.trace ' -- 通过用户问题选项，计算得到结果选项 -- '
+
 
 		interestService.calculateInterestResult(userId, interestId, questionJson)
 	}

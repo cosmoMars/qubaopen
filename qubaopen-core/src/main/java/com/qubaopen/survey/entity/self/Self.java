@@ -32,7 +32,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	private SelfType selfType;
 
 	/**
-	 * 问卷类型  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
+	 * 问卷的答案方式  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
 	 */
 	@Enumerated
 	private Type type;

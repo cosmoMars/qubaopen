@@ -13,7 +13,7 @@ import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.interest.InterestRepository
 
 @RestController
-@RequestMapping("interests")
+@RequestMapping('interests')
 public class InterestController extends AbstractBaseController<Interest, Long> {
 
 	@Autowired
@@ -24,6 +24,11 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		interestRepository
 	}
 
+	/**
+	 * 获取用户兴趣问卷
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping(value = 'retrieveInterest/{userId}', method = RequestMethod.GET)
 	retrieveInterest(@PathVariable long userId) {
 

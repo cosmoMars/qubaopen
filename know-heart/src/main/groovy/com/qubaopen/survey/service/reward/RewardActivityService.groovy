@@ -18,6 +18,11 @@ public class RewardActivityService {
 	@Autowired
 	RewardActivityRepository rewardActivityRepository
 
+	/**
+	 * 获取上线奖品信息
+	 * @param userId
+	 * @return
+	 */
 	@Transactional
 	retrieveOnlineReward(long userId) {
 		def defaultAddress = userReceiveAddressRepository.findDefaultAddressByUserId(userId),

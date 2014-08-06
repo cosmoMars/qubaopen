@@ -16,7 +16,7 @@ import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
 import com.qubaopen.survey.service.self.SelfService
 
 @RestController
-@RequestMapping("selfQuestions")
+@RequestMapping('selfQuestions')
 public class SelfQuestionController extends AbstractBaseController<SelfQuestion, Long> {
 
 	@Autowired

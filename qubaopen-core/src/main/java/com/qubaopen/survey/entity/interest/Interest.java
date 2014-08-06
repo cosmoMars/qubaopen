@@ -32,19 +32,19 @@ public class Interest extends AbstractBaseEntity<Long> {
 	private InterestType interestType;
 
 	/**
-	 * 问卷类型 SINGLE, MULTIPLE, QA, SORT
+	 * 问卷的答案方式  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
 	 */
 	@Enumerated
 	private Type type;
 
 	private enum Type {
-		SINGLE, MULTIPLE, QA, SORT
+		DISOREDER, SORCE, DISORDERSCORE
 	}
 
 	/**
 	 * 标题
 	 */
-	private String titile;
+	private String title;
 
 	/**
 	 * 金币
@@ -100,12 +100,13 @@ public class Interest extends AbstractBaseEntity<Long> {
 		this.type = type;
 	}
 
-	public String getTitile() {
-		return titile;
+
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTitile(String titile) {
-		this.titile = titile;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public Integer getGolds() {

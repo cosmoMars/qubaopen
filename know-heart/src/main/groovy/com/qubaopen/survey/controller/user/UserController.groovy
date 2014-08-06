@@ -1,5 +1,8 @@
 package com.qubaopen.survey.controller.user
 
+import static com.qubaopen.survey.utils.ValidateUtil.*
+
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -37,10 +40,22 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value='login', method = RequestMethod.PUT)
-	login(@RequestBody User user) {
+	@RequestMapping(value = 'login', method = RequestMethod.PUT)
+	login(@RequestBody(required = false) User user) {
 
 		logger.trace ' -- 用户登录 -- '
+
+		if (!user) {
+			return '{"success" : "0", "message": "err013"}'
+		}
+
+		if (!validatePhone(user.phone)) {
+			return '{"success" : "0", "message": "err003"}'
+		}
+
+		if (!validatePwd(user.password)) {
+			return '{"success": "0", "message": "err004"}'
+		}
 
 		userService.login(user)
 
@@ -52,9 +67,20 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @return
 	 */
 	@RequestMapping(value ='register', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	register(@RequestParam String phone, @RequestParam String password, @RequestParam String captcha, @RequestParam(required = false) MultipartFile avatar) {
+	register(@RequestParam(required = false) String phone,
+		@RequestParam(required = false) String password,
+		@RequestParam(required = false) String captcha,
+		@RequestParam(required = false) MultipartFile avatar) {
 
 		logger.trace ' -- 添加用户注册记录 -- '
+
+		if (!validatePhone(phone)) {
+			return '{"success" : "0", "message": "err003"}'
+		}
+
+		if (!validatePwd(password)) {
+			return '{"success": "0", "message": "err004"}'
+		}
 
 		userService.register(phone, password, captcha, avatar)
 	}
@@ -65,10 +91,14 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @return 判断手机用户，不存在创建，存在给用户手机发一条验证码短信
 	 */
 	@RequestMapping(value = 'sendCaptcha', method = RequestMethod.GET)
-	sendCaptcha(@RequestParam String phone) {
+	sendCaptcha(@RequestParam(required = false) String phone) {
 
 		logger.trace ' -- 发送验证码 -- '
 		logger.trace "phone := $phone"
+
+		if (!validatePhone(phone)) { // 验证用户手机号是否无效
+			return '{"success" : "0", "message": "err003"}'
+		}
 
 		userService.sendCaptcha(phone)
 
@@ -82,11 +112,26 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'resetPassword', method = RequestMethod.POST)
-	resetPassword(@RequestParam long userId, @RequestParam String password, @RequestParam String captcha) {
+	resetPassword(@RequestParam(required = false) String phone,
+		@RequestParam(required = false) String password,
+		@RequestParam(required = false) String captcha) {
 
 		logger.trace(" -- 忘记密码重置 -- ")
 
-		userService.resetPassword(userId, password, captcha)
+		if (StringUtils.isEmpty(captcha)) {
+			return '{"success": "0", "message": "err011"}'
+		}
+
+		if (!validatePhone(phone)) {
+			return '{"success" : "0", "message": "err003"}'
+		}
+
+		if (!validatePwd(password)) {
+			return '{"success": "0", "message": "err004"}'
+		}
+
+
+		userService.resetPassword(phone, password, captcha)
 
 	}
 

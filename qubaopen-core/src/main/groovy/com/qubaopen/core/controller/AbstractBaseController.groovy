@@ -69,9 +69,10 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 	}
 
 	@RequestMapping(value = '{id}', method = RequestMethod.DELETE)
-	void delete(@PathVariable ID id) {
+	delete(@PathVariable ID id) {
 		def entity = getRepository().findOne(id)
 		getRepository().delete(entity)
+		'{"success": "1"}'
 	}
 
 	/*private save(T entity, BindingResult result) {

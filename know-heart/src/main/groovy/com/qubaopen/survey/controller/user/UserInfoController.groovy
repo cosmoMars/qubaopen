@@ -16,7 +16,7 @@ import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.service.user.UserInfoService
 
 @RestController
-@RequestMapping("userInfos")
+@RequestMapping('userInfos')
 public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 	@Autowired
@@ -54,10 +54,10 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 		try {
 			userInfoRepository.save(userInfo)
-			'{"success": 1}'
+			'{"success": "1"}'
 		} catch (Exception e) {
 //			e.printStackTrace()
-			'{"success": 0}'
+			'{"success": "0"}'
 		}
 
 
@@ -70,7 +70,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 * @param avatar
 	 */
 	@RequestMapping(value = 'uploadAvatar', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	uploadAvatar(@RequestParam long userId, @RequestParam MultipartFile avatar) {
+	uploadAvatar(@RequestParam long userId, @RequestParam(required = false) MultipartFile avatar) {
 
 		logger.trace(' -- 上传头像 -- ')
 

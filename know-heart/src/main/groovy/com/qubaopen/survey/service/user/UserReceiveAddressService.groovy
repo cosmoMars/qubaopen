@@ -46,7 +46,7 @@ public class UserReceiveAddressService {
 	 */
 	@Transactional
 	modify(UserReceiveAddress userReceiveAddress) {
-		if(!userReceiveAddress.defaultAddress) {
+		if (!userReceiveAddress.defaultAddress) {
 			userReceiveAddressRepository.save(userReceiveAddress)
 		}
 
@@ -105,6 +105,8 @@ public class UserReceiveAddressService {
 		userReceiveAddresses.remove(userReceiveAddress)
 		userReceiveAddressRepository.delete(userReceiveAddress)
 		userReceiveAddresses[0].defaultAddress = true
+
+		'{"success": "1"}'
 	}
 
 }

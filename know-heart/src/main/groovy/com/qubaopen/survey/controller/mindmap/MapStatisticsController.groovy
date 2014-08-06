@@ -13,7 +13,7 @@ import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.service.mindmap.MapStatisticsService
 
 @RestController
-@RequestMapping("mapStatistics")
+@RequestMapping('mapStatistics')
 public class MapStatisticsController extends AbstractBaseController<MapStatistics, Long> {
 
 	@Autowired

@@ -13,7 +13,7 @@ import com.qubaopen.survey.repository.reward.RewardActivityRepository
 import com.qubaopen.survey.service.reward.RewardActivityService
 
 @RestController
-@RequestMapping("rewardActivitys")
+@RequestMapping('rewardActivitys')
 public class RewardActivityController extends AbstractBaseController<RewardActivity, Long> {
 
 	@Autowired

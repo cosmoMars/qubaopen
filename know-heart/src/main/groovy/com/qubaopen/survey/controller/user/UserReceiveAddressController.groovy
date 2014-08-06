@@ -36,13 +36,20 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.POST)
-	add(@RequestBody @Valid UserReceiveAddress userReceiveAddress, BindingResult result) {
+	add(@RequestBody(required = false) @Valid UserReceiveAddress userReceiveAddress, BindingResult result) {
 
 		logger.trace ' -- 新增收货地址 -- '
 
+		if (!userReceiveAddress) {
+			return '{"success": "0", "message": "err103"}'
+		}
+
 		def address = userReceiveAddressService.add(userReceiveAddress)
 
-		['addressId' :address.id ]
+		[
+			'success': "1",
+			'addressId' :address.id
+		]
 	}
 
 	/**
@@ -50,13 +57,13 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody @Valid UserReceiveAddress userReceiveAddress) {
+	modify(@RequestBody(required = false) @Valid UserReceiveAddress userReceiveAddress) {
 
 		logger.trace ' -- 修改收货地址 -- '
 
 		userReceiveAddressService.modify(userReceiveAddress)
 
-		'{"success": 1}'
+		'{"success": "1"}'
 
 	}
 
@@ -65,7 +72,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 	 */
 	@Override
 	@RequestMapping(value = '{id}', method = RequestMethod.DELETE)
-	void delete(@PathVariable Long id) {
+	delete(@PathVariable Long id) {
 
 		logger.trace ' -- 删除收货地址 -- '
 

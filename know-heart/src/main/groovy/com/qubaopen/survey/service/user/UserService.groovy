@@ -8,7 +8,6 @@ import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.survey.entity.user.User
@@ -54,14 +53,6 @@ public class UserService {
 	 */
 	@Transactional
 	login(User user) {
-
-		if (!validatePhone(user.phone)) {
-			return '{"success" : "0", "message": "err003"}'
-		}
-
-		if (!validatePwd(user.password)) {
-			return '{"success": "0", "message": "err004"}'
-		}
 
 		def loginUser = userRepository.login(user.phone,  DigestUtils.md5Hex(user.password))
 
@@ -115,14 +106,6 @@ public class UserService {
 	@Transactional
 	register(String phone, String password, String captcha, MultipartFile avatar) {
 
-		if (!validatePhone(phone)) {
-			return '{"success" : "0", "message": "err003"}'
-		}
-
-		if (!validatePwd(password)) {
-			return '{"success": "0", "message": "err004"}'
-		}
-
 		def u = userRepository.findByPhone(phone)
 		if (u) {
 			if (u.activated) {
@@ -154,9 +137,6 @@ public class UserService {
 	 */
 	@Transactional
 	sendCaptcha(String phone) {
-		if (!validatePhone(phone)) { // 验证用户手机号是否无效
-			return '{"success" : "0", "message": "err003"}'
-		}
 
 		// 判断用户是否存在
 		def user = userRepository.findByPhone(phone)
@@ -217,29 +197,21 @@ public class UserService {
 	 * @return
 	 */
 	@Transactional
-	resetPassword(long userId, String password, String captcha) {
+	resetPassword(String phone, String password, String captcha) {
 
-		if (StringUtils.isEmpty(captcha)) {
-			return '{"success": "0", "message": "err011"}'
+		def u = userRepository.findByPhone(phone)
+		if (!u) {
+			return '{"success" : "0", "message": "err001"}'
 		}
 
-		if (!validatePwd(password)) {
-			return '{"success": "0", "message": "err004"}'
-		}
-
-		def user = userRepository.findOne(userId)
-		if (!user) {
-			return '{"success": "0", "message": "err001"}'
-		}
-
-		def userCaptcha = userCaptchaRepository.findOne(userId)
+		def userCaptcha = userCaptchaRepository.findOne(u.id)
 		if (!userCaptcha) {
 			return '{"success": "0", "message": "err012"}'
 		}
 
 		if (captcha == userCaptcha.captcha) {
-			user.password = DigestUtils.md5Hex(password)
-			userRepository.save(user)
+			u.password = DigestUtils.md5Hex(password)
+			userRepository.save(u)
 			return '{"success": "1"}'
 		}
 

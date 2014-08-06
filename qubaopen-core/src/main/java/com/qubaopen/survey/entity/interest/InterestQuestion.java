@@ -35,12 +35,12 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	@JoinColumn(name = "interest_id")
 	private Interest interest;
 
-	/**
-	 * 问卷类型
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "interest_question_type_id")
-	private InterestQuestionType interestQuestionType;
+//	/**
+//	 * 问卷类型
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "interest_question_type_id")
+//	private InterestQuestionType interestQuestionType;
 
 	/**
 	 * 问卷类型  单选 SINGLE, 多选 MULTIPLE, 问答 QA, 排序 SORT, 打分 SCORE
@@ -110,13 +110,13 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 		this.questionNum = questionNum;
 	}
 
-	public InterestQuestionType getInterestQuestionType() {
-		return interestQuestionType;
-	}
-
-	public void setInterestQuestionType(InterestQuestionType interestQuestionType) {
-		this.interestQuestionType = interestQuestionType;
-	}
+//	public InterestQuestionType getInterestQuestionType() {
+//		return interestQuestionType;
+//	}
+//
+//	public void setInterestQuestionType(InterestQuestionType interestQuestionType) {
+//		this.interestQuestionType = interestQuestionType;
+//	}
 
 	public Type getType() {
 		return type;

@@ -14,7 +14,7 @@ import com.qubaopen.survey.repository.user.UserUDIDRepository
 import com.qubaopen.survey.service.user.UserUDIDService
 
 @RestController
-@RequestMapping("userUDIDs")
+@RequestMapping('userUDIDs')
 public class UserUDIDController extends AbstractBaseController<UserUDID, Long> {
 
 	@Autowired

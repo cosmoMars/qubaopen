@@ -56,8 +56,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 			userInfoRepository.save(userInfo)
 			'{"success": "1"}'
 		} catch (Exception e) {
-//			e.printStackTrace()
-			'{"success": "0"}'
+			'{"success": "0", "message": "err014"}'
 		}
 
 
@@ -74,28 +73,15 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 		logger.trace(' -- 上传头像 -- ')
 
-//		def width = 128,
-//			height = 128
-////			ratio = 0.0
-//
-//		BufferedImage photo = ImageIO.read(avatar.inputStream)
-//		height = photo.height > height ? height: photo.height
-//		width = photo.width > width ? width : photo.width
-//
-//		Image image = photo.getScaledInstance(width, height, Image.SCALE_DEFAULT)//这个是用来进行图片大小调整的
-//
-//		BufferedImage tag = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-//
 		def userInfo = userInfoRepository.findOne(userId)
-//
-//		ByteArrayOutputStream out = new ByteArrayOutputStream()
-//		boolean flag = ImageIO.write(tag, 'jpg', out)
-
 		userInfo.avatar = avatar.bytes
+		try {
+			userInfoRepository.save(userInfo)
+			'{"success": "1"}'
+		} catch (Exception e) {
+			'{"success": "0", "message": "err102"}'
+		}
 
-		userInfoRepository.save(userInfo)
-
-		return '{"success": 1}'
 	}
 
 	/**

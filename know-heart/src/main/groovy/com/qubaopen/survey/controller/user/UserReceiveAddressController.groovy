@@ -61,9 +61,13 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 
 		logger.trace ' -- 修改收货地址 -- '
 
-		userReceiveAddressService.modify(userReceiveAddress)
+		try {
+			userReceiveAddressService.modify(userReceiveAddress)
+			'{"success": "1"}'
+		} catch (Exception e) {
+			'{"success": "0"}'
+		}
 
-		'{"success": "1"}'
 
 	}
 

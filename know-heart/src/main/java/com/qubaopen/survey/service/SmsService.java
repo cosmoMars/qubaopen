@@ -69,7 +69,7 @@ public class SmsService {
 		@SuppressWarnings("unchecked")
 		Map<String, ?> json = (Map<String, ?>) new JsonSlurper().parseText(result);
 
-		return StringUtils.equals((String) json.get("res_code"), "0");
+		return StringUtils.equals(String.valueOf(json.get("res_code")), "0");
 	}
 
 

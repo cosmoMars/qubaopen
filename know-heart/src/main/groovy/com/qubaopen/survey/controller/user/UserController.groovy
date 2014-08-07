@@ -130,7 +130,6 @@ class UserController extends AbstractBaseController<User, Long> {
 			return '{"success": "0", "message": "err004"}'
 		}
 
-
 		userService.resetPassword(phone, password, captcha)
 
 	}

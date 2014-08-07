@@ -129,6 +129,8 @@ public class SelfService {
 				v.each {
 					score = score + it.score
 				}
+				optionMap.get(k).clear()
+				optionMap.put(k, score)
 				if (resultMap.get(score)) { // key: 分数, value: 种类
 					resultMap.get(score) << k
 				} else {
@@ -147,7 +149,7 @@ public class SelfService {
 			}
 
 			if (refresh) {
-				saveMapStatistics(user, self, objectMapper.writeValueAsString(resultMap), result[0], 0) // 保存心理地图
+				saveMapStatistics(user, self, objectMapper.writeValueAsString(optionMap), result[0], 0) // 保存心理地图
 
 				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 			}
@@ -242,7 +244,7 @@ public class SelfService {
 				v.each {
 					score += it.score
 				}
-				optionMap.remove(k)
+				optionMap.get(k).clear()
 				optionMap.put(k, score)
 			}
 			def resultName = ''

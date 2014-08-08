@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.survey.entity.base.RegionCode;
+import com.qubaopen.survey.entity.base.AreaCode;
 
 /**
  * @author mars 用户配额表
@@ -54,13 +54,20 @@ public class UserQuota implements Serializable {
 	 */
 	@Temporal(TemporalType.DATE)
 	private Date birthday;
-
+	
+	/**
+	 * 地区代码
+	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "region_code_id")
+//	private RegionCode regionCode;
+	
 	/**
 	 * 地区代码
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "region_code_id")
-	private RegionCode regionCode;
+	@JoinColumn(name = "area_code_id")
+	private AreaCode areaCode;
 
 	public long getId() {
 		return id;
@@ -94,12 +101,12 @@ public class UserQuota implements Serializable {
 		this.birthday = birthday;
 	}
 
-	public RegionCode getRegionCode() {
-		return regionCode;
+	public AreaCode getAreaCode() {
+		return areaCode;
 	}
 
-	public void setRegionCode(RegionCode regionCode) {
-		this.regionCode = regionCode;
+	public void setAreaCode(AreaCode areaCode) {
+		this.areaCode = areaCode;
 	}
 
 }

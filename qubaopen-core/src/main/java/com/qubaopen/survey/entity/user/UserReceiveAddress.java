@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import com.qubaopen.survey.entity.base.RegionCode;
+import com.qubaopen.survey.entity.base.AreaCode;
 
 /**
  * @author mars 用户收货地址表
@@ -33,12 +33,19 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 	 */
 	private String consignee;
 
+//	/**
+//	 * 地区代码
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "region_code_id")
+//	private RegionCode regionCode;
+
 	/**
 	 * 地区代码
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "region_code_id")
-	private RegionCode regionCode;
+	@JoinColumn(name = "area_code_id")
+	private AreaCode areaCode;
 
 	/**
 	 * 详细地址
@@ -76,12 +83,20 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 		this.consignee = consignee;
 	}
 
-	public RegionCode getRegionCode() {
-		return regionCode;
+//	public RegionCode getRegionCode() {
+//		return regionCode;
+//	}
+//
+//	public void setRegionCode(RegionCode regionCode) {
+//		this.regionCode = regionCode;
+//	}
+
+	public AreaCode getAreaCode() {
+		return areaCode;
 	}
 
-	public void setRegionCode(RegionCode regionCode) {
-		this.regionCode = regionCode;
+	public void setAreaCode(AreaCode areaCode) {
+		this.areaCode = areaCode;
 	}
 
 	public String getDetialAddress() {

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import com.qubaopen.survey.entity.base.ProvinceCode;
+import com.qubaopen.survey.entity.base.AreaCode;
 
 /**
  * 调研问卷 配额 Created by duel on 2014/6/25.
@@ -60,12 +60,19 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 	 */
 	private Integer completeNum;
 
+//	/**
+//	 * 省市区
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "province_code_id")
+//	private ProvinceCode provinceCode;
+
 	/**
-	 * 省市区
+	 * 地区代码
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "province_code_id")
-	private ProvinceCode provinceCode;
+	@JoinColumn(name = "area_code_id")
+	private AreaCode areaCode;
 
 	/**
 	 * 是否激活（控制是否启用） 1启用 0不启用
@@ -104,12 +111,20 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 		this.maxAge = maxAge;
 	}
 
-	public ProvinceCode getProvinceCode() {
-		return provinceCode;
+//	public ProvinceCode getProvinceCode() {
+//		return provinceCode;
+//	}
+//
+//	public void setProvinceCode(ProvinceCode provinceCode) {
+//		this.provinceCode = provinceCode;
+//	}
+
+	public AreaCode getAreaCode() {
+		return areaCode;
 	}
 
-	public void setProvinceCode(ProvinceCode provinceCode) {
-		this.provinceCode = provinceCode;
+	public void setAreaCode(AreaCode areaCode) {
+		this.areaCode = areaCode;
 	}
 
 	public Integer getRequireNum() {

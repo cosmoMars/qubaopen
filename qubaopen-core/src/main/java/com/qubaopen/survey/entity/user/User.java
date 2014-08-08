@@ -9,7 +9,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
@@ -37,22 +36,21 @@ public class User extends AbstractBaseEntity<Long> {
 	/**
 	 * 电话
 	 */
-	@NotEmpty(message = "{\"success\" : 0, \"errCode\": \"101\", \"message\": \"手机号码为空或格式不正确\"}")
-	@Pattern(regexp = "^1[0-9]{10}$", message = "{\"success\" : 0, \"message\": \"手机号码为空或格式不正确\"}")
+	@NotEmpty(message = "{\"success\" : 0, \"message\": \"err003\"}")
+	@Pattern(regexp = "^1[0-9]{10}$", message = "{\"success\" : 0, \"message\": \"err003\"}")
 	@Column(unique = true, length = 11)
 	private String phone;
 
 	/**
 	 * 邮箱
 	 */
-	@Email
+	@Email(message = "{\"success\" : 0, \"message\": \"err005\"}")
 	@Column(unique = true)
 	private String email;
 
 	/**
 	 * 是否激活
 	 */
-	@JsonIgnore
 	private boolean activated;
 
 	public String getUserName() {

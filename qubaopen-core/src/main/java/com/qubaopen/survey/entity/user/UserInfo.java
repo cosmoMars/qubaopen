@@ -11,8 +11,11 @@ import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity2;
@@ -57,19 +60,21 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 出生时间
 	 */
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
 	/**
-	 * 血型 A, B, AB, O
+	 * 血型 A, B, AB, O, OTHER
 	 */
 	@Enumerated
 	private BloodType bloodType;
 
 	/**
-	 * A, B, AB, O
+	 * A, B, AB, O, OTHER
 	 */
 	private enum BloodType {
-		A, B, AB, O
+		A, B, O, AB, OTHER
 	}
 
 	/**

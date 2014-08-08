@@ -57,7 +57,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody(required = false) @Valid UserReceiveAddress userReceiveAddress) {
+	modify(@RequestBody(required = false) UserReceiveAddress userReceiveAddress) {
 
 		logger.trace ' -- 修改收货地址 -- '
 

@@ -109,12 +109,12 @@ public class UserService {
 		def u = userRepository.findByPhone(phone)
 		if (u) {
 			if (u.activated) {
-				return '{"success": "0", "message": "err005"}'
+				return '{"success": "0", "message": "err006"}'
 			}
 
 			def userCaptcha = userCaptchaRepository.findOne(u.id)
 			if (userCaptcha?.captcha != captcha) {
-				return '{"success": "0", "message": "err006"}'
+				return '{"success": "0", "message": "err007"}'
 			}
 
 			u.password = DigestUtils.md5Hex(password)
@@ -127,7 +127,7 @@ public class UserService {
 			]
 		}
 
-		'{"success": "0", "message": "err007"}'
+		'{"success": "0", "message": "err008"}'
 	}
 
 	/**
@@ -152,11 +152,11 @@ public class UserService {
 		if (userCaptcha) {
 			def lastSentDate = userCaptcha.lastSentDate
 			if ((today.time - lastSentDate.time) < 60000) {
-				return '{"success": "0", "message": "err008"}'
+				return '{"success": "0", "message": "err009"}'
 			}
 
 			if (userCaptcha.sentNum > 10) {
-				return '{"success": "0", "message": "err009"}'
+				return '{"success": "0", "message": "err010"}'
 			}
 		}
 
@@ -165,7 +165,7 @@ public class UserService {
 		// 给指定的用户手机号发送6位随机数的验证码
 		def success = smsService.sendCaptcha(phone, captcha)
 		if (!success) {
-			return '{"success": "0", "message": "err010"}'
+			return '{"success": "0", "message": "err011"}'
 		}
 
 		if (userCaptcha) {
@@ -206,7 +206,7 @@ public class UserService {
 
 		def userCaptcha = userCaptchaRepository.findOne(u.id)
 		if (!userCaptcha) {
-			return '{"success": "0", "message": "err012"}'
+			return '{"success": "0", "message": "err013"}'
 		}
 
 		if (captcha == userCaptcha.captcha) {
@@ -215,8 +215,32 @@ public class UserService {
 			return '{"success": "1"}'
 		}
 
-		'{"success": "0", "message": "err006"}'
+		'{"success": "0", "message": "err007"}'
 
+	}
+
+	/**
+	 * 修改用户
+	 * @param user
+	 * @return
+	 */
+	@Transactional
+	modify(User user) {
+
+		if (user.password) {
+			if (!validatePwd(user.password)) {
+				return '{"success" : "0", "message": "err003"}'
+			}
+			user.password = DigestUtils.md5Hex(user.password)
+		}
+
+		if (user.email) {
+			if (!validateEmail(user.email)) {
+				return '{"success": "0", "message": "err005"}'
+			}
+		}
+		userRepository.modify(user)
+		'{"success": "1"}'
 	}
 
 	/**

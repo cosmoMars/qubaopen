@@ -46,7 +46,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		logger.trace ' -- 用户登录 -- '
 
 		if (!user) {
-			return '{"success" : "0", "message": "err013"}'
+			return '{"success" : "0", "message": "err014"}'
 		}
 
 		if (!validatePhone(user.phone)) {
@@ -119,7 +119,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		logger.trace(" -- 忘记密码重置 -- ")
 
 		if (StringUtils.isEmpty(captcha)) {
-			return '{"success": "0", "message": "err011"}'
+			return '{"success": "0", "message": "err007"}'
 		}
 
 		if (!validatePhone(phone)) {
@@ -132,6 +132,16 @@ class UserController extends AbstractBaseController<User, Long> {
 
 		userService.resetPassword(phone, password, captcha)
 
+	}
+
+	/**
+	 * 修改用户
+	 */
+	@Override
+	@RequestMapping(method = RequestMethod.PUT)
+	modify(@RequestBody User user) {
+
+		userService.modify(user)
 	}
 
 }

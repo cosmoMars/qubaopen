@@ -15,6 +15,9 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.query.QueryUtils
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
+import org.springframework.transaction.annotation.Transactional
+
+import com.qubaopen.survey.utils.BeanUtils
 
 
 final class MyRepositoryImpl<T, ID extends Serializable> extends
@@ -43,6 +46,22 @@ final class MyRepositoryImpl<T, ID extends Serializable> extends
 		def query = getQuery(filters, pageable?.sort)
 		!pageable ? new PageImpl(query.resultList) : readPage(query, pageable, filters)
 	}
+
+	@Override
+	@Transactional
+	public T modify(T entity) {
+		def record = findOne(entity.id)
+		BeanUtils.copyProperties(entity, record)
+		save(record)
+	}
+
+	@Override
+	T copyProperties(T entity) {
+		def record = findOne(entity.id)
+		BeanUtils.copyProperties(entity, record)
+		record
+	}
+
 
 	protected Page<T> readPage(TypedQuery<T> query, Pageable pageable, Map filters) {
 

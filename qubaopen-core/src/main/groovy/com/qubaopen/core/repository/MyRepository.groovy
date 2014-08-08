@@ -14,4 +14,7 @@ interface MyRepository<T, ID extends Serializable> extends JpaRepository<T, ID> 
 
 	Page<T> findAll(Map filters, Pageable pageable)
 
+	T modify(T entity)
+
+	T copyProperties(T entity)
 }

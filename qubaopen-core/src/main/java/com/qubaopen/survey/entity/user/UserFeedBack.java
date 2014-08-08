@@ -33,6 +33,11 @@ public class UserFeedBack extends AbstractPersistable<Long> {
 	private Date feedBackTime;
 
 	/**
+	 * 联系方式 phone/email
+	 */
+	private String contactMethod;
+
+	/**
 	 * 用户id
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -66,6 +71,14 @@ public class UserFeedBack extends AbstractPersistable<Long> {
 
 	public void setFeedBackTime(Date feedBackTime) {
 		this.feedBackTime = feedBackTime;
+	}
+
+	public String getContactMethod() {
+		return contactMethod;
+	}
+
+	public void setContactMethod(String contactMethod) {
+		this.contactMethod = contactMethod;
 	}
 
 	public User getUser() {

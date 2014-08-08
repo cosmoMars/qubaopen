@@ -1,6 +1,7 @@
 package com.qubaopen.survey.controller.user
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -51,17 +52,16 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody UserInfo userInfo) {
-
 		try {
-			userInfoRepository.save(userInfo)
+			userInfoRepository.modify(userInfo)
+
 			'{"success": "1"}'
 		} catch (Exception e) {
 			'{"success": "0", "message": "err014"}'
 		}
 
-
-
 	}
+
 
 	/**
 	 * 上传头像
@@ -90,8 +90,8 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 * @param output
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveAvatar', method = RequestMethod.GET)
-	retrieveAvatar(@RequestParam long userId, OutputStream output) {
+	@RequestMapping(value = 'retrieveAvatar/{userId}', method = RequestMethod.GET)
+	retrieveAvatar(@PathVariable long userId, OutputStream output) {
 
 		logger.trace(' -- 显示头像 -- ')
 

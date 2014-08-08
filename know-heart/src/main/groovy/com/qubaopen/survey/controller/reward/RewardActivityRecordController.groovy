@@ -1,7 +1,5 @@
 package com.qubaopen.survey.controller.reward
 
-import javax.validation.Valid
-
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
@@ -60,7 +58,7 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody(required = false) @Valid RewardActivityRecord rewardActivityRecord) {
+	modify(@RequestBody(required = false) RewardActivityRecord rewardActivityRecord) {
 
 		logger.trace ' -- 修改用户参与活动记录，改变状态为confirming时，创建奖品分发记录 -- '
 

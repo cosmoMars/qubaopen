@@ -47,7 +47,8 @@ public class UserReceiveAddressService {
 	@Transactional
 	modify(UserReceiveAddress userReceiveAddress) {
 		if (!userReceiveAddress.defaultAddress) {
-			userReceiveAddressRepository.save(userReceiveAddress)
+			userReceiveAddressRepository.modify(userReceiveAddress)
+			return '{"success": "1"}'
 		}
 
 		def address = userReceiveAddressRepository.findOne(userReceiveAddress.id)
@@ -56,7 +57,8 @@ public class UserReceiveAddressService {
 		}
 
 		if (address.defaultAddress == userReceiveAddress.defaultAddress) {
-			userReceiveAddressRepository.save(userReceiveAddress)
+			userReceiveAddressRepository.modify(userReceiveAddress)
+			return '{"success": "1"}'
 		}
 
 		modifyAddress(userReceiveAddress)
@@ -75,7 +77,7 @@ public class UserReceiveAddressService {
 			it.defaultAddress = false
 		}
 
-		userReceiveAddressRepository.save(userReceiveAddress)
+		userReceiveAddressRepository.modify(userReceiveAddress)
 	}
 
 	/**

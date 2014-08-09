@@ -1,6 +1,5 @@
 package com.qubaopen.survey.controller.reward
 
-import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestBody
@@ -80,10 +79,6 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	findByStatus(@RequestParam long userId, @RequestParam(required = false) String status) {
 
 		logger.trace ' -- 根据状态位查找用户活动记录 -- '
-
-		if (StringUtils.isEmpty(status)) {
-			return '{"success": "0", "message": "err308"}'
-		}
 
 		rewardActivityRecordService.findByStatus(userId, status)
 	}

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import com.qubaopen.core.controller.AbstractBaseController
@@ -42,21 +41,6 @@ public class SurveyQuestionController extends AbstractBaseController<SurveyQuest
 		surveyService.findBySurvey(surveyId)
 	}
 
-	/**
-	 *
-	 * 保存调研问卷结果
-	 * @param userId
-	 * @param surveyId
-	 * @param questionOptionIds
-	 * @return
-	 */
-	@RequestMapping(value = 'saveSurveyResult', method = RequestMethod.GET)
-	saveSurveyResult(@RequestParam long userId, @RequestParam long surveyId, @RequestParam String questionJson) {
 
-		logger.trace(" -- 保存调研问卷结果 -- ")
-
-		surveyService.saveSurveyResult(userId, surveyId, questionJson)
-
-	}
 
 }

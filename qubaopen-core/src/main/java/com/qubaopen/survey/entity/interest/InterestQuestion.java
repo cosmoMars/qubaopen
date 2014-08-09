@@ -26,12 +26,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Audited
 public class InterestQuestion extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -275996218159783931L;
+	private static final long serialVersionUID = 6870840665940040311L;
 
 	/**
 	 * 问卷id
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "interest_id")
 	private Interest interest;
 
@@ -52,7 +52,6 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 		SINGLE, MULTIPLE, QA, SORT, SCORE
 	}
 
-
 	/**
 	 * 选项数量
 	 */
@@ -71,7 +70,7 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 是否性格特殊问题
 	 */
-	private boolean special;
+	private Boolean special;
 
 	/**
 	 * 答题时间限制
@@ -142,11 +141,11 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 		this.answerTimeLimit = answerTimeLimit;
 	}
 
-	public boolean isSpecial() {
+	public Boolean getSpecial() {
 		return special;
 	}
 
-	public void setSpecial(boolean special) {
+	public void setSpecial(Boolean special) {
 		this.special = special;
 	}
 

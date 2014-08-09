@@ -26,7 +26,7 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 	/**
 	 * 问卷id
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "interest_question_id")
 	private InterestQuestion interestQuestion;
 
@@ -38,7 +38,7 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 	/**
 	 * 分数
 	 */
-	private int score;
+	private Integer score;
 
 	/**
 	 * 题号
@@ -66,11 +66,11 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 		this.content = content;
 	}
 
-	public int getScore() {
+	public Integer getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 

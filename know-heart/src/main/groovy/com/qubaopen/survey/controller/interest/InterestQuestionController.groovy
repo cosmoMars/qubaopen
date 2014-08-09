@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import com.qubaopen.core.controller.AbstractBaseController
@@ -41,23 +40,6 @@ public class InterestQuestionController extends AbstractBaseController<InterestQ
 
 		interestService.findByInterest(interestId)
 
-	}
-
-	/**
-	 * 通过用户问题选项，计算得到结果选项
-	 * @param questionOptions
-	 * @return
-	 */
-	@RequestMapping(value = 'calculateInterestResult', method = RequestMethod.GET)
-	calculateInterestResult(
-		@RequestParam long userId,
-		@RequestParam(required = false) long interestId,
-		@RequestParam(required = false) String questionJson) {
-
-		logger.trace ' -- 通过用户问题选项，计算得到结果选项 -- '
-
-
-		interestService.calculateInterestResult(userId, interestId, questionJson)
 	}
 
 }

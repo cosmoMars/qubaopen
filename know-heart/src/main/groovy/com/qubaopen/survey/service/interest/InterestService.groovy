@@ -117,7 +117,15 @@ public class InterestService {
 		// 保存用户问卷答卷，以及用户问卷问题
 		saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, resultOption)
 
-		resultOption
+		[
+			'success' : '1',
+			'message' : '成功',
+			'id' : resultOption.id ?: '',
+			'resultTitle' : resultOption?.interestResult?.title ?: '',
+			'content' : resultOption.content ?: '',
+			'optionTitle' : resultOption.title ?: '',
+			'resultNum' : resultOption.resultNum ?: ''
+		]
 	}
 
 

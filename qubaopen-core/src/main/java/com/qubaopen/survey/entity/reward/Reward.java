@@ -35,7 +35,7 @@ public class Reward extends AbstractBaseEntity<Long> {
 	/**
 	 * 库存剩余数量
 	 */
-	private int remainAmount;
+	private Integer remainAmount;
 
 	/**
 	 * 描述
@@ -58,11 +58,11 @@ public class Reward extends AbstractBaseEntity<Long> {
 		this.rewardType = rewardType;
 	}
 
-	public int getRemainAmount() {
+	public Integer getRemainAmount() {
 		return remainAmount;
 	}
 
-	public void setRemainAmount(int remainAmount) {
+	public void setRemainAmount(Integer remainAmount) {
 		this.remainAmount = remainAmount;
 	}
 

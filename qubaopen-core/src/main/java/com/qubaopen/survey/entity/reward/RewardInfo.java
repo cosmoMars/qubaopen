@@ -64,7 +64,7 @@ public class RewardInfo extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否被使用
 	 */
-	private boolean used;
+	private Boolean used;
 
 	public Reward getReward() {
 		return reward;
@@ -122,11 +122,11 @@ public class RewardInfo extends AbstractBaseEntity<Long> {
 		this.expirationDate = expirationDate;
 	}
 
-	public boolean isUsed() {
+	public Boolean getUsed() {
 		return used;
 	}
 
-	public void setUsed(boolean used) {
+	public void setUsed(Boolean used) {
 		this.used = used;
 	}
 

@@ -23,7 +23,7 @@ import com.qubaopen.survey.entity.user.User;
 @Audited
 public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -8944967213471096494L;
+	private static final long serialVersionUID = -582260461224768750L;
 
 	/**
 	 * 调研问卷
@@ -70,28 +70,28 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 是否在新浪微博分享 0否 1是
 	 */
-	private boolean sharedSina;
+	private Boolean sharedSina;
 
 	/**
 	 * 是否在腾讯微博分享 0否 1是
 	 */
-	private boolean sharedTencent;
+	private Boolean sharedTencent;
 
 	/**
 	 * 是否在QQ空间分享 0否 1是
 	 */
-	@Column(name = "shared_qq_space", nullable = false)
-	private boolean sharedQQSpace;
+	@Column(name = "shared_qq_space")
+	private Boolean sharedQQSpace;
 
 	/**
 	 * 是否在微信分享 0否 1是
 	 */
-	private boolean sharedWeChat;
+	private Boolean sharedWeChat;
 
 	/**
 	 * 是否在微信朋友圈分享 0否 1是
 	 */
-	private boolean sharedWeChatFriend;
+	private Boolean sharedWeChatFriend;
 
 	public Survey getSurvey() {
 		return survey;
@@ -133,43 +133,43 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 		this.transmit = transmit;
 	}
 
-	public boolean isSharedSina() {
+	public Boolean getSharedSina() {
 		return sharedSina;
 	}
 
-	public void setSharedSina(boolean sharedSina) {
+	public void setSharedSina(Boolean sharedSina) {
 		this.sharedSina = sharedSina;
 	}
 
-	public boolean isSharedTencent() {
+	public Boolean getSharedTencent() {
 		return sharedTencent;
 	}
 
-	public void setSharedTencent(boolean sharedTencent) {
+	public void setSharedTencent(Boolean sharedTencent) {
 		this.sharedTencent = sharedTencent;
 	}
 
-	public boolean isSharedQQSpace() {
+	public Boolean getSharedQQSpace() {
 		return sharedQQSpace;
 	}
 
-	public void setSharedQQSpace(boolean sharedQQSpace) {
+	public void setSharedQQSpace(Boolean sharedQQSpace) {
 		this.sharedQQSpace = sharedQQSpace;
 	}
 
-	public boolean isSharedWeChat() {
+	public Boolean getSharedWeChat() {
 		return sharedWeChat;
 	}
 
-	public void setSharedWeChat(boolean sharedWeChat) {
+	public void setSharedWeChat(Boolean sharedWeChat) {
 		this.sharedWeChat = sharedWeChat;
 	}
 
-	public boolean isSharedWeChatFriend() {
+	public Boolean getSharedWeChatFriend() {
 		return sharedWeChatFriend;
 	}
 
-	public void setSharedWeChatFriend(boolean sharedWeChatFriend) {
+	public void setSharedWeChatFriend(Boolean sharedWeChatFriend) {
 		this.sharedWeChatFriend = sharedWeChatFriend;
 	}
 

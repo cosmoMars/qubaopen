@@ -39,13 +39,14 @@ public class UserInfoService {
 			defaultAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
 
 		def result = [
+			'success' : "1",
 			'userId' : userId,
 			'name' : userInfo.name ?: '',
 			'sex' : userInfo.sex ?: '',
 			'birthday' : DateCommons.Date2String(userInfo?.birthday, 'yyyy-MM-dd') ?: '',
 			'bloodType' : userInfo?.bloodType ?: '',
 			'email' : userInfo.user.email ?: '',
-			'defaultAddress' : defaultAddress.detialAddress ?: '',
+			'defaultAddress' : defaultAddress?.detialAddress ?: '',
 			'IdCard' : userIdCardBind?.userIDCard?.IDCard ?: '',
 			"district" : ''
 		]

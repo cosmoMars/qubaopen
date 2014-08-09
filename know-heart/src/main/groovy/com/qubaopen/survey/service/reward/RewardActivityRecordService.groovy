@@ -1,5 +1,6 @@
 package com.qubaopen.survey.service.reward
 
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -107,7 +108,7 @@ public class RewardActivityRecordService {
 	findByStatus(long userId, String status) {
 
 		def user = new User(id : userId)
-		if (status.isEmpty() || ''.is(status)) {
+		if (StringUtils.isEmpty(status)) {
 			return rewardActivityRecordRepository.findAllByUser(user)
 		}
 

@@ -17,7 +17,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Audited
 public class SelfResultOption extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = 5574360831856505640L;
+	private static final long serialVersionUID = 5978096878117787206L;
 
 	/**
 	 * 结果名称
@@ -49,12 +49,12 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	/**
 	 * 最低分数
 	 */
-	private int lowestScore;
+	private Integer lowestScore;
 
 	/**
 	 * 最高分数
 	 */
-	private int highestScore;
+	private Integer highestScore;
 
 	public String getName() {
 		return name;
@@ -96,19 +96,19 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 		this.resultNum = resultNum;
 	}
 
-	public int getLowestScore() {
+	public Integer getLowestScore() {
 		return lowestScore;
 	}
 
-	public void setLowestScore(int lowestScore) {
+	public void setLowestScore(Integer lowestScore) {
 		this.lowestScore = lowestScore;
 	}
 
-	public int getHighestScore() {
+	public Integer getHighestScore() {
 		return highestScore;
 	}
 
-	public void setHighestScore(int highestScore) {
+	public void setHighestScore(Integer highestScore) {
 		this.highestScore = highestScore;
 	}
 

@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Audited
 public class SelfQuestion extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -5980064307408704531L;
+	private static final long serialVersionUID = 4087448359990463420L;
 
 	/**
 	 * 问卷id
@@ -71,7 +71,7 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 是否性格特殊问题
 	 */
-	private boolean special;
+	private Boolean special;
 
 	/**
 	 * 答题时间限制
@@ -134,11 +134,11 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 		this.questionNum = questionNum;
 	}
 
-	public boolean isSpecial() {
+	public Boolean getSpecial() {
 		return special;
 	}
 
-	public void setSpecial(boolean special) {
+	public void setSpecial(Boolean special) {
 		this.special = special;
 	}
 

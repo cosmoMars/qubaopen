@@ -65,7 +65,7 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 	/**
 	 * 默认地址
 	 */
-	private boolean defaultAddress;
+	private Boolean defaultAddress;
 
 	public User getUser() {
 		return user;
@@ -123,11 +123,11 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 		this.postCode = postCode;
 	}
 
-	public boolean isDefaultAddress() {
+	public Boolean getDefaultAddress() {
 		return defaultAddress;
 	}
 
-	public void setDefaultAddress(boolean defaultAddress) {
+	public void setDefaultAddress(Boolean defaultAddress) {
 		this.defaultAddress = defaultAddress;
 	}
 

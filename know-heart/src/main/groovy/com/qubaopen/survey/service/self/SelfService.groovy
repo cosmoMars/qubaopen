@@ -154,7 +154,15 @@ public class SelfService {
 				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 			}
 
-			return result[0]
+			[
+				'success' : '1',
+				'message' : '成功',
+				'id' : result[0].id ?: '',
+				'resultTitle' : result[0]?.selfResult?.title ?: '',
+				'content' : result[0].content ?: '',
+				'optionTitle' : result[0].title ?: '',
+				'resultNum' : result[0].resultNum ?: ''
+			]
 
 		} else if (selfType.name == 'PDP') { // PDP测试
 
@@ -196,7 +204,15 @@ public class SelfService {
 				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 			}
 
-			return result[0]
+			[
+				'success' : '1',
+				'message' : '成功',
+				'id' : result[0].id ?: '',
+				'resultTitle' : result[0]?.selfResult?.title ?: '',
+				'content' : result[0].content ?: '',
+				'optionTitle' : result[0].title ?: '',
+				'resultNum' : result[0].resultNum ?: ''
+			]
 
 
 		} else if (selfType.name == 'AB' || selfType.name == 'C' || selfType.name == 'D') { // AB,C,D 测试
@@ -224,7 +240,15 @@ public class SelfService {
 				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 			}
 
-			return result
+			[
+				'success' : '1',
+				'message' : '成功',
+				'id' : result.id ?: '',
+				'resultTitle' : result?.selfResult?.title ?: '',
+				'content' : result.content ?: '',
+				'optionTitle' : result.title ?: '',
+				'resultNum' : result.resultNum ?: ''
+			]
 		} else if (selfType.name == 'MBTI') {
 			def optionMap = [:]
 			questionOptions.each {
@@ -275,7 +299,15 @@ public class SelfService {
 
 				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 			}
-			result
+			[
+				'success' : '1',
+				'message' : '成功',
+				'id' : result.id ?: '',
+				'resultTitle' : result?.selfResult?.title ?: '',
+				'content' : result.content ?: '',
+				'optionTitle' : result.title ?: '',
+				'resultNum' : result.resultNum ?: ''
+			]
 		}
 
 	}

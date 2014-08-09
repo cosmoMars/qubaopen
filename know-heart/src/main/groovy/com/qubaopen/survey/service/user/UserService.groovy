@@ -12,9 +12,11 @@ import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserCaptcha
+import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserUDID
 import com.qubaopen.survey.repository.user.UserCaptchaRepository
+import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
@@ -43,6 +45,9 @@ public class UserService {
 
 	@Autowired
 	UserIDCardBindRepository userIDCardBindRepository
+
+	@Autowired
+	UserGoldRepository userGoldRepository
 
 	@Autowired
 	SmsService smsService
@@ -265,10 +270,15 @@ public class UserService {
 			startTime : DateCommons.String2Date('09:00','HH:mm'),
 			endTime : DateCommons.String2Date('22:00','HH:mm')
 		)
+		def userGold = new UserGold(
+			id : user.id,
+			historyGold : 0,
+			currentGold : 0
+		)
 
 		userInfoRepository.save(userInfo)
 		userUDIDRepository.save(userUdid)
-
+		userGoldRepository.save(userGold)
 	}
 
 }

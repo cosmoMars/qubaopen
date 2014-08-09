@@ -70,7 +70,7 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 是否为性格题
 	 */
-	private boolean charactered;
+	private Boolean charactered;
 
 	/**
 	 * 答题最短时间限制
@@ -188,11 +188,11 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 		this.durationLimit = durationLimit;
 	}
 
-	public boolean isCharactered() {
+	public Boolean getCharactered() {
 		return charactered;
 	}
 
-	public void setCharactered(boolean charactered) {
+	public void setCharactered(Boolean charactered) {
 		this.charactered = charactered;
 	}
 

@@ -61,6 +61,9 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody T entity) {
+
+		println entity
+
 		def repository = getRepository(),
 			record = repository.findOne(entity.id)
 

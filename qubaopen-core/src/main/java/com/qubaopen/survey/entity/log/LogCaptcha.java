@@ -21,7 +21,7 @@ import com.qubaopen.survey.entity.user.User;
 @Audited
 public class LogCaptcha extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -2262820130076627385L;
+	private static final long serialVersionUID = 7802244121190465603L;
 
 	/**
 	 * 用户id
@@ -48,7 +48,7 @@ public class LogCaptcha extends AbstractPersistable<Long> {
 	/**
 	 * 验证结果
 	 */
-	private boolean verifyResult;
+	private Boolean verifyResult;
 
 	public User getUser() {
 		return user;
@@ -82,12 +82,13 @@ public class LogCaptcha extends AbstractPersistable<Long> {
 		this.correctCaptcha = correctCaptcha;
 	}
 
-	public boolean isVerifyResult() {
+	public Boolean getVerifyResult() {
 		return verifyResult;
 	}
 
-	public void setVerifyResult(boolean verifyResult) {
+	public void setVerifyResult(Boolean verifyResult) {
 		this.verifyResult = verifyResult;
 	}
+
 
 }

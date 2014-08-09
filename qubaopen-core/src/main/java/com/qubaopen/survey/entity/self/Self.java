@@ -79,6 +79,11 @@ public class Self extends AbstractBaseEntity<Long> {
 	 */
 	private Integer recommendedValue;
 
+	/**
+	 * 指导语
+	 */
+	private String guidanceSentence;
+
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	@JsonIgnore
@@ -146,6 +151,14 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setRecommendedValue(Integer recommendedValue) {
 		this.recommendedValue = recommendedValue;
+	}
+
+	public String getGuidanceSentence() {
+		return guidanceSentence;
+	}
+
+	public void setGuidanceSentence(String guidanceSentence) {
+		this.guidanceSentence = guidanceSentence;
 	}
 
 	public byte[] getPic() {

@@ -43,12 +43,12 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否推送
 	 */
-	private boolean push;
+	private Boolean push;
 
 	/**
 	 * 是否已读
 	 */
-	private boolean readed;
+	private Boolean readed;
 
 	/**
 	 * 站内信类型
@@ -108,19 +108,19 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 		this.content = content;
 	}
 
-	public boolean isPush() {
+	public Boolean getPush() {
 		return push;
 	}
 
-	public void setPush(boolean push) {
+	public void setPush(Boolean push) {
 		this.push = push;
 	}
 
-	public boolean isReaded() {
+	public Boolean getReaded() {
 		return readed;
 	}
 
-	public void setReaded(boolean readed) {
+	public void setReaded(Boolean readed) {
 		this.readed = readed;
 	}
 

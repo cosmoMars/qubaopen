@@ -40,7 +40,7 @@ public class AreaCode extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否显示
 	 */
-	private boolean display;
+	private Boolean display;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AreaCode parent;
@@ -67,11 +67,11 @@ public class AreaCode extends AbstractBaseEntity<Long> {
 		this.code = code;
 	}
 
-	public boolean isDisplay() {
+	public Boolean getDisplay() {
 		return display;
 	}
 
-	public void setDisplay(boolean display) {
+	public void setDisplay(Boolean display) {
 		this.display = display;
 	}
 

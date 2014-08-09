@@ -43,7 +43,7 @@ public class UserBankCard extends AbstractPersistable<Long> {
 	/**
 	 * 是否启用
 	 */
-	private boolean enabled;
+	private Boolean enabled;
 
 	public User getUser() {
 		return user;
@@ -69,11 +69,11 @@ public class UserBankCard extends AbstractPersistable<Long> {
 		this.cardIdentity = cardIdentity;
 	}
 
-	public boolean isEnabled() {
+	public Boolean getEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(boolean enabled) {
+	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
 

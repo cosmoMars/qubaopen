@@ -28,7 +28,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity2;
 @Audited
 public class UserInfo extends AbstractBaseEntity2<Long> {
 
-	private static final long serialVersionUID = -6507205012887757887L;
+	private static final long serialVersionUID = 8112114681303566997L;
 
 	/**
 	 * 用户信息
@@ -93,53 +93,53 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 新浪微博软件分享
 	 */
-	private boolean sharedSina;
+	private Boolean sharedSina;
 
 	/**
 	 * 腾讯微博软件分享
 	 */
-	private boolean sharedTencent;
+	private Boolean sharedTencent;
 
 	/**
 	 * 微信朋友圈分享
 	 */
-	private boolean sharedWeChatFriend;
+	private Boolean sharedWeChatFriend;
 
 	/**
 	 * QQ空间分享
 	 */
-	@Column(name = "shared_qq_space", nullable = false)
-	private boolean sharedQQSpace;
+	@Column(name = "shared_qq_space")
+	private Boolean sharedQQSpace;
 
 	/**
 	 * 微信分享
 	 */
-	private boolean sharedWeChat;
+	private Boolean sharedWeChat;
 
 	/**
 	 * 好友数量
 	 */
-	private int friendNum;
+	private Integer friendNum;
 
 	/**
 	 * 向萌主公开测试答案
 	 */
-	private boolean publicAnswersToChief;
+	private Boolean publicAnswersToChief;
 
 	/**
 	 * 开启省流量模式
 	 */
-	private boolean saveFlow;
+	private Boolean saveFlow;
 
 	/**
 	 * 向好友公开最新动态
 	 */
-	private boolean publicMovementToFriend;
+	private Boolean publicMovementToFriend;
 
 	/**
 	 * 向好友公开测试答案
 	 */
-	private boolean publicAnswersToFriend;
+	private Boolean publicAnswersToFriend;
 
 	public User getUser() {
 		return user;
@@ -205,84 +205,85 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		this.signature = signature;
 	}
 
-	public boolean isSharedSina() {
+	public Boolean getSharedSina() {
 		return sharedSina;
 	}
 
-	public void setSharedSina(boolean sharedSina) {
+	public void setSharedSina(Boolean sharedSina) {
 		this.sharedSina = sharedSina;
 	}
 
-	public boolean isSharedTencent() {
+	public Boolean getSharedTencent() {
 		return sharedTencent;
 	}
 
-	public void setSharedTencent(boolean sharedTencent) {
+	public void setSharedTencent(Boolean sharedTencent) {
 		this.sharedTencent = sharedTencent;
 	}
 
-	public boolean isSharedWeChatFriend() {
+	public Boolean getSharedWeChatFriend() {
 		return sharedWeChatFriend;
 	}
 
-	public void setSharedWeChatFriend(boolean sharedWeChatFriend) {
+	public void setSharedWeChatFriend(Boolean sharedWeChatFriend) {
 		this.sharedWeChatFriend = sharedWeChatFriend;
 	}
 
-	public boolean isSharedQQSpace() {
+	public Boolean getSharedQQSpace() {
 		return sharedQQSpace;
 	}
 
-	public void setSharedQQSpace(boolean sharedQQSpace) {
+	public void setSharedQQSpace(Boolean sharedQQSpace) {
 		this.sharedQQSpace = sharedQQSpace;
 	}
 
-	public boolean isSharedWeChat() {
+	public Boolean getSharedWeChat() {
 		return sharedWeChat;
 	}
 
-	public void setSharedWeChat(boolean sharedWeChat) {
+	public void setSharedWeChat(Boolean sharedWeChat) {
 		this.sharedWeChat = sharedWeChat;
 	}
 
-	public int getFriendNum() {
+	public Integer getFriendNum() {
 		return friendNum;
 	}
 
-	public void setFriendNum(int friendNum) {
+	public void setFriendNum(Integer friendNum) {
 		this.friendNum = friendNum;
 	}
 
-	public boolean isPublicAnswersToChief() {
+	public Boolean getPublicAnswersToChief() {
 		return publicAnswersToChief;
 	}
 
-	public void setPublicAnswersToChief(boolean publicAnswersToChief) {
+	public void setPublicAnswersToChief(Boolean publicAnswersToChief) {
 		this.publicAnswersToChief = publicAnswersToChief;
 	}
 
-	public boolean isSaveFlow() {
+	public Boolean getSaveFlow() {
 		return saveFlow;
 	}
 
-	public void setSaveFlow(boolean saveFlow) {
+	public void setSaveFlow(Boolean saveFlow) {
 		this.saveFlow = saveFlow;
 	}
 
-	public boolean isPublicMovementToFriend() {
+	public Boolean getPublicMovementToFriend() {
 		return publicMovementToFriend;
 	}
 
-	public void setPublicMovementToFriend(boolean publicMovementToFriend) {
+	public void setPublicMovementToFriend(Boolean publicMovementToFriend) {
 		this.publicMovementToFriend = publicMovementToFriend;
 	}
 
-	public boolean isPublicAnswersToFriend() {
+	public Boolean getPublicAnswersToFriend() {
 		return publicAnswersToFriend;
 	}
 
-	public void setPublicAnswersToFriend(boolean publicAnswersToFriend) {
+	public void setPublicAnswersToFriend(Boolean publicAnswersToFriend) {
 		this.publicAnswersToFriend = publicAnswersToFriend;
 	}
+
 
 }

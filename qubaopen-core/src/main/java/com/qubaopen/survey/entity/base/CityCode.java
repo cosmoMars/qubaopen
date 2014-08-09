@@ -18,7 +18,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Audited
 public class CityCode extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -4150449937995416451L;
+	private static final long serialVersionUID = 658635688082338244L;
 
 	/**
 	 * 城市代码
@@ -41,7 +41,7 @@ public class CityCode extends AbstractPersistable<Long> {
 	/**
 	 * 是否显示
 	 */
-	private boolean display;
+	private Boolean display;
 
 	public String getCode() {
 		return code;
@@ -67,11 +67,11 @@ public class CityCode extends AbstractPersistable<Long> {
 		this.provinceCode = provinceCode;
 	}
 
-	public boolean isDisplay() {
+	public Boolean getDisplay() {
 		return display;
 	}
 
-	public void setDisplay(boolean display) {
+	public void setDisplay(Boolean display) {
 		this.display = display;
 	}
 

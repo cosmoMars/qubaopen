@@ -56,7 +56,7 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	/**
 	 * 消耗金币
 	 */
-	private int requireGold;
+	private Integer requireGold;
 
 	/**
 	 * 兑奖活动状态 0 未上线 1 上线 2 结束
@@ -74,27 +74,22 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	/**
 	 * 活动总共可被参与的次数限制
 	 */
-	private int totalCountLimit;
+	private Integer totalCountLimit;
 
 	/**
 	 * 活动目前参与次数
 	 */
-	private int currentCount;
+	private Integer currentCount;
 
 	/**
 	 * 每人可以参与的次数限制 0为不限制
 	 */
-	private int eachCountLimit;
+	private Integer eachCountLimit;
 
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private byte[] pic;
-
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] picture;
 
 	public Reward getReward() {
 		return reward;
@@ -136,52 +131,12 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 		this.endTime = endTime;
 	}
 
-	public int getRequireGold() {
+	public Integer getRequireGold() {
 		return requireGold;
 	}
 
-	public void setRequireGold(int requireGold) {
+	public void setRequireGold(Integer requireGold) {
 		this.requireGold = requireGold;
-	}
-
-	public int getTotalCountLimit() {
-		return totalCountLimit;
-	}
-
-	public void setTotalCountLimit(int totalCountLimit) {
-		this.totalCountLimit = totalCountLimit;
-	}
-
-	public int getCurrentCount() {
-		return currentCount;
-	}
-
-	public void setCurrentCount(int currentCount) {
-		this.currentCount = currentCount;
-	}
-
-	public int getEachCountLimit() {
-		return eachCountLimit;
-	}
-
-	public void setEachCountLimit(int eachCountLimit) {
-		this.eachCountLimit = eachCountLimit;
-	}
-
-	public byte[] getPic() {
-		return pic;
-	}
-
-	public void setPic(byte[] pic) {
-		this.pic = pic;
-	}
-
-	public byte[] getPicture() {
-		return picture;
-	}
-
-	public void setPicture(byte[] picture) {
-		this.picture = picture;
 	}
 
 	public Status getStatus() {
@@ -190,6 +145,38 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public Integer getTotalCountLimit() {
+		return totalCountLimit;
+	}
+
+	public void setTotalCountLimit(Integer totalCountLimit) {
+		this.totalCountLimit = totalCountLimit;
+	}
+
+	public Integer getCurrentCount() {
+		return currentCount;
+	}
+
+	public void setCurrentCount(Integer currentCount) {
+		this.currentCount = currentCount;
+	}
+
+	public Integer getEachCountLimit() {
+		return eachCountLimit;
+	}
+
+	public void setEachCountLimit(Integer eachCountLimit) {
+		this.eachCountLimit = eachCountLimit;
+	}
+
+	public byte[] getPic() {
+		return pic;
+	}
+
+	public void setPicture(byte[] pic) {
+		this.pic = pic;
 	}
 
 }

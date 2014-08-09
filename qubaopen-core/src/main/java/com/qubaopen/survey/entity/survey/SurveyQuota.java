@@ -21,7 +21,7 @@ import com.qubaopen.survey.entity.base.AreaCode;
 @Audited
 public class SurveyQuota extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = 4427676320593963672L;
+	private static final long serialVersionUID = -513402136464963222L;
 
 	/**
 	 * 所从属的调研问卷
@@ -77,7 +77,7 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 	/**
 	 * 是否激活（控制是否启用） 1启用 0不启用
 	 */
-	private boolean activated;
+	private Boolean activated;
 
 	public Survey getSurvey() {
 		return survey;
@@ -143,12 +143,13 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 		this.completeNum = completeNum;
 	}
 
-	public boolean isActivated() {
+	public Boolean getActivated() {
 		return activated;
 	}
 
-	public void setActivated(boolean activated) {
+	public void setActivated(Boolean activated) {
 		this.activated = activated;
 	}
+
 
 }

@@ -18,6 +18,7 @@ import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.QuestionnaireTagType;
 import com.qubaopen.survey.entity.customer.Customer;
 import com.qubaopen.survey.entity.manager.Manager;
 
@@ -31,6 +32,13 @@ import com.qubaopen.survey.entity.manager.Manager;
 public class Survey extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = -4910589050975466729L;
+
+	/**
+	 * 问卷类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "questionnaire_tag_type_id")
+	private QuestionnaireTagType questionnaireTagType;
 
 	/**
 	 * 调研问卷标题
@@ -152,6 +160,14 @@ public class Survey extends AbstractBaseEntity<Long> {
 
 	@OneToMany(mappedBy = "survey")
 	private Set<SurveyQuota> quotas = new HashSet<>();
+
+	public QuestionnaireTagType getQuestionnaireTagType() {
+		return questionnaireTagType;
+	}
+
+	public void setQuestionnaireTagType(QuestionnaireTagType questionnaireTagType) {
+		this.questionnaireTagType = questionnaireTagType;
+	}
 
 	public String getTitle() {
 		return title;

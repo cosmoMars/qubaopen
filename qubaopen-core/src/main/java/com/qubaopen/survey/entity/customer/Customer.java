@@ -39,7 +39,7 @@ public class Customer extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否激活
 	 */
-	private boolean activated;
+	private Boolean activated;
 
 	public String getEmail() {
 		return email;
@@ -65,11 +65,11 @@ public class Customer extends AbstractBaseEntity<Long> {
 		this.password = password;
 	}
 
-	public boolean isActivated() {
+	public Boolean getActivated() {
 		return activated;
 	}
 
-	public void setActivated(boolean activated) {
+	public void setActivated(Boolean activated) {
 		this.activated = activated;
 	}
 

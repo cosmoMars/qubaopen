@@ -13,6 +13,7 @@ import org.hibernate.envers.Audited;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.QuestionnaireTagType;
 
 /**
  * @author mars 兴趣问卷
@@ -30,6 +31,13 @@ public class Interest extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "interest_type_id")
 	private InterestType interestType;
+
+	/**
+	 * 问卷标签
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "questionnaire_tag_type_id")
+	private QuestionnaireTagType questionnaireTagType;
 
 	/**
 	 * 问卷的答案方式  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
@@ -90,6 +98,14 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setInterestType(InterestType interestType) {
 		this.interestType = interestType;
+	}
+
+	public QuestionnaireTagType getQuestionnaireTagType() {
+		return questionnaireTagType;
+	}
+
+	public void setQuestionnaireTagType(QuestionnaireTagType questionnaireTagType) {
+		this.questionnaireTagType = questionnaireTagType;
 	}
 
 	public Type getType() {

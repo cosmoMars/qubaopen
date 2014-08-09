@@ -15,7 +15,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity2;
@@ -60,7 +59,6 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 出生时间
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	private Date birthday;
 
@@ -284,6 +282,5 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	public void setPublicAnswersToFriend(Boolean publicAnswersToFriend) {
 		this.publicAnswersToFriend = publicAnswersToFriend;
 	}
-
 
 }

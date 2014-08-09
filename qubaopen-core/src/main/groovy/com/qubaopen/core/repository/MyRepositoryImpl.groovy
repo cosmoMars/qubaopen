@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.query.QueryUtils
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.validation.BindingResult
 
 import com.qubaopen.survey.utils.BeanUtils
 
@@ -53,6 +54,17 @@ final class MyRepositoryImpl<T, ID extends Serializable> extends
 		def record = findOne(entity.id)
 		BeanUtils.copyProperties(entity, record)
 		save(record)
+	}
+
+	@Override
+	@Transactional
+	save(T entity, BindingResult result) {
+		if (result.hasErrors()) {
+			def fieldError = result.fieldError,
+				msg = fieldError.defaultMessage
+			return msg
+		}
+		save(entity)
 	}
 
 	@Override

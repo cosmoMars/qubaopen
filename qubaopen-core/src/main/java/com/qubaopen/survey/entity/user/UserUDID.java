@@ -11,7 +11,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.qubaopen.core.entity.AbstractBaseEntity2;
 
@@ -40,14 +39,12 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 	/**
 	 * 提醒开始时间
 	 */
-	@DateTimeFormat(pattern = "HH:mm")
 	@Temporal(TemporalType.TIME)
 	private Date startTime;
 
 	/**
 	 * 提醒结束时间
 	 */
-	@DateTimeFormat(pattern = "HH:mm")
 	@Temporal(TemporalType.TIME)
 	private Date endTime;
 

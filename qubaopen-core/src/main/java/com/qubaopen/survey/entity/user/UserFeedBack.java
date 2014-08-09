@@ -40,7 +40,7 @@ public class UserFeedBack extends AbstractPersistable<Long> {
 	/**
 	 * 用户id
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_id")
 	private User user;
 

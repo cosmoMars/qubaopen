@@ -14,9 +14,10 @@ import com.qubaopen.survey.entity.user.UserReceiveAddress
 import com.qubaopen.survey.repository.reward.RewardActivityRecordRepository
 import com.qubaopen.survey.repository.reward.RewardActivityRepository
 import com.qubaopen.survey.repository.reward.RewardAssignRecordRepository
-import com.qubaopen.survey.repository.reward.RewardInfoRepository
+import com.qubaopen.survey.repository.reward.RewardRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
+import com.qubaopen.survey.utils.DateCommons
 
 @Service
 public class RewardActivityRecordService {
@@ -25,7 +26,7 @@ public class RewardActivityRecordService {
 	UserGoldRepository userGoldRepository
 
 	@Autowired
-	RewardInfoRepository rewardInfoRepository
+	RewardRepository rewardRepository
 
 	@Autowired
 	RewardAssignRecordRepository rewardAssignRecordRepository
@@ -76,7 +77,7 @@ public class RewardActivityRecordService {
 		def address = userReceiveAddressRepository.findOne(addressId)
 
 		saveRecordAndGold(rewardActivity, userGold, address)
-
+		'{"success": "1"}'
 	}
 
 	/**
@@ -106,62 +107,63 @@ public class RewardActivityRecordService {
 	@Transactional
 	findByStatus(long userId, String status) {
 
-		def user = new User(id : userId)
+		def user = new User(id : userId),
+			activityRequireds = []
 		if (StringUtils.isEmpty(status)) {
-			return [
-				'success' : '1',
-				'message' : '成功',
-				'records' : rewardActivityRecordRepository.findAllByUser(user)
-			]
-		}
-
-		// DELIVERING 发货中, CONFIRMING 待确认, CONFIRMED 已确认, PROCESSING 处理中
-		def rewardStatus = null
-		switch(status) {
-			case 'DELIVERING' :
-				rewardStatus = RewardActivityRecord.Status.DELIVERING
-				break
-			case 'CONFIRMING' :
-				rewardStatus = RewardActivityRecord.Status.CONFIRMING
-				break
-			case 'CONFIRMED' :
-				rewardStatus = RewardActivityRecord.Status.CONFIRMED
-				break
-			case 'PROCESSING' :
-				rewardStatus = RewardActivityRecord.Status.PROCESSING
-				break
-			case 'REWARD' :
-				rewardStatus = RewardActivityRecord.Status.REWARD
-				break
-		}
-
-		if (RewardActivityRecord.Status.REWARD == rewardStatus) {
-			def activityRequireds = rewardActivityRecordRepository.findAllByUser(user),
-				 rewardInfos
-			activityRequireds.each {
-				if (it.rewardInfo) {
-					rewardInfos << it.rewardInfo
-				}
+			activityRequireds = rewardActivityRecordRepository.findByUserAndReal(user, true)
+		} else {
+			// DELIVERING 发货中, CONFIRMING 待确认, CONFIRMED 已确认, PROCESSING 处理中
+			def rewardStatus = null
+			switch(status) {
+				case 'DELIVERING' :
+					rewardStatus = RewardActivityRecord.Status.DELIVERING
+					break
+				case 'CONFIRMING' :
+					rewardStatus = RewardActivityRecord.Status.CONFIRMING
+					break
+				case 'CONFIRMED' :
+					rewardStatus = RewardActivityRecord.Status.CONFIRMED
+					break
+				case 'PROCESSING' :
+					rewardStatus = RewardActivityRecord.Status.PROCESSING
+					break
+				case 'REWARD' :
+					rewardStatus = RewardActivityRecord.Status.REWARD
+					break
 			}
-			return [
-				'success' : '1',
-				'message' : '成功',
-				'records' : rewardInfos
+
+			if (RewardActivityRecord.Status.REWARD == rewardStatus) {
+				activityRequireds = rewardActivityRecordRepository.findAll(
+					[
+						user_equal : user,
+						real_equal : reward.real
+					]
+				)
+			} else {
+				activityRequireds = rewardActivityRecordRepository.findAll(
+					[
+						user_equal : user,
+						status_equal : rewardStatus
+					]
+				)
+			}
+		}
+		def records = ['success' : '1', 'message' : '成功'],
+			infos = []
+		activityRequireds.each {
+
+			def info = [
+				'name' : it.reward?.rewardType?.name ?: '',
+				'awardTime' : DateCommons.Date2String(it.awardTime, 'yyyy-MM-dd') ?: '',
+				'coins' : it.rewardActivity?.requireGold ?: '',
+				'code' : it.reward?.QRCode ?: '',
+				'status' : it.status ?: ''
 			]
+			infos << info
 		}
 
-		def records = rewardActivityRecordRepository.findAll(
-			[
-				user_equal : user,
-				status_equal : rewardStatus
-			]
-		)
-
-		[
-			'success' : '1',
-			'message' : '成功',
-			'records' : records
-		]
+		records << ['records' : infos]
+		records
 	}
 
 	/**
@@ -180,17 +182,24 @@ public class RewardActivityRecordService {
 		rewardActivity.currentCount++
 
 		def user = userGold.user,
-			rewardInfo = rewardInfoRepository.findByReward(rewardActivity.reward),
-			rewardActivityRecord = new RewardActivityRecord(
+			rewards = rewardRepository.findByRewardTypeAndUsed(rewardActivity.rewardType, false)
+			if (!rewards) {
+				return '{"success" : "0", "message" : "err404"}' //没有奖品
+			}
+//			reward = rewardRepository.findByRewardType(rewardActivity.rewardType),
+			def reward = rewards[0]
+			reward.used = true
+			def rewardActivityRecord = new RewardActivityRecord(
 				user : user,
 				rewardActivity : rewardActivity,
 				userReceiveAddress : userReceiveAddress,
-				rewardInfo : rewardInfo,
-				status : RewardActivityRecord.Status.DELIVERING
+				reward : reward,
+				status : RewardActivityRecord.Status.DELIVERING,
+				awardTime : new Date()
 			)
 
+
 		rewardActivityRecordRepository.save(rewardActivityRecord)
-		'{"success": "1"}'
 	}
 
 	/**
@@ -201,15 +210,15 @@ public class RewardActivityRecordService {
 	@Transactional
 	modifyRecord(RewardActivityRecord activityRecord) {
 
-		def reward = activityRecord.rewardActivity.reward,
-			rewardInfo = rewardInfoRepository.findByReward(reward),
+		def rewardType = activityRecord.rewardActivity.rewardType,
+			reward = activityRecord.reward,
 			rewardAssignRecord = new RewardAssignRecord(
 				rewardActivityRecord : activityRecord,
-				rewardInfo : rewardInfo
+				reward : reward
 			)
 
-		def record = rewardActivityRecordRepository.save(activityRecord)
+		rewardActivityRecordRepository.save(activityRecord)
 		rewardAssignRecordRepository.save(rewardAssignRecord)
-		record
+		'{"success" : "1"}'
 	}
 }

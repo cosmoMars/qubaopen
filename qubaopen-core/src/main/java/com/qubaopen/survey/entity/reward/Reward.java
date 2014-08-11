@@ -1,54 +1,78 @@
 package com.qubaopen.survey.entity.reward;
 
+import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
- * 奖品表 Created by duel on 2014/6/27.
+ * 奖品信息 Created by duel on 2014/6/27.
  */
 @Entity
 @Table(name = "REWARD")
 @Audited
 public class Reward extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = 6627275265710152659L;
+	private static final long serialVersionUID = 3579310378689479962L;
 
 	/**
-	 * 名称
+	 * 奖品
 	 */
-	private String name;
-
-	/**
-	 * 奖品类型 例：兑奖券类 充值卡类 现金红包等
-	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "reward_type_id")
 	private RewardType rewardType;
 
 	/**
-	 * 库存剩余数量
+	 * 条形码内容
 	 */
-	private int remainAmount;
+	private String content;
 
 	/**
-	 * 描述
+	 * 标题
 	 */
-	private String description;
+	private String title;
 
-	public String getName() {
-		return name;
-	}
+	/**
+	 * 兑换密码
+	 */
+	private String secretCode;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	/**
+	 * 二维码
+	 */
+	@Column(name = "qr_code")
+	private String QRCode;
+
+	/**
+	 * 备注
+	 */
+	private String remark;
+
+	/**
+	 * 失效期
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date expirationDate;
+
+	/**
+	 * 是否被使用
+	 */
+	private boolean used;
+
+	/**
+	 * 是否是实物
+	 */
+	private boolean real;
 
 	public RewardType getRewardType() {
 		return rewardType;
@@ -58,20 +82,68 @@ public class Reward extends AbstractBaseEntity<Long> {
 		this.rewardType = rewardType;
 	}
 
-	public int getRemainAmount() {
-		return remainAmount;
+	public String getContent() {
+		return content;
 	}
 
-	public void setRemainAmount(int remainAmount) {
-		this.remainAmount = remainAmount;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSecretCode() {
+		return secretCode;
+	}
+
+	public void setSecretCode(String secretCode) {
+		this.secretCode = secretCode;
+	}
+
+	public String getQRCode() {
+		return QRCode;
+	}
+
+	public void setQRCode(String qRCode) {
+		QRCode = qRCode;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+
+	public boolean isUsed() {
+		return used;
+	}
+
+	public void setUsed(boolean used) {
+		this.used = used;
+	}
+
+	public boolean isReal() {
+		return real;
+	}
+
+	public void setReal(boolean real) {
+		this.real = real;
 	}
 
 }

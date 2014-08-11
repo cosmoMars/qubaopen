@@ -4,21 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.survey.entity.reward.Reward
-import com.qubaopen.survey.repository.reward.RewardRepository
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.reward.RewardType
+import com.qubaopen.survey.repository.reward.RewardTypeRepository
 
 @RestController
-@RequestMapping('rewards')
-public class RewardController extends AbstractBaseController<Reward, Long> {
+@RequestMapping('rewardTypes')
+public class RewardTypeController extends AbstractBaseController<RewardType, Long> {
 
 	@Autowired
-	RewardRepository rewardRepository
+	RewardTypeRepository rewardTypeRepository
 
 	@Override
-	protected MyRepository<Reward, Long> getRepository() {
-		rewardRepository
+	protected MyRepository<RewardType, Long> getRepository() {
+		rewardTypeRepository
 	}
 
 }

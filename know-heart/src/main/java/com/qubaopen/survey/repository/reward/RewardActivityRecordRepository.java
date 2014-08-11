@@ -12,4 +12,5 @@ public interface RewardActivityRecordRepository extends MyRepository<RewardActiv
 
 	List<RewardActivityRecord> findAllByUser(User user);
 
+
 }

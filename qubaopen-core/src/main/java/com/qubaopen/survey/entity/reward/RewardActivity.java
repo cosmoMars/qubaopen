@@ -29,11 +29,11 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	private static final long serialVersionUID = -9097829089069118323L;
 
 	/**
-	 * 奖品
+	 * 奖品类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "reward_id")
-	private Reward reward;
+	@JoinColumn(name = "reward_type_id")
+	private RewardType rewardType;
 
 	/**
 	 * 活动标题
@@ -95,12 +95,12 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	@JsonIgnore
 	private byte[] pic;
 
-	public Reward getReward() {
-		return reward;
+	public RewardType getRewardType() {
+		return rewardType;
 	}
 
-	public void setReward(Reward reward) {
-		this.reward = reward;
+	public void setRewardType(RewardType rewardType) {
+		this.rewardType = rewardType;
 	}
 
 	public String getTitle() {

@@ -23,7 +23,7 @@ public class RewardAssignRecord extends AbstractBaseEntity<Long> {
 	private RewardActivityRecord rewardActivityRecord;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private RewardInfo rewardInfo;
+	private Reward reward;
 
 	public RewardActivityRecord getRewardActivityRecord() {
 		return rewardActivityRecord;
@@ -33,13 +33,12 @@ public class RewardAssignRecord extends AbstractBaseEntity<Long> {
 		this.rewardActivityRecord = rewardActivityRecord;
 	}
 
-	public RewardInfo getRewardInfo() {
-		return rewardInfo;
+	public Reward getReward() {
+		return reward;
 	}
 
-	public void setRewardInfo(RewardInfo rewardInfo) {
-		this.rewardInfo = rewardInfo;
+	public void setReward(Reward reward) {
+		this.reward = reward;
 	}
-
 
 }

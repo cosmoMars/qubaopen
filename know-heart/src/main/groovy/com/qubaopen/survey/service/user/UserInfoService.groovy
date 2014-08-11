@@ -31,9 +31,10 @@ public class UserInfoService {
 	@Transactional
 	retrievePersonalInfo(long userId) {
 
+		def userInfo = userInfoRepository.findOne(userId)
+
 		def userIdCardBind = userIDCardBindRepository.findByUserId(userId)
 
-		def userInfo = userInfoRepository.findOne(userId)
 
 		def user = new User(id : userId),
 			defaultAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)

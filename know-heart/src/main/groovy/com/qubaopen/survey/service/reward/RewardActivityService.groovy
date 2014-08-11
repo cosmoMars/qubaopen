@@ -19,7 +19,7 @@ public class RewardActivityService {
 	RewardActivityRepository rewardActivityRepository
 
 	/**
-	 * 获取上线奖品信息
+	 * 获取上线奖品类型信息
 	 * @param userId
 	 * @return
 	 */

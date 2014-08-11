@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Audited
 public class SelfQuestion extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = 4087448359990463420L;
+	private static final long serialVersionUID = 7787030297551183071L;
 
 	/**
 	 * 问卷id
@@ -56,7 +56,7 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 选项数量
 	 */
-	private Integer optionCount;
+	private int optionCount;
 
 	/**
 	 * 内容
@@ -66,12 +66,12 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 题号
 	 */
-	private Integer questionNum;
+	private String questionNum;
 
 	/**
 	 * 是否性格特殊问题
 	 */
-	private Boolean special;
+	private boolean special;
 
 	/**
 	 * 答题时间限制
@@ -110,11 +110,11 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 		this.type = type;
 	}
 
-	public Integer getOptionCount() {
+	public int getOptionCount() {
 		return optionCount;
 	}
 
-	public void setOptionCount(Integer optionCount) {
+	public void setOptionCount(int optionCount) {
 		this.optionCount = optionCount;
 	}
 
@@ -126,19 +126,19 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 		this.content = content;
 	}
 
-	public Integer getQuestionNum() {
+	public String getQuestionNum() {
 		return questionNum;
 	}
 
-	public void setQuestionNum(Integer questionNum) {
+	public void setQuestionNum(String questionNum) {
 		this.questionNum = questionNum;
 	}
 
-	public Boolean getSpecial() {
+	public boolean isSpecial() {
 		return special;
 	}
 
-	public void setSpecial(Boolean special) {
+	public void setSpecial(boolean special) {
 		this.special = special;
 	}
 
@@ -165,6 +165,5 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	public void setSelfQuestionOptions(Set<SelfQuestionOption> selfQuestionOptions) {
 		this.selfQuestionOptions = selfQuestionOptions;
 	}
-
 
 }

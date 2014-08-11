@@ -35,7 +35,7 @@ public class AdvertiseConfirm extends AbstractPersistable<Long> {
 	/**
 	 * 是否确认
 	 */
-	private Boolean confirmed;
+	private boolean confirmed;
 
 	/**
 	 * 帷千回调地址
@@ -85,11 +85,11 @@ public class AdvertiseConfirm extends AbstractPersistable<Long> {
 		this.validate = validate;
 	}
 
-	public Boolean getConfirmed() {
+	public boolean isConfirmed() {
 		return confirmed;
 	}
 
-	public void setConfirmed(Boolean confirmed) {
+	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
 	}
 

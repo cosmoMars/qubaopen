@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -59,12 +61,13 @@ public class RewardInfo extends AbstractBaseEntity<Long> {
 	/**
 	 * 失效期
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date expirationDate;
 
 	/**
 	 * 是否被使用
 	 */
-	private Boolean used;
+	private boolean used;
 
 	public Reward getReward() {
 		return reward;
@@ -122,11 +125,11 @@ public class RewardInfo extends AbstractBaseEntity<Long> {
 		this.expirationDate = expirationDate;
 	}
 
-	public Boolean getUsed() {
+	public boolean isUsed() {
 		return used;
 	}
 
-	public void setUsed(Boolean used) {
+	public void setUsed(boolean used) {
 		this.used = used;
 	}
 

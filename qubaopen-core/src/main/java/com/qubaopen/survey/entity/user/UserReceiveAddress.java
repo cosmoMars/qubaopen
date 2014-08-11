@@ -19,7 +19,7 @@ import com.qubaopen.survey.entity.base.AreaCode;
 @Audited
 public class UserReceiveAddress extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -2294678124960735115L;
+	private static final long serialVersionUID = -3176137858079965089L;
 
 	/**
 	 * 用户信息
@@ -65,7 +65,7 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 	/**
 	 * 默认地址
 	 */
-	private Boolean defaultAddress;
+	private boolean defaultAddress;
 
 	public User getUser() {
 		return user;
@@ -123,11 +123,11 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 		this.postCode = postCode;
 	}
 
-	public Boolean getDefaultAddress() {
+	public boolean isDefaultAddress() {
 		return defaultAddress;
 	}
 
-	public void setDefaultAddress(Boolean defaultAddress) {
+	public void setDefaultAddress(boolean defaultAddress) {
 		this.defaultAddress = defaultAddress;
 	}
 

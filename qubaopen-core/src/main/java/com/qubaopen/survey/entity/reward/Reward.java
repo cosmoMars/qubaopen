@@ -18,7 +18,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class Reward extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = -1786460720258232346L;
+	private static final long serialVersionUID = 6627275265710152659L;
 
 	/**
 	 * 名称
@@ -35,7 +35,7 @@ public class Reward extends AbstractBaseEntity<Long> {
 	/**
 	 * 库存剩余数量
 	 */
-	private Integer remainAmount;
+	private int remainAmount;
 
 	/**
 	 * 描述
@@ -58,11 +58,11 @@ public class Reward extends AbstractBaseEntity<Long> {
 		this.rewardType = rewardType;
 	}
 
-	public Integer getRemainAmount() {
+	public int getRemainAmount() {
 		return remainAmount;
 	}
 
-	public void setRemainAmount(Integer remainAmount) {
+	public void setRemainAmount(int remainAmount) {
 		this.remainAmount = remainAmount;
 	}
 

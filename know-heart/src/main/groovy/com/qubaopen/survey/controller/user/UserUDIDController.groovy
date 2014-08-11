@@ -1,7 +1,6 @@
 package com.qubaopen.survey.controller.user
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -52,7 +51,7 @@ public class UserUDIDController extends AbstractBaseController<UserUDID, Long> {
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody @DateTimeFormat(pattern = 'HH:mm') UserUDID udid) {
+	modify(@RequestBody UserUDID udid) {
 
 		userUDIDRepository.modify(udid)
 

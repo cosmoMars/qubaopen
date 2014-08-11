@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -43,12 +45,12 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否推送
 	 */
-	private Boolean push;
+	private boolean push;
 
 	/**
 	 * 是否已读
 	 */
-	private Boolean readed;
+	private boolean readed;
 
 	/**
 	 * 站内信类型
@@ -82,6 +84,7 @@ public class UserMessage extends AbstractBaseEntity<Long> {
 	/**
 	 * 推送时间
 	 */
+	@Temporal(TemporalType.TIME)
 	private Date pushTime;
 
 	public User getUser() {

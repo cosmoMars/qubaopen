@@ -18,7 +18,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity2;
 @Audited
 public class UserGold extends AbstractBaseEntity2<Long> {
 
-	private static final long serialVersionUID = 8473181373514156943L;
+	private static final long serialVersionUID = -8605208860664034157L;
 
 	/**
 	 * 用户
@@ -30,12 +30,12 @@ public class UserGold extends AbstractBaseEntity2<Long> {
 	/**
 	 * 历史总金币
 	 */
-	private Integer historyGold;
+	private int historyGold;
 
 	/**
 	 * 当前金币
 	 */
-	private Integer currentGold;
+	private int currentGold;
 
 	public User getUser() {
 		return user;
@@ -45,19 +45,19 @@ public class UserGold extends AbstractBaseEntity2<Long> {
 		this.user = user;
 	}
 
-	public Integer getHistoryGold() {
+	public int getHistoryGold() {
 		return historyGold;
 	}
 
-	public void setHistoryGold(Integer historyGold) {
+	public void setHistoryGold(int historyGold) {
 		this.historyGold = historyGold;
 	}
 
-	public Integer getCurrentGold() {
+	public int getCurrentGold() {
 		return currentGold;
 	}
 
-	public void setCurrentGold(Integer currentGold) {
+	public void setCurrentGold(int currentGold) {
 		this.currentGold = currentGold;
 	}
 

@@ -23,7 +23,7 @@ import com.qubaopen.survey.entity.QuestionnaireTagType;
 @Audited
 public class Interest extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = 2686784453446880940L;
+	private static final long serialVersionUID = -1578765434385263230L;
 
 	/**
 	 * 问卷类型
@@ -57,7 +57,7 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * 金币
 	 */
-	private Integer golds;
+	private int golds;
 
 	/**
 	 * 状态 问卷状态值: 0 初始状态 1 上线状态 2 关闭状态
@@ -80,12 +80,12 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * 答题总人数
 	 */
-	private Integer totalRespondentsCount;
+	private int totalRespondentsCount;
 
 	/**
 	 * 推荐值
 	 */
-	private Integer recommendedValue;
+	private int recommendedValue;
 
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
@@ -116,7 +116,6 @@ public class Interest extends AbstractBaseEntity<Long> {
 		this.type = type;
 	}
 
-
 	public String getTitle() {
 		return title;
 	}
@@ -125,11 +124,11 @@ public class Interest extends AbstractBaseEntity<Long> {
 		this.title = title;
 	}
 
-	public Integer getGolds() {
+	public int getGolds() {
 		return golds;
 	}
 
-	public void setGolds(Integer golds) {
+	public void setGolds(int golds) {
 		this.golds = golds;
 	}
 
@@ -149,19 +148,19 @@ public class Interest extends AbstractBaseEntity<Long> {
 		this.remark = remark;
 	}
 
-	public Integer getTotalRespondentsCount() {
+	public int getTotalRespondentsCount() {
 		return totalRespondentsCount;
 	}
 
-	public void setTotalRespondentsCount(Integer totalRespondentsCount) {
+	public void setTotalRespondentsCount(int totalRespondentsCount) {
 		this.totalRespondentsCount = totalRespondentsCount;
 	}
 
-	public Integer getRecommendedValue() {
+	public int getRecommendedValue() {
 		return recommendedValue;
 	}
 
-	public void setRecommendedValue(Integer recommendedValue) {
+	public void setRecommendedValue(int recommendedValue) {
 		this.recommendedValue = recommendedValue;
 	}
 

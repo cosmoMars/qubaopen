@@ -1,5 +1,7 @@
 package com.qubaopen.survey;
 
+import java.text.SimpleDateFormat;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +34,8 @@ public final class Application {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new Hibernate4Module())
 			.registerModule(new JodaModule())
-			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
 		return mapper;
 	}

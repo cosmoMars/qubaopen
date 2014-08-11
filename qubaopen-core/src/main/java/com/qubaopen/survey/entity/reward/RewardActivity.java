@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -24,7 +26,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class RewardActivity extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = -591640260100619884L;
+	private static final long serialVersionUID = -9097829089069118323L;
 
 	/**
 	 * 奖品
@@ -46,17 +48,19 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	/**
 	 * 开始时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startTime;
 
 	/**
 	 * 结束时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endTime;
 
 	/**
 	 * 消耗金币
 	 */
-	private Integer requireGold;
+	private int requireGold;
 
 	/**
 	 * 兑奖活动状态 0 未上线 1 上线 2 结束
@@ -74,17 +78,17 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	/**
 	 * 活动总共可被参与的次数限制
 	 */
-	private Integer totalCountLimit;
+	private int totalCountLimit;
 
 	/**
 	 * 活动目前参与次数
 	 */
-	private Integer currentCount;
+	private int currentCount;
 
 	/**
 	 * 每人可以参与的次数限制 0为不限制
 	 */
-	private Integer eachCountLimit;
+	private int eachCountLimit;
 
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
@@ -131,11 +135,11 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 		this.endTime = endTime;
 	}
 
-	public Integer getRequireGold() {
+	public int getRequireGold() {
 		return requireGold;
 	}
 
-	public void setRequireGold(Integer requireGold) {
+	public void setRequireGold(int requireGold) {
 		this.requireGold = requireGold;
 	}
 
@@ -147,27 +151,27 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 		this.status = status;
 	}
 
-	public Integer getTotalCountLimit() {
+	public int getTotalCountLimit() {
 		return totalCountLimit;
 	}
 
-	public void setTotalCountLimit(Integer totalCountLimit) {
+	public void setTotalCountLimit(int totalCountLimit) {
 		this.totalCountLimit = totalCountLimit;
 	}
 
-	public Integer getCurrentCount() {
+	public int getCurrentCount() {
 		return currentCount;
 	}
 
-	public void setCurrentCount(Integer currentCount) {
+	public void setCurrentCount(int currentCount) {
 		this.currentCount = currentCount;
 	}
 
-	public Integer getEachCountLimit() {
+	public int getEachCountLimit() {
 		return eachCountLimit;
 	}
 
-	public void setEachCountLimit(Integer eachCountLimit) {
+	public void setEachCountLimit(int eachCountLimit) {
 		this.eachCountLimit = eachCountLimit;
 	}
 
@@ -175,7 +179,7 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 		return pic;
 	}
 
-	public void setPicture(byte[] pic) {
+	public void setPic(byte[] pic) {
 		this.pic = pic;
 	}
 

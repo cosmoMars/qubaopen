@@ -20,7 +20,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class UserGoldWithdraw extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = -2549424406992062378L;
+	private static final long serialVersionUID = -8177942165673603334L;
 
 	/**
 	 * 提现用户
@@ -32,7 +32,7 @@ public class UserGoldWithdraw extends AbstractBaseEntity<Long> {
 	/**
 	 * 提现数量
 	 */
-	private Integer amount;
+	private int amount;
 
 	/**
 	 * 提现账号
@@ -89,11 +89,11 @@ public class UserGoldWithdraw extends AbstractBaseEntity<Long> {
 		this.user = user;
 	}
 
-	public Integer getAmount() {
+	public int getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Integer amount) {
+	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 
@@ -103,6 +103,22 @@ public class UserGoldWithdraw extends AbstractBaseEntity<Long> {
 
 	public void setAccount(String account) {
 		this.account = account;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public Way getWay() {
+		return way;
+	}
+
+	public void setWay(Way way) {
+		this.way = way;
 	}
 
 	public String getTransactionNumber() {
@@ -127,22 +143,6 @@ public class UserGoldWithdraw extends AbstractBaseEntity<Long> {
 
 	public void setReceivedValue(Double receivedValue) {
 		this.receivedValue = receivedValue;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
-	public void setWay(Way way) {
-		this.way = way;
-	}
-
-	public Status getStatus() {
-		return status;
-	}
-
-	public Way getWay() {
-		return way;
 	}
 
 }

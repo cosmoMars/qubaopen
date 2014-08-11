@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Audited
 public class SelfQuestionOption extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -649468427522404510L;
+	private static final long serialVersionUID = 1074121001257283241L;
 
 	/**
 	 * 问卷id
@@ -45,7 +45,7 @@ public class SelfQuestionOption extends AbstractPersistable<Long> {
 	/**
 	 * 分数
 	 */
-	private Integer score;
+	private int score;
 
 	/**
 	 * 选项号
@@ -81,11 +81,11 @@ public class SelfQuestionOption extends AbstractPersistable<Long> {
 		this.content = content;
 	}
 
-	public Integer getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
 

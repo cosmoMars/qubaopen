@@ -19,7 +19,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class CustomerGoldLog extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = 7508432504053883435L;
+	private static final long serialVersionUID = -6673332455622206796L;
 
 	/**
 	 * 客户
@@ -51,7 +51,7 @@ public class CustomerGoldLog extends AbstractBaseEntity<Long> {
 	/**
 	 * 变动数额
 	 */
-	private Integer amount;
+	private int amount;
 
 	/**
 	 * 备注
@@ -79,11 +79,19 @@ public class CustomerGoldLog extends AbstractBaseEntity<Long> {
 		this.customerGoldLogType = customerGoldLogType;
 	}
 
-	public Integer getAmount() {
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public int getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Integer amount) {
+	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 
@@ -101,14 +109,6 @@ public class CustomerGoldLog extends AbstractBaseEntity<Long> {
 
 	public void setDetail(String detail) {
 		this.detail = detail;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
 	}
 
 }

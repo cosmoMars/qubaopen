@@ -22,7 +22,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class Self extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = 4650668582375674301L;
+	private static final long serialVersionUID = -1342110032318313940L;
 
 	/**
 	 * 问卷类型 SDS, PDP
@@ -49,7 +49,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * 金币
 	 */
-	private Integer golds;
+	private int golds;
 
 	/**
 	 * 状态 问卷状态值: 0 初始状态 1 上线状态 2 关闭状态
@@ -72,12 +72,12 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * 答题总人数
 	 */
-	private Integer totalRespondentsCount;
+	private int totalRespondentsCount;
 
 	/**
 	 * 推荐值
 	 */
-	private Integer recommendedValue;
+	private int recommendedValue;
 
 	/**
 	 * 指导语
@@ -113,11 +113,11 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.titile = titile;
 	}
 
-	public Integer getGolds() {
+	public int getGolds() {
 		return golds;
 	}
 
-	public void setGolds(Integer golds) {
+	public void setGolds(int golds) {
 		this.golds = golds;
 	}
 
@@ -137,19 +137,19 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.remark = remark;
 	}
 
-	public Integer getTotalRespondentsCount() {
+	public int getTotalRespondentsCount() {
 		return totalRespondentsCount;
 	}
 
-	public void setTotalRespondentsCount(Integer totalRespondentsCount) {
+	public void setTotalRespondentsCount(int totalRespondentsCount) {
 		this.totalRespondentsCount = totalRespondentsCount;
 	}
 
-	public Integer getRecommendedValue() {
+	public int getRecommendedValue() {
 		return recommendedValue;
 	}
 
-	public void setRecommendedValue(Integer recommendedValue) {
+	public void setRecommendedValue(int recommendedValue) {
 		this.recommendedValue = recommendedValue;
 	}
 

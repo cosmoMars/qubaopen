@@ -58,7 +58,7 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	/**
 	 * 分数
 	 */
-	private Integer score;
+	private int score;
 
 	public User getUser() {
 		return user;
@@ -100,14 +100,12 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 		this.type = type;
 	}
 
-	public Integer getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
-
-
 
 }

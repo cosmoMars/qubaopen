@@ -22,7 +22,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity2;
 @Audited
 public class UserUDID extends AbstractBaseEntity2<Long> {
 
-	private static final long serialVersionUID = -2261329595928486895L;
+	private static final long serialVersionUID = 1369339982000271390L;
 
 	/**
 	 * 用户id
@@ -51,12 +51,12 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 	/**
 	 * 是否推送
 	 */
-	private Boolean push;
+	private boolean push;
 
 	/**
 	 * 是否确认
 	 */
-	private Boolean confirmed;
+	private boolean confirmed;
 
 	/**
 	 * 用户来源
@@ -66,7 +66,7 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 	/**
 	 * 过时 设置新alias失败，此alias无效
 	 */
-	private Boolean outDate;
+	private boolean outDate;
 
 	public User getUser() {
 		return user;
@@ -100,19 +100,19 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 		this.endTime = endTime;
 	}
 
-	public Boolean getPush() {
+	public boolean isPush() {
 		return push;
 	}
 
-	public void setPush(Boolean push) {
+	public void setPush(boolean push) {
 		this.push = push;
 	}
 
-	public Boolean getConfirmed() {
+	public boolean isConfirmed() {
 		return confirmed;
 	}
 
-	public void setConfirmed(Boolean confirmed) {
+	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
 	}
 
@@ -124,11 +124,11 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 		this.userSource = userSource;
 	}
 
-	public Boolean getOutDate() {
+	public boolean isOutDate() {
 		return outDate;
 	}
 
-	public void setOutDate(Boolean outDate) {
+	public void setOutDate(boolean outDate) {
 		this.outDate = outDate;
 	}
 

@@ -51,7 +51,7 @@ public class User extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否激活
 	 */
-	private Boolean activated;
+	private boolean activated;
 
 	public String getUserName() {
 		return userName;
@@ -85,11 +85,11 @@ public class User extends AbstractBaseEntity<Long> {
 		this.email = email;
 	}
 
-	public Boolean getActivated() {
+	public boolean isActivated() {
 		return activated;
 	}
 
-	public void setActivated(Boolean activated) {
+	public void setActivated(boolean activated) {
 		this.activated = activated;
 	}
 

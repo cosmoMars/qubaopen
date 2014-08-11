@@ -17,7 +17,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class Customer extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = -3280191672204359205L;
+	private static final long serialVersionUID = -786545573787197619L;
 
 	/**
 	 * 邮箱
@@ -39,7 +39,7 @@ public class Customer extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否激活
 	 */
-	private Boolean activated;
+	private boolean activated;
 
 	public String getEmail() {
 		return email;
@@ -65,11 +65,11 @@ public class Customer extends AbstractBaseEntity<Long> {
 		this.password = password;
 	}
 
-	public Boolean getActivated() {
+	public boolean isActivated() {
 		return activated;
 	}
 
-	public void setActivated(Boolean activated) {
+	public void setActivated(boolean activated) {
 		this.activated = activated;
 	}
 

@@ -53,25 +53,26 @@ public class InterestService {
 	 * @param interestId
 	 * @return
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	findByInterest(long interestId) {
 
 		def interest = new Interest(id : interestId),
-			 questions = interestQuestionRepository.findByInterest(interest),
-			questionOrders = []
-		if (questions) {
-			questionOrders = interestQuestionOrderRepository.findByInterestQuestion(questions)
-		}
+			questions = interestQuestionRepository.findByInterest(interest)
 
-		def specialInserts = interestSpecialInsertRepository.findByInterest(interest)
+//			questionOrders = []
+//		if (questions) {
+//			questionOrders = interestQuestionOrderRepository.findByInterestQuestion(questions)
+//		}
+//
+//		def specialInserts = interestSpecialInsertRepository.findByInterest(interest)
 
-		def result = [
-			'questions' : questions,
-			'questionOrders' : questionOrders,
-			'specialInserts' : specialInserts
+		[
+			'questions' : questions
+//			'questionOrders' : questionOrders,
+//			'specialInserts' : specialInserts
 		]
 
-		return result
+
 	}
 
 	/**

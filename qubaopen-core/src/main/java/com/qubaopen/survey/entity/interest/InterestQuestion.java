@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Audited
 public class InterestQuestion extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = 6870840665940040311L;
+	private static final long serialVersionUID = 1224693058157355984L;
 
 	/**
 	 * 问卷id
@@ -55,7 +55,7 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 选项数量
 	 */
-	private Integer optionCount;
+	private int optionCount;
 
 	/**
 	 * 内容
@@ -65,12 +65,12 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 题号
 	 */
-	private Integer questionNum;
+	private String questionNum;
 
 	/**
 	 * 是否性格特殊问题
 	 */
-	private Boolean special;
+	private boolean special;
 
 	/**
 	 * 答题时间限制
@@ -93,30 +93,6 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 		this.interest = interest;
 	}
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Integer getQuestionNum() {
-		return questionNum;
-	}
-
-	public void setQuestionNum(Integer questionNum) {
-		this.questionNum = questionNum;
-	}
-
-//	public InterestQuestionType getInterestQuestionType() {
-//		return interestQuestionType;
-//	}
-//
-//	public void setInterestQuestionType(InterestQuestionType interestQuestionType) {
-//		this.interestQuestionType = interestQuestionType;
-//	}
-
 	public Type getType() {
 		return type;
 	}
@@ -125,12 +101,36 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 		this.type = type;
 	}
 
-	public Integer getOptionCount() {
+	public int getOptionCount() {
 		return optionCount;
 	}
 
-	public void setOptionCount(Integer optionCount) {
+	public void setOptionCount(int optionCount) {
 		this.optionCount = optionCount;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getQuestionNum() {
+		return questionNum;
+	}
+
+	public void setQuestionNum(String questionNum) {
+		this.questionNum = questionNum;
+	}
+
+	public boolean isSpecial() {
+		return special;
+	}
+
+	public void setSpecial(boolean special) {
+		this.special = special;
 	}
 
 	public Integer getAnswerTimeLimit() {
@@ -139,14 +139,6 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 
 	public void setAnswerTimeLimit(Integer answerTimeLimit) {
 		this.answerTimeLimit = answerTimeLimit;
-	}
-
-	public Boolean getSpecial() {
-		return special;
-	}
-
-	public void setSpecial(Boolean special) {
-		this.special = special;
 	}
 
 	public byte[] getPic() {
@@ -164,4 +156,5 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	public void setInterestQuestionOptions(Set<InterestQuestionOption> interestQuestionOptions) {
 		this.interestQuestionOptions = interestQuestionOptions;
 	}
+
 }

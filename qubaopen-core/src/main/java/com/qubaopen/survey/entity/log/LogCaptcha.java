@@ -7,6 +7,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -43,12 +45,13 @@ public class LogCaptcha extends AbstractPersistable<Long> {
 	/**
 	 * 创建时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 
 	/**
 	 * 验证结果
 	 */
-	private Boolean verifyResult;
+	private boolean verifyResult;
 
 	public User getUser() {
 		return user;

@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -21,7 +23,7 @@ import org.hibernate.envers.Audited;
 @Audited
 public class CustomerCaptcha implements Serializable {
 
-	private static final long serialVersionUID = 1513240828180985079L;
+	private static final long serialVersionUID = -6939881475868129655L;
 
 	@Id
 	private Long id;
@@ -42,12 +44,13 @@ public class CustomerCaptcha implements Serializable {
 	/**
 	 * 最后验证日期
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastCheckedDate;
 
 	/**
 	 * 验证次数
 	 */
-	private Integer checkCount;
+	private int checkCount;
 
 	public Long getId() {
 		return id;
@@ -65,12 +68,12 @@ public class CustomerCaptcha implements Serializable {
 		this.customer = customer;
 	}
 
-	public Integer getCheckCount() {
-		return checkCount;
+	public String getCaptcha() {
+		return captcha;
 	}
 
-	public void setCheckCount(Integer checkCount) {
-		this.checkCount = checkCount;
+	public void setCaptcha(String captcha) {
+		this.captcha = captcha;
 	}
 
 	public Date getLastCheckedDate() {
@@ -81,11 +84,12 @@ public class CustomerCaptcha implements Serializable {
 		this.lastCheckedDate = lastCheckedDate;
 	}
 
-	public String getCaptcha() {
-		return captcha;
+	public int getCheckCount() {
+		return checkCount;
 	}
 
-	public void setCaptcha(String captcha) {
-		this.captcha = captcha;
+	public void setCheckCount(int checkCount) {
+		this.checkCount = checkCount;
 	}
+
 }

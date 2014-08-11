@@ -21,7 +21,7 @@ import com.qubaopen.survey.entity.base.AreaCode;
 @Audited
 public class SurveyQuota extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -513402136464963222L;
+	private static final long serialVersionUID = 9056945125158860414L;
 
 	/**
 	 * 所从属的调研问卷
@@ -43,22 +43,22 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 	/**
 	 * 最小年龄
 	 */
-	private Integer minAge;
+	private int minAge;
 
 	/**
 	 * 最大年龄
 	 */
-	private Integer maxAge;
+	private int maxAge;
 
 	/**
 	 * 该配额的需求数量
 	 */
-	private Integer requireNum;
+	private int requireNum;
 
 	/**
 	 * 该配额的完成数量
 	 */
-	private Integer completeNum;
+	private int completeNum;
 
 //	/**
 //	 * 省市区
@@ -77,7 +77,7 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 	/**
 	 * 是否激活（控制是否启用） 1启用 0不启用
 	 */
-	private Boolean activated;
+	private boolean activated;
 
 	public Survey getSurvey() {
 		return survey;
@@ -95,29 +95,37 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 		this.sex = sex;
 	}
 
-	public Integer getMinAge() {
+	public int getMinAge() {
 		return minAge;
 	}
 
-	public void setMinAge(Integer minAge) {
+	public void setMinAge(int minAge) {
 		this.minAge = minAge;
 	}
 
-	public Integer getMaxAge() {
+	public int getMaxAge() {
 		return maxAge;
 	}
 
-	public void setMaxAge(Integer maxAge) {
+	public void setMaxAge(int maxAge) {
 		this.maxAge = maxAge;
 	}
 
-//	public ProvinceCode getProvinceCode() {
-//		return provinceCode;
-//	}
-//
-//	public void setProvinceCode(ProvinceCode provinceCode) {
-//		this.provinceCode = provinceCode;
-//	}
+	public int getRequireNum() {
+		return requireNum;
+	}
+
+	public void setRequireNum(int requireNum) {
+		this.requireNum = requireNum;
+	}
+
+	public int getCompleteNum() {
+		return completeNum;
+	}
+
+	public void setCompleteNum(int completeNum) {
+		this.completeNum = completeNum;
+	}
 
 	public AreaCode getAreaCode() {
 		return areaCode;
@@ -127,29 +135,12 @@ public class SurveyQuota extends AbstractPersistable<Long> {
 		this.areaCode = areaCode;
 	}
 
-	public Integer getRequireNum() {
-		return requireNum;
-	}
-
-	public void setRequireNum(Integer requireNum) {
-		this.requireNum = requireNum;
-	}
-
-	public Integer getCompleteNum() {
-		return completeNum;
-	}
-
-	public void setCompleteNum(Integer completeNum) {
-		this.completeNum = completeNum;
-	}
-
-	public Boolean getActivated() {
+	public boolean isActivated() {
 		return activated;
 	}
 
-	public void setActivated(Boolean activated) {
+	public void setActivated(boolean activated) {
 		this.activated = activated;
 	}
-
 
 }

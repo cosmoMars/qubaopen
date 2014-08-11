@@ -77,7 +77,6 @@ public class RewardActivityRecordService {
 
 		saveRecordAndGold(rewardActivity, userGold, address)
 
-		'{"success": 1}'
 	}
 
 	/**
@@ -143,12 +142,18 @@ public class RewardActivityRecordService {
 			return rewardInfos
 		}
 
-		return rewardActivityRecordRepository.findAll(
+		def records = rewardActivityRecordRepository.findAll(
 			[
 				user_equal : user,
 				status_equal : rewardStatus
 			]
 		)
+
+		[
+			'success' : '1',
+			'message' : '成功',
+			'records' : records
+		]
 	}
 
 	/**
@@ -177,6 +182,7 @@ public class RewardActivityRecordService {
 			)
 
 		rewardActivityRecordRepository.save(rewardActivityRecord)
+		'{"success": "1"}'
 	}
 
 	/**

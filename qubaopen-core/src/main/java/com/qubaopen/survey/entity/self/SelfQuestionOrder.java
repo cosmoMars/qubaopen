@@ -17,7 +17,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Audited
 public class SelfQuestionOrder extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = 2218196538615957102L;
+	private static final long serialVersionUID = 7097435449332156303L;
 
 	/**
 	 * 问题id
@@ -44,7 +44,7 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 	/**
 	 * 是否跳过
 	 */
-	private Boolean jump;
+	private boolean jump;
 
 	public String getQuestionNum() {
 		return questionNum;
@@ -78,13 +78,12 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 		this.selfQuestion = selfQuestion;
 	}
 
-	public Boolean getJump() {
+	public boolean isJump() {
 		return jump;
 	}
 
-	public void setJump(Boolean jump) {
+	public void setJump(boolean jump) {
 		this.jump = jump;
 	}
-
 
 }

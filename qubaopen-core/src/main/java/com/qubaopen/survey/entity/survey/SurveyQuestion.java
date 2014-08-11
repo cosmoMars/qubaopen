@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Audited
 public class SurveyQuestion extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = 4209633666066983696L;
+	private static final long serialVersionUID = -7993683241226191949L;
 
 	/**
 	 * 所从属的调研问卷
@@ -41,14 +41,14 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	private String content;
 
 	/**
-	 * 编号
+	 * 题号
 	 */
-	private String serialNumber;
+	private String questionNum;
 
 	/**
 	 * 选项数量
 	 */
-	private Integer optionCount;
+	private int optionCount;
 
 //	/**
 //	 * 题目类型 选择 问答 排序 打分
@@ -70,7 +70,7 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 是否为性格题
 	 */
-	private Boolean charactered;
+	private boolean charactered;
 
 	/**
 	 * 答题最短时间限制
@@ -80,7 +80,7 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 最多选择数量限制
 	 */
-	private Integer selectionLimit;
+	private int selectionLimit;
 
 	/**
 	 * 该题目所从属的矩阵题
@@ -116,29 +116,21 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 		this.content = content;
 	}
 
-	public String getSerialNumber() {
-		return serialNumber;
+	public String getQuestionNum() {
+		return questionNum;
 	}
 
-	public void setSerialNumber(String serialNumber) {
-		this.serialNumber = serialNumber;
+	public void setQuestionNum(String questionNum) {
+		this.questionNum = questionNum;
 	}
 
-	public Integer getOptionCount() {
+	public int getOptionCount() {
 		return optionCount;
 	}
 
-	public void setOptionCount(Integer optionCount) {
+	public void setOptionCount(int optionCount) {
 		this.optionCount = optionCount;
 	}
-//
-//	public SurveyQuestionType getSurveyQuestionType() {
-//		return surveyQuestionType;
-//	}
-//
-//	public void setSurveyQuestionType(SurveyQuestionType surveyQuestionType) {
-//		this.surveyQuestionType = surveyQuestionType;
-//	}
 
 	public Type getType() {
 		return type;
@@ -148,11 +140,27 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 		this.type = type;
 	}
 
-	public Integer getSelectionLimit() {
+	public boolean isCharactered() {
+		return charactered;
+	}
+
+	public void setCharactered(boolean charactered) {
+		this.charactered = charactered;
+	}
+
+	public Integer getDurationLimit() {
+		return durationLimit;
+	}
+
+	public void setDurationLimit(Integer durationLimit) {
+		this.durationLimit = durationLimit;
+	}
+
+	public int getSelectionLimit() {
 		return selectionLimit;
 	}
 
-	public void setSelectionLimit(Integer selectionLimit) {
+	public void setSelectionLimit(int selectionLimit) {
 		this.selectionLimit = selectionLimit;
 	}
 
@@ -178,22 +186,6 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 
 	public void setPic(byte[] pic) {
 		this.pic = pic;
-	}
-
-	public Integer getDurationLimit() {
-		return durationLimit;
-	}
-
-	public void setDurationLimit(Integer durationLimit) {
-		this.durationLimit = durationLimit;
-	}
-
-	public Boolean getCharactered() {
-		return charactered;
-	}
-
-	public void setCharactered(Boolean charactered) {
-		this.charactered = charactered;
 	}
 
 }

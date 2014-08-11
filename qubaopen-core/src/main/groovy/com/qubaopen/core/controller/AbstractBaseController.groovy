@@ -62,8 +62,6 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody T entity) {
 
-		println entity
-
 		def repository = getRepository(),
 			record = repository.findOne(entity.id)
 
@@ -77,20 +75,5 @@ abstract class AbstractBaseController<T, ID extends Serializable> {
 		getRepository().delete(entity)
 		'{"success": "1"}'
 	}
-
-	/*private save(T entity, BindingResult result) {
-		if (result.hasErrors()) {
-			def fieldError = result.fieldError,
-				msg = fieldError.defaultMessage
-
-			return msg
-		}
-
-		def repository = getRepository(),
-			record = repository.findOne(entity.id)
-
-		BeanUtils.copyProperties(entity, record)
-		repository.save(record)
-	}*/
 
 }

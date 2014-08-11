@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -23,7 +25,7 @@ import com.qubaopen.survey.entity.user.User;
 @Audited
 public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -582260461224768750L;
+	private static final long serialVersionUID = -8195245932678626467L;
 
 	/**
 	 * 调研问卷
@@ -42,6 +44,7 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 答卷时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 
 	/**
@@ -70,28 +73,28 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 是否在新浪微博分享 0否 1是
 	 */
-	private Boolean sharedSina;
+	private boolean sharedSina;
 
 	/**
 	 * 是否在腾讯微博分享 0否 1是
 	 */
-	private Boolean sharedTencent;
+	private boolean sharedTencent;
 
 	/**
 	 * 是否在QQ空间分享 0否 1是
 	 */
-	@Column(name = "shared_qq_space")
-	private Boolean sharedQQSpace;
+	@Column(name = "shared_qq_space", nullable = false)
+	private boolean sharedQQSpace;
 
 	/**
 	 * 是否在微信分享 0否 1是
 	 */
-	private Boolean sharedWeChat;
+	private boolean sharedWeChat;
 
 	/**
 	 * 是否在微信朋友圈分享 0否 1是
 	 */
-	private Boolean sharedWeChatFriend;
+	private boolean sharedWeChatFriend;
 
 	public Survey getSurvey() {
 		return survey;
@@ -133,43 +136,43 @@ public class SurveyUserQuestionnaire extends AbstractPersistable<Long> {
 		this.transmit = transmit;
 	}
 
-	public Boolean getSharedSina() {
+	public boolean isSharedSina() {
 		return sharedSina;
 	}
 
-	public void setSharedSina(Boolean sharedSina) {
+	public void setSharedSina(boolean sharedSina) {
 		this.sharedSina = sharedSina;
 	}
 
-	public Boolean getSharedTencent() {
+	public boolean isSharedTencent() {
 		return sharedTencent;
 	}
 
-	public void setSharedTencent(Boolean sharedTencent) {
+	public void setSharedTencent(boolean sharedTencent) {
 		this.sharedTencent = sharedTencent;
 	}
 
-	public Boolean getSharedQQSpace() {
+	public boolean isSharedQQSpace() {
 		return sharedQQSpace;
 	}
 
-	public void setSharedQQSpace(Boolean sharedQQSpace) {
+	public void setSharedQQSpace(boolean sharedQQSpace) {
 		this.sharedQQSpace = sharedQQSpace;
 	}
 
-	public Boolean getSharedWeChat() {
+	public boolean isSharedWeChat() {
 		return sharedWeChat;
 	}
 
-	public void setSharedWeChat(Boolean sharedWeChat) {
+	public void setSharedWeChat(boolean sharedWeChat) {
 		this.sharedWeChat = sharedWeChat;
 	}
 
-	public Boolean getSharedWeChatFriend() {
+	public boolean isSharedWeChatFriend() {
 		return sharedWeChatFriend;
 	}
 
-	public void setSharedWeChatFriend(Boolean sharedWeChatFriend) {
+	public void setSharedWeChatFriend(boolean sharedWeChatFriend) {
 		this.sharedWeChatFriend = sharedWeChatFriend;
 	}
 

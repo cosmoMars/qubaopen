@@ -1,7 +1,6 @@
 package com.qubaopen.survey.controller.user
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -57,6 +56,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 			'{"success": "1"}'
 		} catch (Exception e) {
+			e.printStackTrace()
 			'{"success": "0", "message": "err014"}'
 		}
 
@@ -98,5 +98,59 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		def userInfo = userInfoRepository.findOne(userId)
 		output.write(userInfo.avatar)
 	}
+
+
+	/**
+	 * 修改用户信息 发布
+	 * @param userId
+	 * @param sharedSina
+	 * @param sharedTencent
+	 * @param sharedWeChatFriend
+	 * @param sharedQQSpace
+	 * @param sharedWeChat
+	 * @param publicAnswersToChief
+	 * @param publicMovementToFriend
+	 * @param publicAnswersToFriend
+	 * @return
+	 */
+	@RequestMapping(value = 'sharedUserInfo', method = RequestMethod.PUT)
+	sharedUserInfo(@RequestParam long userId,
+		@RequestParam(required = false) boolean sharedSina,
+		@RequestParam(required = false) boolean sharedTencent,
+		@RequestParam(required = false) boolean sharedWeChatFriend,
+		@RequestParam(required = false) boolean sharedQQSpace,
+		@RequestParam(required = false) boolean sharedWeChat,
+		@RequestParam(required = false) boolean publicAnswersToChief,
+		@RequestParam(required = false) boolean publicMovementToFriend,
+		@RequestParam(required = false) boolean publicAnswersToFriend
+		) {
+			def userInfo = userInfoRepository.findOne(userId)
+			if (sharedSina) {
+				userInfo.sharedSina = sharedSina
+			}
+			if (sharedTencent) {
+				userInfo.sharedSina = sharedTencent
+			}
+			if (sharedWeChatFriend) {
+				userInfo.sharedSina = sharedWeChatFriend
+			}
+			if (sharedQQSpace) {
+				userInfo.sharedSina = sharedQQSpace
+			}
+			if (sharedWeChat) {
+				userInfo.sharedSina = sharedWeChat
+			}
+			if (publicAnswersToChief) {
+				userInfo.sharedSina = publicAnswersToChief
+			}
+			if (publicMovementToFriend) {
+				userInfo.sharedSina = publicMovementToFriend
+			}
+			if (publicAnswersToFriend) {
+				userInfo.sharedSina = publicAnswersToFriend
+			}
+			userInfoRepository.save(userInfo)
+			'{"success" : "1"}'
+		}
 
 }

@@ -91,53 +91,53 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 新浪微博软件分享
 	 */
-	private Boolean sharedSina;
+	private boolean sharedSina;
 
 	/**
 	 * 腾讯微博软件分享
 	 */
-	private Boolean sharedTencent;
+	private boolean sharedTencent;
 
 	/**
 	 * 微信朋友圈分享
 	 */
-	private Boolean sharedWeChatFriend;
+	private boolean sharedWeChatFriend;
 
 	/**
 	 * QQ空间分享
 	 */
-	@Column(name = "shared_qq_space")
-	private Boolean sharedQQSpace;
+	@Column(name = "shared_qq_space", nullable = false)
+	private boolean sharedQQSpace;
 
 	/**
 	 * 微信分享
 	 */
-	private Boolean sharedWeChat;
+	private boolean sharedWeChat;
 
 	/**
 	 * 好友数量
 	 */
-	private Integer friendNum;
+	private int friendNum;
 
 	/**
 	 * 向萌主公开测试答案
 	 */
-	private Boolean publicAnswersToChief;
+	private boolean publicAnswersToChief;
 
 	/**
 	 * 开启省流量模式
 	 */
-	private Boolean saveFlow;
+	private boolean saveFlow;
 
 	/**
 	 * 向好友公开最新动态
 	 */
-	private Boolean publicMovementToFriend;
+	private boolean publicMovementToFriend;
 
 	/**
 	 * 向好友公开测试答案
 	 */
-	private Boolean publicAnswersToFriend;
+	private boolean publicAnswersToFriend;
 
 	public User getUser() {
 		return user;

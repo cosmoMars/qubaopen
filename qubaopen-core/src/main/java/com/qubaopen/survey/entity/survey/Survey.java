@@ -13,6 +13,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -31,7 +33,7 @@ import com.qubaopen.survey.entity.manager.Manager;
 @Audited
 public class Survey extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = -4910589050975466729L;
+	private static final long serialVersionUID = 4360638005113172816L;
 
 	/**
 	 * 问卷类型
@@ -48,7 +50,7 @@ public class Survey extends AbstractBaseEntity<Long> {
 	/**
 	 * 调研成功获得的金币
 	 */
-	private Integer coin;
+	private int coin;
 
 	/**
 	 * 问卷状态 0 初始状态 1 审核中 2 审核通过 3 审核未通过 4上线状态 5关闭状态
@@ -72,27 +74,27 @@ public class Survey extends AbstractBaseEntity<Long> {
 	/**
 	 * 调研参与人数
 	 */
-	private Integer answerCount;
+	private int answerCount;
 
 	/**
 	 * 优先级 数值越高越优先
 	 */
-	private Integer priority;
+	private int priority;
 
 	/**
 	 * 推荐值 数值越高越推荐
 	 */
-	private Integer recommendation;
+	private int recommendation;
 
 	/**
 	 * 需求数量
 	 */
-	private Integer requireCount;
+	private int requireCount;
 
 	/**
 	 * 完成数量
 	 */
-	private Integer completeCount;
+	private int completeCount;
 
 	/**
 	 * 问卷额外预留比例
@@ -102,6 +104,7 @@ public class Survey extends AbstractBaseEntity<Long> {
 	/**
 	 * 审核时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date aduitTime;
 
 	/**
@@ -132,17 +135,19 @@ public class Survey extends AbstractBaseEntity<Long> {
 	/**
 	 * 开始时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startTime;
 
 	/**
 	 * 结束时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endTime;
 
 	/**
 	 * 人数限制
 	 */
-	private Integer limitCount;
+	private int limitCount;
 
 	/**
 	 * 审核人
@@ -177,12 +182,20 @@ public class Survey extends AbstractBaseEntity<Long> {
 		this.title = title;
 	}
 
-	public Integer getCoin() {
+	public int getCoin() {
 		return coin;
 	}
 
-	public void setCoin(Integer coin) {
+	public void setCoin(int coin) {
 		this.coin = coin;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	public String getRemark() {
@@ -193,43 +206,43 @@ public class Survey extends AbstractBaseEntity<Long> {
 		this.remark = remark;
 	}
 
-	public Integer getAnswerCount() {
+	public int getAnswerCount() {
 		return answerCount;
 	}
 
-	public void setAnswerCount(Integer answerCount) {
+	public void setAnswerCount(int answerCount) {
 		this.answerCount = answerCount;
 	}
 
-	public Integer getPriority() {
+	public int getPriority() {
 		return priority;
 	}
 
-	public void setPriority(Integer priority) {
+	public void setPriority(int priority) {
 		this.priority = priority;
 	}
 
-	public Integer getRecommendation() {
+	public int getRecommendation() {
 		return recommendation;
 	}
 
-	public void setRecommendation(Integer recommendation) {
+	public void setRecommendation(int recommendation) {
 		this.recommendation = recommendation;
 	}
 
-	public Integer getRequireCount() {
+	public int getRequireCount() {
 		return requireCount;
 	}
 
-	public void setRequireCount(Integer requireCount) {
+	public void setRequireCount(int requireCount) {
 		this.requireCount = requireCount;
 	}
 
-	public Integer getCompleteCount() {
+	public int getCompleteCount() {
 		return completeCount;
 	}
 
-	public void setCompleteCount(Integer completeCount) {
+	public void setCompleteCount(int completeCount) {
 		this.completeCount = completeCount;
 	}
 
@@ -249,12 +262,28 @@ public class Survey extends AbstractBaseEntity<Long> {
 		this.aduitTime = aduitTime;
 	}
 
+	public Type getPublishType() {
+		return publishType;
+	}
+
+	public void setPublishType(Type publishType) {
+		this.publishType = publishType;
+	}
+
 	public SurveyType getSurveyType() {
 		return surveyType;
 	}
 
 	public void setSurveyType(SurveyType surveyType) {
 		this.surveyType = surveyType;
+	}
+
+	public byte[] getPic() {
+		return pic;
+	}
+
+	public void setPic(byte[] pic) {
+		this.pic = pic;
 	}
 
 	public Date getStartTime() {
@@ -273,11 +302,11 @@ public class Survey extends AbstractBaseEntity<Long> {
 		this.endTime = endTime;
 	}
 
-	public Integer getLimitCount() {
+	public int getLimitCount() {
 		return limitCount;
 	}
 
-	public void setLimitCount(Integer limitCount) {
+	public void setLimitCount(int limitCount) {
 		this.limitCount = limitCount;
 	}
 
@@ -289,36 +318,12 @@ public class Survey extends AbstractBaseEntity<Long> {
 		this.aduitUser = aduitUser;
 	}
 
-	public Status getStatus() {
-		return status;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
-	public Type getPublishType() {
-		return publishType;
-	}
-
-	public void setPublishType(Type publishType) {
-		this.publishType = publishType;
-	}
-
 	public Customer getCustomer() {
 		return customer;
 	}
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
-	}
-
-	public byte[] getPic() {
-		return pic;
-	}
-
-	public void setPic(byte[] pic) {
-		this.pic = pic;
 	}
 
 	public Set<SurveyQuota> getQuotas() {

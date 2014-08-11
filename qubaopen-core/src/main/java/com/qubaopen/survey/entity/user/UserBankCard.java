@@ -17,7 +17,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Audited
 public class UserBankCard extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = -469527906871111122L;
+	private static final long serialVersionUID = 4146867316408459364L;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -43,7 +43,7 @@ public class UserBankCard extends AbstractPersistable<Long> {
 	/**
 	 * 是否启用
 	 */
-	private Boolean enabled;
+	private boolean enabled;
 
 	public User getUser() {
 		return user;
@@ -51,6 +51,14 @@ public class UserBankCard extends AbstractPersistable<Long> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public UserWithdrawBankType getUserWithdrawBankType() {
+		return userWithdrawBankType;
+	}
+
+	public void setUserWithdrawBankType(UserWithdrawBankType userWithdrawBankType) {
+		this.userWithdrawBankType = userWithdrawBankType;
 	}
 
 	public String getName() {
@@ -69,20 +77,12 @@ public class UserBankCard extends AbstractPersistable<Long> {
 		this.cardIdentity = cardIdentity;
 	}
 
-	public Boolean getEnabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(Boolean enabled) {
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-	}
-
-	public UserWithdrawBankType getUserWithdrawBankType() {
-		return userWithdrawBankType;
-	}
-
-	public void setUserWithdrawBankType(UserWithdrawBankType userWithdrawBankType) {
-		this.userWithdrawBankType = userWithdrawBankType;
 	}
 
 }

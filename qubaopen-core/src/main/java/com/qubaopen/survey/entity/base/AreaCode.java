@@ -24,7 +24,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class AreaCode extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = -6915387545416832379L;
+	private static final long serialVersionUID = 7991101539684225556L;
 
 	/**
 	 * 名字
@@ -40,7 +40,7 @@ public class AreaCode extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否显示
 	 */
-	private Boolean display;
+	private boolean display;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AreaCode parent;
@@ -67,11 +67,11 @@ public class AreaCode extends AbstractBaseEntity<Long> {
 		this.code = code;
 	}
 
-	public Boolean getDisplay() {
+	public boolean isDisplay() {
 		return display;
 	}
 
-	public void setDisplay(Boolean display) {
+	public void setDisplay(boolean display) {
 		this.display = display;
 	}
 

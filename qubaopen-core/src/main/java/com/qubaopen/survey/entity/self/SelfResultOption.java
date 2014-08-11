@@ -49,12 +49,12 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	/**
 	 * 最低分数
 	 */
-	private Integer lowestScore;
+	private int lowestScore;
 
 	/**
 	 * 最高分数
 	 */
-	private Integer highestScore;
+	private int highestScore;
 
 	public String getName() {
 		return name;
@@ -96,19 +96,19 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 		this.resultNum = resultNum;
 	}
 
-	public Integer getLowestScore() {
+	public int getLowestScore() {
 		return lowestScore;
 	}
 
-	public void setLowestScore(Integer lowestScore) {
+	public void setLowestScore(int lowestScore) {
 		this.lowestScore = lowestScore;
 	}
 
-	public Integer getHighestScore() {
+	public int getHighestScore() {
 		return highestScore;
 	}
 
-	public void setHighestScore(Integer highestScore) {
+	public void setHighestScore(int highestScore) {
 		this.highestScore = highestScore;
 	}
 

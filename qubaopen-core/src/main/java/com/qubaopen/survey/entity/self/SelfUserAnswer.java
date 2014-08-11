@@ -58,12 +58,12 @@ public class SelfUserAnswer extends AbstractPersistable<Long> {
 	/**
 	 * 顺序
 	 */
-	private Integer turn;
+	private String turn;
 
 	/**
 	 * 分数
 	 */
-	private Integer score;
+	private int score;
 
 	public User getUser() {
 		return user;
@@ -105,19 +105,19 @@ public class SelfUserAnswer extends AbstractPersistable<Long> {
 		this.content = content;
 	}
 
-	public Integer getTurn() {
+	public String getTurn() {
 		return turn;
 	}
 
-	public void setTurn(Integer turn) {
+	public void setTurn(String turn) {
 		this.turn = turn;
 	}
 
-	public Integer getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
 

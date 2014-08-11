@@ -108,7 +108,11 @@ public class RewardActivityRecordService {
 
 		def user = new User(id : userId)
 		if (StringUtils.isEmpty(status)) {
-			return rewardActivityRecordRepository.findAllByUser(user)
+			return [
+				'success' : '1',
+				'message' : '成功',
+				'records' : rewardActivityRecordRepository.findAllByUser(user)
+			]
 		}
 
 		// DELIVERING 发货中, CONFIRMING 待确认, CONFIRMED 已确认, PROCESSING 处理中
@@ -139,7 +143,11 @@ public class RewardActivityRecordService {
 					rewardInfos << it.rewardInfo
 				}
 			}
-			return rewardInfos
+			return [
+				'success' : '1',
+				'message' : '成功',
+				'records' : rewardInfos
+			]
 		}
 
 		def records = rewardActivityRecordRepository.findAll(

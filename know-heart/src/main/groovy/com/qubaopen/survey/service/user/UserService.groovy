@@ -271,9 +271,7 @@ public class UserService {
 			endTime : DateCommons.String2Date('22:00','HH:mm')
 		)
 		def userGold = new UserGold(
-			id : user.id,
-			historyGold : 0,
-			currentGold : 0
+			id : user.id
 		)
 
 		userInfoRepository.save(userInfo)

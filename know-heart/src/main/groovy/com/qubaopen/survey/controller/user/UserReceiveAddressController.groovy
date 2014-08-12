@@ -36,7 +36,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 	 */
 	@Override
 	@RequestMapping(method = RequestMethod.POST)
-	add(@RequestBody(required = false) @Valid UserReceiveAddress userReceiveAddress, BindingResult result) {
+	add(@RequestBody @Valid UserReceiveAddress userReceiveAddress, BindingResult result) {
 
 		logger.trace ' -- 新增收货地址 -- '
 

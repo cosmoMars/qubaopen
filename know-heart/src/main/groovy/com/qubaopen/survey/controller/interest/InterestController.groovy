@@ -1,11 +1,13 @@
 package com.qubaopen.survey.controller.interest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -85,6 +87,43 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		}
 
 		interestService.calculateInterestResult(userId, interestId, questionJson)
+	}
+
+
+	/**
+	 * 上传图片
+	 * @param interestId
+	 * @param pic
+	 */
+	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
+	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic) {
+
+		logger.trace(' -- 上传图片 -- ')
+
+		def interest = interestRepository.findOne(interestId)
+		interest.pic = pic.bytes
+		try {
+			interestRepository.save(interest)
+			'{"success": "1"}'
+		} catch (Exception e) {
+			'{"success": "0", "message": "上传失败"}'
+		}
+
+	}
+
+	/**
+	 * 显示图片
+	 * @param interestId
+	 * @param output
+	 * @return
+	 */
+	@RequestMapping(value = 'retrievePic/{interestId}', method = RequestMethod.GET)
+	retrieveAvatar(@PathVariable long interestId, OutputStream output) {
+
+		logger.trace(' -- 显示图片 -- ')
+
+		def interest = interestRepository.findOne(interestId)
+		output.write(interest.pic)
 	}
 
 }

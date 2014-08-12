@@ -198,7 +198,6 @@ public class RewardActivityRecordService {
 				awardTime : new Date()
 			)
 
-
 		rewardActivityRecordRepository.save(rewardActivityRecord)
 	}
 

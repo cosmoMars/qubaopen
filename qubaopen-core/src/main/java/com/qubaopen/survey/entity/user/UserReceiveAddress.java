@@ -1,10 +1,12 @@
 package com.qubaopen.survey.entity.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -55,6 +57,8 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 	/**
 	 * 电话
 	 */
+	@Pattern(regexp = "^1[0-9]{10}$", message = "{\"success\" : 0, \"message\": \"err003\"}")
+	@Column(unique = true, length = 11)
 	private String phone;
 
 	/**

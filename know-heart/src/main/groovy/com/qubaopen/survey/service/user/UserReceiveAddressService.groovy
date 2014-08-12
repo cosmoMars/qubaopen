@@ -1,5 +1,7 @@
 package com.qubaopen.survey.service.user
 
+import static com.qubaopen.survey.utils.ValidateUtil.*
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -46,6 +48,11 @@ public class UserReceiveAddressService {
 	 */
 	@Transactional
 	modify(UserReceiveAddress userReceiveAddress) {
+
+		if (userReceiveAddress.phone && !validatePhone(userReceiveAddress.phone)) {
+			return '{"success" : "0", "message": "err003"}'
+		}
+
 		if (!userReceiveAddress.defaultAddress) {
 			userReceiveAddressRepository.modify(userReceiveAddress)
 			return '{"success": "1"}'
@@ -77,7 +84,7 @@ public class UserReceiveAddressService {
 			it.defaultAddress = false
 		}
 
-		userReceiveAddressRepository.modify(userReceiveAddress)
+		userReceiveAddressRepository.save(userReceiveAddress)
 	}
 
 	/**

@@ -25,7 +25,6 @@ public class UserUDIDService {
 			userInfo = userInfoRepository.findOne(userId)
 
 		def result = [
-
 			'id' : udid.id,
 			'push' : udid?.push ?: '',
 			'startTime' : DateCommons.Date2String(udid?.startTime, "HH:mm") ?: '',

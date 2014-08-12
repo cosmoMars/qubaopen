@@ -110,11 +110,11 @@ public class RewardActivityRecordService {
 		def user = new User(id : userId),
 			activityRequireds = []
 		if (StringUtils.isEmpty(status)) {
-			activityRequireds = rewardActivityRecordRepository.findByUserAndReal(user, true)
+			activityRequireds = rewardActivityRecordRepository.findAllByUser(user)
 		} else {
 			// DELIVERING 发货中, CONFIRMING 待确认, CONFIRMED 已确认, PROCESSING 处理中
 			def rewardStatus = null
-			switch(status) {
+			switch (status) {
 				case 'DELIVERING' :
 					rewardStatus = RewardActivityRecord.Status.DELIVERING
 					break
@@ -136,7 +136,7 @@ public class RewardActivityRecordService {
 				activityRequireds = rewardActivityRecordRepository.findAll(
 					[
 						user_equal : user,
-						real_equal : reward.real
+						'reward.realItem_equal' : true
 					]
 				)
 			} else {
@@ -179,7 +179,7 @@ public class RewardActivityRecordService {
 		userGold.currentGold = userGold.currentGold - rewardActivity.requireGold
 		userGoldRepository.save(userGold)
 
-		rewardActivity.currentCount++
+		rewardActivity.currentCount ++
 
 		def user = userGold.user,
 			rewards = rewardRepository.findByRewardTypeAndUsed(rewardActivity.rewardType, false)

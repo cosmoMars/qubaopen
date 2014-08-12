@@ -72,7 +72,7 @@ public class Reward extends AbstractBaseEntity<Long> {
 	/**
 	 * 是否是实物
 	 */
-	private boolean real;
+	private boolean realItem;
 
 	public RewardType getRewardType() {
 		return rewardType;
@@ -138,12 +138,12 @@ public class Reward extends AbstractBaseEntity<Long> {
 		this.used = used;
 	}
 
-	public boolean isReal() {
-		return real;
+	public boolean isRealItem() {
+		return realItem;
 	}
 
-	public void setReal(boolean real) {
-		this.real = real;
+	public void setRealItem(boolean realItem) {
+		this.realItem = realItem;
 	}
 
 }

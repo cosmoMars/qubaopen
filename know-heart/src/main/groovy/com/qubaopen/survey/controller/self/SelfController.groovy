@@ -35,7 +35,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'calculateSelfResult', method = RequestMethod.GET)
-	calculateSelfReslut(@RequestParam long userId, @RequestParam long selfId, @RequestParam String questionJson, @RequestParam boolean refresh) {
+	calculateSelfReslut(@RequestParam long userId, @RequestParam long selfId, @RequestParam String questionJson, @RequestParam(required = false) boolean refresh) {
 
 		logger.trace ' -- 计算自测结果选项 -- '
 

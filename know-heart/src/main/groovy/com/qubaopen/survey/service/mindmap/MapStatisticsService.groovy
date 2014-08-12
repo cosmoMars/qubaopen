@@ -30,40 +30,47 @@ public class MapStatisticsService {
 		switch (type) {
 			case 'SDS' :
 				mapType = MapStatistics.Type.SDS
+				break
 			case 'ABCD' :
 				mapType = MapStatistics.Type.ABCD
+				break
 			case 'PDP' :
 				mapType = MapStatistics.Type.PDP
+				break
 			case 'MBTI' :
 				mapType = MapStatistics.Type.MBTI
+				break
 
 		}
 
 		def map =  mapStatisticsRepository.findByUserAndType(user, mapType)
 
-		if (map.size() > 1) {
-			def temp = [:]
+		if (map.size() > 1) {  // abcd 问卷
+			def temp = [:],
+				typeName = it.self.selfType.name
 			map.each {
-				if (temp.get(it.score)) {
-					temp.get(it.score) << it.self.selfType.name
-				} else {
-					def list = []
-					list << it.self.selfType.name
-					temp.put(it.score, list)
-				}
+				temp << [typeName : it.score]
 			}
-			resultMap = [
+			return resultMap = [
+				'success' : '1',
+				'message' : '成功',
 				'userId' : userId,
 				'chart' : temp,
-				'resultOption' : '',
+				'name' : '',
+				'content' : '',
+				'title' : '',
 				'score' : ''
 			]
 		}
 		if (!map.empty) {
 			resultMap = [
+				'success' : '1',
+				'message' : '成功',
 				'userId' : userId,
 				'chart' : map[0].result,
-				'resultOption' : map[0].selfResultOption ?: '',
+				'name' : map[0].selfResultOption?.name ?: '',
+				'content' : map[0].selfResultOption?.content ?: '',
+				'title' : map[0].selfResultOption?.title ?: '',
 				'score' : map[0].score ?: ''
 			]
 		}

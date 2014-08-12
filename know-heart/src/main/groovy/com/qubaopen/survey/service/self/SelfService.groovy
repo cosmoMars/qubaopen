@@ -131,7 +131,7 @@ public class SelfService {
 				}
 				optionMap.get(k).clear()
 				optionMap.put(k, score)
-				if (resultMap.get(score)) { // key: 分数, value: 种类
+				if (resultMap.get(score)) { // key: 种类, value: 分数
 					resultMap.get(score) << k
 				} else {
 					def typeNameList = []
@@ -139,14 +139,17 @@ public class SelfService {
 					resultMap.put(score, typeNameList)
 				}
 			}
+			if (resultMap.empty || resultMap.size() == 0) {
+				return '{"success": 0, "error": "没有结果"}'
+			}
 
 			def resultName = (resultMap.sort().values().sum() as List).reverse()
 
-			def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
-
-			if (result.empty) {
-				return '{"success": 0, "error": "err2323"}'
+			if (resultName.size() < 3) {
+				return '{"success": 0, "error": "没有结果"}'
 			}
+
+			def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 			if (refresh) {
 				saveMapStatistics(user, self, objectMapper.writeValueAsString(optionMap), result[0], 0) // 保存心理地图
@@ -196,7 +199,6 @@ public class SelfService {
 				}
 			}
 			def result = resultMap.get(resultMap.keySet().max()) as List
-
 
 			if (refresh) {
 				saveMapStatistics(user, self, null, result[0], 0) // 保存心理地图
@@ -421,25 +423,29 @@ public class SelfService {
 		switch (selfType) {
 			case "SDS" :
 				type = MapStatistics.Type.SDS
+				break
 			case "AB" :
 				type = MapStatistics.Type.ABCD
+				break
 			case "C" :
 				type = MapStatistics.Type.ABCD
+				break
 			case "D" :
 				type = MapStatistics.Type.ABCD
+				break
 			case "PDP" :
 				type = MapStatistics.Type.PDP
+				break
 			case "MBTI" :
 				type = MapStatistics.Type.MBTI
+				break
 		}
 
 		def mapStatistics = mapStatisticsRepository.findByUserAndSelf(user, self)
 		if (mapStatistics) {
 			mapStatistics.result = result
 			mapStatistics.selfResultOption = selfResultOption
-			if (score != 0) {
-				mapStatistics.score = score
-			}
+			mapStatistics.score = score
 		} else {
 			mapStatistics = new MapStatistics(
 				user : user,
@@ -447,7 +453,7 @@ public class SelfService {
 				type : type,
 				result : result,
 				selfResultOption : selfResultOption,
-				score : score != 0 ? score : null
+				score : score
 			)
 		}
 		mapStatisticsRepository.save(mapStatistics)

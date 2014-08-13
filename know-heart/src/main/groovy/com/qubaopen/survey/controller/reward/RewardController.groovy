@@ -38,6 +38,7 @@ public class RewardController extends AbstractBaseController<Reward, Long> {
 			'content' : reward.content ?: '',
 			'title' : reward.title ?: '',
 			'secretCode' : reward.secretCode ?: '',
+			'QRCode' : reward.QRCode ?: '',
 			'remark' : reward.remark ?: '',
 			'expirationDate' : reward.expirationDate ?: ''
 		]

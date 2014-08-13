@@ -16,6 +16,7 @@ import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
+import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfResultOptionRepository
@@ -51,6 +52,9 @@ public class SelfService {
 	MapStatisticsRepository mapStatisticsRepository
 
 	@Autowired
+	SelfQuestionOrderRepository selfQuestionOrderRepository
+
+	@Autowired
 	ObjectMapper objectMapper
 
 	/**
@@ -71,12 +75,66 @@ public class SelfService {
 
 		def specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
 
-		def result = [
-			'questions'	: questions,
-		'questionOrders' : questionOrders,
-		'specialInserts' : specialInserts
+		def questionList = []
+		questions.each { q ->
+			def options = []
+			q.selfQuestionOptions.each { qo ->
+				def option = [
+					'optionId' : qo.id,
+					'optionNum' : qo.optionNum,
+					'optionContent' : qo.content
+				]
+				options << option
+			}
+
+			def question = [
+				'questionId' : q.id,
+				'questionContent' : q.content,
+				'questionType' : q.type,
+				'optionCount' : q.optionCount,
+				'limitTime' : q.answerTimeLimit,
+				'special' : q.special,
+				'questionNum' : q.questionNum,
+				'options' : options
+			]
+			questionList << question
+		}
+
+		def inserts = []
+		specialInserts.each { si ->
+			def options = []
+			si.selfQuestion.selfQuestionOptions.each { ssq ->
+				def option = [
+					'optionId' : ssq.id,
+					'optionNum' : ssq.optionNum,
+					'optionContent' : ssq.content
+				]
+				options << option
+			}
+
+			def insert = [
+				'lastQuestionId' : si.selfQuestion.id ?: null,
+				'lastOptionId' : si.selfQuestionOption.id ?: null,
+				'nextQuestion' : [
+					'questionId' : si.selfQuestion.id,
+					'questionContent' : si.selfQuestion.content,
+					'questionType' : si.selfQuestion.type,
+					'optionCount' : si.selfQuestion.optionCount,
+					'limitTime' : si.selfQuestion.answerTimeLimit,
+					'special' : si.selfQuestion.special,
+					'questionNum' : si.selfQuestion.questionNum,
+					'options' : options
+				]
+			]
+			inserts << insert
+		}
+
+		[
+			'success' : '1',
+			'message' : '成功',
+			'questions' : questionList,
+			'specialInserts' : inserts
 		]
-		return result
 	}
 
 	/**
@@ -124,13 +182,15 @@ public class SelfService {
 
 			def resultMap = [:]
 
+			def resultList = []
 			optionMap.each { k, v -> // 计算每一个类型的分数
 				def score = 0
 				v.each {
 					score = score + it.score
 				}
-				optionMap.get(k).clear()
-				optionMap.put(k, score)
+				def tempMap = [name : k, value : score]
+				resultList << tempMap
+
 				if (resultMap.get(score)) { // key: 种类, value: 分数
 					resultMap.get(score) << k
 				} else {
@@ -152,7 +212,7 @@ public class SelfService {
 			def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 			if (refresh) {
-				saveMapStatistics(user, self, objectMapper.writeValueAsString(optionMap), result[0], 0) // 保存心理地图
+				saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0) // 保存心理地图
 
 				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 			}
@@ -216,7 +276,6 @@ public class SelfService {
 				'resultNum' : result[0].resultNum ?: ''
 			]
 
-
 		} else if (selfType.name == 'AB' || selfType.name == 'C' || selfType.name == 'D') { // AB,C,D 测试
 
 //			def score = selfResultOptionRepository.sumSelfOptions(optionIds)
@@ -264,7 +323,7 @@ public class SelfService {
 					optionMap.put(questionType, list)
 				}
 			}
-
+		    def resultList = []
 			optionMap.each { k, v ->
 				def score = 0
 				v.each {
@@ -272,6 +331,8 @@ public class SelfService {
 				}
 				optionMap.get(k).clear()
 				optionMap.put(k, score)
+				def tempMap = [name : k, value : score]
+				resultList << tempMap
 			}
 			def resultName = ''
 			if (optionMap.get('E') >= optionMap.get('I')) {
@@ -297,7 +358,7 @@ public class SelfService {
 			def result = selfResultOptionRepository.findByName(resultName)
 
 			if (refresh) {
-				saveMapStatistics(user, selfId, objectMapper.writeValueAsString(optionMap), result, 0)
+				saveMapStatistics(user, selfId, objectMapper.writeValueAsString(resultList), result, 0)
 
 				saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 			}

@@ -26,7 +26,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Audited
 public class RewardActivity extends AbstractBaseEntity<Long> {
 
-	private static final long serialVersionUID = -9097829089069118323L;
+	private static final long serialVersionUID = 3737396417460255332L;
 
 	/**
 	 * 奖品类型

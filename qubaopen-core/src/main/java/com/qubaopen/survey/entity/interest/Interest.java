@@ -1,12 +1,16 @@
 package com.qubaopen.survey.entity.interest;
 
+import java.util.Set;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
@@ -35,9 +39,10 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * 问卷标签
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "questionnaire_tag_type_id")
-	private QuestionnaireTagType questionnaireTagType;
+//	@ManyToMany
+//	@JoinTable(name = "interst_questionnira_tag_relation", joinColumns = @JoinColumn(name = "interest_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private Set<QuestionnaireTagType> questionnaireTagTypes;
 
 	/**
 	 * 问卷的答案方式  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
@@ -46,7 +51,7 @@ public class Interest extends AbstractBaseEntity<Long> {
 	private Type type;
 
 	private enum Type {
-		DISOREDER, SORCE, DISORDERSCORE
+		DISORDER, SORCE, DISORDERSCORE
 	}
 
 	/**
@@ -100,12 +105,12 @@ public class Interest extends AbstractBaseEntity<Long> {
 		this.interestType = interestType;
 	}
 
-	public QuestionnaireTagType getQuestionnaireTagType() {
-		return questionnaireTagType;
+	public Set<QuestionnaireTagType> getQuestionnaireTagTypes() {
+		return questionnaireTagTypes;
 	}
 
-	public void setQuestionnaireTagType(QuestionnaireTagType questionnaireTagType) {
-		this.questionnaireTagType = questionnaireTagType;
+	public void setQuestionnaireTagTypes(Set<QuestionnaireTagType> questionnaireTagTypes) {
+		this.questionnaireTagTypes = questionnaireTagTypes;
 	}
 
 	public Type getType() {

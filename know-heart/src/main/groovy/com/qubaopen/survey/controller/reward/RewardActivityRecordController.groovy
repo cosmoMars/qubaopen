@@ -2,7 +2,6 @@ package com.qubaopen.survey.controller.reward
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -56,16 +55,16 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	 * 修改用户参与活动记录，改变状态为confirming时，创建奖品分发记录
 	 */
 	@Override
-	@RequestMapping(method = RequestMethod.PUT)
-	modify(@RequestBody(required = false) RewardActivityRecord rewardActivityRecord) {
+	@RequestMapping(value = 'modifyRecordStatus', method = RequestMethod.PUT)
+	modifyRecordStatus(@RequestParam long recordId, @RequestParam String status) {
 
 		logger.trace ' -- 修改用户参与活动记录，改变状态为confirming时，创建奖品分发记录 -- '
 
-		if (!rewardActivityRecord) {
-			return '{"success": "0", "message": "err307"}'
-		}
+//		if (!rewardActivityRecord) {
+//			return '{"success": "0", "message": "err307"}'
+//		}
 
-		rewardActivityRecordService.modify(rewardActivityRecord)
+		rewardActivityRecordService.modifyRecordStatus(recordId, status)
 
 	}
 

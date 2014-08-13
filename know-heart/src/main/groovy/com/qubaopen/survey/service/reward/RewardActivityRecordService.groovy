@@ -86,13 +86,33 @@ public class RewardActivityRecordService {
 	 * @return
 	 */
 	@Transactional
-	modify(RewardActivityRecord rewardActivityRecord) {
-		def existRecord = rewardActivityRecordRepository.findOne(rewardActivityRecord.id)
+	modifyRecordStatus(long recordId, String status) {
 
-		if (existRecord.status != rewardActivityRecord.status && rewardActivityRecord.status == RewardActivityRecord.Status.CONFIRMING) {
+		def existRecord = rewardActivityRecordRepository.findOne(recordId)
 
-			modifyRecord(rewardActivityRecord)
+		def enumStatus = null
+		switch (status) {
+			case 'CONFIRMED' :
+				enumStatus = RewardActivityRecord.Status.CONFIRMED
+				break
+			case 'CONFIRMING' :
+				enumStatus = RewardActivityRecord.Status.CONFIRMING
+				break
+			case 'DELIVERING' :
+				enumStatus = RewardActivityRecord.Status.DELIVERING
+				break
+			case 'PROCESSING' :
+				enumStatus = RewardActivityRecord.Status.PROCESSING
+				break
+			case 'REWARD' :
+				enumStatus = RewardActivityRecord.Status.REWARD
+				break
+		}
 
+		if (existRecord.status != enumStatus && enumStatus == RewardActivityRecord.Status.CONFIRMING) {
+
+			existRecord.status = enumStatus
+			modifyRecord(existRecord)
 		}
 
 		'{"success": 1}'
@@ -153,10 +173,11 @@ public class RewardActivityRecordService {
 		activityRequireds.each {
 
 			def info = [
+				'rewardId' : it.reward?.id ?: '',
 				'name' : it.reward?.rewardType?.name ?: '',
 				'awardTime' : DateCommons.Date2String(it.awardTime, 'yyyy-MM-dd') ?: '',
 				'coins' : it.rewardActivity?.requireGold ?: '',
-				'code' : it.reward?.QRCode ?: '',
+				'QRCode' : it.reward?.QRCode ?: '',
 				'status' : it.status ?: ''
 			]
 			infos << info
@@ -207,17 +228,16 @@ public class RewardActivityRecordService {
 	 * @return
 	 */
 	@Transactional
-	modifyRecord(RewardActivityRecord activityRecord) {
+	modifyRecord(RewardActivityRecord record) {
 
-		def rewardType = activityRecord.rewardActivity.rewardType,
-			reward = activityRecord.reward,
+		def rewardType = record.rewardActivity.rewardType,
+			reward = record.reward,
 			rewardAssignRecord = new RewardAssignRecord(
-				rewardActivityRecord : activityRecord,
+				rewardActivityRecord : record,
 				reward : reward
 			)
 
-		rewardActivityRecordRepository.save(activityRecord)
+		rewardActivityRecordRepository.save(record)
 		rewardAssignRecordRepository.save(rewardAssignRecord)
-		'{"success" : "1"}'
 	}
 }

@@ -54,6 +54,12 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
 									}
 									writeMethod.invoke(target, v);
 								}
+							} else {
+								Method writeMethod = targetPd.getWriteMethod();
+								if (!Modifier.isPublic(writeMethod.getDeclaringClass().getModifiers())) {
+									writeMethod.setAccessible(true);
+								}
+								writeMethod.invoke(target, value);
 							}
 						}
 					} catch (Throwable ex) {

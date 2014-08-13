@@ -42,8 +42,8 @@ public class UserInfoService {
 		def result = [
 			'success' : "1",
 			'userId' : userId,
-			'name' : userInfo.name ?: '',
-			'sex' : userInfo.sex ?: '',
+			'name' : userInfo?.name ?: '',
+			'sex' : userInfo?.sex ?: '',
 			'birthday' : DateCommons.Date2String(userInfo?.birthday, 'yyyy-MM-dd') ?: '',
 			'bloodType' : userInfo?.bloodType ?: '',
 			'email' : userInfo.user.email ?: '',

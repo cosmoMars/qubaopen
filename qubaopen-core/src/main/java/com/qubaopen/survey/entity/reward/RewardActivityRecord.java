@@ -60,7 +60,10 @@ public class RewardActivityRecord extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private Status status;
 
-	@Temporal(TemporalType.TIMESTAMP)
+	/**
+	 * 兑奖时间
+	 */
+	@Temporal(TemporalType.DATE)
 	private Date awardTime;
 
 	private enum Status {

@@ -20,6 +20,7 @@ import com.qubaopen.survey.repository.interest.InterestResultOptionRepository
 import com.qubaopen.survey.repository.interest.InterestSpecialInsertRepository
 import com.qubaopen.survey.repository.interest.InterestUserAnswerRepository
 import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository
+import com.qubaopen.survey.repository.user.UserInfoRepository
 
 @Service
 public class InterestService {
@@ -46,6 +47,9 @@ public class InterestService {
 	InterestQuestionOptionRepository interestQuestionOptionRepository
 
 	@Autowired
+	UserInfoRepository userInfoRepository
+
+	@Autowired
 	ObjectMapper objectMapper
 
 	/**
@@ -57,19 +61,80 @@ public class InterestService {
 	findByInterest(long interestId) {
 
 		def interest = new Interest(id : interestId),
-			questions = interestQuestionRepository.findByInterest(interest)
+			questions = interestQuestionRepository.findByInterest(interest),
+			questionOrders = []
+		if (questions) {
+			questionOrders = interestQuestionOrderRepository.findByInterestQuestion(questions)
+		}
 
-//			questionOrders = []
-//		if (questions) {
-//			questionOrders = interestQuestionOrderRepository.findByInterestQuestion(questions)
-//		}
-//
-//		def specialInserts = interestSpecialInsertRepository.findByInterest(interest)
+		def specialInserts = interestSpecialInsertRepository.findByInterest(interest)
+
+		def questionList = []
+		questions.each { q ->
+			def options = []
+			q.interestQuestionOptions.each { qo ->
+				def option = [
+				    'optionId' : qo.id,
+					'optionNum' : qo.optionNum,
+					'optionContent' : qo.content
+				]
+				options << option
+			}
+			def nextOptionNum = null
+			questionOrders.find{ order ->
+				if (order.interestQuestion.id == q.id){
+					nextOptionNum = order.nextOptionNum
+				}
+			}
+
+			def question = [
+				'questionId' : q.id,
+				'questionContent' : q.content,
+				'questionType' : q.type,
+				'optionCount' : q.optionCount,
+				'limitTime' : q.answerTimeLimit,
+				'special' : q.special,
+				'questionNum' : q.questionNum,
+				'options' : options,
+				'nextOptionNum' : nextOptionNum
+			]
+			questionList << question
+		}
+
+		def inserts = []
+		specialInserts.each { si ->
+			def options = []
+			si.interestQuestion.interestQuestionOptions.each { siq ->
+				def option = [
+					'optionId' : siq.id,
+					'optionNum' : siq.optionNum,
+					'optionContent' : siq.content
+				]
+				options << option
+			}
+
+			def insert = [
+				'lastQuestionId' : si.interestQuestion.id ?: null,
+				'lastOptionId' : si.interestQuestionOption.id ?: null,
+				'nextQuestion' : [
+					'questionId' : si.interestQuestion.id,
+					'questionContent' : si.interestQuestion.content,
+					'questionType' : si.interestQuestion.type,
+					'optionCount' : si.interestQuestion.optionCount,
+					'limitTime' : si.interestQuestion.answerTimeLimit,
+					'special' : si.interestQuestion.special,
+					'questionNum' : si.interestQuestion.questionNum,
+					'options' : options
+				]
+			]
+			inserts << insert
+		}
 
 		[
-			'questions' : questions
-//			'questionOrders' : questionOrders,
-//			'specialInserts' : specialInserts
+			'success' : '1',
+			'message' : '成功',
+			'questions' : questionList,
+			'specialInserts' : inserts
 		]
 
 
@@ -222,6 +287,34 @@ public class InterestService {
 			}
 		}
 		interestUserAnswerRepository.save(userAnswers)
+	}
+
+	@Transactional
+	retrieveFriendAnswer(long friendId, long interestId) {
+		def friend = new User(id : friendId),
+		interest = new Interest(id : interestId)
+
+
+		def answerRecord = interestUserQuestionnaireRepository.findByUserAndInterest(friend, interest)
+
+		if (!answerRecord) {
+			return '{"success" : "0", "message" : "err没有好友问卷结果"}'
+		}
+
+		def friendInfo = userInfoRepository.findOne(friendId)
+		[
+			'success' : '1',
+			'message' : '成功',
+			'answer' : [
+				'resultNum' : answerRecord.interestResultOption.resultNum,
+				'content' : answerRecord.interestResultOption.content,
+				'title' : answerRecord.interestResultOption.title
+			],
+			'friend': [
+				'friendId' : friendId,
+				'friendName' : friendInfo.name
+			]
+		]
 	}
 
 }

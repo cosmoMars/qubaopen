@@ -88,7 +88,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 			saveFile(avatar.bytes, avatarPath)
 
 			def userInfo = user.userInfo
-			userInfo.avatarPath = "http://10.0.0.88:8080/pic/$filename"
+			userInfo.avatarPath = "/pic/$filename"
 			userInfoRepository.save(userInfo)
 			return '{"success": "1"}'
 		}

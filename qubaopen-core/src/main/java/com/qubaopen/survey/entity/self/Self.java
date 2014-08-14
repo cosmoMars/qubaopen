@@ -1,17 +1,14 @@
 package com.qubaopen.survey.entity.self;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
@@ -84,10 +81,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	 */
 	private String guidanceSentence;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+	private String picPath;
 
 	public SelfType getSelfType() {
 		return selfType;
@@ -161,12 +155,12 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.guidanceSentence = guidanceSentence;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 }

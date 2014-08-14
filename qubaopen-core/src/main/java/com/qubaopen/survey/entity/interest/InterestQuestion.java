@@ -2,21 +2,17 @@ package com.qubaopen.survey.entity.interest;
 
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author mars 兴趣问卷问题表
@@ -75,12 +71,9 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 答题时间限制
 	 */
-	private Integer answerTimeLimit;
+	private Integer answerTimeLimit = 1;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+	private String picPath;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "interestQuestion", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private Set<InterestQuestionOption> interestQuestionOptions;
@@ -147,12 +140,12 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 		this.answerTimeLimit = answerTimeLimit;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 	public Set<InterestQuestionOption> getInterestQuestionOptions() {

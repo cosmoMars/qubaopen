@@ -1,17 +1,13 @@
 package com.qubaopen.survey.entity.interest;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author mars 兴趣问卷问题选项表
@@ -45,10 +41,10 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 	 */
 	private String optionNum;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+	/**
+	 * 图片
+	 */
+	private String picPath;
 
 	public InterestQuestion getInterestQuestion() {
 		return interestQuestion;
@@ -82,12 +78,12 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 		this.optionNum = optionNum;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 }

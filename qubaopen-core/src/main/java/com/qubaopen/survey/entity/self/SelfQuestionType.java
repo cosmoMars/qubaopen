@@ -22,9 +22,9 @@ public class SelfQuestionType extends AbstractPersistable<Long> {
 	private String name;
 
 	/**
-	 * 别名
+	 * 标题
 	 */
-	private String nickName;
+	private String title;
 
 	/**
 	 * 备注
@@ -39,12 +39,12 @@ public class SelfQuestionType extends AbstractPersistable<Long> {
 		this.name = name;
 	}
 
-	public String getNickName() {
-		return nickName;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getRemark() {

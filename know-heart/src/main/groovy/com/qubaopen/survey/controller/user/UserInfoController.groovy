@@ -81,7 +81,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		if (avatar) {
 
 			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HH:mm:ss')}.png",
-				avatarPath = "${request.getServletContext().getRealPath('/')}/pic/$filename"
+				avatarPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
 
 			println avatarPath
 
@@ -116,14 +116,14 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 */
 	@RequestMapping(value = 'sharedUserInfo', method = RequestMethod.PUT)
 	sharedUserInfo(@RequestParam long userId,
-		@RequestParam(required = false) boolean sharedSina,
-		@RequestParam(required = false) boolean sharedTencent,
-		@RequestParam(required = false) boolean sharedWeChatFriend,
-		@RequestParam(required = false) boolean sharedQQSpace,
-		@RequestParam(required = false) boolean sharedWeChat,
-		@RequestParam(required = false) boolean publicAnswersToChief,
-		@RequestParam(required = false) boolean publicMovementToFriend,
-		@RequestParam(required = false) boolean publicAnswersToFriend
+		@RequestParam(required = false) Boolean sharedSina,
+		@RequestParam(required = false) Boolean sharedTencent,
+		@RequestParam(required = false) Boolean sharedWeChatFriend,
+		@RequestParam(required = false) Boolean sharedQQSpace,
+		@RequestParam(required = false) Boolean sharedWeChat,
+		@RequestParam(required = false) Boolean publicAnswersToChief,
+		@RequestParam(required = false) Boolean publicMovementToFriend,
+		@RequestParam(required = false) Boolean publicAnswersToFriend
 		) {
 			def userInfo = userInfoRepository.findOne(userId)
 			if (sharedSina) {

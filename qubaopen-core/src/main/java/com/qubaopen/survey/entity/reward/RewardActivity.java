@@ -2,12 +2,10 @@ package com.qubaopen.survey.entity.reward;
 
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,7 +13,6 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
@@ -90,10 +87,7 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	 */
 	private int eachCountLimit;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+	private String picPath;
 
 	public RewardType getRewardType() {
 		return rewardType;
@@ -175,12 +169,12 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 		this.eachCountLimit = eachCountLimit;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 }

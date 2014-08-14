@@ -44,12 +44,12 @@ public class InterestResultOption extends AbstractPersistable<Long> {
 	/**
 	 * 最低分数
 	 */
-	private int lowestScore;
+	private Integer lowestScore;
 
 	/**
 	 * 最高分数
 	 */
-	private int highestScore;
+	private Integer highestScore;
 
 	public String getContent() {
 		return content;
@@ -83,19 +83,19 @@ public class InterestResultOption extends AbstractPersistable<Long> {
 		this.resultNum = resultNum;
 	}
 
-	public int getLowestScore() {
+	public Integer getLowestScore() {
 		return lowestScore;
 	}
 
-	public void setLowestScore(int lowestScore) {
+	public void setLowestScore(Integer lowestScore) {
 		this.lowestScore = lowestScore;
 	}
 
-	public int getHighestScore() {
+	public Integer getHighestScore() {
 		return highestScore;
 	}
 
-	public void setHighestScore(int highestScore) {
+	public void setHighestScore(Integer highestScore) {
 		this.highestScore = highestScore;
 	}
 

@@ -72,6 +72,10 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		A, B, O, AB, OTHER
 	}
 
+//	@Lob
+//	@Basic(fetch = FetchType.LAZY)
+//	@JsonIgnore
+//	private byte[] avatar;
 	/**
 	 * 头像
 	 */

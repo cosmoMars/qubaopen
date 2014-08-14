@@ -4,12 +4,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,7 +16,6 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.QuestionnaireTagType;
 import com.qubaopen.survey.entity.customer.Customer;
@@ -127,10 +124,7 @@ public class Survey extends AbstractBaseEntity<Long> {
 	/**
 	 * 图片
 	 */
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+	private String picPath;
 
 	/**
 	 * 开始时间
@@ -278,12 +272,12 @@ public class Survey extends AbstractBaseEntity<Long> {
 		this.surveyType = surveyType;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 	public Date getStartTime() {

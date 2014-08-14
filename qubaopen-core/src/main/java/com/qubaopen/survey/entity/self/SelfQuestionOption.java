@@ -1,17 +1,13 @@
 package com.qubaopen.survey.entity.self;
 
-import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author mars 自测问题选项表
@@ -52,10 +48,7 @@ public class SelfQuestionOption extends AbstractPersistable<Long> {
 	 */
 	private String optionNum;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+	private String picPath;
 
 	public SelfQuestion getSelfQuestion() {
 		return selfQuestion;
@@ -97,12 +90,12 @@ public class SelfQuestionOption extends AbstractPersistable<Long> {
 		this.optionNum = optionNum;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 }

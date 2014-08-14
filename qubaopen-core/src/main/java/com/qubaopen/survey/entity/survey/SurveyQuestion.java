@@ -2,21 +2,17 @@ package com.qubaopen.survey.entity.survey;
 
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 调研问卷 问题 Created by duel on 2014/6/25.
@@ -95,10 +91,7 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "surveyQuestion", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private Set<SurveyQuestionOption> surveyQuestionOptions;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+	private String picPath;
 
 	public Survey getSurvey() {
 		return survey;
@@ -180,12 +173,12 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 		this.surveyQuestionOptions = surveyQuestionOptions;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 }

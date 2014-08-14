@@ -2,20 +2,17 @@ package com.qubaopen.survey.entity.interest;
 
 import java.util.Set;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.QuestionnaireTagType;
 
@@ -92,10 +89,8 @@ public class Interest extends AbstractBaseEntity<Long> {
 	 */
 	private int recommendedValue;
 
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] pic;
+
+	private String picPath;
 
 	public InterestType getInterestType() {
 		return interestType;
@@ -169,12 +164,12 @@ public class Interest extends AbstractBaseEntity<Long> {
 		this.recommendedValue = recommendedValue;
 	}
 
-	public byte[] getPic() {
-		return pic;
+	public String getPicPath() {
+		return picPath;
 	}
 
-	public void setPic(byte[] pic) {
-		this.pic = pic;
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 }

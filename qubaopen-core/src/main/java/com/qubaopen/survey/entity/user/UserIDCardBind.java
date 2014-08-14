@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
@@ -31,8 +32,9 @@ public class UserIDCardBind extends AbstractBaseEntity<Long> {
 	/**
 	 * 用户
 	 */
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false, unique = true)
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@PrimaryKeyJoinColumn
+	//@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 
 	public UserIDCard getUserIDCard() {
@@ -41,6 +43,14 @@ public class UserIDCardBind extends AbstractBaseEntity<Long> {
 
 	public void setUserIDCard(UserIDCard userIDCard) {
 		this.userIDCard = userIDCard;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

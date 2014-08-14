@@ -2,6 +2,8 @@ package com.qubaopen.survey.entity.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 
@@ -53,6 +55,12 @@ public class User extends AbstractBaseEntity<Long> {
 	 */
 	private boolean activated;
 
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+	private UserInfo userInfo;
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+	private UserIDCardBind userIdCardBind;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -91,6 +99,22 @@ public class User extends AbstractBaseEntity<Long> {
 
 	public void setActivated(boolean activated) {
 		this.activated = activated;
+	}
+
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public UserIDCardBind getUserIdCardBind() {
+		return userIdCardBind;
+	}
+
+	public void setUserIdCardBind(UserIDCardBind userIdCardBind) {
+		this.userIdCardBind = userIdCardBind;
 	}
 
 }

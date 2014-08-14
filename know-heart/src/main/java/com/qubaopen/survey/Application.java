@@ -37,6 +37,14 @@ public final class Application {
 			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+		/*mapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
+			@Override
+			public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)
+					throws IOException, JsonProcessingException {
+				jgen.writeString("");
+			}
+		});*/
+
 		return mapper;
 	}
 

@@ -1,22 +1,28 @@
 package com.qubaopen.survey.controller.user
 
+import javax.servlet.http.HttpServletRequest
+
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.service.user.UserInfoService
 
 @RestController
 @RequestMapping('userInfos')
+@SessionAttributes('currentUser')
 public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 	@Autowired
@@ -35,12 +41,12 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrievePersonalInfo/{userId}', method = RequestMethod.GET)
-	retrievePersonalInfo(@PathVariable long userId) {
+	@RequestMapping(value = 'retrievePersonalInfo', method = RequestMethod.GET)
+	retrievePersonalInfo(@ModelAttribute('currentUser') User user) {
 
 		logger.trace ' -- 获得用户个人信息 -- '
 
-		userInfoService.retrievePersonalInfo(userId)
+		userInfoService.retrievePersonalInfo(user.id)
 	}
 
 	/**
@@ -53,10 +59,9 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	modify(@RequestBody UserInfo userInfo) {
 		try {
 			userInfoRepository.modify(userInfo)
-
 			'{"success": "1"}'
 		} catch (Exception e) {
-			e.printStackTrace()
+			println e.message
 			'{"success": "0", "message": "err014"}'
 		}
 
@@ -69,36 +74,32 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 * @param avatar
 	 */
 	@RequestMapping(value = 'uploadAvatar', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	uploadAvatar(@RequestParam long userId, @RequestParam(required = false) MultipartFile avatar) {
+	uploadAvatar(@RequestParam(required = false) MultipartFile avatar, @ModelAttribute('currentUser') User user, HttpServletRequest request) {
 
 		logger.trace(' -- 上传头像 -- ')
 
-		def userInfo = userInfoRepository.findOne(userId)
-		userInfo.avatar = avatar.bytes
-		try {
+		if (avatar) {
+
+			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HH:mm:ss')}.png",
+				avatarPath = "${request.getServletContext().getRealPath('/')}/pic/$filename"
+
+			println avatarPath
+
+			saveFile(avatar.bytes, avatarPath)
+
+			def userInfo = user.userInfo
+			userInfo.avatarPath = "http://10.0.0.88:8080/pic/$filename"
 			userInfoRepository.save(userInfo)
-			'{"success": "1"}'
-		} catch (Exception e) {
-			'{"success": "0", "message": "err102"}'
+			return '{"success": "1"}'
 		}
-
+		'{"success": "0"}'
 	}
 
-	/**
-	 * 显示头像
-	 * @param userId
-	 * @param output
-	 * @return
-	 */
-	@RequestMapping(value = 'retrieveAvatar/{userId}', method = RequestMethod.GET)
-	retrieveAvatar(@PathVariable long userId, OutputStream output) {
-
-		logger.trace(' -- 显示头像 -- ')
-
-		def userInfo = userInfoRepository.findOne(userId)
-		output.write(userInfo.avatar)
+	private void saveFile(byte[] bytes, String filename) {
+		def fos = new FileOutputStream(filename)
+		fos.write(bytes)
+		fos.close()
 	}
-
 
 	/**
 	 * 修改用户信息 发布

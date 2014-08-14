@@ -2,12 +2,10 @@ package com.qubaopen.survey.entity.user;
 
 import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -16,7 +14,6 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 /**
@@ -78,10 +75,7 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 头像
 	 */
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
-	private byte[] avatar;
+	private String avatarPath;
 
 	/**
 	 * 个性签名
@@ -187,12 +181,12 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		this.bloodType = bloodType;
 	}
 
-	public byte[] getAvatar() {
-		return avatar;
+	public String getAvatarPath() {
+		return avatarPath;
 	}
 
-	public void setAvatar(byte[] avatar) {
-		this.avatar = avatar;
+	public void setAvatarPath(String avatarPath) {
+		this.avatarPath = avatarPath;
 	}
 
 	public String getSignature() {

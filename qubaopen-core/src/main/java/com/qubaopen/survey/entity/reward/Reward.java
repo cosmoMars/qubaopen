@@ -33,7 +33,12 @@ public class Reward extends AbstractBaseEntity<Long> {
 	private RewardType rewardType;
 
 	/**
-	 * 条形码内容
+	 * 兑奖号码
+	 */
+	private String rewardCode;
+
+	/**
+	 * 内容
 	 */
 	private String content;
 
@@ -80,6 +85,14 @@ public class Reward extends AbstractBaseEntity<Long> {
 
 	public void setRewardType(RewardType rewardType) {
 		this.rewardType = rewardType;
+	}
+
+	public String getRewardCode() {
+		return rewardCode;
+	}
+
+	public void setRewardCode(String rewardCode) {
+		this.rewardCode = rewardCode;
 	}
 
 	public String getContent() {

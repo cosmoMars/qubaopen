@@ -93,26 +93,25 @@ public class RewardActivityRecordService {
 		def enumStatus = null
 		switch (status) {
 			case 'CONFIRMED' :
-				enumStatus = RewardActivityRecord.Status.CONFIRMED
+				enumStatus = RewardActivityRecord.Status.DELIVERING
 				break
 			case 'CONFIRMING' :
 				enumStatus = RewardActivityRecord.Status.CONFIRMING
 				break
 			case 'DELIVERING' :
-				enumStatus = RewardActivityRecord.Status.DELIVERING
+				enumStatus = RewardActivityRecord.Status.CONFIRMED
 				break
 			case 'PROCESSING' :
 				enumStatus = RewardActivityRecord.Status.PROCESSING
 				break
-			case 'REWARD' :
-				enumStatus = RewardActivityRecord.Status.REWARD
-				break
 		}
 
 		if (existRecord.status != enumStatus && enumStatus == RewardActivityRecord.Status.CONFIRMING) {
-
 			existRecord.status = enumStatus
 			modifyRecord(existRecord)
+		} else if (enumStatus == RewardActivityRecord.Status.CONFIRMED || enumStatus == RewardActivityRecord.Status.PROCESSING) {
+			existRecord.status = enumStatus
+			rewardActivityRecordRepository.save(existRecord)
 		}
 
 		'{"success": 1}'
@@ -148,11 +147,11 @@ public class RewardActivityRecordService {
 					rewardStatus = RewardActivityRecord.Status.PROCESSING
 					break
 				case 'REWARD' :
-					rewardStatus = RewardActivityRecord.Status.REWARD
+					rewardStatus = 'REWARD'
 					break
 			}
 
-			if (RewardActivityRecord.Status.REWARD == rewardStatus) {
+			if (rewardStatus == 'REWARD') {
 				activityRequireds = rewardActivityRecordRepository.findAll(
 					[
 						user_equal : user,
@@ -177,7 +176,7 @@ public class RewardActivityRecordService {
 				'name' : it.reward?.rewardType?.name ?: '',
 				'awardTime' : DateCommons.Date2String(it.awardTime, 'yyyy-MM-dd') ?: '',
 				'coins' : it.rewardActivity?.requireGold ?: '',
-				'QRCode' : it.reward?.QRCode ?: '',
+				'rewardCode' : it.reward?.rewardCode ?: '',
 				'status' : it.status ?: ''
 			]
 			infos << info

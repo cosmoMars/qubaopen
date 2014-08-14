@@ -43,6 +43,7 @@ public class UserInfoService {
 			'success' : "1",
 			'userId' : userId,
 			'name' : userInfo?.name ?: '',
+			'nickName' : userInfo?.nickName ?: '',
 			'sex' : userInfo?.sex ?: '',
 			'birthday' : DateCommons.Date2String(userInfo?.birthday, 'yyyy-MM-dd') ?: '',
 			'bloodType' : userInfo?.bloodType ?: '',

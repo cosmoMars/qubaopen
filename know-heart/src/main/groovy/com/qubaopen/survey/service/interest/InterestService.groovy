@@ -16,6 +16,7 @@ import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.interest.InterestQuestionOptionRepository
 import com.qubaopen.survey.repository.interest.InterestQuestionOrderRepository
 import com.qubaopen.survey.repository.interest.InterestQuestionRepository
+import com.qubaopen.survey.repository.interest.InterestRepository
 import com.qubaopen.survey.repository.interest.InterestResultOptionRepository
 import com.qubaopen.survey.repository.interest.InterestSpecialInsertRepository
 import com.qubaopen.survey.repository.interest.InterestUserAnswerRepository
@@ -50,7 +51,46 @@ public class InterestService {
 	UserInfoRepository userInfoRepository
 
 	@Autowired
+	InterestRepository interestRepository
+
+	@Autowired
 	ObjectMapper objectMapper
+
+
+	@Transactional(readOnly = true)
+	retrieveInterest(long userId) {
+		def user = new User(id : userId)
+		def interestList = interestRepository.findUnfinishInterest(user)
+
+		// TODO 计算答问卷的好友数量
+//		def friendCount = userFriendRepository.countUserFriend(user)
+//		def friend = userFriendRepository.findByUser(user)
+
+		def result = []
+		result << ['success' : '1', 'message' : '成功']
+		interestList.each {
+			def tagNames = []
+			it.questionnaireTagTypes.each { q ->
+				tagNames << q.name
+			}
+			def friendCount = interestUserQuestionnaireRepository.countUserFriend(user, it)
+			def interest = [
+				'id' : it.id,
+				'interestType' : it.interestType.name,
+				'questionnaireTagType' : tagNames,
+				'type' : it.type.toString(),
+				'title' : it.title,
+				'golds' : it.golds ?: 0,
+				'status' : it.status.toString(),
+				'remark' : it.remark,
+				'totalRespondentsCount' : it.totalRespondentsCount ?: 0,
+				'recommendedValue' : it.recommendedValue ?: 0,
+				'friendCount' : friendCount
+			]
+			result << interest
+		}
+		result
+	}
 
 	/**
 	 * 通过interestId查找问卷
@@ -61,11 +101,11 @@ public class InterestService {
 	findByInterest(long interestId) {
 
 		def interest = new Interest(id : interestId),
-			questions = interestQuestionRepository.findByInterest(interest),
-			questionOrders = []
-		if (questions) {
-			questionOrders = interestQuestionOrderRepository.findByInterestQuestion(questions)
-		}
+			questions = interestQuestionRepository.findByInterest(interest)
+//			,questionOrders = []
+//		if (questions) {
+//			questionOrders = interestQuestionOrderRepository.findByInterestQuestion(questions)
+//		}
 
 		def specialInserts = interestSpecialInsertRepository.findByInterest(interest)
 
@@ -80,12 +120,6 @@ public class InterestService {
 				]
 				options << option
 			}
-			def nextOptionNum = null
-			questionOrders.find{ order ->
-				if (order.interestQuestion.id == q.id){
-					nextOptionNum = order.nextOptionNum
-				}
-			}
 
 			def question = [
 				'questionId' : q.id,
@@ -96,7 +130,7 @@ public class InterestService {
 				'special' : q.special,
 				'questionNum' : q.questionNum,
 				'options' : options,
-				'nextOptionNum' : nextOptionNum
+				'order' : q.qOrder
 			]
 			questionList << question
 		}
@@ -114,8 +148,8 @@ public class InterestService {
 			}
 
 			def insert = [
-				'lastQuestionId' : si.interestQuestion.id ?: null,
-				'lastOptionId' : si.interestQuestionOption.id ?: null,
+				'lastQuestionId' : si.interestQuestion.id,
+				'lastOptionId' : si.interestQuestionOption.id,
 				'nextQuestion' : [
 					'questionId' : si.interestQuestion.id,
 					'questionContent' : si.interestQuestion.content,
@@ -150,7 +184,7 @@ public class InterestService {
 	@Transactional
 	calculateInterestResult(long userId, long interestId, String questionJson) {
 
-		def interest = new Interest(id : interestId),
+		def interest = interestRepository.findOne(interestId),
 			user = new User(id : userId)
 
 		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
@@ -167,31 +201,38 @@ public class InterestService {
 		def questions = interestQuestionRepository.findAll(questionIds),
 			questionOptions = interestQuestionOptionRepository.findAll(optionIds)
 
-		def score = 0
-		questionOptions.each {
-			score = score + it.score
-		}
+		def type = interest.type
 
-		def resultOption = interestResultOptionRepository.findOneByFilters(
+		if (type == Interest.Type.SORCE) { //积分形式得答案
+			def score = 0
+			questionOptions.each {
+				score = score + it.score
+			}
+			def resultOption = interestResultOptionRepository.findOneByFilters(
+				[
+					'interestResult.interest_equal' : interest,
+					'lowestScore_lessThanOrEqualTo' : score,
+					'highestScore_greaterThanOrEqualTo' : score
+				]
+			)
+
+			// 保存用户问卷答卷，以及用户问卷问题
+			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, resultOption)
+
 			[
-				'interestResult.interest_equal' : interest,
-				'lowestScore_lessThanOrEqualTo' : score,
-				'highestScore_greaterThanOrEqualTo' : score
+				'success' : '1',
+				'message' : '成功',
+				'id' : resultOption.id ?: '',
+				'resultTitle' : resultOption?.interestResult?.title ?: '',
+				'content' : resultOption.content ?: '',
+				'optionTitle' : resultOption.title ?: '',
+				'resultNum' : resultOption.resultNum ?: ''
 			]
-		)
+		} else if (type == Interest.Type.DISORDER) { // 乱序
 
-		// 保存用户问卷答卷，以及用户问卷问题
-		saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, resultOption)
+			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, null)
 
-		[
-			'success' : '1',
-			'message' : '成功',
-			'id' : resultOption.id ?: '',
-			'resultTitle' : resultOption?.interestResult?.title ?: '',
-			'content' : resultOption.content ?: '',
-			'optionTitle' : resultOption.title ?: '',
-			'resultNum' : resultOption.resultNum ?: ''
-		]
+		}
 	}
 
 

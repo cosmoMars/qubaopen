@@ -1,9 +1,6 @@
 package com.qubaopen.survey.entity.interest;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
@@ -17,65 +14,50 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Audited
 public class InterestQuestionOrder extends AbstractPersistable<Long> {
 
-	private static final long serialVersionUID = 4286757524570531568L;
+	private static final long serialVersionUID = -5275365571762144278L;
 
 	/**
-	 * 问题id
+	 * 问题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "interest_question_id")
-	private InterestQuestion interestQuestion;
+	private long questionId;
 
 	/**
-	 * 题号
+	 * 本题选项结果
 	 */
-	private String questionNum;
+	private long optionId;
 
 	/**
-	 * 该选项的选项号
+	 * 下一题
 	 */
-	private String optionNum;
-
-	/**
-	 * 下题的题号
-	 */
-	private String nextOptionNum;
+	private long nextQuestionId;
 
 	/**
 	 * 是否跳过
 	 */
 	private boolean jump;
 
-	public String getQuestionNum() {
-		return questionNum;
+	public long getQuestionId() {
+		return questionId;
 	}
 
-	public void setQuestionNum(String questionNum) {
-		this.questionNum = questionNum;
+	public void setQuestionId(long questionId) {
+		this.questionId = questionId;
 	}
 
-	public String getOptionNum() {
-		return optionNum;
+	public long getOptionId() {
+		return optionId;
 	}
 
-	public void setOptionNum(String optionNum) {
-		this.optionNum = optionNum;
+	public void setOptionId(long optionId) {
+		this.optionId = optionId;
 	}
 
-	public String getNextOptionNum() {
-		return nextOptionNum;
+	public long getNextQuestionId() {
+		return nextQuestionId;
 	}
 
-	public void setNextOptionNum(String nextOptionNum) {
-		this.nextOptionNum = nextOptionNum;
-	}
-
-	public InterestQuestion getInterestQuestion() {
-		return interestQuestion;
-	}
-
-	public void setInterestQuestion(InterestQuestion interestQuestion) {
-		this.interestQuestion = interestQuestion;
+	public void setNextQuestionId(long nextQuestionId) {
+		this.nextQuestionId = nextQuestionId;
 	}
 
 	public boolean isJump() {

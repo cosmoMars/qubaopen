@@ -86,6 +86,11 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "selfQuestion", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private Set<SelfQuestionOption> selfQuestionOptions;
 
+	/**
+	 * 问题顺序 x:y:z|x:y:z x本题id，y选项id y＝0时，直接跳转z z下一题id，z＝0时，结束问卷
+	 */
+	private String qOrder;
+
 	public Self getSelf() {
 		return self;
 	}
@@ -164,6 +169,14 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 
 	public void setSelfQuestionOptions(Set<SelfQuestionOption> selfQuestionOptions) {
 		this.selfQuestionOptions = selfQuestionOptions;
+	}
+
+	public String getqOrder() {
+		return qOrder;
+	}
+
+	public void setqOrder(String qOrder) {
+		this.qOrder = qOrder;
 	}
 
 }

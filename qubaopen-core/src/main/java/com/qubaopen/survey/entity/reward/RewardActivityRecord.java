@@ -67,7 +67,7 @@ public class RewardActivityRecord extends AbstractBaseEntity<Long> {
 	private Date awardTime;
 
 	private enum Status {
-		DELIVERING, CONFIRMING, CONFIRMED, PROCESSING, REWARD
+		DELIVERING, CONFIRMING, CONFIRMED, PROCESSING
 	}
 
 	public User getUser() {

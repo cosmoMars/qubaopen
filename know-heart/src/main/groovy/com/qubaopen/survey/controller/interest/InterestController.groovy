@@ -13,11 +13,7 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.QuestionnaireTagType
 import com.qubaopen.survey.entity.interest.Interest
 import com.qubaopen.survey.entity.interest.InterestType
-import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.repository.QuestionnaireTagTypeRepository
 import com.qubaopen.survey.repository.interest.InterestRepository
-import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository
-import com.qubaopen.survey.repository.user.UserFriendRepository
 import com.qubaopen.survey.service.interest.InterestService
 
 @RestController
@@ -29,15 +25,6 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 	@Autowired
 	InterestService interestService
-
-	@Autowired
-	UserFriendRepository userFriendRepository
-
-	@Autowired
-	QuestionnaireTagTypeRepository questionnaireTagTypeRepository
-
-	@Autowired
-	InterestUserQuestionnaireRepository interestUserQuestionnaireRepository
 
 	@Override
 	protected MyRepository<Interest, Long> getRepository() {
@@ -54,37 +41,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 		logger.trace ' -- 获取用户兴趣问卷 -- '
 
-		def user = new User(id : userId)
-		def interestList = interestRepository.findUnfinishInterest(user)
-
-		// TODO 计算答问卷的好友数量
-//		def friendCount = userFriendRepository.countUserFriend(user)
-//		def friend = userFriendRepository.findByUser(user)
-
-		def result = []
-		result << ['success' : '1', 'message' : '成功']
-		interestList.each {
-			def tagNames = []
-			it.questionnaireTagTypes.each { q ->
-				tagNames << q.name
-			}
-			def friendCount = interestUserQuestionnaireRepository.countUserFriend(user, it)
-			def interest = [
-				'id' : it.id,
-				'interestType' : it.interestType.name,
-				'questionnaireTagType' : tagNames,
-				'type' : it.type.toString(),
-				'title' : it.title,
-				'golds' : it.golds ?: 0,
-				'status' : it.status.toString(),
-				'remark' : it.remark,
-				'totalRespondentsCount' : it.totalRespondentsCount ?: 0,
-				'recommendedValue' : it.recommendedValue ?: 0,
-				'friendCount' : friendCount
-			]
-			result << interest
-		}
-		result
+		interestService.retrieveInterest(userId)
 	}
 
 	/**
@@ -187,7 +144,6 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			recommendedValue : recommendedValue,
 			pic : pic.bytes
 		)
-
 		interestRepository.save(interest)
 	}
 

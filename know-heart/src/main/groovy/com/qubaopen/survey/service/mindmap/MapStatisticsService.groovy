@@ -47,8 +47,9 @@ public class MapStatisticsService {
 
 		if (map.size() > 1) {  // abcd 问卷
 			def temp = [:],
-				typeName = it.self.selfType.name
+				typeName = ''
 			map.each {
+				typeName = it.self.selfType.name
 				temp << [typeName : it.score]
 			}
 			return resultMap = [

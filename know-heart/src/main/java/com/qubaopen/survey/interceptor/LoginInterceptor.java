@@ -23,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 		logger.info(" =================== request preHandle =========================");
 
-		if (StringUtils.equals(request.getRequestURI(), "/users/login")) {
+		if (StringUtils.equals(request.getRequestURI(), "/know-heart/users/login")) {
 			return true;
 		}
 

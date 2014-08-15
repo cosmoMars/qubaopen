@@ -2,8 +2,11 @@ package com.qubaopen.survey.service.user
 
 import static com.qubaopen.survey.utils.ValidateUtil.*
 
+import javax.servlet.http.HttpServletRequest
+
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -254,15 +257,26 @@ public class UserService {
 	 * @return
 	 */
 	@Transactional
-	void saveUserAndUserAvatar(User user, MultipartFile avatar) {
+	void saveUserAndUserAvatar(User user, MultipartFile avatar, HttpServletRequest request) {
 
 		user = userRepository.save(user)
 
-		def userInfo = new UserInfo(
-			id : user.id,
-			publicAnswersToFriend : true,
-			avatar : avatar?.bytes ?: null
-		)
+		if (avatar) {
+			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HH:mm:ss')}.png",
+			avatarPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
+			def userInfo = new UserInfo(
+				id : user.id,
+				publicAnswersToFriend : true,
+				avatarPath : avatarPath
+			)
+			saveFile(avatar.bytes, avatarPath)
+		} else {
+			def userInfo = new UserInfo(
+				id : user.id,
+				publicAnswersToFriend : true,
+			)
+		}
+
 		def userUdid = new UserUDID(
 			id : user.id,
 			push : true,
@@ -276,6 +290,12 @@ public class UserService {
 		userInfoRepository.save(userInfo)
 		userUDIDRepository.save(userUdid)
 		userGoldRepository.save(userGold)
+	}
+
+	private void saveFile(byte[] bytes, String filename) {
+		def fos = new FileOutputStream(filename)
+		fos.write(bytes)
+		fos.close()
 	}
 
 }

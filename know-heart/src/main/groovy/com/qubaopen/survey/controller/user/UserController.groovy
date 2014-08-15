@@ -93,7 +93,8 @@ class UserController extends AbstractBaseController<User, Long> {
 				'consignee' : userReceiveAddress?.consignee,
 				'defaultAddressPhone' : userReceiveAddress?.phone,
 				'idCard' : userIdCardBind?.userIDCard?.IDCard,
-				'birthday' : userInfo?.birthday
+				'birthday' : userInfo?.birthday,
+				'avatarPath' : userInfo?.avatarPath
 			]
 		}
 

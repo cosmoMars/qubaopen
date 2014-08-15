@@ -9,6 +9,7 @@ import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
+import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
@@ -24,6 +25,9 @@ public class SelfService {
 
 	@Autowired
 	SelfQuestionOptionRepository selfQuestionOptionRepository
+
+	@Autowired
+	SelfQuestionOrderRepository selfQuestionOrderRepository
 
 	@Autowired
 	SelfRepository selfRepository

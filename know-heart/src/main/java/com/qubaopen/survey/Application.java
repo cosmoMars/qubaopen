@@ -1,5 +1,6 @@
 package com.qubaopen.survey;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import org.springframework.boot.SpringApplication;
@@ -9,8 +10,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
@@ -37,13 +42,13 @@ public final class Application {
 			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-		/*mapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
+		mapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
 			@Override
 			public void serialize(Object value, JsonGenerator jgen, SerializerProvider provider)
 					throws IOException, JsonProcessingException {
 				jgen.writeString("");
 			}
-		});*/
+		});
 
 		return mapper;
 	}

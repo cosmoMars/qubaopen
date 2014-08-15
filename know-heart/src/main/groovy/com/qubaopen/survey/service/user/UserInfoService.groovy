@@ -8,7 +8,6 @@ import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
-import com.qubaopen.survey.utils.DateCommons
 
 @Service
 public class UserInfoService {
@@ -42,15 +41,17 @@ public class UserInfoService {
 		def result = [
 			'success' : "1",
 			'userId' : userId,
-			'name' : userInfo?.name ?: '',
-			'nickName' : userInfo?.nickName ?: '',
-			'sex' : userInfo?.sex ?: '',
-			'birthday' : DateCommons.Date2String(userInfo?.birthday, 'yyyy-MM-dd') ?: '',
-			'bloodType' : userInfo?.bloodType ?: '',
-			'email' : userInfo.user.email ?: '',
-			'defaultAddress' : defaultAddress?.detialAddress ?: '',
-			'IdCard' : userIdCardBind?.userIDCard?.IDCard ?: '',
+			'name' : userInfo?.name,
+			'nickName' : userInfo?.nickName,
+			'sex' : userInfo?.sex,
+			'birthday' : userInfo?.birthday,
+			'bloodType' : userInfo?.bloodType,
+			'email' : userInfo?.user.email,
+			'defaultAddress' : defaultAddress?.detialAddress,
+			'IdCard' : userIdCardBind?.userIDCard?.IDCard,
+			'avatarPath' : userInfo?.avatarPath,
 			"district" : ''
+
 		]
 
 		result

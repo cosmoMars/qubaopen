@@ -38,7 +38,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter writer = response.getWriter();
-			writer.println("{\"success\": 0, \"message\": \"未登录，无权访问！\"}");
+			writer.println("{\"success\": \"0\", \"message\": \"err000\"}");
 			writer.close();
 			return false;
 		}

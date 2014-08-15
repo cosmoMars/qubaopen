@@ -112,7 +112,7 @@ public class UserService {
 	 * @return
 	 */
 	@Transactional
-	register(String phone, String password, String captcha, MultipartFile avatar) {
+	register(String phone, String password, String captcha, MultipartFile avatar, HttpServletRequest request) {
 
 		def u = userRepository.findByPhone(phone)
 		if (u) {
@@ -127,7 +127,7 @@ public class UserService {
 
 			u.password = DigestUtils.md5Hex(password)
 			u.activated = true
-			saveUserAndUserAvatar(u, avatar)
+			saveUserAndUserAvatar(u, avatar, request)
 
 			return [
 				'success': '1',
@@ -262,8 +262,8 @@ public class UserService {
 		user = userRepository.save(user)
 
 		def userInfo = null
-		if (avatar) {
-			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HH:mm:ss')}.png",
+		if (avatar != null) {
+			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
 			avatarPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
 			userInfo = new UserInfo(
 				id : user.id,

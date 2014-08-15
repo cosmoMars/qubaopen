@@ -80,7 +80,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 		if (avatar) {
 
-			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HH:mm:ss')}.png",
+			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
 				avatarPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
 
 			println avatarPath

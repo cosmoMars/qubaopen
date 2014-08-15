@@ -55,6 +55,7 @@ public class SelfService {
 //			questionOrders = selfQuestionOrderRepository.findAllBySelfQuestions(questions)
 //		}
 
+//		def questionOrders = selfQuestionOrderRepository.
 		def specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
 
 		def questionList = []

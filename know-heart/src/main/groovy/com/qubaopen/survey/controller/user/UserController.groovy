@@ -2,6 +2,7 @@ package com.qubaopen.survey.controller.user
 
 import static com.qubaopen.survey.utils.ValidateUtil.*
 
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -111,7 +112,9 @@ class UserController extends AbstractBaseController<User, Long> {
 	register(@RequestParam(required = false) String phone,
 		@RequestParam(required = false) String password,
 		@RequestParam(required = false) String captcha,
-		@RequestParam(required = false) MultipartFile avatar) {
+		@RequestParam(required = false) MultipartFile avatar,
+		HttpServletRequest request
+		) {
 
 		logger.trace ' -- 添加用户注册记录 -- '
 
@@ -123,7 +126,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			return '{"success": "0", "message": "err004"}'
 		}
 
-		userService.register(phone, password, captcha, avatar)
+		userService.register(phone, password, captcha, avatar, request)
 	}
 
 	/**

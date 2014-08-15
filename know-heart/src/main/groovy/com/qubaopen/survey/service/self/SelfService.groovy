@@ -51,7 +51,7 @@ public class SelfService {
 		selfList.each {
 			def self = [
 				'selfId' : it.id,
-				'managementType' : it.managementType.toString(),
+				'managementType' : it.managementType,
 				'title' : it.title,
 			]
 			data << self

@@ -35,7 +35,7 @@ public class RewardActivityService {
 			]
 		)
 		def result = [
-				'addressId': defaultAddress.id ?: '',
+				'addressId': defaultAddress?.id,
 				'rewardList': rewardList ?: []
 			]
 		result

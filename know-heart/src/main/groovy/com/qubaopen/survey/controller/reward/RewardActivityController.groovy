@@ -52,7 +52,7 @@ public class RewardActivityController extends AbstractBaseController<RewardActiv
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveOnlineReward', method = RequestMethod.GET)
-	retrieveOnlineReward(@ModelAttribute('current') User user) {
+	retrieveOnlineReward(@ModelAttribute('currentUser') User user) {
 
 		logger.trace ' -- 获取上线奖品活动 -- '
 

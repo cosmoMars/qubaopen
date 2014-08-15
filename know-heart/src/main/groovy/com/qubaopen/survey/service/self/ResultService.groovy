@@ -98,6 +98,8 @@ public class ResultService {
 	 * @param refresh
 	 * @return
 	 */
+
+	// TODO
 	@Transactional
 	calculatePDP(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<InterestQuestion> questions, boolean refresh) {
 		def optionMap = [:]

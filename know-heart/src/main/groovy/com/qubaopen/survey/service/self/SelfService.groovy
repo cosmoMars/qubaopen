@@ -54,8 +54,12 @@ public class SelfService {
 //		if (questions) {
 //			questionOrders = selfQuestionOrderRepository.findAllBySelfQuestions(questions)
 //		}
+//		def questionIds = long[]
+//		questions.each {
+//			questionIds << it.id
+//		}
 
-//		def questionOrders = selfQuestionOrderRepository.
+//		def questionOrders = selfQuestionOrderRepository.findAllBySelfQuestions(questionIds)
 		def specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
 
 		def questionList = []
@@ -69,6 +73,19 @@ public class SelfService {
 				]
 				options << option
 			}
+			def orders = selfQuestionOrderRepository.findByQuestionId(q.id)
+
+			def  order = ''
+			if (orders.size() > 1) {
+				for (i in 0..orders.size() - 1) {
+					order = order + "${orders[i].questionId}:${orders[i].optionId}:${orders[i].nextQuestionId}" as String
+					if (i < orders.size() - 1) {
+						order += '|'
+					}
+				}
+			} else if (orders.size() == 1){
+				order = "${orders[0].questionId}:${orders[0].optionId}:${orders[0].nextQuestionId}" as String
+			}
 
 			def question = [
 				'questionId' : q.id,
@@ -79,7 +96,7 @@ public class SelfService {
 				'special' : q.special,
 				'questionNum' : q.questionNum,
 				'options' : options,
-				'order' : q.qOrder
+				'order' : order
 			]
 			questionList << question
 		}
@@ -97,16 +114,16 @@ public class SelfService {
 			}
 
 			def insert = [
-				'lastQuestionId' : si.selfQuestion.id ?: null,
-				'lastOptionId' : si.selfQuestionOption.id ?: null,
+				'lastQuestionId' : si.selfQuestion?.id,
+				'lastOptionId' : si.selfQuestionOption?.id ,
 				'nextQuestion' : [
-					'questionId' : si.selfQuestion.id,
-					'questionContent' : si.selfQuestion.content,
-					'questionType' : si.selfQuestion.type,
-					'optionCount' : si.selfQuestion.optionCount,
-					'limitTime' : si.selfQuestion.answerTimeLimit,
-					'special' : si.selfQuestion.special,
-					'questionNum' : si.selfQuestion.questionNum,
+					'questionId' : si.selfQuestion?.id,
+					'questionContent' : si.selfQuestion?.content,
+					'questionType' : si.selfQuestion?.type,
+					'optionCount' : si.selfQuestion?.optionCount,
+					'limitTime' : si.selfQuestion?.answerTimeLimit,
+					'special' : si.selfQuestion?.special,
+					'questionNum' : si.selfQuestion?.questionNum,
 					'options' : options
 				]
 			]

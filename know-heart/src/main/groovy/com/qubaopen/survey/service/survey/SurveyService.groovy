@@ -86,8 +86,8 @@ public class SurveyService {
 					isMatch = false
 				}
 			}
-			if (isMatch && it.provinceCode) {
-				if (userQuota.regionCode != it.provinceCode) {
+			if (isMatch && it.areaCode) {
+				if (userQuota.areaCode != it.areaCode) {
 					isMatch = false
 				}
 			}

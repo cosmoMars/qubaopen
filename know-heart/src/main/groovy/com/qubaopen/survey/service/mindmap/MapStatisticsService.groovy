@@ -25,7 +25,8 @@ public class MapStatisticsService {
 
 		def user = new User(id : userId)
 
-		def mapType = null, resultMap = []
+		def mapType = null,
+		data = []
 		def types = type.split(',')
 		types.each {
 			switch (it) {
@@ -52,10 +53,7 @@ public class MapStatisticsService {
 					typeName = it.self.selfType.name
 					temp << [typeName : it.score]
 				}
-				resultMap << [
-					'success' : '1',
-					'message' : '成功',
-					'userId' : userId,
+				data << [
 					'chart' : temp,
 					'name' : '',
 					'content' : '',
@@ -64,19 +62,20 @@ public class MapStatisticsService {
 				]
 			}
 			if (!map.empty) {
-				resultMap << [
-					'success' : '1',
-					'message' : '成功',
-					'userId' : userId,
+				data << [
 					'chart' : map[0].result,
-					'name' : map[0].selfResultOption?.name ?: '',
-					'content' : map[0].selfResultOption?.content ?: '',
-					'title' : map[0].selfResultOption?.title ?: '',
-					'score' : map[0].score ?: ''
+					'name' : map[0].selfResultOption?.name,
+					'content' : map[0].selfResultOption?.content,
+					'title' : map[0].selfResultOption?.title,
+					'score' : map[0].score
 				]
 			}
 		}
-		resultMap
-
+		[
+			'success' : '1',
+			'message' : '成功',
+			'userId' : userId,
+			'data' : data
+		]
 	}
 }

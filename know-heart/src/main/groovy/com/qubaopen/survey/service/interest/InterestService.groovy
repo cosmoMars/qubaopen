@@ -66,8 +66,7 @@ public class InterestService {
 //		def friendCount = userFriendRepository.countUserFriend(user)
 //		def friend = userFriendRepository.findByUser(user)
 
-		def result = []
-		result << ['success' : '1', 'message' : '成功']
+		def data = []
 		interestList.each {
 			def tagNames = []
 			it.questionnaireTagTypes.each { q ->
@@ -75,21 +74,26 @@ public class InterestService {
 			}
 			def friendCount = interestUserQuestionnaireRepository.countUserFriend(user, it)
 			def interest = [
-				'id' : it.id,
+				'interestId' : it.id,
 				'interestType' : it.interestType.name,
 				'questionnaireTagType' : tagNames,
 				'type' : it.type.toString(),
 				'title' : it.title,
-				'golds' : it.golds ?: 0,
+				'golds' : it.golds,
 				'status' : it.status.toString(),
 				'remark' : it.remark,
-				'totalRespondentsCount' : it.totalRespondentsCount ?: 0,
-				'recommendedValue' : it.recommendedValue ?: 0,
-				'friendCount' : friendCount
+				'totalRespondentsCount' : it.totalRespondentsCount,
+				'recommendedValue' : it.recommendedValue,
+				'friendCount' : friendCount,
+				'guidanceSentence' : it.guidanceSentence
 			]
-			result << interest
+			data << interest
 		}
-		result
+		[
+			'success' : '1',
+			'message' : '成功',
+			'data' : data
+		]
 	}
 
 	/**

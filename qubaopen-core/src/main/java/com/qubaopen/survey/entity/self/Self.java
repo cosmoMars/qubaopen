@@ -29,7 +29,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	private SelfType selfType;
 
 	/**
-	 * 问卷的答案方式  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
+	 * 问卷的答案方式 乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
 	 */
 	@Enumerated
 	private Type type;
@@ -39,9 +39,20 @@ public class Self extends AbstractBaseEntity<Long> {
 	}
 
 	/**
+	 * 自测类型
+	 * Character性格分析, Emotional 情绪管理, Personal个人发展
+	 */
+	@Enumerated
+	private ManagementType managementType;
+
+	private enum ManagementType {
+		Character, Emotional, Personal
+	}
+
+	/**
 	 * 标题
 	 */
-	private String titile;
+	private String title;
 
 	/**
 	 * 金币
@@ -81,6 +92,14 @@ public class Self extends AbstractBaseEntity<Long> {
 	 */
 	private String guidanceSentence;
 
+	/**
+	 * 地图区间最大值
+	 */
+	private Integer mapMax;
+
+	/**
+	 * 图片地址
+	 */
 	private String picPath;
 
 	public SelfType getSelfType() {
@@ -99,12 +118,12 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.type = type;
 	}
 
-	public String getTitile() {
-		return titile;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setTitile(String titile) {
-		this.titile = titile;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public int getGolds() {
@@ -153,6 +172,14 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setGuidanceSentence(String guidanceSentence) {
 		this.guidanceSentence = guidanceSentence;
+	}
+
+	public Integer getMapMax() {
+		return mapMax;
+	}
+
+	public void setMapMax(Integer mapMax) {
+		this.mapMax = mapMax;
 	}
 
 	public String getPicPath() {

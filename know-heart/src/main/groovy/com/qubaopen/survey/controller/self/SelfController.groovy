@@ -32,6 +32,19 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	}
 
 	/**
+	 * 获取用户自测问卷
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveSelf', method = RequestMethod.GET)
+	retrieveSelf(@ModelAttribute('currentUser') User user) {
+
+		logger.trace ' -- 获取用户自测问卷 -- '
+
+		selfService.retrieveSelf(user.id)
+	}
+
+	/**
 	 * 计算自测结果选项
 	 * @param userId
 	 * @param selfId

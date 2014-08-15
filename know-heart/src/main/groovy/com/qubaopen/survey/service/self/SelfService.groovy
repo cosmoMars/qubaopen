@@ -38,9 +38,33 @@ public class SelfService {
 	@Autowired
 	ResultService resultService
 
+	/**
+	 * 获取自测问卷
+	 * @param userId
+	 * @return
+	 */
+	@Transactional
+	retrieveSelf(long userId) {
+		def user = new User(id : userId),
+			selfList = selfRepository.findAll(),
+			data = []
+		selfList.each {
+			def self = [
+				'selfId' : it.id,
+				'managementType' : it.managementType.toString(),
+				'title' : it.title,
+			]
+			data << self
+		}
+		[
+			'success' : '1',
+			'message' : '成功',
+			'data' : data
+		]
+	}
 
 	/**
-	 * 查找自测问卷
+	 * 查找自测问卷问题
 	 * @param selfId
 	 * @return
 	 */

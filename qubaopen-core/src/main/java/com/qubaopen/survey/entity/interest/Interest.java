@@ -89,6 +89,11 @@ public class Interest extends AbstractBaseEntity<Long> {
 	 */
 	private int recommendedValue;
 
+	/**
+	 * 指导语
+	 */
+	private String guidanceSentence;
+
 
 	private String picPath;
 
@@ -162,6 +167,14 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setRecommendedValue(int recommendedValue) {
 		this.recommendedValue = recommendedValue;
+	}
+
+	public String getGuidanceSentence() {
+		return guidanceSentence;
+	}
+
+	public void setGuidanceSentence(String guidanceSentence) {
+		this.guidanceSentence = guidanceSentence;
 	}
 
 	public String getPicPath() {

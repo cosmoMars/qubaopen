@@ -160,6 +160,11 @@ public class Survey extends AbstractBaseEntity<Long> {
 	@OneToMany(mappedBy = "survey")
 	private Set<SurveyQuota> quotas = new HashSet<>();
 
+	/**
+	 * 地图区间最大值
+	 */
+	private Integer mapMax;
+
 	public QuestionnaireTagType getQuestionnaireTagType() {
 		return questionnaireTagType;
 	}
@@ -326,6 +331,14 @@ public class Survey extends AbstractBaseEntity<Long> {
 
 	public void setQuotas(Set<SurveyQuota> quotas) {
 		this.quotas = quotas;
+	}
+
+	public Integer getMapMax() {
+		return mapMax;
+	}
+
+	public void setMapMax(Integer mapMax) {
+		this.mapMax = mapMax;
 	}
 
 }

@@ -261,17 +261,18 @@ public class UserService {
 
 		user = userRepository.save(user)
 
+		def userInfo = null
 		if (avatar) {
 			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HH:mm:ss')}.png",
 			avatarPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
-			def userInfo = new UserInfo(
+			userInfo = new UserInfo(
 				id : user.id,
 				publicAnswersToFriend : true,
 				avatarPath : avatarPath
 			)
 			saveFile(avatar.bytes, avatarPath)
 		} else {
-			def userInfo = new UserInfo(
+			userInfo = new UserInfo(
 				id : user.id,
 				publicAnswersToFriend : true,
 			)

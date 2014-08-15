@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -44,40 +42,40 @@ public class InterestQuestionController extends AbstractBaseController<InterestQ
 
 	}
 
-	/**
-	 * 上传图片
-	 * @param questionId
-	 * @param pic
-	 */
-	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	uploadPic(@RequestParam long questionId, @RequestParam(required = false) MultipartFile pic) {
-
-		logger.trace(' -- 上传图片 -- ')
-
-		def question = interestQuestionRepository.findOne(questionId)
-		question.pic = pic.bytes
-		try {
-			interestQuestionRepository.save(question)
-			'{"success": "1"}'
-		} catch (Exception e) {
-			'{"success": "0", "message": "上传失败"}'
-		}
-
-	}
-
-	/**
-	 * 显示图片
-	 * @param interestId
-	 * @param output
-	 * @return
-	 */
-	@RequestMapping(value = 'retrievePic/{questionId}', method = RequestMethod.GET)
-	retrieveAvatar(@PathVariable long questionId, OutputStream output) {
-
-		logger.trace(' -- 显示图片 -- ')
-
-		def question = interestQuestionRepository.findOne(questionId)
-		output.write(question.pic)
-	}
+//	/**
+//	 * 上传图片
+//	 * @param questionId
+//	 * @param pic
+//	 */
+//	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
+//	uploadPic(@RequestParam long questionId, @RequestParam(required = false) MultipartFile pic) {
+//
+//		logger.trace(' -- 上传图片 -- ')
+//
+//		def question = interestQuestionRepository.findOne(questionId)
+//		question.pic = pic.bytes
+//		try {
+//			interestQuestionRepository.save(question)
+//			'{"success": "1"}'
+//		} catch (Exception e) {
+//			'{"success": "0", "message": "上传失败"}'
+//		}
+//
+//	}
+//
+//	/**
+//	 * 显示图片
+//	 * @param interestId
+//	 * @param output
+//	 * @return
+//	 */
+//	@RequestMapping(value = 'retrievePic/{questionId}', method = RequestMethod.GET)
+//	retrieveAvatar(@PathVariable long questionId, OutputStream output) {
+//
+//		logger.trace(' -- 显示图片 -- ')
+//
+//		def question = interestQuestionRepository.findOne(questionId)
+//		output.write(question.pic)
+//	}
 
 }

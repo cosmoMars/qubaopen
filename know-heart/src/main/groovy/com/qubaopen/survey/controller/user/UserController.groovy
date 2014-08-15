@@ -181,7 +181,8 @@ class UserController extends AbstractBaseController<User, Long> {
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody User user) {
 
-		userService.modify(user)
+	userService.modify(user)
+
 	}
 
 }

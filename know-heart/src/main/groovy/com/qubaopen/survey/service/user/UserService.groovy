@@ -221,7 +221,6 @@ public class UserService {
 		}
 
 		'{"success": "0", "message": "err007"}'
-
 	}
 
 	/**

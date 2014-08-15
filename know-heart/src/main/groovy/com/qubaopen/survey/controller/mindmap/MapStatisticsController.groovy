@@ -1,19 +1,23 @@
 package com.qubaopen.survey.controller.mindmap
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.mindmap.MapStatistics
+import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.service.mindmap.MapStatisticsService
 
 @RestController
 @RequestMapping('mapStatistics')
+@SessionAttributes('currentUser')
 public class MapStatisticsController extends AbstractBaseController<MapStatistics, Long> {
 
 	@Autowired
@@ -34,11 +38,11 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveMapStatistics', method = RequestMethod.GET)
-	retrieveMapStatistics(@RequestParam long userId, @RequestParam String type) {
+	retrieveMapStatistics(@RequestParam String type, @ModelAttribute('currentUser') User user) {
 
 		logger.trace(' -- 获取心理地图信息 -- ')
 
-		mapStatisticsService.retrieveMapStatistics(userId, type)
+		mapStatisticsService.retrieveMapStatistics(user.id, type)
 	}
 
 }

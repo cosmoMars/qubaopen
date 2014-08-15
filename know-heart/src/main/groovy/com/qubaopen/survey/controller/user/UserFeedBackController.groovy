@@ -1,4 +1,4 @@
-package com.qubaopen.survey.service.user
+package com.qubaopen.survey.controller.user
 
 import javax.validation.Valid
 

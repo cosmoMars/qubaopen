@@ -1,10 +1,12 @@
 package com.qubaopen.survey.controller.interest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -15,6 +17,7 @@ import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireReposito
 
 @RestController
 @RequestMapping('interestUserQuestionnaires')
+@SessionAttributes('currentUser')
 public class InterestUserQuestionnaireController extends AbstractBaseController<InterestUserQuestionnaire, Long> {
 
 	@Autowired
@@ -27,18 +30,17 @@ public class InterestUserQuestionnaireController extends AbstractBaseController<
 
 
 	@RequestMapping(value = 'shareInterest', method = RequestMethod.PUT)
-	shareInterest(@RequestParam long userId,
-		@RequestParam long interestId,
-		@RequestParam(required = false) boolean sharedSina,
-		@RequestParam(required = false) boolean sharedTencent,
-		@RequestParam(required = false) boolean sharedWeChatFriend,
-		@RequestParam(required = false) boolean sharedQQSpace,
-		@RequestParam(required = false) boolean sharedWeChat,
-		@RequestParam(required = false) boolean publicToAll
+	shareInterest(@RequestParam long interestId,
+		@RequestParam(required = false) Boolean sharedSina,
+		@RequestParam(required = false) Boolean sharedTencent,
+		@RequestParam(required = false) Boolean sharedWeChatFriend,
+		@RequestParam(required = false) Boolean sharedQQSpace,
+		@RequestParam(required = false) Boolean sharedWeChat,
+		@RequestParam(required = false) Boolean publicToAll,
+		@ModelAttribute('currentUser') User user
 		) {
 
-		def user = new User(id : userId),
-			interest = new Interest(id : interestId)
+		def interest = new Interest(id : interestId)
 
 		def questionnarie = interestUserQuestionnaireRepository.findByUserAndInterest(user, interest)
 		if (sharedSina) {

@@ -149,25 +149,23 @@ public class SelfService {
 				result = null
 			switch (selfType.name) {
 				case 'SDS' :
-					result = resultService.calculateSDS(user, self, questionOptions, questionIds, questions, refresh)
+					result = resultService.calculateSDS(user, self, questionOptions, questionVos, questions, refresh)
 					break
 				case 'PDP' :
-					result = resultService.calculatePDP(user, self, questionOptions, questionIds, questions, refresh)
+					result = resultService.calculatePDP(user, self, questionOptions, questionVos, questions, refresh)
 					break
 				case 'AB' :
-					result = resultService.calculateABCD(user, self, questionOptions, questionIds, questions, refresh)
+					result = resultService.calculateABCD(user, self, questionOptions, questionVos, questions, refresh)
 					break
 				case 'C' :
-					result = resultService.calculateABCD(user, self, questionOptions, questionIds, questions, refresh)
+					result = resultService.calculateABCD(user, self, questionOptions, questionVos, questions, refresh)
 					break
 				case 'D' :
-					result = resultService.calculateABCD(user, self, questionOptions, questionIds, questions, refresh)
+					result = resultService.calculateABCD(user, self, questionOptions, questionVos, questions, refresh)
 					break
 				case 'MBTI' :
-					result = resultService.calculateMBTI(user, self, questionOptions, questionIds, questions, refresh)
+					result = resultService.calculateMBTI(user, self, questionOptions, questionVos, questions, refresh)
 					break
-
-
 				[
 					'success' : '1',
 					'message' : '成功',

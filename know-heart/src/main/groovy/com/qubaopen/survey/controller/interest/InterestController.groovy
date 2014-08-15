@@ -1,11 +1,13 @@
 package com.qubaopen.survey.controller.interest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
@@ -13,11 +15,13 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.QuestionnaireTagType
 import com.qubaopen.survey.entity.interest.Interest
 import com.qubaopen.survey.entity.interest.InterestType
+import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.interest.InterestRepository
 import com.qubaopen.survey.service.interest.InterestService
 
 @RestController
 @RequestMapping('interests')
+@SessionAttributes('currentUser')
 public class InterestController extends AbstractBaseController<Interest, Long> {
 
 	@Autowired
@@ -36,12 +40,12 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveInterest/{userId}', method = RequestMethod.GET)
-	retrieveInterest(@PathVariable long userId) {
+	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.GET)
+	retrieveInterest(@ModelAttribute('currentUser') User user) {
 
 		logger.trace ' -- 获取用户兴趣问卷 -- '
 
-		interestService.retrieveInterest(userId)
+		interestService.retrieveInterest(user.id)
 	}
 
 	/**
@@ -51,9 +55,10 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 */
 	@RequestMapping(value = 'calculateInterestResult', method = RequestMethod.GET)
 	calculateInterestResult(
-		@RequestParam long userId,
 		@RequestParam(required = false) long interestId,
-		@RequestParam(required = false) String questionJson) {
+		@RequestParam(required = false) String questionJson,
+		@ModelAttribute('currentUser') User user
+		) {
 
 		logger.trace ' -- 通过用户问题选项，计算得到结果选项 -- '
 
@@ -64,7 +69,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			return '{"success": "0", "message": "err1234"}'
 		}
 
-		interestService.calculateInterestResult(userId, interestId, questionJson)
+		interestService.calculateInterestResult(user.id, interestId, questionJson)
 	}
 
 	/**

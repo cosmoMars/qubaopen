@@ -1,15 +1,17 @@
 package com.qubaopen.survey.controller.survey
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.survey.Survey
+import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.survey.SurveyQuotaRepository
 import com.qubaopen.survey.repository.survey.SurveyRepository
 import com.qubaopen.survey.repository.user.UserQuotaRepository
@@ -17,6 +19,7 @@ import com.qubaopen.survey.service.survey.SurveyService
 
 @RestController
 @RequestMapping('surveys')
+@SessionAttributes('currentUser')
 public class SurveyController extends AbstractBaseController<Survey, Long> {
 
 	@Autowired
@@ -41,12 +44,12 @@ public class SurveyController extends AbstractBaseController<Survey, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveSurvey/{userId}', method = RequestMethod.GET)
-	retrieveSurvey(@PathVariable long userId) {
+	@RequestMapping(value = 'retrieveSurvey', method = RequestMethod.GET)
+	retrieveSurvey(@ModelAttribute('currentUser') User user) {
 
 		logger.trace ' -- 获取用户的问卷 -- '
 
-		surveyService.retrieveSurvey(userId)
+		surveyService.retrieveSurvey(user.id)
 	}
 
 	/**

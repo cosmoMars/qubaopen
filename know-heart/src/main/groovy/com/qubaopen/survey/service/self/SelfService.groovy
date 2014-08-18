@@ -46,7 +46,7 @@ public class SelfService {
 	@Transactional
 	retrieveSelf(long userId) {
 		def user = new User(id : userId),
-			selfList = selfRepository.findAll(),
+			selfList = selfRepository.findSelfWithoutManagement(),
 			data = []
 		selfList.each {
 			def self = [
@@ -171,7 +171,7 @@ public class SelfService {
 	 * @return
 	 */
 	@Transactional
-	calculateSelfReslut(long userId, long selfId, String questionJson, boolean refresh) {
+	calculateSelfReslut(long userId, long selfId, String questionJson, Boolean refresh) {
 
 		def user = new User(id : userId),
 			self = selfRepository.findOne(selfId)
@@ -182,13 +182,19 @@ public class SelfService {
 		def questionIds = [], optionIds = []
 		questionVos.each {
 			questionIds << it.questionId
-			optionIds += it.choiceIds as List
+//			optionIds += it.choiceIds as List
+
+			it.content.each { c ->
+				if (c.matches('^[0-9]*$')) {
+					optionIds += Long.valueOf(c)
+				}
+			}
+
 		}
 
-		def questions = selfQuestionRepository.findAll(questionIds)
-		def questionOptions = selfQuestionOptionRepository.findAll(optionIds)
-
-		def type = self.type
+		def questions = selfQuestionRepository.findAll(questionIds),
+			questionOptions = selfQuestionOptionRepository.findAll(optionIds),
+			type = self.type
 
 		if (type == Self.Type.SORCE) {
 			def selfType = self.selfType,
@@ -212,16 +218,16 @@ public class SelfService {
 				case 'MBTI' :
 					result = resultService.calculateMBTI(user, self, questionOptions, questionVos, questions, refresh)
 					break
-				[
-					'success' : '1',
-					'message' : '成功',
-					'id' : result.id ?: '',
-					'resultTitle' : result?.selfResult?.title ?: '',
-					'content' : result.content ?: '',
-					'optionTitle' : result.title ?: '',
-					'resultNum' : result.resultNum ?: ''
-				]
 			}
+			[
+				'success' : '1',
+				'message' : '成功',
+				'id' : result.id ?: '',
+				'resultTitle' : result?.selfResult?.title ?: '',
+				'content' : result.content ?: '',
+				'optionTitle' : result.title ?: '',
+				'resultNum' : result.resultNum ?: ''
+			]
 		} else if (type == Self.Type.DISOREDER) {
 
 		}

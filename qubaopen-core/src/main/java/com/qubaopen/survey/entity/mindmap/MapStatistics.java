@@ -60,6 +60,11 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	 */
 	private int score;
 
+	/**
+	 * 地图最大值
+	 */
+	private Integer mapMax;
+
 	public User getUser() {
 		return user;
 	}
@@ -106,6 +111,14 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 
 	public void setScore(int score) {
 		this.score = score;
+	}
+
+	public Integer getMapMax() {
+		return mapMax;
+	}
+
+	public void setMapMax(Integer mapMax) {
+		this.mapMax = mapMax;
 	}
 
 }

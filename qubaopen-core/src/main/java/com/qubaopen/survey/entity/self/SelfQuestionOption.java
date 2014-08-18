@@ -27,11 +27,18 @@ public class SelfQuestionOption extends AbstractPersistable<Long> {
 	private SelfQuestion selfQuestion;
 
 	/**
-	 * 类型题的答案
+	 * 问题类型
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "self_result_option_id")
-	private SelfResultOption selfResultOption;
+	@ManyToOne
+	@JoinColumn(name = "self_question_option_type_id")
+	private SelfQuestionOptionType selfQuestionOptionType;
+
+//	/**
+//	 * 类型题的答案
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "self_result_option_id")
+//	private SelfResultOption selfResultOption;
 
 	/**
 	 * 内容
@@ -58,12 +65,12 @@ public class SelfQuestionOption extends AbstractPersistable<Long> {
 		this.selfQuestion = selfQuestion;
 	}
 
-	public SelfResultOption getSelfResultOption() {
-		return selfResultOption;
+	public SelfQuestionOptionType getSelfQuestionOptionType() {
+		return selfQuestionOptionType;
 	}
 
-	public void setSelfResultOption(SelfResultOption selfResultOption) {
-		this.selfResultOption = selfResultOption;
+	public void setSelfQuestionOptionType(SelfQuestionOptionType selfQuestionOptionType) {
+		this.selfQuestionOptionType = selfQuestionOptionType;
 	}
 
 	public String getContent() {

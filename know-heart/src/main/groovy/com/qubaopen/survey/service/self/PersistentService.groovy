@@ -54,13 +54,14 @@ public class PersistentService {
 		def userAnswers = []
 
 		questions.each { q ->
-			def type = q.type.SINGLE.toString()
+			def type = q.type
 			def answer = null, option = null
 			questionVos.find { vo ->
 				if (q.id == vo.questionId) {
-					if (type == SelfQuestion.Type.SINGLE.toString() && vo.choiceIds.length <= q.optionCount) { // 单选
+					if (type == SelfQuestion.Type.SINGLE) { // 单选
+						def choiceId = Long.valueOf(vo.content[0])
 						options.find { o ->
-							if (o.id == vo.choiceIds[0]) {
+							if (o.id == choiceId) {
 								option = o
 							}
 						}
@@ -73,10 +74,10 @@ public class PersistentService {
 						)
 						userAnswers << answer
 					}
-					if (type == SelfQuestion.Type.MULTIPLE.toString() && vo.choiceIds.length <= q.optionCount) { // 多选
-						vo.choiceIds.each { cId ->
+					if (type == SelfQuestion.Type.MULTIPLE) { // 多选
+						vo.content.each { cId ->
 							options.find { o ->
-								if (o.id == cId) {
+								if (o.id == Long.valueOf(cId)) {
 									option = o
 								}
 							}
@@ -90,22 +91,25 @@ public class PersistentService {
 							userAnswers << answer
 						}
 					}
-					if (type == SelfQuestion.Type.QA.toString() && !vo.content.empty) { // 问答
-						answer = new SelfUserAnswer(
-							user : user,
-							selfUserQuestionnaire : selfUserQuestionnaire,
-							selfQuestion : q,
-							content : vo.content
-						)
-						userAnswers << answer
+					if (type == SelfQuestion.Type.QA) { // 问答
+						vo.content.each {
+							answer = new SelfUserAnswer(
+								user : user,
+								selfUserQuestionnaire : selfUserQuestionnaire,
+								selfQuestion : q,
+								content : it
+							)
+							userAnswers << answer
+						}
 					}
-					if (type == SelfQuestion.Type.SORT.toString() && vo.orderIds.length <= q.optionCount) { // 排序
-						vo.orderIds.eachWithIndex { oId, index ->
+					if (type == SelfQuestion.Type.SORT) { // 排序
+						vo.content.eachWithIndex { cId, index ->
 							options.find { o ->
-								if(o.id == oId) {
+								if(o.id == Long.valueOf(cId)) {
 									option = o
 								}
 							}
+
 							answer = new SelfUserAnswer(
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
@@ -130,7 +134,7 @@ public class PersistentService {
 	 * @param result
 	 */
 	@Transactional
-	void saveMapStatistics(User user, Self self, String result, SelfResultOption selfResultOption, int score) {
+	void saveMapStatistics(User user, Self self, String result, SelfResultOption selfResultOption, int score, Integer mapMax) {
 
 		def selfType = self.selfType.name
 		def type = null
@@ -160,6 +164,7 @@ public class PersistentService {
 			mapStatistics.result = result
 			mapStatistics.selfResultOption = selfResultOption
 			mapStatistics.score = score
+			mapStatistics.mapMax = mapMax
 		} else {
 			mapStatistics = new MapStatistics(
 				user : user,
@@ -167,7 +172,8 @@ public class PersistentService {
 				type : type,
 				result : result,
 				selfResultOption : selfResultOption,
-				score : score
+				score : score,
+				mapMax : mapMax
 			)
 		}
 		mapStatisticsRepository.save(mapStatistics)

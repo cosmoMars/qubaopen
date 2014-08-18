@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.qubaopen.survey.entity.interest.InterestQuestion
 import com.qubaopen.survey.entity.self.Self
+import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
@@ -34,7 +34,7 @@ public class ResultService {
 	 * @return
 	 */
 	@Transactional
-	calculateSDS(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<InterestQuestion> questions, boolean refresh) {
+	calculateSDS(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
 		def optionMap = [:]
 		questionOptions.each {
 			def questionType = it.selfQuestion.selfQuestionType.name
@@ -80,7 +80,7 @@ public class ResultService {
 		def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0) // 保存心理地图
+			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0, self.mapMax) // 保存心理地图
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 		}
@@ -101,20 +101,18 @@ public class ResultService {
 
 	// TODO
 	@Transactional
-	calculatePDP(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<InterestQuestion> questions, boolean refresh) {
+	calculatePDP(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
 		def optionMap = [:]
 		questionOptions.each {
-			def selfResultOption = it.selfResultOption
-
-			if (optionMap.get(selfResultOption)) { // key: 种类, value: 题目
-				optionMap.get(selfResultOption) << it
+			def questionType = it.selfQuestion.selfQuestionType.name
+			if (optionMap.get(questionType)) {
+				optionMap.get(questionType) << it
 			} else {
 				def optionList = []
 				optionList << it
-				optionMap.put(selfResultOption, optionList)
+				optionMap.put(questionType, optionList)
 			}
 		}
-
 
 		def resultMap = [:]
 
@@ -123,7 +121,7 @@ public class ResultService {
 			v.each {
 				score += it.score
 			}
-			if (resultMap.get(score)) { // key: 分数, value: 种类
+			if (resultMap.get(score)) { // key: 分数, value: 孔雀
 				resultMap.get(score) << k
 			} else {
 				def typeList = []
@@ -131,15 +129,16 @@ public class ResultService {
 				resultMap.put(score, typeList)
 			}
 		}
-		def result = resultMap.get(resultMap.keySet().max()) as List
+		def resultNames = resultMap.get(resultMap.keySet().max()) as List,
+			result = selfResultOptionRepository.findByName(resultNames[0])
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, null, result[0], 0) // 保存心理地图
+			persistentService.saveMapStatistics(user, self, null, result, 0, self.mapMax) // 保存心理地图
 
-			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
+			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
 
-		result[0]
+		result
 	}
 
 
@@ -154,7 +153,7 @@ public class ResultService {
 	 * @return
 	 */
 	@Transactional
-	calculateABCD(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<InterestQuestion> questions, boolean refresh) {
+	calculateABCD(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
 		def score = 0
 
 		questionOptions.each {
@@ -165,13 +164,13 @@ public class ResultService {
 			score = score * 3
 		}
 		def result = selfResultOptionRepository.findOneByFilters(
-			'selfResult.self' : self,
-			highestScore_greaterThanOrEqualTo : score,
-			lowestScore_lessThanOrEqualTo : score
+			'selfResult.self_equal' : self,
+			'highestScore_greaterThanOrEqualTo' : score,
+			'lowestScore_lessThanOrEqualTo' : score
 		)
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, null, result, score)
+			persistentService.saveMapStatistics(user, self, null, result, score, self.mapMax)
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
@@ -190,17 +189,18 @@ public class ResultService {
 	 * @return
 	 */
 	@Transactional
-	calculateMBTI(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<InterestQuestion> questions, boolean refresh) {
+	calculateMBTI(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
 		def optionMap = [:]
 		questionOptions.each {
-			def questionType = it.selfQuestion.selfQuestionType.name
 
-			if (optionMap.get(questionType)) {
-				optionMap.get(questionType) << it
+			def optionType = it.selfQuestionOptionType.name
+
+			if (optionMap.get(optionType)) {
+				optionMap.get(optionType) << it
 			} else {
 				def list = []
 				list << it
-				optionMap.put(questionType, list)
+				optionMap.put(optionType, list)
 			}
 		}
 		def resultList = []
@@ -238,10 +238,11 @@ public class ResultService {
 		def result = selfResultOptionRepository.findByName(resultName)
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result, 0)
+			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result, 0, self.mapMax)
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
+
 		result
 	}
 }

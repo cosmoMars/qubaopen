@@ -57,14 +57,8 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody UserInfo userInfo) {
-		try {
-			userInfoRepository.modify(userInfo)
-			'{"success": "1"}'
-		} catch (Exception e) {
-			println e.message
-			'{"success": "0", "message": "err014"}'
-		}
-
+		userInfoRepository.modify(userInfo)
+		'{"success": "1"}'
 	}
 
 

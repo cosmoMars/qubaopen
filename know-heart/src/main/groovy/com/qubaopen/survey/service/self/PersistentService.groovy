@@ -75,9 +75,9 @@ public class PersistentService {
 						userAnswers << answer
 					}
 					if (type == SelfQuestion.Type.MULTIPLE) { // 多选
-						vo.content.each { cId ->
+						vo.content.each { oId ->
 							options.find { o ->
-								if (o.id == Long.valueOf(cId)) {
+								if (o.id == Long.valueOf(oId)) {
 									option = o
 								}
 							}
@@ -93,29 +93,40 @@ public class PersistentService {
 					}
 					if (type == SelfQuestion.Type.QA) { // 问答
 						vo.content.each {
+							def str = it.split(':')
 							answer = new SelfUserAnswer(
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
 								selfQuestion : q,
-								content : it
+								selfQuestionOption : new SelfQuestionOption(id : Long.valueOf(str[0])),
+								content : str[1]
 							)
 							userAnswers << answer
 						}
 					}
 					if (type == SelfQuestion.Type.SORT) { // 排序
-						vo.content.eachWithIndex { cId, index ->
-							options.find { o ->
-								if(o.id == Long.valueOf(cId)) {
-									option = o
-								}
-							}
+						vo.content.eachWithIndex { oId, index ->
+							answer = new SelfUserAnswer(
+								user : user,
+								selfUserQuestionnaire : selfUserQuestionnaire,
+								selfQuestionOption : new SelfQuestionOption(id : Long.valueOf(oId)),
+								selfQuestion : q,
+								turn : index + 1
+							)
+							userAnswers << answer
+						}
+					}
+					if (type == SelfQuestion.Type.SCORE) { // 打分
+						vo.content.each {
+							def str = it.split(':'),
+								oId = Long.valueOf(str[0])
 
 							answer = new SelfUserAnswer(
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
-								selfQuestionOption : option,
+								selfQuestionOption : new SelfQuestionOption(id : oId),
 								selfQuestion : q,
-								turn : index + 1
+								score : Integer.valueOf(str[1])
 							)
 							userAnswers << answer
 						}

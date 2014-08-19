@@ -199,34 +199,30 @@ public class SelfService {
 		if (type == Self.Type.SORCE) {
 			def selfType = self.selfType,
 				result = null
+
 			switch (selfType.name) {
-				case 'SDS' :
-					result = resultService.calculateSDS(user, self, questionOptions, questionVos, questions, refresh)
+				case 'SCORE' :
+					result = resultService.calculateScore(user, self, questionOptions, questionVos, questions, refresh)
 					break
-				case 'PDP' :
-					result = resultService.calculatePDP(user, self, questionOptions, questionVos, questions, refresh)
+				case 'QTYPE' :
+					result = resultService.calculateQType(user, self, questionOptions, questionVos, questions, refresh)
 					break
-				case 'AB' :
-					result = resultService.calculateABCD(user, self, questionOptions, questionVos, questions, refresh)
+				case 'RTYPE' :
+					result = resultService.calculateRType(user, self, questionOptions, questionVos, questions, refresh)
 					break
-				case 'C' :
-					result = resultService.calculateABCD(user, self, questionOptions, questionVos, questions, refresh)
-					break
-				case 'D' :
-					result = resultService.calculateABCD(user, self, questionOptions, questionVos, questions, refresh)
-					break
-				case 'MBTI' :
-					result = resultService.calculateMBTI(user, self, questionOptions, questionVos, questions, refresh)
-					break
+			}
+
+			if (!result) {
+				return '{"success" : "0", "message" : "err123123"}'
 			}
 			[
 				'success' : '1',
 				'message' : '成功',
-				'id' : result.id ?: '',
-				'resultTitle' : result?.selfResult?.title ?: '',
-				'content' : result.content ?: '',
-				'optionTitle' : result.title ?: '',
-				'resultNum' : result.resultNum ?: ''
+				'id' : result?.id,
+				'resultTitle' : result?.selfResult?.title,
+				'content' : result?.content,
+				'optionTitle' : result?.title,
+				'resultNum' : result?.resultNum
 			]
 		} else if (type == Self.Type.DISOREDER) {
 

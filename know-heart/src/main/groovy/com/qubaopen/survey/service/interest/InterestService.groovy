@@ -106,10 +106,6 @@ public class InterestService {
 
 		def interest = new Interest(id : interestId),
 			questions = interestQuestionRepository.findByInterest(interest)
-//			,questionOrders = []
-//		if (questions) {
-//			questionOrders = interestQuestionOrderRepository.findByInterestQuestion(questions)
-//		}
 
 		def specialInserts = interestSpecialInsertRepository.findByInterest(interest)
 
@@ -198,6 +194,15 @@ public class InterestService {
 
 		questionVos.each {
 			questionIds << it.questionId
+
+			it.content.each { c ->
+				if (c.matches('^[0-9]*$')) {
+					optionIds += Long.valueOf(c)
+				}
+			}
+		}
+		questionVos.each {
+			questionIds << it.questionId
 			optionIds += it.choiceIds as List
 		}
 
@@ -223,15 +228,8 @@ public class InterestService {
 			// 保存用户问卷答卷，以及用户问卷问题
 			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, resultOption)
 
-			[
-				'success' : '1',
-				'message' : '成功',
-				'id' : resultOption.id ?: '',
-				'resultTitle' : resultOption?.interestResult?.title ?: '',
-				'content' : resultOption.content ?: '',
-				'optionTitle' : resultOption.title ?: '',
-				'resultNum' : resultOption.resultNum ?: ''
-			]
+			resultOption
+
 		} else if (type == Interest.Type.DISORDER) { // 乱序
 
 			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, null)
@@ -266,13 +264,14 @@ public class InterestService {
 		def userAnswers = []
 
 		questions.each { q ->
-			def type = q.type.toString()
+			def type = q.type
 			def answer = null, option = null
 			questionVos.find { vo ->
 				if (vo.questionId == q.id) {
-					if (type == InterestQuestion.Type.SINGLE.toString() && vo.choiceIds.length <= q.optionCount) { // 单选
+					if (type == InterestQuestion.Type.SINGLE) { // 单选
+						def choiceId = Long.valueOf(vo.content[0])
 						options.find { o ->
-							if (o.id == vo.choiceIds[0]) {
+							if (o.id == choiceId) {
 								option = o
 							}
 						}
@@ -285,10 +284,10 @@ public class InterestService {
 						)
 						userAnswers << answer
 					}
-					if (type == InterestQuestion.Type.MULTIPLE.toString() && vo.choiceIds.length <= q.optionCount) { // 多选
-						vo.choiceIds.each { cId ->
+					if (type == InterestQuestion.Type.MULTIPLE) { // 多选
+						vo.content.each { cId ->
 							options.find { o ->
-								if (o.id == cId) {
+								if (o.id == Long.valueOf(cId)) {
 									option = o
 								}
 							}
@@ -302,19 +301,21 @@ public class InterestService {
 							userAnswers << answer
 						}
 					}
-					if (type == InterestQuestion.Type.QA.toString() && !vo.content.empty) { // 问答题
+					if (type == InterestQuestion.Type.QA) { // 问答题
+						vo.content.each {
 							answer = new InterestUserAnswer(
 								user : user,
 								interestUserQuestionnaire : interestUserQuestionnaire,
 								interestQuestion : q,
-								content : vo.content
+								content : it
 							)
 							userAnswers << answer
+						}
 					}
-					if (type == InterestQuestion.Type.SORT.toString() && vo.orderIds.length <= q.optionCount) { // 排序
-						vo.orderIds.eachWithIndex { oId, index ->
+					if (type == InterestQuestion.Type.SORT) { // 排序
+						vo.content.eachWithIndex { oId, index ->
 							options.find { o ->
-								if (oId == o.id) {
+								if(o.id == Long.valueOf(oId)) {
 									option = o
 								}
 							}

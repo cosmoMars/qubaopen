@@ -2,7 +2,6 @@ package com.qubaopen.survey.controller.interest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -69,7 +68,17 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			return '{"success": "0", "message": "err1234"}'
 		}
 
-		interestService.calculateInterestResult(user.id, interestId, questionJson)
+		def result = interestService.calculateInterestResult(user.id, interestId, questionJson)
+
+		[
+			'success' : '1',
+			'message' : '成功',
+			'id' : result.id ?: '',
+			'resultTitle' : result?.interestResult?.title ?: '',
+			'content' : result.content ?: '',
+			'optionTitle' : result.title ?: '',
+			'resultNum' : result.resultNum ?: ''
+		]
 	}
 
 	/**
@@ -88,14 +97,14 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 */
 	@RequestMapping(value = 'addInterest', method = RequestMethod.POST, consumes = 'multipart/form-data')
 	addInterest(@RequestParam long interestTypeId,
-		@RequestParam(required = false) long[] tagTypeIds,
+		@RequestParam(required = false) Long[] tagTypeIds,
 		@RequestParam(required = false) String type,
 		@RequestParam(required = false) String title,
-		@RequestParam(required = false) int golds,
+		@RequestParam(required = false) Integer golds,
 		@RequestParam(required = false) String status,
 		@RequestParam(required = false) String remark,
-		@RequestParam(required = false) int totalRespondentsCount,
-		@RequestParam(required = false) int recommendedValue,
+		@RequestParam(required = false) Integer totalRespondentsCount,
+		@RequestParam(required = false) Integer recommendedValue,
 		@RequestParam(required = false) MultipartFile pic
 		) {
 		def interestType = new InterestType(id : interestTypeId)
@@ -139,11 +148,11 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 		def interest = new Interest(
 			interestType : interestType,
-			questionnaireTagTypes : tags ?: null,
-			type : enumType ?: null,
-			title : title ?: null,
+			questionnaireTagTypes : tags,
+			type : enumType,
+			title : title,
 			golds : golds,
-			status : enumStatus ?: null,
+			status : enumStatus,
 			remark : remark,
 			totalRespondentsCount : totalRespondentsCount,
 			recommendedValue : recommendedValue,
@@ -152,41 +161,41 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		interestRepository.save(interest)
 	}
 
-	/**
-	 * 上传图片
-	 * @param interestId
-	 * @param pic
-	 */
-	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic) {
-
-		logger.trace(' -- 上传图片 -- ')
-
-		def interest = interestRepository.findOne(interestId)
-		interest.pic = pic.bytes
-		try {
-			interestRepository.save(interest)
-			'{"success": "1"}'
-		} catch (Exception e) {
-			'{"success": "0", "message": "上传失败"}'
-		}
-
-	}
-
-	/**
-	 * 显示图片
-	 * @param interestId
-	 * @param output
-	 * @return
-	 */
-	@RequestMapping(value = 'retrievePic/{interestId}', method = RequestMethod.GET)
-	retrieveAvatar(@PathVariable long interestId, OutputStream output) {
-
-		logger.trace(' -- 显示图片 -- ')
-
-		def interest = interestRepository.findOne(interestId)
-		output.write(interest.pic)
-	}
+//	/**
+//	 * 上传图片
+//	 * @param interestId
+//	 * @param pic
+//	 */
+//	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
+//	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic) {
+//
+//		logger.trace(' -- 上传图片 -- ')
+//
+//		def interest = interestRepository.findOne(interestId)
+//		interest.pic = pic.bytes
+//		try {
+//			interestRepository.save(interest)
+//			'{"success": "1"}'
+//		} catch (Exception e) {
+//			'{"success": "0", "message": "上传失败"}'
+//		}
+//
+//	}
+//
+//	/**
+//	 * 显示图片
+//	 * @param interestId
+//	 * @param output
+//	 * @return
+//	 */
+//	@RequestMapping(value = 'retrievePic/{interestId}', method = RequestMethod.GET)
+//	retrieveAvatar(@PathVariable long interestId, OutputStream output) {
+//
+//		logger.trace(' -- 显示图片 -- ')
+//
+//		def interest = interestRepository.findOne(interestId)
+//		output.write(interest.pic)
+//	}
 
 	/**
 	 * 获取好友问卷结果

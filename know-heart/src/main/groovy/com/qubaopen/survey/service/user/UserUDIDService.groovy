@@ -28,9 +28,9 @@ public class UserUDIDService {
 			'success' : '1',
 			'message' : '成功',
 			'id' : udid.id,
-			'push' : udid?.push ?: '',
-			'startTime' : DateCommons.Date2String(udid?.startTime, "HH:mm") ?: '',
-			'endTime' : DateCommons.Date2String(udid?.endTime, "HH:mm") ?: '',
+			'push' : udid?.push,
+			'startTime' : DateCommons.Date2String(udid?.startTime, "HH:mm"),
+			'endTime' : DateCommons.Date2String(udid?.endTime, "HH:mm"),
 			'saveFlow' : userInfo?.saveFlow,
 			'publicAnswersToFriend' : userInfo?.publicAnswersToFriend
 		]

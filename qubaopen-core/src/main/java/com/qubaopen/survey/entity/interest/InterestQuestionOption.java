@@ -27,6 +27,13 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 	private InterestQuestion interestQuestion;
 
 	/**
+	 * 问卷id
+	 */
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "interest_question_option_type_id")
+	private InterestQuestionOptionType interestQuestionOptionType;
+
+	/**
 	 * 内容
 	 */
 	private String content;
@@ -52,6 +59,14 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 
 	public void setInterestQuestion(InterestQuestion interestQuestion) {
 		this.interestQuestion = interestQuestion;
+	}
+
+	public InterestQuestionOptionType getInterestQuestionOptionType() {
+		return interestQuestionOptionType;
+	}
+
+	public void setInterestQuestionOptionType(InterestQuestionOptionType interestQuestionOptionType) {
+		this.interestQuestionOptionType = interestQuestionOptionType;
 	}
 
 	public String getContent() {

@@ -171,48 +171,53 @@ public class SurveyService {
 		def userAnswers = []
 
 		questions.each { q ->
-			def type = q.type.toString()
+			def type = q.type
 
 			def answer = null
 
 			questionVos.find { vo ->
 				if (vo.questionId == q.id) {
-					if (type == SurveyQuestion.Type.SINGLE.toString() && vo.choiceIds.length <= q.optionCount) { // 单选
+					if (type == SurveyQuestion.Type.SINGLE) { // 单选
+						def choiceId = Long.valueOf(vo.content[0])
 						answer = new SurveyUserAnswer(
 							user : user,
 							surveyUserQuestionnaire : surveyUserQuestionnaire,
 							surveyQuestion : q,
-							surveyQuestionOption : new SurveyQuestionOption(id : vo.choiceIds[0])
+							surveyQuestionOption : new SurveyQuestionOption(id : choiceId)
 						)
 						userAnswers << answer
 					}
-					if (type == SurveyQuestion.Type.MULTIPLE.toString() && vo.choiceIds.length <= q.optionCount) { // 多选
-						vo.choiceIds.each { cId ->
+					if (type == SurveyQuestion.Type.MULTIPLE) { // 多选
+						vo.content.each { c ->
+							def oId = Long.valueOf(c)
 							answer = new SurveyUserAnswer(
 								user : user,
 								surveyUserQuestionnaire : surveyUserQuestionnaire,
 								surveyQuestion : q,
-								surveyQuestionOption : new SurveyQuestionOption(id : cId)
+								surveyQuestionOption : new SurveyQuestionOption(id : oId)
 							)
 							userAnswers << answer
 						}
 					}
-					if (type == SurveyQuestion.Type.QA.toString() && !vo.content.empty) { // 问答
-						answer = new SurveyUserAnswer(
-							user : user,
-							surveyUserQuestionnaire : surveyUserQuestionnaire,
-							surveyQuestion : q,
-							content : vo.content
-						)
-						userAnswers << answer
+					if (type == SurveyQuestion.Type.QA) { // 问答
+						vo.content.each {
+							answer = new SurveyUserAnswer(
+								user : user,
+								surveyUserQuestionnaire : surveyUserQuestionnaire,
+								surveyQuestion : q,
+								content : it
+							)
+							userAnswers << answer
+						}
 					}
-					if (type == SurveyQuestion.Type.SORT.toString() && vo.orderIds.length <= q.optionCount) { // 排序
-						vo.orderIds.eachWithIndex { oId, index ->
+					if (type == SurveyQuestion.Type.SORT) { // 排序
+						vo.content.eachWithIndex { oId, index ->
+						def id = Long.valueOf(oId)
 						answer = new SurveyUserAnswer(
 							user : user,
 							surveyUserQuestionnaire : surveyUserQuestionnaire,
 							surveyQuestion : q,
-							surveyQuestionOption : new SurveyQuestionOption(id : oId),
+							surveyQuestionOption : new SurveyQuestionOption(id : id),
 							turn : index + 1
 						)
 						userAnswers << answer

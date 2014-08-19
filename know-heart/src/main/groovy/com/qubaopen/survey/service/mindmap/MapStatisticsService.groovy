@@ -58,7 +58,8 @@ public class MapStatisticsService {
 					'name' : '',
 					'content' : '',
 					'title' : '',
-					'score' : ''
+					'score' : '',
+					'mapMax' : map[0].mapMax
 				]
 			}
 			if (!map.empty) {
@@ -67,7 +68,8 @@ public class MapStatisticsService {
 					'name' : map[0].selfResultOption?.name,
 					'content' : map[0].selfResultOption?.content,
 					'title' : map[0].selfResultOption?.title,
-					'score' : map[0].score
+					'score' : map[0].score,
+					'mapMax' : map[0].mapMax
 				]
 			}
 		}

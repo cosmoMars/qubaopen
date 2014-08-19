@@ -50,6 +50,16 @@ public class Self extends AbstractBaseEntity<Long> {
 	}
 
 	/**
+	 * 得分系数
+	 */
+	private int coefficient = 1;
+
+	/**
+	 * 问卷缩写
+	 */
+	private String abbreviation;
+
+	/**
 	 * 标题
 	 */
 	private String title;
@@ -116,6 +126,30 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	public ManagementType getManagementType() {
+		return managementType;
+	}
+
+	public void setManagementType(ManagementType managementType) {
+		this.managementType = managementType;
+	}
+
+	public int getCoefficient() {
+		return coefficient;
+	}
+
+	public void setCoefficient(int coefficient) {
+		this.coefficient = coefficient;
+	}
+
+	public String getAbbreviation() {
+		return abbreviation;
+	}
+
+	public void setAbbreviation(String abbreviation) {
+		this.abbreviation = abbreviation;
 	}
 
 	public String getTitle() {

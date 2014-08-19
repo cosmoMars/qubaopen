@@ -23,6 +23,41 @@ public class ResultService {
 
 	@Autowired
 	SelfResultOptionRepository selfResultOptionRepository
+
+
+	@Transactional
+	calculateQType(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+
+		def abbreviation = self.abbreviation
+		def result = null
+		switch (abbreviation) {
+			case 'SDS' :
+				result = calculateSDS(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'PDP' :
+				result = calculatePDP(user, self, questionOptions, questionVos, questions, refresh)
+				break
+//			case 'EPQ' :
+//				result = calculateSDS(user, self, questionOptions, questionVos, questions, refresh)
+//				break
+		}
+		result
+	}
+
+	@Transactional
+	calculateRType(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		def abbreviation = self.abbreviation
+		def result = null
+		switch (abbreviation) {
+			case 'MBTI' :
+				result = calculateMBTI(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'DISC' :
+				result = calculateDISC(user, self, questionOptions, questionVos, questions, refresh)
+				break
+		}
+		result
+	}
 	/**
 	 * 计算SDS
 	 * @param user
@@ -143,7 +178,7 @@ public class ResultService {
 
 
 	/**
-	 * 计算ABCD
+	 * 计算SCORE
 	 * @param user
 	 * @param self
 	 * @param questionOptions
@@ -153,16 +188,15 @@ public class ResultService {
 	 * @return
 	 */
 	@Transactional
-	calculateABCD(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+	calculateScore(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
 		def score = 0
 
 		questionOptions.each {
 			 score += it.score
 		}
 
-		if (self.selfType.name == 'AB') {
-			score = score * 3
-		}
+		score = score * self.coefficient
+
 		def result = selfResultOptionRepository.findOneByFilters(
 			'selfResult.self_equal' : self,
 			'highestScore_greaterThanOrEqualTo' : score,
@@ -244,5 +278,40 @@ public class ResultService {
 		}
 
 		result
+	}
+
+	@Transactional
+	calculateDISC(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		def optionMap = [:]
+		questionOptions.each {
+
+			def optionType = it.selfQuestionOptionType.name
+
+			if (optionMap.get(optionType)) {
+				optionMap.get(optionType) << it
+			} else {
+				def list = []
+				list << it
+				optionMap.put(optionType, list)
+			}
+		}
+		def resultList = []
+		optionMap.each { k, v ->
+			def score = 0
+			v.each {
+				score += it.score
+			}
+
+			def tempMap = [name : k, value : score]
+			resultList << tempMap
+		}
+
+		if (refresh) {
+			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), null, 0, self.mapMax)
+
+			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
+		}
+
+		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
 	}
 }

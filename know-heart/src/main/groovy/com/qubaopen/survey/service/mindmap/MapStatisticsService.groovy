@@ -25,10 +25,10 @@ public class MapStatisticsService {
 
 		def user = new User(id : userId)
 
-		def mapType = null,
-		data = []
+		def data = []
 		def types = type.split(',')
 		types.each {
+			def mapType = null
 			switch (it) {
 				case 'SDS' :
 					mapType = MapStatistics.Type.SDS
@@ -44,33 +44,35 @@ public class MapStatisticsService {
 					break
 			}
 
-			def map =  mapStatisticsRepository.findByUserAndType(user, mapType)
+			if (mapType) {
+				def map =  mapStatisticsRepository.findByUserAndType(user, mapType)
 
-			if (map.size() > 1) {  // abcd 问卷
-				def temp = [:],
-					typeName = ''
-				map.each {
-					typeName = it.self.selfType.name
-					temp << [typeName : it.score]
+				if (map.size() > 1) {  // abcd 问卷
+					def temp = [:],
+						typeName = ''
+					map.each {
+						typeName = it.self.selfType.name
+						temp << [typeName : it.score]
+					}
+					data << [
+						'chart' : temp,
+						'name' : '',
+						'content' : '',
+						'title' : '',
+						'score' : '',
+						'mapMax' : map[0].mapMax
+					]
 				}
-				data << [
-					'chart' : temp,
-					'name' : '',
-					'content' : '',
-					'title' : '',
-					'score' : '',
-					'mapMax' : map[0].mapMax
-				]
-			}
-			if (!map.empty) {
-				data << [
-					'chart' : map[0].result,
-					'name' : map[0].selfResultOption?.name,
-					'content' : map[0].selfResultOption?.content,
-					'title' : map[0].selfResultOption?.title,
-					'score' : map[0].score,
-					'mapMax' : map[0].mapMax
-				]
+				if (!map.empty) {
+					data << [
+						'chart' : map[0].result,
+						'name' : map[0].selfResultOption?.name,
+						'content' : map[0].selfResultOption?.content,
+						'title' : map[0].selfResultOption?.title,
+						'score' : map[0].score,
+						'mapMax' : map[0].mapMax
+					]
+				}
 			}
 		}
 		[

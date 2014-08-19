@@ -147,25 +147,25 @@ public class PersistentService {
 	@Transactional
 	void saveMapStatistics(User user, Self self, String result, SelfResultOption selfResultOption, int score, Integer mapMax) {
 
-		def selfType = self.selfType.name
+		def selfType = self.abbreviation
 		def type = null
 		switch (selfType) {
-			case "SDS" :
+			case 'SDS' :
 				type = MapStatistics.Type.SDS
 				break
-			case "AB" :
+			case 'AB' :
 				type = MapStatistics.Type.ABCD
 				break
-			case "C" :
+			case 'C' :
 				type = MapStatistics.Type.ABCD
 				break
-			case "D" :
+			case 'D' :
 				type = MapStatistics.Type.ABCD
 				break
-			case "PDP" :
+			case 'PDP' :
 				type = MapStatistics.Type.PDP
 				break
-			case "MBTI" :
+			case 'MBTI' :
 				type = MapStatistics.Type.MBTI
 				break
 		}

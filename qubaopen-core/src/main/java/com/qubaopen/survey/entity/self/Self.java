@@ -22,7 +22,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	private static final long serialVersionUID = -1342110032318313940L;
 
 	/**
-	 * 问卷类型 SDS, PDP
+	 * 问卷类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "self_type_id")

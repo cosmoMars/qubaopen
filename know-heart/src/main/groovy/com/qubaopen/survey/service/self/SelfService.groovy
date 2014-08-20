@@ -89,7 +89,7 @@ public class SelfService {
 				specials.each {
 					ids << it.questionId
 				}
-				sOrder = getOrder(ids as long[])
+				sOrder = getOrder(q.self, ids as long[])
 			}
 
 			def inserts = specialInserts.findAll { si -> // 取得特殊题上一题
@@ -113,7 +113,7 @@ public class SelfService {
 				if (inserts) {
 					order = sOrder
 				} else {
-					order = getOrder(q.id)
+					order = getOrder(q.self, q.id)
 				}
 				questionResult << [
 					'questionId' : q.id,
@@ -142,7 +142,7 @@ public class SelfService {
 						'matrix' : true,
 						'matrixTitle' : q.content,
 						'matrixNo' : questionNo,
-						'order' : getOrder(it.id),
+						'order' : getOrder(q.self, it.id),
 						'options' : options
 					]
 				}
@@ -158,8 +158,8 @@ public class SelfService {
 	}
 
 
-	String getOrder(long id) {
-		def orders = selfQuestionOrderRepository.findByQuestionId(id),
+	String getOrder(Self self, long id) {
+		def orders = selfQuestionOrderRepository.findByQuestionIdAndSelf(id, self),
 		order = ''
 		if (orders.size() > 1) {
 			for (i in 0..orders.size() - 1) {
@@ -175,8 +175,8 @@ public class SelfService {
 		order
 	}
 
-	String getOrder(long[] ids) {
-		def orders = selfQuestionOrderRepository.findByQuestionIds(ids),
+	String getOrder(Self self, long[] ids) {
+		def orders = selfQuestionOrderRepository.findByQuestionIds(self, ids),
 		order = ''
 		if (orders.size() > 1) {
 			for (i in 0..orders.size() - 1) {

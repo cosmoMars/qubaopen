@@ -24,13 +24,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 		logger.info(" =================== request preHandle =========================");
 
 		// 服务器配置
-		if (StringUtils.equals(request.getRequestURI(), "/know-heart/users/login") || StringUtils.equals(request.getRequestURI(), "/know-heart/users/register") || StringUtils.equals(request.getRequestURI().split("/")[2], "pic")) {
-			return true;
-		}
-		// 本地配置
-//		if (StringUtils.equals(request.getRequestURI(), "/users/login") || StringUtils.equals(request.getRequestURI(), "/users/register") || StringUtils.equals(request.getRequestURI().split("/")[1], "pic")) {
+//		if (StringUtils.equals(request.getRequestURI(), "/know-heart/users/login") || StringUtils.equals(request.getRequestURI(), "/know-heart/users/register") || StringUtils.equals(request.getRequestURI().split("/")[2], "pic")) {
 //			return true;
 //		}
+		// 本地配置
+		if (StringUtils.equals(request.getRequestURI(), "/users/login") || StringUtils.equals(request.getRequestURI(), "/users/register") || StringUtils.equals(request.getRequestURI().split("/")[1], "pic")) {
+			return true;
+		}
 
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("currentUser");

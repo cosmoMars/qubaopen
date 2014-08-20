@@ -1,6 +1,8 @@
 package com.qubaopen.survey.entity.self;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
@@ -15,6 +17,9 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class SelfQuestionOrder extends AbstractPersistable<Long> {
 
 	private static final long serialVersionUID = -2921365144134328167L;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Self self;
 
 	/**
 	 * 问题
@@ -35,6 +40,14 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 	 * 是否跳过
 	 */
 	private boolean jump;
+
+	public Self getSelf() {
+		return self;
+	}
+
+	public void setSelf(Self self) {
+		this.self = self;
+	}
 
 	public long getQuestionId() {
 		return questionId;

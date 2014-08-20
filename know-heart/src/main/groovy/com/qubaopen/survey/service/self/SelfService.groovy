@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.self.Self
+import com.qubaopen.survey.entity.self.SelfQuestionOption
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
@@ -72,30 +73,21 @@ public class SelfService {
 	findBySelf(long selfId) {
 		def self = new Self(id : selfId)
 
-		def questions = selfQuestionRepository.findAllBySelf(self)
-//			,questionOrders = []
-
-//		if (questions) {
-//			questionOrders = selfQuestionOrderRepository.findAllBySelfQuestions(questions)
-//		}
-//		def questionIds = long[]
-//		questions.each {
-//			questionIds << it.id
-//		}
-
-//		def questionOrders = selfQuestionOrderRepository.findAllBySelfQuestions(questionIds)
-		def specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
+		def questions = selfQuestionRepository.findBySelf(self),
+			specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
 
 		def questionList = []
 		questions.each { q ->
 			def options = []
-			q.selfQuestionOptions.each { qo ->
-				def option = [
+//			def selfQuestionOptions = selfQuestionOptionRepository.findBySelfQuestionSort(q)
+			def selfQuestionOptions = q.selfQuestionOptions as List
+			Collections.sort(selfQuestionOptions, new OptionComparator())
+			selfQuestionOptions.each { qo ->
+				options << [
 					'optionId' : qo.id,
 					'optionNum' : qo.optionNum,
 					'optionContent' : qo.content
 				]
-				options << option
 			}
 			def orders = selfQuestionOrderRepository.findByQuestionId(q.id)
 
@@ -111,6 +103,29 @@ public class SelfService {
 				order = "${orders[0].questionId}:${orders[0].optionId}:${orders[0].nextQuestionId}" as String
 			}
 
+			def children = []
+			if (q.matrix) {
+				def childOptions = [],
+					child = selfQuestionRepository.findByParent(q.id)
+
+				child.each {
+					def	cOptions = selfQuestionOptionRepository.findBySelfQuestionSort(it)
+					cOptions.each { c ->
+						childOptions << [
+							'optionId' : c.id,
+							'optionNum' : c.optionNum,
+							'optionContent' : c.content
+						]
+					}
+					children << [
+						'questionId' : it.id,
+						'questionContent' : it.content,
+						'questionNum' : it.questionNum,
+						'options' : childOptions
+					]
+				}
+			}
+
 			def question = [
 				'questionId' : q.id,
 				'questionContent' : q.content,
@@ -119,8 +134,10 @@ public class SelfService {
 				'limitTime' : q.answerTimeLimit,
 				'special' : q.special,
 				'questionNum' : q.questionNum,
-				'options' : options,
-				'order' : order
+				'matrix' : q.matrix,
+				'matrixOption' : children,
+				'order' : order,
+				'options' : options
 			]
 			questionList << question
 		}
@@ -234,6 +251,14 @@ public class SelfService {
 			]
 		} else if (type == Self.Type.DISOREDER) {
 
+		}
+	}
+
+	class OptionComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			SelfQuestionOption so1 = (SelfQuestionOption) o1
+			SelfQuestionOption so2 = (SelfQuestionOption) o2
+			return so1.optionNum.compareTo(so2.optionNum)
 		}
 	}
 

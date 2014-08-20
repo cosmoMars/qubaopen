@@ -62,7 +62,7 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 题号
 	 */
-	private String questionNum;
+	private int questionNum;
 
 	/**
 	 * 是否性格特殊问题
@@ -79,10 +79,24 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "selfQuestion", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private Set<SelfQuestionOption> selfQuestionOptions;
 
+//	/**
+//	 * 问题顺序 x:y:z|x:y:z x本题id，y选项id y＝0时，直接跳转z z下一题id，z＝0时，结束问卷
+//	 */
+//	private String qOrder;
+
 	/**
-	 * 问题顺序 x:y:z|x:y:z x本题id，y选项id y＝0时，直接跳转z z下一题id，z＝0时，结束问卷
+	 * 是否矩阵
 	 */
-	private String qOrder;
+	private boolean matrix;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private SelfQuestion parent;
+
+	/**
+	 * 孩纸
+	 */
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private Set<SelfQuestion> children;
 
 	public Self getSelf() {
 		return self;
@@ -124,11 +138,11 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 		this.content = content;
 	}
 
-	public String getQuestionNum() {
+	public int getQuestionNum() {
 		return questionNum;
 	}
 
-	public void setQuestionNum(String questionNum) {
+	public void setQuestionNum(int questionNum) {
 		this.questionNum = questionNum;
 	}
 
@@ -164,12 +178,28 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 		this.selfQuestionOptions = selfQuestionOptions;
 	}
 
-	public String getqOrder() {
-		return qOrder;
+	public boolean isMatrix() {
+		return matrix;
 	}
 
-	public void setqOrder(String qOrder) {
-		this.qOrder = qOrder;
+	public void setMatrix(boolean matrix) {
+		this.matrix = matrix;
+	}
+
+	public SelfQuestion getParent() {
+		return parent;
+	}
+
+	public void setParent(SelfQuestion parent) {
+		this.parent = parent;
+	}
+
+	public Set<SelfQuestion> getChildren() {
+		return children;
+	}
+
+	public void setChildren(Set<SelfQuestion> children) {
+		this.children = children;
 	}
 
 }

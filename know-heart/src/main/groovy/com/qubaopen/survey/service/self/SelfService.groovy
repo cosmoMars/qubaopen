@@ -131,6 +131,16 @@ public class SelfService {
 				def children = q.children as List
 				Collections.sort(children, new QuestionComparator())
 				children.each {
+					def childOption = [],
+						childOptions = it.selfQuestionOptions as List
+					Collections.sort(childOptions, new OptionComparator())
+					childOptions.each { qo -> // 选项
+						childOption << [
+							'optionId' : qo.id,
+							'optionNum' : qo.optionNum,
+							'optionContent' : qo.content
+						]
+					}
 					questionResult << [
 						'questionId' : it.id,
 						'questionContent' : it.content,
@@ -143,7 +153,7 @@ public class SelfService {
 						'matrixTitle' : q.content,
 						'matrixNo' : questionNo,
 						'order' : getOrder(q.self, it.id),
-						'options' : options
+						'options' : childOption
 					]
 				}
 			}

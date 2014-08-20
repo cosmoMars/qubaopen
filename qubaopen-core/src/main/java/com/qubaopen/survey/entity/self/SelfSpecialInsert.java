@@ -29,23 +29,17 @@ public class SelfSpecialInsert extends AbstractPersistable<Long> {
 	/**
 	 * 上一题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "self_question_id")
-	private SelfQuestion selfQuestion;
+	private long questionId;
 
 	/**
 	 * 该选项被选择后跳转特殊题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "self_question_option_id")
-	private SelfQuestionOption selfQuestionOption;
+	private long questionOptionId;
 
 	/**
 	 * 特殊题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "special_question_id")
-	private SelfQuestion specialQuestion;
+	private long specialQuestionId;
 
 	public Self getSelf() {
 		return self;
@@ -55,28 +49,28 @@ public class SelfSpecialInsert extends AbstractPersistable<Long> {
 		this.self = self;
 	}
 
-	public SelfQuestion getSelfQuestion() {
-		return selfQuestion;
+	public long getQuestionId() {
+		return questionId;
 	}
 
-	public void setSelfQuestion(SelfQuestion selfQuestion) {
-		this.selfQuestion = selfQuestion;
+	public void setQuestionId(long questionId) {
+		this.questionId = questionId;
 	}
 
-	public SelfQuestionOption getSelfQuestionOption() {
-		return selfQuestionOption;
+	public long getQuestionOptionId() {
+		return questionOptionId;
 	}
 
-	public void setSelfQuestionOption(SelfQuestionOption selfQuestionOption) {
-		this.selfQuestionOption = selfQuestionOption;
+	public void setQuestionOptionId(long questionOptionId) {
+		this.questionOptionId = questionOptionId;
 	}
 
-	public SelfQuestion getSpecialQuestion() {
-		return specialQuestion;
+	public long getSpecialQuestionId() {
+		return specialQuestionId;
 	}
 
-	public void setSpecialQuestion(SelfQuestion specialQuestion) {
-		this.specialQuestion = specialQuestion;
+	public void setSpecialQuestionId(long specialQuestionId) {
+		this.specialQuestionId = specialQuestionId;
 	}
 
 }

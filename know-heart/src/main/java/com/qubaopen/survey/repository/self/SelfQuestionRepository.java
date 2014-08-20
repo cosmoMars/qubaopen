@@ -13,7 +13,7 @@ public interface SelfQuestionRepository extends MyRepository<SelfQuestion, Long>
 
 	List<SelfQuestion> findAllBySelf(Self self);
 
-	@Query("from SelfQuestion sq where sq.self = :self and sq.parent is null order by sq.questionNum asc")
+	@Query("from SelfQuestion sq where sq.self = :self and sq.parent is null order by sq.questionNum asc, sq.special desc")
 	List<SelfQuestion> findBySelf(@Param("self") Self self);
 
 	@Query("from SelfQuestion sq where sq.parent.id = :parentId order by sq.questionNum asc")

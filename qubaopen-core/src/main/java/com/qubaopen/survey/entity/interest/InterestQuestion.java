@@ -61,7 +61,7 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 题号
 	 */
-	private String questionNum;
+	private int questionNum;
 
 	/**
 	 * 是否性格特殊问题
@@ -116,11 +116,11 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 		this.content = content;
 	}
 
-	public String getQuestionNum() {
+	public int getQuestionNum() {
 		return questionNum;
 	}
 
-	public void setQuestionNum(String questionNum) {
+	public void setQuestionNum(int questionNum) {
 		this.questionNum = questionNum;
 	}
 

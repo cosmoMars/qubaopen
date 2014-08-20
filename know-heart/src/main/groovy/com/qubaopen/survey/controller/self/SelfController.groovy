@@ -41,7 +41,21 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		logger.trace ' -- 获取用户自测问卷 -- '
 
-		selfService.retrieveSelf(user.id)
+		def data = [],
+			selfList = selfService.retrieveSelf(user.id)
+		selfList.each {
+			def self = [
+				'selfId' : it.id,
+				'managementType' : it.managementType,
+				'title' : it.title,
+			]
+			data << self
+		}
+		[
+			'success' : '1',
+			'message' : '成功',
+			'data' : data
+		]
 	}
 
 	/**

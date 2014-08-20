@@ -46,7 +46,7 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 	/**
 	 * 题号
 	 */
-	private String optionNum;
+	private int optionNum;
 
 	/**
 	 * 图片
@@ -85,11 +85,11 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 		this.score = score;
 	}
 
-	public String getOptionNum() {
+	public int getOptionNum() {
 		return optionNum;
 	}
 
-	public void setOptionNum(String optionNum) {
+	public void setOptionNum(int optionNum) {
 		this.optionNum = optionNum;
 	}
 

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.self.Self
+import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
@@ -44,24 +45,12 @@ public class SelfService {
 	 * @param userId
 	 * @return
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	retrieveSelf(long userId) {
-		def user = new User(id : userId),
-			selfList = selfRepository.findSelfWithoutManagement(),
-			data = []
-		selfList.each {
-			def self = [
-				'selfId' : it.id,
-				'managementType' : it.managementType,
-				'title' : it.title,
-			]
-			data << self
-		}
-		[
-			'success' : '1',
-			'message' : '成功',
-			'data' : data
-		]
+		def user = new User(id : userId)
+
+		selfRepository.findSelfWithoutManagement()
+
 	}
 
 	/**
@@ -69,116 +58,139 @@ public class SelfService {
 	 * @param selfId
 	 * @return
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	findBySelf(long selfId) {
 		def self = new Self(id : selfId)
 
 		def questions = selfQuestionRepository.findBySelf(self),
 			specialInserts = selfSpecialInsertRepository.findAllBySelf(self)
 
-		def questionList = []
+		def questionResult = []
+		def questionNo = 1
 		questions.each { q ->
-			def options = []
-//			def selfQuestionOptions = selfQuestionOptionRepository.findBySelfQuestionSort(q)
-			def selfQuestionOptions = q.selfQuestionOptions as List
+
+			def options = [],
+				selfQuestionOptions = q.selfQuestionOptions as List
 			Collections.sort(selfQuestionOptions, new OptionComparator())
-			selfQuestionOptions.each { qo ->
+			selfQuestionOptions.each { qo -> // 选项
 				options << [
 					'optionId' : qo.id,
 					'optionNum' : qo.optionNum,
 					'optionContent' : qo.content
 				]
 			}
-			def orders = selfQuestionOrderRepository.findByQuestionId(q.id)
-
-			def  order = ''
-			if (orders.size() > 1) {
-				for (i in 0..orders.size() - 1) {
-					order = order + "${orders[i].questionId}:${orders[i].optionId}:${orders[i].nextQuestionId}" as String
-					if (i < orders.size() - 1) {
-						order += '|'
-					}
+			def sOrder = ''
+			if (q.special) { // 是特殊题
+				def specials = specialInserts.findAll { si ->
+					q.id == si.specialQuestionId
 				}
-			} else if (orders.size() == 1){
-				order = "${orders[0].questionId}:${orders[0].optionId}:${orders[0].nextQuestionId}" as String
+
+				def ids = []
+				specials.each {
+					ids << it.questionId
+				}
+				sOrder = getOrder(ids as long[])
 			}
 
-			def children = []
-			if (q.matrix) {
-				def childOptions = [],
-					child = selfQuestionRepository.findByParent(q.id)
-
-				child.each {
-					def	cOptions = selfQuestionOptionRepository.findBySelfQuestionSort(it)
-					cOptions.each { c ->
-						childOptions << [
-							'optionId' : c.id,
-							'optionNum' : c.optionNum,
-							'optionContent' : c.content
-						]
+			def inserts = specialInserts.findAll { si -> // 取得特殊题上一题
+				q.id == si.questionId
+			}
+			if (inserts) {
+				if (inserts.size() > 1) {
+					for (i in 0..inserts.size() - 1) {
+						sOrder = sOrder + "${inserts[i].questionId}:${inserts[i].questionOptionId}:${inserts[i].specialQuestionId}" as String
+						if (i < sOrder.size() - 1) {
+							sOrder += '|'
+						}
 					}
-					children << [
+				} else if (inserts.size() == 1){
+					sOrder = "${inserts[0].questionId}:${inserts[0].questionOptionId}:${inserts[0].specialQuestionId}" as String
+				}
+			}
+
+			if (!q.children) {
+				def order = ''
+				if (inserts) {
+					order = sOrder
+				} else {
+					order = getOrder(q.id)
+				}
+				questionResult << [
+					'questionId' : q.id,
+					'questionContent' : q.content,
+					'questionType' : q.type,
+					'optionCount' : q.optionCount,
+					'limitTime' : q.answerTimeLimit,
+					'special' : q.special,
+					'questionNum' : questionNo,
+					'matrix' : false,
+					'order' : order,
+					'options' : options
+				]
+			} else if (q.children) {
+				def children = q.children as List
+				Collections.sort(children, new QuestionComparator())
+				children.each {
+					questionResult << [
 						'questionId' : it.id,
 						'questionContent' : it.content,
+						'questionType' : it.type,
+						'optionCount' : it.optionCount,
+						'limitTime' : it.answerTimeLimit,
+						'special' : it.special,
 						'questionNum' : it.questionNum,
-						'options' : childOptions
+						'matrix' : true,
+						'matrixTitle' : q.content,
+						'matrixNo' : questionNo,
+						'order' : getOrder(it.id),
+						'options' : options
 					]
 				}
 			}
-
-			def question = [
-				'questionId' : q.id,
-				'questionContent' : q.content,
-				'questionType' : q.type,
-				'optionCount' : q.optionCount,
-				'limitTime' : q.answerTimeLimit,
-				'special' : q.special,
-				'questionNum' : q.questionNum,
-				'matrix' : q.matrix,
-				'matrixOption' : children,
-				'order' : order,
-				'options' : options
-			]
-			questionList << question
-		}
-
-		def inserts = []
-		specialInserts.each { si ->
-			def options = []
-			si.selfQuestion.selfQuestionOptions.each { ssq ->
-				def option = [
-					'optionId' : ssq.id,
-					'optionNum' : ssq.optionNum,
-					'optionContent' : ssq.content
-				]
-				options << option
-			}
-
-			def insert = [
-				'lastQuestionId' : si.selfQuestion?.id,
-				'lastOptionId' : si.selfQuestionOption?.id ,
-				'nextQuestion' : [
-					'questionId' : si.selfQuestion?.id,
-					'questionContent' : si.selfQuestion?.content,
-					'questionType' : si.selfQuestion?.type,
-					'optionCount' : si.selfQuestion?.optionCount,
-					'limitTime' : si.selfQuestion?.answerTimeLimit,
-					'special' : si.selfQuestion?.special,
-					'questionNum' : si.selfQuestion?.questionNum,
-					'options' : options
-				]
-			]
-			inserts << insert
+			questionNo ++
 		}
 
 		[
 			'success' : '1',
 			'message' : '成功',
-			'questions' : questionList,
-			'specialInserts' : inserts
+			'questions' : questionResult
 		]
 	}
 
+
+	String getOrder(long id) {
+		def orders = selfQuestionOrderRepository.findByQuestionId(id),
+		order = ''
+		if (orders.size() > 1) {
+			for (i in 0..orders.size() - 1) {
+				order = order + "${orders[i].questionId}:${orders[i].optionId}:${orders[i].nextQuestionId}" as String
+				if (i < orders.size() - 1) {
+					order += '|'
+				}
+			}
+		} else if (orders.size() == 1){
+			order = "${orders[0].questionId}:${orders[0].optionId}:${orders[0].nextQuestionId}" as String
+		}
+
+		order
+	}
+
+	String getOrder(long[] ids) {
+		def orders = selfQuestionOrderRepository.findByQuestionIds(ids),
+		order = ''
+		if (orders.size() > 1) {
+			for (i in 0..orders.size() - 1) {
+				order = order + "${orders[i].questionId}:${orders[i].optionId}:${orders[i].nextQuestionId}" as String
+				if (i < orders.size() - 1) {
+					order += '|'
+				}
+			}
+		} else if (orders.size() == 1){
+			order = "${orders[0].questionId}:${orders[0].optionId}:${orders[0].nextQuestionId}" as String
+		}
+
+		order
+	}
 	/**
 	 * 计算保存问卷信息
 	 * @param userId
@@ -259,6 +271,13 @@ public class SelfService {
 			SelfQuestionOption so1 = (SelfQuestionOption) o1
 			SelfQuestionOption so2 = (SelfQuestionOption) o2
 			return so1.optionNum.compareTo(so2.optionNum)
+		}
+	}
+	class QuestionComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			SelfQuestion so1 = (SelfQuestion) o1
+			SelfQuestion so2 = (SelfQuestion) o2
+			return so1.questionNum.compareTo(so2.questionNum)
 		}
 	}
 

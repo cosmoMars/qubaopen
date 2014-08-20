@@ -14,7 +14,7 @@ public interface SelfQuestionOrderRepository extends MyRepository<SelfQuestionOr
 //	List<SelfQuestionOrder> findAllBySelfQuestions(@Param("questions") List<SelfQuestion> selfQuestions);
 
 	@Query("from SelfQuestionOrder sqo where sqo.questionId in (:questionIds)")
-	List<SelfQuestionOrder> findAllByQuestions(@Param("questionIds") long... questionIds);
+	List<SelfQuestionOrder> findByQuestionIds(@Param("questionIds") long... questionIds);
 
 	List<SelfQuestionOrder> findByQuestionId(@Param("questionId") long questionId);
 

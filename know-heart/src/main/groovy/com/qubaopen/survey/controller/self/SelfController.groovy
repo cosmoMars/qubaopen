@@ -74,7 +74,16 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		logger.trace ' -- 计算自测结果选项 -- '
 
-		selfService.calculateSelfReslut(user.id, selfId, questionJson, refresh)
+		def result = selfService.calculateSelfReslut(user.id, selfId, questionJson, refresh)
+		[
+			'success' : '1',
+			'message' : '成功',
+			'id' : result?.id,
+			'resultTitle' : result?.selfResult?.title,
+			'content' : result?.content,
+			'optionTitle' : result?.title,
+			'resultNum' : result?.resultNum
+		]
 
 	}
 

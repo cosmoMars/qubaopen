@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.mindmap.MapStatistics
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
@@ -13,6 +14,9 @@ public class MapStatisticsService {
 
 	@Autowired
 	MapStatisticsRepository mapStatisticsRepository
+
+	@Autowired
+	ObjectMapper objectMapper
 
 	/**
 	 * 获取心理地图
@@ -25,11 +29,17 @@ public class MapStatisticsService {
 
 		def user = new User(id : userId)
 
+		if (type == 'ALL') {
+
+		}
+
 		def data = []
 		def types = type.split(',')
 		types.each {
 			def mapType = null
-			switch (it) {
+			println "$it  ================================"
+
+			switch (it.trim()) {
 				case 'SDS' :
 					mapType = MapStatistics.Type.SDS
 					break
@@ -51,19 +61,19 @@ public class MapStatisticsService {
 					def temp = [:],
 						typeName = ''
 					map.each {
-						typeName = it.self.selfType.name
-						temp << [typeName : it.score]
+						typeName = it.self.abbreviation
+						temp << ["$typeName" : it.score]
 					}
 					data << [
-						'chart' : temp,
-						'name' : '',
-						'content' : '',
-						'title' : '',
+						'chart' : objectMapper.writeValueAsString(temp),
+						'name' : 'ABCD测试',
+						'content' : 'ABCD测试',
+						'title' : 'ABCD测试结果',
 						'score' : '',
 						'mapMax' : map[0].mapMax
 					]
 				}
-				if (!map.empty) {
+				if (!map.empty && map.size() == 1) {
 					data << [
 						'chart' : map[0].result,
 						'name' : map[0].selfResultOption?.name,

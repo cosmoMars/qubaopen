@@ -84,11 +84,6 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 //	 */
 //	private String qOrder;
 
-	/**
-	 * 是否矩阵
-	 */
-	private boolean matrix;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	private SelfQuestion parent;
 
@@ -176,14 +171,6 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 
 	public void setSelfQuestionOptions(Set<SelfQuestionOption> selfQuestionOptions) {
 		this.selfQuestionOptions = selfQuestionOptions;
-	}
-
-	public boolean isMatrix() {
-		return matrix;
-	}
-
-	public void setMatrix(boolean matrix) {
-		this.matrix = matrix;
 	}
 
 	public SelfQuestion getParent() {

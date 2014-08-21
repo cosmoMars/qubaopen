@@ -118,15 +118,19 @@ public class PersistentService {
 					}
 					if (type == SelfQuestion.Type.SCORE) { // 打分
 						vo.content.each {
-							def str = it.split(':'),
-								oId = Long.valueOf(str[0])
-
+							def	oId = Long.valueOf(it)
+							options.find { o ->
+								if (o.id == Long.valueOf(oId)) {
+									option = o
+								}
+							}
 							answer = new SelfUserAnswer(
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
-								selfQuestionOption : new SelfQuestionOption(id : oId),
+								selfQuestionOption : option,
 								selfQuestion : q,
-								score : Integer.valueOf(str[1])
+								content : option.content
+
 							)
 							userAnswers << answer
 						}

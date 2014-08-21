@@ -65,6 +65,11 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	 */
 	private Integer mapMax;
 
+	/**
+	 * 自测类型
+	 */
+	private String managementType;
+
 	public User getUser() {
 		return user;
 	}
@@ -115,6 +120,14 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 
 	public Integer getMapMax() {
 		return mapMax;
+	}
+
+	public String getManagementType() {
+		return managementType;
+	}
+
+	public void setManagementType(String managementType) {
+		this.managementType = managementType;
 	}
 
 	public void setMapMax(Integer mapMax) {

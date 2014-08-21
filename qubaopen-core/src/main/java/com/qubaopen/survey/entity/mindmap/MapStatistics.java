@@ -79,7 +79,7 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	/**
 	 * 推荐优先级
 	 */
-	private String recommendedValue;
+	private int recommendedValue;
 
 	public User getUser() {
 		return user;
@@ -149,11 +149,11 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 		this.managementType = managementType;
 	}
 
-	public String getRecommendedValue() {
+	public int getRecommendedValue() {
 		return recommendedValue;
 	}
 
-	public void setRecommendedValue(String recommendedValue) {
+	public void setRecommendedValue(int recommendedValue) {
 		this.recommendedValue = recommendedValue;
 	}
 

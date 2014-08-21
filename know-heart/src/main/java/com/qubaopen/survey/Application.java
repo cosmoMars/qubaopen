@@ -3,12 +3,15 @@ package com.qubaopen.survey;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
+import javax.servlet.Filter;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,15 +27,14 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 @EnableTransactionManagement(proxyTargetClass = true)
 public final class Application {
 
-//	@Bean
-//	public AuditorAware<User> auditorAware() {
-//		return new AuditorAware<User>() {
-//			@Override
-//			public User getCurrentAuditor() {
-//				return null;
-//			}
-//		};
-//	}
+	@Bean
+	public Filter characterEncodingFilter() {
+		CharacterEncodingFilter filter = new CharacterEncodingFilter();
+		filter.setEncoding("UTF-8");
+		filter.setForceEncoding(false);
+
+		return filter;
+	}
 
 	@Bean
 	public ObjectMapper objectMapper() {

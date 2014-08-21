@@ -81,8 +81,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'id' : result?.id,
 			'resultTitle' : result?.selfResult?.title,
 			'content' : result?.content,
-			'optionTitle' : result?.title,
-			'resultNum' : result?.resultNum
+			'optionTitle' : result?.title
+//			'resultNum' : result?.resultNum
 		]
 
 	}

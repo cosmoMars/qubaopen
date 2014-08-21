@@ -3,6 +3,7 @@ package com.qubaopen.core.repository
 import static org.springframework.data.jpa.repository.query.QueryUtils.toOrders
 
 import javax.persistence.EntityManager
+import javax.persistence.NoResultException
 import javax.persistence.TypedQuery
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Predicate
@@ -34,7 +35,11 @@ final class MyRepositoryImpl<T, ID extends Serializable> extends
 
 	@Override
 	public T findOneByFilters(Map filters) {
-		getQuery(filters, null).singleResult
+		try {
+			getQuery(filters, null).singleResult
+		} catch (NoResultException e) {
+			null
+		}
 	}
 
 	@Override

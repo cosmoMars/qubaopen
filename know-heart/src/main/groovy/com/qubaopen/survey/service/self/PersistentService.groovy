@@ -64,7 +64,7 @@ public class PersistentService {
 			questionVos.find { vo ->
 				if (q.id == vo.questionId) {
 					if (type == SelfQuestion.Type.SINGLE) { // 单选
-						def choiceId = Long.valueOf(vo.content[0])
+						def choiceId = vo.contents[0].id
 						options.find { o ->
 							if (o.id == choiceId) {
 								option = o
@@ -80,9 +80,9 @@ public class PersistentService {
 						userAnswers << answer
 					}
 					if (type == SelfQuestion.Type.MULTIPLE) { // 多选
-						vo.content.each { oId ->
+						vo.contents.each { voc ->
 							options.find { o ->
-								if (o.id == Long.valueOf(oId)) {
+								if (o.id == voc.id) {
 									option = o
 								}
 							}
@@ -97,24 +97,23 @@ public class PersistentService {
 						}
 					}
 					if (type == SelfQuestion.Type.QA) { // 问答
-						vo.content.each {
-							def str = it.split(':')
+						vo.contents.each { voc ->
 							answer = new SelfUserAnswer(
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
 								selfQuestion : q,
-								selfQuestionOption : new SelfQuestionOption(id : Long.valueOf(str[0])),
-								content : str[1]
+								selfQuestionOption : new SelfQuestionOption(id : voc.id),
+								content : voc.cnt
 							)
 							userAnswers << answer
 						}
 					}
 					if (type == SelfQuestion.Type.SORT) { // 排序
-						vo.content.eachWithIndex { oId, index ->
+						vo.contents.eachWithIndex { voc, index ->
 							answer = new SelfUserAnswer(
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
-								selfQuestionOption : new SelfQuestionOption(id : Long.valueOf(oId)),
+								selfQuestionOption : new SelfQuestionOption(id : voc.id),
 								selfQuestion : q,
 								turn : index + 1
 							)
@@ -122,10 +121,9 @@ public class PersistentService {
 						}
 					}
 					if (type == SelfQuestion.Type.SCORE) { // 打分
-						vo.content.each {
-							def	oId = Long.valueOf(it)
+						vo.contents.each {
 							options.find { o ->
-								if (o.id == Long.valueOf(oId)) {
+								if (o.id == it.id) {
 									option = o
 								}
 							}

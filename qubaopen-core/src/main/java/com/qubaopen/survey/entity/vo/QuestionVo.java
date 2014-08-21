@@ -1,6 +1,7 @@
 package com.qubaopen.survey.entity.vo;
 
 import java.io.Serializable;
+import java.util.Set;
 
 public class QuestionVo implements Serializable {
 
@@ -19,7 +20,7 @@ public class QuestionVo implements Serializable {
 	/**
 	 * 内容
 	 */
-	private String[] content;
+	private Set<Content> contents;
 
 	public long getQuestionId() {
 		return questionId;
@@ -29,12 +30,12 @@ public class QuestionVo implements Serializable {
 		this.questionId = questionId;
 	}
 
-	public String[] getContent() {
-		return content;
+	public Set<Content> getContents() {
+		return contents;
 	}
 
-	public void setContent(String[] content) {
-		this.content = content;
+	public void setContents(Set<Content> contents) {
+		this.contents = contents;
 	}
 
 

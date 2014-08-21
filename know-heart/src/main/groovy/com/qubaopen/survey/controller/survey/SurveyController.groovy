@@ -60,7 +60,7 @@ public class SurveyController extends AbstractBaseController<Survey, Long> {
 	 * @param questionOptionIds
 	 * @return
 	 */
-	@RequestMapping(value = 'saveSurveyResult', method = RequestMethod.GET)
+	@RequestMapping(value = 'saveSurveyResult', method = RequestMethod.POST)
 	saveSurveyResult(@RequestParam long userId, @RequestParam long surveyId, @RequestParam String questionJson) {
 
 		logger.trace(" -- 保存调研问卷结果 -- ")

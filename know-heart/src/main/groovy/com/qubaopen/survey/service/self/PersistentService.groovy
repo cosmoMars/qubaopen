@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.qubaopen.survey.entity.mindmap.MapStatistics
+import com.qubaopen.survey.entity.mindmap.MapStatisticsType
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
@@ -14,6 +15,7 @@ import com.qubaopen.survey.entity.self.SelfUserQuestionnaire
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
+import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfUserAnswerRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 
@@ -28,6 +30,9 @@ public class PersistentService {
 
 	@Autowired
 	MapStatisticsRepository mapStatisticsRepository
+
+	@Autowired
+	MapStatisticsTypeRepository mapStatisticsTypeRepository
 
 	/**
 	 * 保存用户答卷信息，用户答题内容
@@ -149,29 +154,19 @@ public class PersistentService {
 	 * @param result
 	 */
 	@Transactional
-	void saveMapStatistics(User user, Self self, String result, SelfResultOption selfResultOption, int score, Integer mapMax) {
+	void saveMapStatistics(User user, Self self, String result, SelfResultOption selfResultOption, int score) {
 
 		def selfType = self.abbreviation
-		def type = null
-		switch (selfType) {
-			case 'SDS' :
-				type = MapStatistics.Type.SDS
-				break
-			case 'AB' :
-				type = MapStatistics.Type.ABCD
-				break
-			case 'C' :
-				type = MapStatistics.Type.ABCD
-				break
-			case 'D' :
-				type = MapStatistics.Type.ABCD
-				break
-			case 'PDP' :
-				type = MapStatistics.Type.PDP
-				break
-			case 'MBTI' :
-				type = MapStatistics.Type.MBTI
-				break
+		if (selfType == 'C' || selfType == 'D' || selfType == 'AB') {
+			selfType = 'ABCD'
+		}
+		def mapType = mapStatisticsTypeRepository.findByName(selfType)
+
+		if (!mapType) {
+			def mapStatisticsType = new MapStatisticsType(
+				name : selfType
+			)
+			mapType = mapStatisticsTypeRepository.save(mapStatisticsType)
 		}
 
 		def mapStatistics = mapStatisticsRepository.findByUserAndSelf(user, self)
@@ -179,16 +174,21 @@ public class PersistentService {
 			mapStatistics.result = result
 			mapStatistics.selfResultOption = selfResultOption
 			mapStatistics.score = score
-			mapStatistics.mapMax = mapMax
+			mapStatistics.mapStatisticsType = mapType
+			mapStatistics.mapMax = self.mapMax
+			mapStatistics.managementType = self.managementType.toString()
+			mapStatistics.recommendedValue = self.recommendedValue
 		} else {
 			mapStatistics = new MapStatistics(
 				user : user,
 				self : self,
-				type : type,
+				mapStatisticsType : mapType,
 				result : result,
 				selfResultOption : selfResultOption,
 				score : score,
-				mapMax : mapMax
+				mapMax : self.mapMax,
+				managementType : self.managementType.toString(),
+				recommendedValue : self.recommendedValue
 			)
 		}
 		mapStatisticsRepository.save(mapStatistics)

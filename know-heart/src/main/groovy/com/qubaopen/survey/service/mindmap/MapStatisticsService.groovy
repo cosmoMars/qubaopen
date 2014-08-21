@@ -5,15 +5,18 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.qubaopen.survey.entity.mindmap.MapStatistics
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
+import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 
 @Service
 public class MapStatisticsService {
 
 	@Autowired
 	MapStatisticsRepository mapStatisticsRepository
+
+	@Autowired
+	MapStatisticsTypeRepository mapStatisticsTypeRepository
 
 	@Autowired
 	ObjectMapper objectMapper
@@ -27,40 +30,17 @@ public class MapStatisticsService {
 	@Transactional
 	retrieveMapStatistics(long userId, String type) {
 
-		def user = new User(id : userId)
+		def user = new User(id : userId),
+			data = []
+		if (type == 'ALL' || type == null) {
+			def mapTypes = mapStatisticsTypeRepository.findAll()
 
-		if (type == 'ALL') {
-
-		}
-
-		def data = []
-		def types = type.split(',')
-		types.each {
-			def mapType = null
-			println "$it  ================================"
-
-			switch (it.trim()) {
-				case 'SDS' :
-					mapType = MapStatistics.Type.SDS
-					break
-				case 'ABCD' :
-					mapType = MapStatistics.Type.ABCD
-					break
-				case 'PDP' :
-					mapType = MapStatistics.Type.PDP
-					break
-				case 'MBTI' :
-					mapType = MapStatistics.Type.MBTI
-					break
-			}
-
-			if (mapType) {
-				def map =  mapStatisticsRepository.findByUserAndType(user, mapType)
-
-				if (map.size() > 1) {  // abcd 问卷
+			mapTypes.each {
+				def maps =  mapStatisticsRepository.findByUserAndMapStatisticsType(user, it)
+				if (maps.size() > 1) {  // abcd 问卷
 					def temp = [:],
 						typeName = ''
-					map.each {
+					maps.each {
 						typeName = it.self.abbreviation
 						temp << ["$typeName" : it.score]
 					}
@@ -68,23 +48,61 @@ public class MapStatisticsService {
 						'chart' : objectMapper.writeValueAsString(temp),
 						'name' : 'ABCD测试',
 						'content' : 'ABCD测试',
-						'title' : 'ABCD测试结果',
+						'title' : it.name,
 						'score' : '',
-						'mapMax' : map[0].mapMax
+						'mapMax' : maps[0].mapMax,
+						'managementType' : maps[0].managementType,
+						'recommendedValue' : maps[0].recommendedValue
 					]
 				}
-				if (!map.empty && map.size() == 1) {
+				if (!maps.empty && maps.size() == 1) {
 					data << [
-						'chart' : map[0].result,
-						'name' : map[0].selfResultOption?.name,
-						'content' : map[0].selfResultOption?.content,
-						'title' : map[0].selfResultOption?.title,
-						'score' : map[0].score,
-						'mapMax' : map[0].mapMax
+						'chart' : maps[0].result,
+						'name' : maps[0].selfResultOption?.name,
+						'content' : maps[0].selfResultOption?.content,
+						'title' : it.name,
+						'score' : maps[0].score,
+						'mapMax' : maps[0].mapMax,
+						'managementType' : maps[0].managementType,
+						'recommendedValue' : maps[0].recommendedValue
 					]
 				}
 			}
+		} else {
+			def mapType = mapStatisticsTypeRepository.findByName(type),
+				maps = mapStatisticsRepository.findByUserAndMapStatisticsType(user, mapType)
+				if (maps.size() > 1) {  // abcd 问卷
+					def temp = [:],
+						typeName = ''
+					maps.each {
+						typeName = it.self.abbreviation
+						temp << ["$typeName" : it.score]
+					}
+					data << [
+						'chart' : objectMapper.writeValueAsString(temp),
+						'name' : 'ABCD测试',
+						'content' : 'ABCD测试',
+						'title' : mapType.name,
+						'score' : '',
+						'mapMax' : maps[0].mapMax,
+						'managementType' : maps[0].managementType,
+						'recommendedValue' : maps[0].recommendedValue
+					]
+				}
+				if (!maps.empty && maps.size() == 1) {
+					data << [
+						'chart' : maps[0].result,
+						'name' : maps[0].selfResultOption?.name,
+						'content' : maps[0].selfResultOption?.content,
+						'title' : mapType.name,
+						'score' : maps[0].score,
+						'mapMax' : maps[0].mapMax,
+						'managementType' : maps[0].managementType,
+						'recommendedValue' : maps[0].recommendedValue
+					]
+				}
 		}
+
 		[
 			'success' : '1',
 			'message' : '成功',

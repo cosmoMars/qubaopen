@@ -115,7 +115,7 @@ public class ResultService {
 		def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0, self.mapMax) // 保存心理地图
+			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0) // 保存心理地图
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 		}
@@ -168,7 +168,7 @@ public class ResultService {
 			result = selfResultOptionRepository.findByName(resultNames[0])
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, null, result, 0, self.mapMax) // 保存心理地图
+			persistentService.saveMapStatistics(user, self, null, result, 0) // 保存心理地图
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
@@ -204,7 +204,7 @@ public class ResultService {
 		)
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, null, result, score, self.mapMax)
+			persistentService.saveMapStatistics(user, self, null, result, score)
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
@@ -272,7 +272,7 @@ public class ResultService {
 		def result = selfResultOptionRepository.findByName(resultName)
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result, 0, self.mapMax)
+			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result, 0)
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
@@ -307,7 +307,7 @@ public class ResultService {
 		}
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), null, 0, self.mapMax)
+			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), null, 0)
 
 			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}

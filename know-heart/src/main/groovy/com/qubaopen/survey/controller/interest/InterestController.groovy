@@ -52,7 +52,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param questionOptions
 	 * @return
 	 */
-	@RequestMapping(value = 'calculateInterestResult', method = RequestMethod.GET)
+	@RequestMapping(value = 'calculateInterestResult', method = RequestMethod.POST)
 	calculateInterestResult(
 		@RequestParam(required = false) long interestId,
 		@RequestParam(required = false) String questionJson,

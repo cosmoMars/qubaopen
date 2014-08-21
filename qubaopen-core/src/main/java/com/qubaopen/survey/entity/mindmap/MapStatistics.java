@@ -35,6 +35,12 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	private Self self;
 
 	/**
+	 * 地图类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	private MapStatisticsType mapStatisticsType;
+
+	/**
 	 * 图形结果
 	 */
 	private String result;
@@ -70,6 +76,11 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	 */
 	private String managementType;
 
+	/**
+	 * 推荐优先级
+	 */
+	private String recommendedValue;
+
 	public User getUser() {
 		return user;
 	}
@@ -84,6 +95,14 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 
 	public void setSelf(Self self) {
 		this.self = self;
+	}
+
+	public MapStatisticsType getMapStatisticsType() {
+		return mapStatisticsType;
+	}
+
+	public void setMapStatisticsType(MapStatisticsType mapStatisticsType) {
+		this.mapStatisticsType = mapStatisticsType;
 	}
 
 	public String getResult() {
@@ -128,6 +147,14 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 
 	public void setManagementType(String managementType) {
 		this.managementType = managementType;
+	}
+
+	public String getRecommendedValue() {
+		return recommendedValue;
+	}
+
+	public void setRecommendedValue(String recommendedValue) {
+		this.recommendedValue = recommendedValue;
 	}
 
 	public void setMapMax(Integer mapMax) {

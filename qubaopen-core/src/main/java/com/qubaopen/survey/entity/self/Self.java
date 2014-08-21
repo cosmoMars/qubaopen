@@ -93,7 +93,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	private int totalRespondentsCount;
 
 	/**
-	 * 推荐值
+	 * 推荐值 优先级
 	 */
 	private int recommendedValue;
 

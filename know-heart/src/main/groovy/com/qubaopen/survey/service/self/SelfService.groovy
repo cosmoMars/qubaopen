@@ -85,11 +85,10 @@ public class SelfService {
 			if (q.special) { // 是特殊题
 				specialInserts.each { si ->
 					if (q.id == si.specialQuestionId) { // 找到特殊题 取得上一题id 完成order
-						def id = si.questionId
 						questionOrders.findAll { // 找到所有特殊题答题顺序
-							it.questionId == q.id
+							it.questionId == si.questionId
 						}.each {
-							resultOrder << "${id}:${it.optionId}:${it.nextQuestionId}"
+							resultOrder << "${it.questionId}:${it.optionId}:${it.nextQuestionId}"
 						}
 					}
 				}

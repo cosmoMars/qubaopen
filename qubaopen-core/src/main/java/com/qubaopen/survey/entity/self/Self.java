@@ -45,7 +45,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private ManagementType managementType;
 
-	private enum ManagementType {
+	public enum ManagementType {
 		Character, Emotional, Personal
 	}
 

@@ -57,7 +57,6 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 	/**
 	 * 修改用户参与活动记录，改变状态为confirming时，创建奖品分发记录
 	 */
-	@Override
 	@RequestMapping(value = 'modifyRecordStatus', method = RequestMethod.PUT)
 	modifyRecordStatus(@RequestParam long recordId, @RequestParam String status) {
 

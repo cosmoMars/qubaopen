@@ -1,8 +1,17 @@
 package com.qubaopen.survey.repository.self;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.self.SelfUserQuestionnaire;
+import com.qubaopen.survey.entity.user.User;
 
 public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQuestionnaire, Long> {
+
+	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.time in (select max(s.time) from SelfUserQuestionnaire s where s.user = :user group by s.self) order by suq.time desc")
+	List<SelfUserQuestionnaire> findByMaxTime(@Param("user") User user);
 
 }

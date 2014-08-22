@@ -36,6 +36,12 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 	 */
 	private long nextQuestionId;
 
+	private boolean answer;
+
+	private boolean interrupt;
+
+	private long resultOptionId;
+
 	/**
 	 * 是否跳过
 	 */
@@ -79,6 +85,30 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 
 	public void setJump(boolean jump) {
 		this.jump = jump;
+	}
+
+	public boolean isAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(boolean answer) {
+		this.answer = answer;
+	}
+
+	public boolean isInterrupt() {
+		return interrupt;
+	}
+
+	public void setInterrupt(boolean interrupt) {
+		this.interrupt = interrupt;
+	}
+
+	public long getResultOptionId() {
+		return resultOptionId;
+	}
+
+	public void setResultOptionId(long resultOptionId) {
+		this.resultOptionId = resultOptionId;
 	}
 
 }

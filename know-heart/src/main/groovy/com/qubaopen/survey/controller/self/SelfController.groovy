@@ -13,6 +13,7 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.self.SelfRepository
+import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 import com.qubaopen.survey.service.self.SelfService
 
 @RestController
@@ -22,6 +23,9 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 	@Autowired
 	SelfRepository selfRepository
+
+	@Autowired
+	SelfUserQuestionnaireRepository selfUserQuestionnaireRepository
 
 	@Autowired
 	SelfService selfService
@@ -42,8 +46,38 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		logger.trace ' -- 获取用户自测问卷 -- '
 
 		def data = [],
-			selfList = selfService.retrieveSelf(user.id)
-		selfList.each {
+//			selfList = selfService.retrieveSelf(),
+			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
+
+		def selfs = [], now = new Date()
+		def justUserQuestionnaire = selfUserQuestionnaires.find { // 找到小于循环时间的问卷， 得到问卷类型
+			(now.time - it.time.time) < 20 * 60 * 1000
+		}
+		selfUserQuestionnaires.remove(justUserQuestionnaire)
+		def justSelf = justUserQuestionnaire.self
+		if (justSelf) { // 找到刚做好的题目
+			selfUserQuestionnaires.findAll { suq ->
+				justSelf.managementType == suq.self.managementType
+			}.each {
+				selfs << it.self
+			}
+			selfUserQuestionnaires.findAll { suq ->
+				justSelf.managementType != suq.self.managementType
+			}.each {
+				selfs << it.self
+			}
+		}
+
+//		selfUserQuestionnaires.findAll { // 找到所有符合时间的问卷
+//			(now.time - it.time.time) > 1 * 60 * 1000
+//		}.each { e ->
+//			selfs << e.self
+//		}
+//		selfUserQuestionnaires.each {
+//			selfs << it.self
+//		}
+
+		selfs.each {
 			def self = [
 				'selfId' : it.id,
 				'managementType' : it.managementType,

@@ -46,11 +46,8 @@ public class SelfService {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	retrieveSelf(long userId) {
-		def user = new User(id : userId)
-
+	retrieveSelf() {
 		selfRepository.findSelfWithoutManagement()
-
 	}
 
 	/**

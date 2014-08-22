@@ -54,16 +54,12 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 */
 	@RequestMapping(value = 'calculateInterestResult', method = RequestMethod.POST)
 	calculateInterestResult(
-		@RequestParam(required = false) long interestId,
+		@RequestParam long interestId,
 		@RequestParam(required = false) String questionJson,
 		@ModelAttribute('currentUser') User user
 		) {
 
 		logger.trace ' -- 通过用户问题选项，计算得到结果选项 -- '
-
-		if (!interestId) {
-			return '{"success": "0", "message": "err1234"}'
-		}
 		if (!questionJson) {
 			return '{"success": "0", "message": "err1234"}'
 		}

@@ -36,13 +36,15 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * 问卷标签
 	 */
-//	@ManyToMany
-//	@JoinTable(name = "interst_questionnira_tag_relation", joinColumns = @JoinColumn(name = "interest_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+	// @ManyToMany
+	// @JoinTable(name = "interst_questionnira_tag_relation", joinColumns =
+	// @JoinColumn(name = "interest_id"), inverseJoinColumns = @JoinColumn(name
+	// = "tag_id"))
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private Set<QuestionnaireTagType> questionnaireTagTypes;
 
 	/**
-	 * 问卷的答案方式  乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
+	 * 问卷的答案方式 乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
 	 */
 	@Enumerated
 	private Type type;
@@ -94,6 +96,15 @@ public class Interest extends AbstractBaseEntity<Long> {
 	 */
 	private String guidanceSentence;
 
+	/**
+	 * 得分系数
+	 */
+	private int coefficient = 1;
+
+	/**
+	 * 问卷缩写
+	 */
+	private String abbreviation;
 
 	private String picPath;
 
@@ -183,6 +194,22 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
+	}
+
+	public int getCoefficient() {
+		return coefficient;
+	}
+
+	public void setCoefficient(int coefficient) {
+		this.coefficient = coefficient;
+	}
+
+	public String getAbbreviation() {
+		return abbreviation;
+	}
+
+	public void setAbbreviation(String abbreviation) {
+		this.abbreviation = abbreviation;
 	}
 
 }

@@ -16,6 +16,11 @@ public class Content implements Serializable{
 	 */
 	private String cnt;
 
+	/**
+	 * 顺序
+	 */
+	private int order;
+
 	public long getId() {
 		return id;
 	}
@@ -30,6 +35,14 @@ public class Content implements Serializable{
 
 	public void setCnt(String cnt) {
 		this.cnt = cnt;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 

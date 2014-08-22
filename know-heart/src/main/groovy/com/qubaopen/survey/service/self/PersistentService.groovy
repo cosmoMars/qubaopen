@@ -109,13 +109,13 @@ public class PersistentService {
 						}
 					}
 					if (type == SelfQuestion.Type.SORT) { // 排序
-						vo.contents.eachWithIndex { voc, index ->
+						vo.contents.each { voc ->
 							answer = new SelfUserAnswer(
 								user : user,
 								selfUserQuestionnaire : selfUserQuestionnaire,
 								selfQuestionOption : new SelfQuestionOption(id : voc.id),
 								selfQuestion : q,
-								turn : index + 1
+								turn : voc.order
 							)
 							userAnswers << answer
 						}

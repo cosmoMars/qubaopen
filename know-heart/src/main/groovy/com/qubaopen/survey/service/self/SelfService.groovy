@@ -189,23 +189,9 @@ public class SelfService {
 		def questionIds = [], optionIds = []
 		questionVos.each {
 			questionIds << it.questionId
-//			optionIds += it.choiceIds as List
-
 			it.contents.each { c ->
 				optionIds += c.id
-
-//				if (c.contains(':')) {
-//					def strC = c.split(':')
-//					if (strC[0].matches('^[0-9]*$')) {
-//						optionIds += Long.valueOf(strC[0])
-//					}
-//				}
-
-//				if (c.matches('^[0-9]*$')) {
-//					optionIds += Long.valueOf(c)
-//				}
 			}
-
 		}
 
 		def questions = selfQuestionRepository.findAll(questionIds),

@@ -46,8 +46,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		logger.trace ' -- 获取用户自测问卷 -- '
 
 		def data = [],
-//			selfList = selfService.retrieveSelf(),
-			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
+			selfs = selfService.retrieveSelf()
+			/*selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
 
 		def selfs = [], now = new Date(), justSelf = null
 		def justUserQuestionnaire = selfUserQuestionnaires.find { // 找到小于循环时间的问卷， 得到问卷类型
@@ -84,7 +84,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 //		selfUserQuestionnaires.each {
 //			selfs << it.self
 //		}
-
+*/
 		selfs.each {
 			def self = [
 				'selfId' : it.id,

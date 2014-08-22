@@ -54,6 +54,9 @@ public class InterestService {
 	InterestRepository interestRepository
 
 	@Autowired
+	InterestResultService interestResultService
+
+	@Autowired
 	ObjectMapper objectMapper
 
 
@@ -174,6 +177,7 @@ public class InterestService {
 
 	}
 
+
 	/**
 	 * 计算兴趣问卷结果
 	 * @param userId
@@ -182,35 +186,49 @@ public class InterestService {
 	 * @return
 	 */
 	@Transactional
-	calculateInterestResult(long userId, long interestId, String questionJson) {
+	calculateInterestResult(long userId, long interestId, String questionJson,String url) {
 
 		def interest = interestRepository.findOne(interestId),
 			user = new User(id : userId)
 
-		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
-		def questionVos = objectMapper.readValue(questionJson, javaType)
+		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class),
+			questionVos = objectMapper.readValue(questionJson, javaType)
 
 		def questionIds = [], optionIds = []
 
 		questionVos.each {
 			questionIds << it.questionId
-
-			it.content.each { c ->
-				if (c.matches('^[0-9]*$')) {
-					optionIds += Long.valueOf(c)
-				}
+			it.contents.each { c ->
+				optionIds += c.id
 			}
-		}
-		questionVos.each {
-			questionIds << it.questionId
-			optionIds += it.choiceIds as List
 		}
 
 //		def score = interestQuestionOptionRepository.sumQuestionOptions(ids as long[])
 		def questions = interestQuestionRepository.findAll(questionIds),
 			questionOptions = interestQuestionOptionRepository.findAll(optionIds)
 
-		def type = interest.type
+		def type = interest.questionnaireType.name,
+			result = null
+
+		switch (type) {
+			case 'score' :
+				result = interestResultService.calculateScore(user, interest, questionOptions, questionVos, questions)
+				break
+			case 'qtype' :
+
+				break
+			case 'rtype' :
+
+				break
+			case 'turn' :
+
+				break
+			case 'save' :
+
+				break
+
+		}
+
 
 		if (type == Interest.Type.SORCE) { //积分形式得答案
 			def score = 0
@@ -232,7 +250,7 @@ public class InterestService {
 
 		} else if (type == Interest.Type.DISORDER) { // 乱序
 
-			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, null)
+//			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, null)
 
 		}
 	}
@@ -269,7 +287,7 @@ public class InterestService {
 			questionVos.find { vo ->
 				if (vo.questionId == q.id) {
 					if (type == InterestQuestion.Type.SINGLE) { // 单选
-						def choiceId = Long.valueOf(vo.content[0])
+						def choiceId = vo.contents[0].id
 						options.find { o ->
 							if (o.id == choiceId) {
 								option = o
@@ -285,9 +303,9 @@ public class InterestService {
 						userAnswers << answer
 					}
 					if (type == InterestQuestion.Type.MULTIPLE) { // 多选
-						vo.content.each { cId ->
+						vo.contents.each { voc ->
 							options.find { o ->
-								if (o.id == Long.valueOf(cId)) {
+								if (o.id == voc.id) {
 									option = o
 								}
 							}
@@ -302,29 +320,25 @@ public class InterestService {
 						}
 					}
 					if (type == InterestQuestion.Type.QA) { // 问答题
-						vo.content.each {
+						vo.contents.each { voc ->
 							answer = new InterestUserAnswer(
 								user : user,
 								interestUserQuestionnaire : interestUserQuestionnaire,
 								interestQuestion : q,
-								content : it
+								interestQuestionOption : new InterestQuestionOption(Id : voc.id),
+								content : voc.cnt
 							)
 							userAnswers << answer
 						}
 					}
 					if (type == InterestQuestion.Type.SORT) { // 排序
-						vo.content.eachWithIndex { oId, index ->
-							options.find { o ->
-								if(o.id == Long.valueOf(oId)) {
-									option = o
-								}
-							}
+						vo.contents.each { voc ->
 							answer = new InterestUserAnswer(
 								user : user,
 								interestUserQuestionnaire : interestUserQuestionnaire,
-								interestQuestionOption : option,
+								interestQuestionOption : new InterestQuestionOption(Id : voc.id),
 								interestQuestion : q,
-								turn : index + 1
+								turn : voc.order
 							)
 							userAnswers << answer
 						}

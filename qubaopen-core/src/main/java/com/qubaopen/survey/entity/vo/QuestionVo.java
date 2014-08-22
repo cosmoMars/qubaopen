@@ -12,11 +12,6 @@ public class QuestionVo implements Serializable {
 	 */
 	private long questionId;
 
-//	/**
-//	 * 选择答案
-//	 */
-//	private long[] choiceIds;
-
 	/**
 	 * 内容
 	 */
@@ -37,11 +32,5 @@ public class QuestionVo implements Serializable {
 	public void setContents(Set<Content> contents) {
 		this.contents = contents;
 	}
-
-
-//	/**
-//	 * 排序题答案
-//	 */
-//	private long[] orderIds;
 
 }

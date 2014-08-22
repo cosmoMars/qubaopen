@@ -13,13 +13,13 @@ import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.self.SelfResultOptionRepository
 
 @Service
-public class ResultService {
+public class SelfResultService {
 
 	@Autowired
 	ObjectMapper objectMapper
 
 	@Autowired
-	PersistentService persistentService
+	SelfPersistentService selfPersistentService
 
 	@Autowired
 	SelfResultOptionRepository selfResultOptionRepository
@@ -115,9 +115,9 @@ public class ResultService {
 		def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0) // 保存心理地图
+			selfPersistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0) // 保存心理地图
 
-			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 		}
 
 		result[0]
@@ -168,9 +168,9 @@ public class ResultService {
 			result = selfResultOptionRepository.findByName(resultNames[0])
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, null, result, 0) // 保存心理地图
+			selfPersistentService.saveMapStatistics(user, self, null, result, 0) // 保存心理地图
 
-			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
 
 		result
@@ -204,9 +204,9 @@ public class ResultService {
 		)
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, null, result, score)
+			selfPersistentService.saveMapStatistics(user, self, null, result, score)
 
-			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
 
 		result
@@ -272,9 +272,9 @@ public class ResultService {
 		def result = selfResultOptionRepository.findByName(resultName)
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result, 0)
+			selfPersistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result, 0)
 
-			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
 
 		result
@@ -307,9 +307,9 @@ public class ResultService {
 		}
 
 		if (refresh) {
-			persistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), null, 0)
+			selfPersistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), null, 0)
 
-			persistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
 
 		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'

@@ -81,7 +81,7 @@ public class SurveyQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 该题目所从属的矩阵题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "survey_question_group_id")
 	private SurveyQuestionGroup surveyQuestionGroup;
 

@@ -144,7 +144,7 @@ public class SurveyService {
 
 		def questions = surveyQuestionRepository.findAll(ids)
 
-		saveQuestionnaireAndUserAnswer(user, survey, questions, questionVos)
+//		saveQuestionnaireAndUserAnswer(user, survey, questions, questionVos)
 
 		return '{"success" : 1}'
 
@@ -178,7 +178,7 @@ public class SurveyService {
 			questionVos.find { vo ->
 				if (vo.questionId == q.id) {
 					if (type == SurveyQuestion.Type.SINGLE) { // 单选
-						def choiceId = Long.valueOf(vo.content[0])
+						def choiceId = vo.contents[0].id
 						answer = new SurveyUserAnswer(
 							user : user,
 							surveyUserQuestionnaire : surveyUserQuestionnaire,
@@ -188,38 +188,36 @@ public class SurveyService {
 						userAnswers << answer
 					}
 					if (type == SurveyQuestion.Type.MULTIPLE) { // 多选
-						vo.content.each { c ->
-							def oId = Long.valueOf(c)
+						vo.contents.each { voc ->
 							answer = new SurveyUserAnswer(
 								user : user,
 								surveyUserQuestionnaire : surveyUserQuestionnaire,
 								surveyQuestion : q,
-								surveyQuestionOption : new SurveyQuestionOption(id : oId)
+								surveyQuestionOption : new SurveyQuestionOption(id : voc.id)
 							)
 							userAnswers << answer
 						}
 					}
 					if (type == SurveyQuestion.Type.QA) { // 问答
-						vo.content.each {
+						vo.contents.each { voc ->
 							answer = new SurveyUserAnswer(
 								user : user,
 								surveyUserQuestionnaire : surveyUserQuestionnaire,
 								surveyQuestion : q,
-								content : it
+								content : voc.cnt
 							)
 							userAnswers << answer
 						}
 					}
 					if (type == SurveyQuestion.Type.SORT) { // 排序
-						vo.content.eachWithIndex { oId, index ->
-						def id = Long.valueOf(oId)
-						answer = new SurveyUserAnswer(
-							user : user,
-							surveyUserQuestionnaire : surveyUserQuestionnaire,
-							surveyQuestion : q,
-							surveyQuestionOption : new SurveyQuestionOption(id : id),
-							turn : index + 1
-						)
+						vo.contents.each { voc ->
+							answer = new SurveyUserAnswer(
+								user : user,
+								surveyUserQuestionnaire : surveyUserQuestionnaire,
+								surveyQuestion : q,
+								surveyQuestionOption : new SurveyQuestionOption(id : voc.id),
+								turn : voc.order
+							)
 						userAnswers << answer
 						}
 					}

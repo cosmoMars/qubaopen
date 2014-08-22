@@ -27,7 +27,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 		if (StringUtils.equals(request.getRequestURI().split("/")[2], "users") || StringUtils.equals(request.getRequestURI().split("/")[2], "pic")) {
 			return true;
 		}
-
 		// 本地配置
 //		if (StringUtils.equals(request.getRequestURI().split("/")[1], "users") || StringUtils.equals(request.getRequestURI().split("/")[1], "pic")) {
 //			return true;

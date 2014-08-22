@@ -64,6 +64,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			return '{"success": "0", "message": "err1234"}'
 		}
 
+
 		def result = interestService.calculateInterestResult(user.id, interestId, questionJson)
 
 		[

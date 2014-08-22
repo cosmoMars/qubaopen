@@ -15,6 +15,7 @@ import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.QuestionnaireTagType;
+import com.qubaopen.survey.entity.QuestionnaireType;
 
 /**
  * @author mars 兴趣问卷
@@ -34,12 +35,15 @@ public class Interest extends AbstractBaseEntity<Long> {
 	private InterestType interestType;
 
 	/**
+	 * 问卷类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "questionnaire_type_id")
+	private QuestionnaireType questionnaireType;
+
+	/**
 	 * 问卷标签
 	 */
-	// @ManyToMany
-	// @JoinTable(name = "interst_questionnira_tag_relation", joinColumns =
-	// @JoinColumn(name = "interest_id"), inverseJoinColumns = @JoinColumn(name
-	// = "tag_id"))
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private Set<QuestionnaireTagType> questionnaireTagTypes;
 

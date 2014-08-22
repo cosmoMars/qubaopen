@@ -38,7 +38,7 @@ public class SelfService {
 	ObjectMapper objectMapper
 
 	@Autowired
-	ResultService resultService
+	SelfResultService selfResultService
 
 	/**
 	 * 获取自测问卷
@@ -178,7 +178,7 @@ public class SelfService {
 	 * @return
 	 */
 	@Transactional
-	calculateSelfReslut(long userId, long selfId, String questionJson, Boolean refresh) {
+	calculateSelfReslut(long userId, long selfId, String questionJson, boolean refresh) {
 
 		def user = new User(id : userId),
 			self = selfRepository.findOne(selfId)
@@ -204,13 +204,13 @@ public class SelfService {
 
 			switch (selfType.name) {
 				case 'SCORE' :
-					result = resultService.calculateScore(user, self, questionOptions, questionVos, questions, refresh)
+					result = selfResultService.calculateScore(user, self, questionOptions, questionVos, questions, refresh)
 					break
 				case 'QTYPE' :
-					result = resultService.calculateQType(user, self, questionOptions, questionVos, questions, refresh)
+					result = selfResultService.calculateQType(user, self, questionOptions, questionVos, questions, refresh)
 					break
 				case 'RTYPE' :
-					result = resultService.calculateRType(user, self, questionOptions, questionVos, questions, refresh)
+					result = selfResultService.calculateRType(user, self, questionOptions, questionVos, questions, refresh)
 					break
 			}
 

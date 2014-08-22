@@ -38,8 +38,14 @@ public class SelfQuestionOrder extends AbstractPersistable<Long> {
 
 	private boolean answer;
 
+	/**
+	 * 中断
+	 */
 	private boolean interrupt;
 
+	/**
+	 * 结果
+	 */
 	private long resultOptionId;
 
 	/**

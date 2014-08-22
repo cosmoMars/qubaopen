@@ -222,8 +222,6 @@ public class UserService {
 			userRepository.save(u)
 			return '{"success": "1"}'
 		}
-
-		'{"success": "0", "message": "err007"}'
 	}
 
 	/**

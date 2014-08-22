@@ -20,7 +20,7 @@ import com.qubaopen.survey.repository.self.SelfUserAnswerRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 
 @Service
-public class PersistentService {
+public class SelfPersistentService {
 
 	@Autowired
 	SelfUserQuestionnaireRepository selfUserQuestionnaireRepository

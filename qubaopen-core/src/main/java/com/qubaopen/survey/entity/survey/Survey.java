@@ -146,14 +146,14 @@ public class Survey extends AbstractBaseEntity<Long> {
 	/**
 	 * 审核人
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "aduit_user_id")
 	private Manager aduitUser;
 
 	/**
 	 * 客户
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 

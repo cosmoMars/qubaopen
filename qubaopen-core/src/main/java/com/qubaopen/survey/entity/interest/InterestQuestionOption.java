@@ -29,7 +29,7 @@ public class InterestQuestionOption extends AbstractPersistable<Long> {
 	/**
 	 * 问卷id
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "interest_question_option_type_id")
 	private InterestQuestionOptionType interestQuestionOptionType;
 

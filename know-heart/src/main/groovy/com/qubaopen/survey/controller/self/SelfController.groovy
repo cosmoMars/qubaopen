@@ -1,5 +1,6 @@
 package com.qubaopen.survey.controller.self
 
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
@@ -108,7 +109,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'calculateSelfResult', method = RequestMethod.POST)
-	calculateSelfReslut(@RequestParam long selfId,
+	calculateSelfReslut(@RequestParam(required = false) Long selfId,
 		@RequestParam(required = false) String questionJson,
 		@RequestParam(required = false) Boolean refresh,
 		@ModelAttribute('currentUser') User user
@@ -116,7 +117,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		logger.trace ' -- 计算自测结果选项 -- '
 
-		if (questionJson == null || questionJson.isEmpty()) {
+		if (StringUtils.isEmpty(questionJson)) {
 			return '{"success" : "0", "message" : "err1234"}'
 		}
 
@@ -131,7 +132,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'id' : result?.id,
 			'resultTitle' : result?.selfResult?.title,
 			'content' : result?.content,
-			'optionTitle' : result?.title
+			'optionTitle' : result?.title,
+			'optionNum' : result?.resultNum
 		]
 
 	}

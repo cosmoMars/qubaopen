@@ -33,6 +33,9 @@ public class SurveyQuestionOption extends AbstractPersistable<Long> {
 	 */
 	private String serialNum;
 
+	private int sorce;
+
+
 	private String picPath;
 
 	public SurveyQuestion getSurveyQuestion() {
@@ -65,6 +68,14 @@ public class SurveyQuestionOption extends AbstractPersistable<Long> {
 
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
+	}
+
+	public int getSorce() {
+		return sorce;
+	}
+
+	public void setSorce(int sorce) {
+		this.sorce = sorce;
 	}
 
 }

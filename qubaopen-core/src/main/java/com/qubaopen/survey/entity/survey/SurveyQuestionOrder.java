@@ -1,4 +1,4 @@
-package com.qubaopen.survey.entity.interest;
+package com.qubaopen.survey.entity.survey;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -7,22 +7,24 @@ import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
- * @author mars 兴趣问卷问题顺序
+ * 顺序表
+ * @author mars
+ *
  */
 @Entity
-@Table(name = "interest_question_order")
+@Table(name = "survey_question_order")
 @Audited
-public class InterestQuestionOrder extends AbstractPersistable<Long> {
+public class SurveyQuestionOrder extends AbstractPersistable<Long>{
 
-	private static final long serialVersionUID = -5275365571762144278L;
+	private static final long serialVersionUID = -1463252367505146017L;
 
 	/**
-	 * 问题
+	 * 本题
 	 */
 	private long questionId;
 
 	/**
-	 * 本题选项结果
+	 * 选项
 	 */
 	private long optionId;
 
@@ -32,36 +34,9 @@ public class InterestQuestionOrder extends AbstractPersistable<Long> {
 	private long nextQuestionId;
 
 	/**
-	 * 结果
-	 */
-	private long resultOptionId;
-
-	/**
-	 * 是否跳过
-	 */
-	private boolean jump;
-
-	/**
 	 * 中断
 	 */
 	private boolean interrupt;
-
-
-	public long getResultOptionId() {
-		return resultOptionId;
-	}
-
-	public void setResultOptionId(long resultOptionId) {
-		this.resultOptionId = resultOptionId;
-	}
-
-	public boolean isInterrupt() {
-		return interrupt;
-	}
-
-	public void setInterrupt(boolean interrupt) {
-		this.interrupt = interrupt;
-	}
 
 	public long getQuestionId() {
 		return questionId;
@@ -87,12 +62,12 @@ public class InterestQuestionOrder extends AbstractPersistable<Long> {
 		this.nextQuestionId = nextQuestionId;
 	}
 
-	public boolean isJump() {
-		return jump;
+	public boolean isInterrupt() {
+		return interrupt;
 	}
 
-	public void setJump(boolean jump) {
-		this.jump = jump;
+	public void setInterrupt(boolean interrupt) {
+		this.interrupt = interrupt;
 	}
 
 }

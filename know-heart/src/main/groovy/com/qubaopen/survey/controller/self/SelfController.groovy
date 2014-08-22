@@ -49,12 +49,15 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 //			selfList = selfService.retrieveSelf(),
 			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
 
-		def selfs = [], now = new Date()
+		def selfs = [], now = new Date(), justSelf = null
 		def justUserQuestionnaire = selfUserQuestionnaires.find { // 找到小于循环时间的问卷， 得到问卷类型
 			(now.time - it.time.time) < 20 * 60 * 1000
 		}
-		selfUserQuestionnaires.remove(justUserQuestionnaire)
-		def justSelf = justUserQuestionnaire.self
+		if (justUserQuestionnaire) {
+			selfUserQuestionnaires.remove(justUserQuestionnaire)
+			justSelf = justUserQuestionnaire.self
+		}
+
 		if (justSelf) { // 找到刚做好的题目
 			selfUserQuestionnaires.findAll { suq ->
 				justSelf.managementType == suq.self.managementType
@@ -66,7 +69,12 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			}.each {
 				selfs << it.self
 			}
+		} else {
+			selfUserQuestionnaires.each {
+				selfs << it.self
+			}
 		}
+
 
 //		selfUserQuestionnaires.findAll { // 找到所有符合时间的问卷
 //			(now.time - it.time.time) > 1 * 60 * 1000

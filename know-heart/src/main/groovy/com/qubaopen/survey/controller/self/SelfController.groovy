@@ -109,12 +109,20 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 */
 	@RequestMapping(value = 'calculateSelfResult', method = RequestMethod.POST)
 	calculateSelfReslut(@RequestParam long selfId,
-		@RequestParam String questionJson,
+		@RequestParam(required = false) String questionJson,
 		@RequestParam(required = false) Boolean refresh,
 		@ModelAttribute('currentUser') User user
 		) {
 
 		logger.trace ' -- 计算自测结果选项 -- '
+
+		if (questionJson == null || questionJson.isEmpty()) {
+			return '{"success" : "0", "message" : "err1234"}'
+		}
+
+		if (!refresh) {
+			refresh = false
+		}
 
 		def result = selfService.calculateSelfReslut(user.id, selfId, questionJson, refresh)
 		[
@@ -124,7 +132,6 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'resultTitle' : result?.selfResult?.title,
 			'content' : result?.content,
 			'optionTitle' : result?.title
-//			'resultNum' : result?.resultNum
 		]
 
 	}

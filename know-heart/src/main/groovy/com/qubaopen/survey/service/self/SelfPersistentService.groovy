@@ -78,8 +78,7 @@ public class SelfPersistentService {
 							score : option.score
 						)
 						userAnswers << answer
-					}
-					if (type == SelfQuestion.Type.MULTIPLE) { // 多选
+					} else if (type == SelfQuestion.Type.MULTIPLE) { // 多选
 						vo.contents.each { voc ->
 							options.find { o ->
 								if (o.id == voc.id) {
@@ -95,8 +94,7 @@ public class SelfPersistentService {
 							)
 							userAnswers << answer
 						}
-					}
-					if (type == SelfQuestion.Type.QA) { // 问答
+					} else if (type == SelfQuestion.Type.QA) { // 问答
 						vo.contents.each { voc ->
 							answer = new SelfUserAnswer(
 								user : user,
@@ -107,8 +105,7 @@ public class SelfPersistentService {
 							)
 							userAnswers << answer
 						}
-					}
-					if (type == SelfQuestion.Type.SORT) { // 排序
+					} else if (type == SelfQuestion.Type.SORT) { // 排序
 						vo.contents.each { voc ->
 							answer = new SelfUserAnswer(
 								user : user,
@@ -119,8 +116,7 @@ public class SelfPersistentService {
 							)
 							userAnswers << answer
 						}
-					}
-					if (type == SelfQuestion.Type.SCORE) { // 打分
+					} else if (type == SelfQuestion.Type.SCORE) { // 打分
 						vo.contents.each {
 							options.find { o ->
 								if (o.id == it.id) {

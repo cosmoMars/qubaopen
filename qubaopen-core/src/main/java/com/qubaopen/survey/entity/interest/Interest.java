@@ -30,13 +30,6 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * 问卷类型
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "interest_type_id")
-	private InterestType interestType;
-
-	/**
-	 * 问卷类型
-	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "questionnaire_type_id")
 	private QuestionnaireType questionnaireType;
@@ -46,16 +39,6 @@ public class Interest extends AbstractBaseEntity<Long> {
 	 */
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private Set<QuestionnaireTagType> questionnaireTagTypes;
-
-	/**
-	 * 问卷的答案方式 乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
-	 */
-	@Enumerated
-	private Type type;
-
-	private enum Type {
-		DISORDER, SORCE, DISORDERSCORE
-	}
 
 	/**
 	 * 标题
@@ -112,28 +95,12 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	private String picPath;
 
-	public InterestType getInterestType() {
-		return interestType;
-	}
-
-	public void setInterestType(InterestType interestType) {
-		this.interestType = interestType;
-	}
-
 	public Set<QuestionnaireTagType> getQuestionnaireTagTypes() {
 		return questionnaireTagTypes;
 	}
 
 	public void setQuestionnaireTagTypes(Set<QuestionnaireTagType> questionnaireTagTypes) {
 		this.questionnaireTagTypes = questionnaireTagTypes;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
 	}
 
 	public String getTitle() {

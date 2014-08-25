@@ -91,6 +91,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 				'selfId' : it.id,
 				'managementType' : it.managementType,
 				'title' : it.title,
+				'guidanceSentence' :it.guidanceSentence
 			]
 			data << self
 		}
@@ -126,6 +127,14 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		}
 
 		def result = selfService.calculateSelfReslut(user.id, selfId, questionJson, refresh)
+
+		if (result instanceof String) {
+			return result
+		}
+
+		if (!result) {
+			return '{"success" : "0", "message" : "err123123"}'
+		}
 		[
 			'success' : '1',
 			'message' : '成功',

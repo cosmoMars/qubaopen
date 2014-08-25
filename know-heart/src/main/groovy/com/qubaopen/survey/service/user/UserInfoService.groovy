@@ -50,7 +50,8 @@ public class UserInfoService {
 			'defaultAddress' : defaultAddress?.detialAddress,
 			'IdCard' : userIdCardBind?.userIDCard?.IDCard,
 			'avatarPath' : userInfo?.avatarPath,
-			"district" : ''
+			'district' : '',
+			'signature' : userInfo?.signature
 
 		]
 

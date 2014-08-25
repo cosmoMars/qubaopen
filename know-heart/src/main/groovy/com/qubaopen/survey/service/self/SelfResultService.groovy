@@ -24,6 +24,40 @@ public class SelfResultService {
 	@Autowired
 	SelfResultOptionRepository selfResultOptionRepository
 
+	/**
+	 * 计算SCORE
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionIds
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculateScore(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		def score = 0
+
+		questionOptions.each {
+			 score += it.score
+		}
+
+		score = score * self.coefficient
+
+		def result = selfResultOptionRepository.findOneByFilters(
+			'selfResult.self_equal' : self,
+			'highestScore_greaterThanOrEqualTo' : score,
+			'lowestScore_lessThanOrEqualTo' : score
+		)
+
+		if (refresh) {
+			selfPersistentService.saveMapStatistics(user, self, null, result, score)
+
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+		}
+
+		result
+	}
 
 	@Transactional
 	calculateQType(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
@@ -45,7 +79,7 @@ public class SelfResultService {
 	}
 
 	@Transactional
-	calculateRType(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+	calculateOType(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
 		def abbreviation = self.abbreviation
 		def result = null
 		switch (abbreviation) {
@@ -58,6 +92,10 @@ public class SelfResultService {
 		}
 		result
 	}
+
+
+	/*************************************************************************************************/
+
 	/**
 	 * 计算SDS
 	 * @param user
@@ -169,42 +207,6 @@ public class SelfResultService {
 
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, null, result, 0) // 保存心理地图
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
-		}
-
-		result
-	}
-
-
-	/**
-	 * 计算SCORE
-	 * @param user
-	 * @param self
-	 * @param questionOptions
-	 * @param questionIds
-	 * @param questions
-	 * @param refresh
-	 * @return
-	 */
-	@Transactional
-	calculateScore(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
-		def score = 0
-
-		questionOptions.each {
-			 score += it.score
-		}
-
-		score = score * self.coefficient
-
-		def result = selfResultOptionRepository.findOneByFilters(
-			'selfResult.self_equal' : self,
-			'highestScore_greaterThanOrEqualTo' : score,
-			'lowestScore_lessThanOrEqualTo' : score
-		)
-
-		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, null, result, score)
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}

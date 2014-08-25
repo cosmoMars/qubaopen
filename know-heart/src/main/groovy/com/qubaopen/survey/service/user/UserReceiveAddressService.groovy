@@ -64,7 +64,7 @@ public class UserReceiveAddressService {
 		}
 
 		if (address.defaultAddress == userReceiveAddress.defaultAddress) {
-			userReceiveAddressRepository.modify(userReceiveAddress)
+			userReceiveAddressRepository.modify(userReceiveAddress, address.user)
 			return '{"success": "1"}'
 		}
 

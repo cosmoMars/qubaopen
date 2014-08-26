@@ -50,25 +50,25 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		def data = [], result = [], now = new Date(),
 			selfs = selfService.retrieveSelf()
 			
-		def index = dayForWeek()
-		if (index in 1..5) {
-			if (result) {
-				def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目
-				def epqSelfs = selfRepository.findAll( // epq 4套题目
-						[
-							'selfType.name_equal' : 'EPQ'
-						]
-					)
-				
-				
-			}
-		} else if (index in 6..7) {
-		
-		}
-		
-		if (refresh) {
-			
-		}
+//		def index = dayForWeek()
+//		if (index in 1..5) {
+//			if (result) {
+//				def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目
+//				def epqSelfs = selfRepository.findAll( // epq 4套题目
+//						[
+//							'selfType.name_equal' : 'EPQ'
+//						]
+//					)
+//				
+//				
+//			}
+//		} else if (index in 6..7) {
+//		
+//		}
+//		
+//		if (refresh) {
+//			
+//		}
 		
 
 			/*selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)

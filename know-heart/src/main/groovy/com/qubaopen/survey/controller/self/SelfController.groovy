@@ -53,6 +53,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4)
 
 
+//		def epqSelfs =
 
 
 

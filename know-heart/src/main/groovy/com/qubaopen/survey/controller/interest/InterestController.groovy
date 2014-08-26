@@ -1,6 +1,7 @@
 package com.qubaopen.survey.controller.interest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -40,11 +41,16 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.GET)
-	retrieveInterest(@ModelAttribute('currentUser') User user) {
+	retrieveInterest(@RequestParam(required = false) Long interestTypeId,
+		@RequestParam(required = false) String turnType,
+		@ModelAttribute('currentUser') User user,
+		Pageable pageable) {
 
 		logger.trace ' -- 获取用户兴趣问卷 -- '
+		
+		println pageable
 
-		interestService.retrieveInterest(user.id)
+		interestService.retrieveInterest(user.id, interestTypeId, turnType, pageable)
 	}
 
 	/**

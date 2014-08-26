@@ -28,12 +28,15 @@ public class Interest extends AbstractBaseEntity<Long> {
 	private static final long serialVersionUID = -1578765434385263230L;
 
 	/**
-	 * 问卷类型
+	 * 问卷的答案类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "questionnaire_type_id")
 	private QuestionnaireType questionnaireType;
 
+	/**
+	 * 问卷类型
+	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "interest_type_id")
 	private InterestType interestType;

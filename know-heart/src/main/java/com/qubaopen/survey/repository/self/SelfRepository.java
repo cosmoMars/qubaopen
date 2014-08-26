@@ -25,5 +25,7 @@ public interface SelfRepository extends MyRepository<Self, Long> {
 	@Query("from Self s where s.managementType != :managementType")
 	List<Self> findByWithOutManagementType(@Param("managementType") Self.ManagementType managementType);
 
-	Self  findByManagementTypeAndIntervalTime(Self.ManagementType managementType, int intervalTime);
+	Self findByManagementTypeAndIntervalTime(Self.ManagementType managementType, int intervalTime);
+
+	List<Self> findBySelfTypeName(String name);
 }

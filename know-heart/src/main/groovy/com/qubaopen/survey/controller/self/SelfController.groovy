@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.self.Self
+import com.qubaopen.survey.entity.self.Self.ManagementType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
@@ -49,7 +50,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		def data = [], result = [],
 			selfs = selfService.retrieveSelf()
 
-//		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4)
+		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4)
+
 
 
 

@@ -34,6 +34,10 @@ public class Interest extends AbstractBaseEntity<Long> {
 	@JoinColumn(name = "questionnaire_type_id")
 	private QuestionnaireType questionnaireType;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "interest_type_id")
+	private InterestType interestType;
+
 	/**
 	 * 问卷标签
 	 */
@@ -101,6 +105,14 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setQuestionnaireTagTypes(Set<QuestionnaireTagType> questionnaireTagTypes) {
 		this.questionnaireTagTypes = questionnaireTagTypes;
+	}
+
+	public InterestType getInterestType() {
+		return interestType;
+	}
+
+	public void setInterestType(InterestType interestType) {
+		this.interestType = interestType;
 	}
 
 	public String getTitle() {

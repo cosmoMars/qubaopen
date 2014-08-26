@@ -1,15 +1,20 @@
 package com.qubaopen.survey.entity.user;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
  * @author mars 用户 每日心情表
@@ -17,26 +22,38 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Entity
 @Table(name = "user_mood")
 @Audited
-public class UserMood extends AbstractBaseEntity<Long> {
+public class UserMood implements Serializable{
 
 
 	private static final long serialVersionUID = 3241951749351437205L;
 
+	
+	@Id
+	private Long id;
+
 	/**
 	 * 用户
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@PrimaryKeyJoinColumn
 	private User user;
 
 	@Enumerated
-	private MoodType moodType;
-
+	private MoodType moodType=MoodType.NONE;
+	
+	
 	/**
-	 * 签到心情类型 0郁闷 1无聊 2得瑟 3丢人 4求安慰 5纠结
+	 * 最后修改日期
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastTime=new Date();
+	
+	
+	/**
+	 * 签到心情类型  0无心情 1郁闷 2无聊 3得瑟 4丢人 5求安慰 6纠结
 	 */
 	public enum MoodType {
-		YUMEN, WULIAO, DESE, DIUREN, QIUANWEI, JIUJIE
+		NONE,YUMEN, WULIAO, DESE, DIUREN, QIUANWEI, JIUJIE
 	}
 
 	public User getUser() {
@@ -54,5 +71,23 @@ public class UserMood extends AbstractBaseEntity<Long> {
 	public void setMoodType(MoodType moodType) {
 		this.moodType = moodType;
 	}
+
+
+	public Date getLastTime() {
+		return lastTime;
+	}
+
+	public void setLastTime(Date lastTime) {
+		this.lastTime = lastTime;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 
 }

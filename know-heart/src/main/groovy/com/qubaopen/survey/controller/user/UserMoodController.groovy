@@ -32,8 +32,8 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		userMoodRepository
 	}
 
-	@RequestMapping(value = 'mood', method = RequestMethod.POST)
-	userShare(@RequestParam int type,
+	@RequestMapping(value = 'setMood', method = RequestMethod.POST)
+	userMood(@RequestParam int type,
 			@ModelAttribute('currentUser') User user) {
 
 		if(type<0 || type>=MoodType.values().length){
@@ -41,6 +41,11 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		}
 
 		userMoodService.saveUserMood(user,MoodType.values()[type]);
+	}
 
+	@RequestMapping(value = 'getMood', method = RequestMethod.GET)
+	getMood(@ModelAttribute('currentUser') User user) {
+
+		userMoodService.getUserMood(user);
 	}
 }

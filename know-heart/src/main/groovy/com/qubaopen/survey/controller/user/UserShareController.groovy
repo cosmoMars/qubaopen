@@ -36,8 +36,8 @@ public class UserShareController extends AbstractBaseController<UserShare, Long>
 
 	@RequestMapping(value = 'share', method = RequestMethod.POST)
 	userShare(@RequestParam(required = false) int target,
-			@RequestParam int origin,
-			@RequestParam(required = true) String remark,
+			@RequestParam(required = false) int origin,
+			@RequestParam(required = false) String remark,
 			@ModelAttribute('currentUser') User user) {
 
 		if (remark ==null || remark.equals("")) {

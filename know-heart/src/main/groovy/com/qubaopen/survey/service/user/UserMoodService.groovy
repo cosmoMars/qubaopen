@@ -25,16 +25,33 @@ class UserMoodService {
 
 	@Transactional
 	saveUserMood(User user, MoodType moodType) {
-		def lastUserMood=userMoodRepository.getLastUserMood(user.id);
-		lastUserMood.getCreatedDate();
-		//DateUtils.isSameDay(null, null);
-		def userMood = new UserMood(
-			user : user,
-			moodType : moodType
-		)
+		def userMood=userMoodRepository.findOne(user.id);
+		if(userMood){
+			userMood.setMoodType(moodType);
+			userMood.setLastTime(new Date());
+			
+		}else{
+			userMood =new UserMood(
+				user : user,
+				moodType : moodType
+			);
+		}
+		
 		userMoodRepository.save(userMood);
-
-		def result = ['success' : "1"]
-		lastUserMood
+		
+		return ['success' : '1','moodType':userMood.moodType.ordinal(),'lastTime':userMood.lastTime]		
+	}
+	
+	@Transactional
+	getUserMood(User user) {
+		def userMood=userMoodRepository.findOne(user.id);
+		if(userMood==null){
+			userMood =new UserMood(
+				id : user.id
+			);
+		}
+		userMoodRepository.save(userMood);
+		
+		return ['success' : '1','moodType':userMood.moodType.ordinal(),'lastTime':userMood.lastTime]
 	}
 }

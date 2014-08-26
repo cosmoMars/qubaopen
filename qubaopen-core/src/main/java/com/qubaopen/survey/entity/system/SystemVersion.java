@@ -33,7 +33,7 @@ public class SystemVersion extends AbstractBaseEntity<Long> {
 	/**
 	 * 0 安卓 1 ios 2 web
 	 */
-	private enum Type {
+	public enum Type {
 		ANDROID, IOS, WEB
 	}
 

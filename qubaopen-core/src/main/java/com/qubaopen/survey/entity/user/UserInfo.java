@@ -14,6 +14,8 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 /**
@@ -31,6 +33,7 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	 */
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@PrimaryKeyJoinColumn
+	@JsonIgnore
 	private User user;
 
 	/**

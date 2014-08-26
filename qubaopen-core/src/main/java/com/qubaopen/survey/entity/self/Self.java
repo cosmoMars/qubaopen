@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.QuestionnaireType;
 
 /**
  * @author mars 自测
@@ -24,23 +25,19 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * 问卷类型
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "questionnaire_type_id")
+	private QuestionnaireType questionnaireType;
+
+	/**
+	 * 问卷分组类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "self_type_id")
 	private SelfType selfType;
 
 	/**
-	 * 问卷的答案方式 乱序 DISOREDER, 得分 SORCE, 乱序得分 DISORDERSCORE
-	 */
-	@Enumerated
-	private Type type;
-
-	private enum Type {
-		DISOREDER, SORCE, DISORDERSCORE
-	}
-
-	/**
-	 * 自测类型
-	 * Character性格分析, Emotional 情绪管理, Personal个人发展
+	 * 自测类型 Character性格分析, Emotional 情绪管理, Personal个人发展
 	 */
 	@Enumerated
 	private ManagementType managementType;
@@ -112,20 +109,25 @@ public class Self extends AbstractBaseEntity<Long> {
 	 */
 	private String picPath;
 
+	/**
+	 * 间隔时间 单位：小时
+	 */
+	private int intervalTime;
+
+	public QuestionnaireType getQuestionnaireType() {
+		return questionnaireType;
+	}
+
+	public void setQuestionnaireType(QuestionnaireType questionnaireType) {
+		this.questionnaireType = questionnaireType;
+	}
+
 	public SelfType getSelfType() {
 		return selfType;
 	}
 
 	public void setSelfType(SelfType selfType) {
 		this.selfType = selfType;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
 	}
 
 	public ManagementType getManagementType() {
@@ -222,6 +224,14 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
+	}
+
+	public int getIntervalTime() {
+		return intervalTime;
+	}
+
+	public void setIntervalTime(int intervalTime) {
+		this.intervalTime = intervalTime;
 	}
 
 }

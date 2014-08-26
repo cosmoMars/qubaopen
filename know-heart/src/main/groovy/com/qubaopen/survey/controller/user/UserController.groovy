@@ -95,7 +95,8 @@ class UserController extends AbstractBaseController<User, Long> {
 				'defaultAddressPhone' : userReceiveAddress?.phone,
 				'idCard' : userIdCardBind?.userIDCard?.IDCard,
 				'birthday' : userInfo?.birthday,
-				'avatarPath' : userInfo?.avatarPath
+				'avatarPath' : userInfo?.avatarPath,
+				'signature' : userInfo?.signature
 			]
 		}
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.self.Self
+import com.qubaopen.survey.entity.self.Self.ManagementType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
@@ -42,12 +43,22 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveSelf', method = RequestMethod.GET)
-	retrieveSelf(@ModelAttribute('currentUser') User user) {
+	retrieveSelf(@RequestParam(required = false) Boolean refresh, @ModelAttribute('currentUser') User user) {
 
 		logger.trace ' -- 获取用户自测问卷 -- '
 
-		def data = [],
+		def data = [], result = [],
 			selfs = selfService.retrieveSelf()
+
+		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4)
+
+
+
+
+
+
+
+
 			/*selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
 
 		def selfs = [], now = new Date(), justSelf = null
@@ -91,6 +102,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 				'selfId' : it.id,
 				'managementType' : it.managementType,
 				'title' : it.title,
+				'guidanceSentence' :it.guidanceSentence
 			]
 			data << self
 		}
@@ -126,6 +138,14 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		}
 
 		def result = selfService.calculateSelfReslut(user.id, selfId, questionJson, refresh)
+
+		if (result instanceof String) {
+			return result
+		}
+
+		if (!result) {
+			return '{"success" : "0", "message" : "err123123"}'
+		}
 		[
 			'success' : '1',
 			'message' : '成功',
@@ -136,6 +156,18 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'optionNum' : result?.resultNum
 		]
 
+	}
+
+	def dayForWeek() {
+		def c = Calendar.getInstance()
+		c.setTime new Date()
+		def idx
+		if (c.get(Calendar.DAY_OF_WEEK) == 1) {
+			idx = 7
+		} else {
+			idx = c.get(Calendar.DAY_OF_WEEK) - 1
+		}
+		idx
 	}
 
 }

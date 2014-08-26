@@ -6,11 +6,6 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.interest.Interest
-import com.qubaopen.survey.entity.interest.InterestQuestion
-import com.qubaopen.survey.entity.interest.InterestQuestionOption
-import com.qubaopen.survey.entity.interest.InterestResultOption
-import com.qubaopen.survey.entity.interest.InterestUserAnswer
-import com.qubaopen.survey.entity.interest.InterestUserQuestionnaire
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.interest.InterestQuestionOptionRepository
@@ -186,7 +181,7 @@ public class InterestService {
 	 * @return
 	 */
 	@Transactional
-	calculateInterestResult(long userId, long interestId, String questionJson,String url) {
+	calculateInterestResult(long userId, long interestId, String questionJson) {
 
 		def interest = interestRepository.findOne(interestId),
 			user = new User(id : userId)
@@ -215,138 +210,22 @@ public class InterestService {
 				result = interestResultService.calculateScore(user, interest, questionOptions, questionVos, questions)
 				break
 			case 'qtype' :
-
+				result = interestResultService.calculateQType(user, interest, questionOptions, questionVos, questions)
 				break
-			case 'rtype' :
-
+			case 'otype' :
+				result = interestResultService.calculateOType(user, interest, questionOptions, questionVos, questions)
 				break
 			case 'turn' :
-
+				result = interestResultService.calculateTurn(user, interest, questionOptions, questionVos, questions)
 				break
 			case 'save' :
-
+				result = interestResultService.calculateSave(user, interest, questionOptions, questionVos, questions)
 				break
 
 		}
 
+		result
 
-		if (type == Interest.Type.SORCE) { //积分形式得答案
-			def score = 0
-			questionOptions.each {
-				score = score + it.score
-			}
-			def resultOption = interestResultOptionRepository.findOneByFilters(
-				[
-					'interestResult.interest_equal' : interest,
-					'lowestScore_lessThanOrEqualTo' : score,
-					'highestScore_greaterThanOrEqualTo' : score
-				]
-			)
-
-			// 保存用户问卷答卷，以及用户问卷问题
-			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, resultOption)
-
-			resultOption
-
-		} else if (type == Interest.Type.DISORDER) { // 乱序
-
-//			saveQuestionnaireAndUserAnswers(user, interest, questionVos, questions, questionOptions, null)
-
-		}
-	}
-
-
-	/**
-	 *
-	 * 保存用户答卷，用户问题记录
-	 * @param user
-	 * @param interest
-	 * @param questionVos
-	 * @param questions
-	 * @param options
-	 * @param resultOption
-	 */
-	@Transactional
-	void saveQuestionnaireAndUserAnswers(User user, Interest interest, List<QuestionVo> questionVos, List<InterestQuestion> questions, List<InterestQuestionOption> options, InterestResultOption resultOption) {
-
-		def interestUserQuestionnaire = new InterestUserQuestionnaire(
-			user : user,
-			interest : interest,
-			interestResultOption : resultOption,
-			status : InterestUserQuestionnaire.Status.COMPLETED,
-			transmit : InterestUserQuestionnaire.Transmit.NOTRANSMIT,
-			time : new Date()
-		)
-		interestUserQuestionnaire =	interestUserQuestionnaireRepository.save(interestUserQuestionnaire)
-
-		def userAnswers = []
-
-		questions.each { q ->
-			def type = q.type
-			def answer = null, option = null
-			questionVos.find { vo ->
-				if (vo.questionId == q.id) {
-					if (type == InterestQuestion.Type.SINGLE) { // 单选
-						def choiceId = vo.contents[0].id
-						options.find { o ->
-							if (o.id == choiceId) {
-								option = o
-							}
-						}
-						answer = new InterestUserAnswer(
-							user : user,
-							interestUserQuestionnaire : interestUserQuestionnaire,
-							interestQuestionOption : option,
-							interestQuestion : q,
-							score : option.score
-						)
-						userAnswers << answer
-					}
-					if (type == InterestQuestion.Type.MULTIPLE) { // 多选
-						vo.contents.each { voc ->
-							options.find { o ->
-								if (o.id == voc.id) {
-									option = o
-								}
-							}
-							answer = new InterestUserAnswer(
-								user : user,
-								interestUserQuestionnaire : interestUserQuestionnaire,
-								interestQuestionOption : option,
-								interestQuestion : q,
-								score : option.score
-							)
-							userAnswers << answer
-						}
-					}
-					if (type == InterestQuestion.Type.QA) { // 问答题
-						vo.contents.each { voc ->
-							answer = new InterestUserAnswer(
-								user : user,
-								interestUserQuestionnaire : interestUserQuestionnaire,
-								interestQuestion : q,
-								interestQuestionOption : new InterestQuestionOption(Id : voc.id),
-								content : voc.cnt
-							)
-							userAnswers << answer
-						}
-					}
-					if (type == InterestQuestion.Type.SORT) { // 排序
-						vo.contents.each { voc ->
-							answer = new InterestUserAnswer(
-								user : user,
-								interestUserQuestionnaire : interestUserQuestionnaire,
-								interestQuestionOption : new InterestQuestionOption(Id : voc.id),
-								interestQuestion : q,
-								turn : voc.order
-							)
-							userAnswers << answer
-						}
-					}
-				}
-			}
-		}
-		interestUserAnswerRepository.save(userAnswers)
 	}
 
 	@Transactional

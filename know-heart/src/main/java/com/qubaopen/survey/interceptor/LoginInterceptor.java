@@ -30,6 +30,17 @@ public class LoginInterceptor implements HandlerInterceptor {
 			return true;
 		}
 
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("currentUser");
+		if (null == user) {
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			PrintWriter writer = response.getWriter();
+			writer.println("{\"success\": \"0\", \"message\": \"err000\"}");
+			writer.close();
+			return false;
+		}
+
 //		HttpSession session = request.getSession();
 //		User user = (User) session.getAttribute("currentUser");
 //		if (null == user) {

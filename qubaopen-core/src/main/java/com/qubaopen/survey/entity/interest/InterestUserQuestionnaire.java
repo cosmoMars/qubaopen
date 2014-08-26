@@ -55,7 +55,7 @@ public class InterestUserQuestionnaire extends AbstractPersistable<Long> {
 	/**
 	 * 问卷结果选项
 	 */
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "interest_result_option_id")
 	private InterestResultOption interestResultOption;
 

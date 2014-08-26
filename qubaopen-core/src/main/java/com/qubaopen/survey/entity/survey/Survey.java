@@ -18,6 +18,7 @@ import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.QuestionnaireTagType;
+import com.qubaopen.survey.entity.QuestionnaireType;
 import com.qubaopen.survey.entity.customer.Customer;
 import com.qubaopen.survey.entity.manager.Manager;
 
@@ -34,6 +35,13 @@ public class Survey extends AbstractBaseEntity<Long> {
 
 	/**
 	 * 问卷类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "questionnaire_type_id")
+	private QuestionnaireType questionnaireType;
+
+	/**
+	 * 问卷标签类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "questionnaire_tag_type_id")
@@ -164,6 +172,14 @@ public class Survey extends AbstractBaseEntity<Long> {
 	 * 地图区间最大值
 	 */
 	private Integer mapMax;
+
+	public QuestionnaireType getQuestionnaireType() {
+		return questionnaireType;
+	}
+
+	public void setQuestionnaireType(QuestionnaireType questionnaireType) {
+		this.questionnaireType = questionnaireType;
+	}
 
 	public QuestionnaireTagType getQuestionnaireTagType() {
 		return questionnaireTagType;

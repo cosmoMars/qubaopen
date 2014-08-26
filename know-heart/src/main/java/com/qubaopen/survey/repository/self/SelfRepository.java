@@ -20,8 +20,10 @@ public interface SelfRepository extends MyRepository<Self, Long> {
 	@Query("from Self s where s not in :selfs and s.managementType is not null")
 	List<Self> findSelfWithoutExistSelf(@Param("selfs") List<Self> selfs);
 
-	List<Self> findByManagementType(@Param("managementType") Self.ManagementType managementType);
+	List<Self> findByManagementType(Self.ManagementType managementType);
 
 	@Query("from Self s where s.managementType != :managementType")
 	List<Self> findByWithOutManagementType(@Param("managementType") Self.ManagementType managementType);
+
+	Self  findByManagementTypeAndIntervalTime(Self.ManagementType managementType, int intervalTime);
 }

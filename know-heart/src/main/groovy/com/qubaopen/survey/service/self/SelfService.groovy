@@ -187,7 +187,7 @@ public class SelfService {
 			questionVos = objectMapper.readValue(questionJson, javaType)
 
 		def questionIds = [], optionIds = []
-		questionVos.each {
+		questionVos.each { // 获得所有问题id和答案选项id
 			questionIds << it.questionId
 			it.contents.each { c ->
 				optionIds += c.id
@@ -195,33 +195,31 @@ public class SelfService {
 		}
 
 		def questions = selfQuestionRepository.findAll(questionIds),
-			questionOptions = selfQuestionOptionRepository.findAll(optionIds),
-			type = self.type
+			questionOptions = selfQuestionOptionRepository.findAll(optionIds)
 
-		if (type == Self.Type.SORCE) {
-			def selfType = self.selfType,
-				result = null
+		def typeName = self.questionnaireType.name, // 获得问卷类型名称
+			result = null
 
-			switch (selfType.name) {
-				case 'SCORE' :
-					result = selfResultService.calculateScore(user, self, questionOptions, questionVos, questions, refresh)
-					break
-				case 'QTYPE' :
-					result = selfResultService.calculateQType(user, self, questionOptions, questionVos, questions, refresh)
-					break
-				case 'RTYPE' :
-					result = selfResultService.calculateRType(user, self, questionOptions, questionVos, questions, refresh)
-					break
-			}
-
-			if (!result) {
-				return '{"success" : "0", "message" : "err123123"}'
-			}
-			result
-
-		} else if (type == Self.Type.DISOREDER) {
-
+		switch (typeName) {
+			case 'score' : // 得分
+				result = selfResultService.calculateScore(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'qtype' : // 问题种类
+				result = selfResultService.calculateQType(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'otype' : // 问题选项种类
+				result = selfResultService.calculateOType(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'turn' : // 跳转
+				result = selfResultService.calculateTurn(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'save' : // 保存
+				result = selfResultService.calculateSave(user, self, questionOptions, questionVos, questions, refresh)
+				break
 		}
+
+		result
+
 	}
 
 	class OptionComparator implements Comparator {

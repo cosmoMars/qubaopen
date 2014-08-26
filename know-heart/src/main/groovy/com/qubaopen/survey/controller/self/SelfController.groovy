@@ -42,12 +42,21 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveSelf', method = RequestMethod.GET)
-	retrieveSelf(@ModelAttribute('currentUser') User user) {
+	retrieveSelf(@RequestParam(required = false) Boolean refresh, @ModelAttribute('currentUser') User user) {
 
 		logger.trace ' -- 获取用户自测问卷 -- '
 
-		def data = [],
+		def data = [], result = [],
 			selfs = selfService.retrieveSelf()
+
+//		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4)
+
+
+
+
+
+
+
 			/*selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
 
 		def selfs = [], now = new Date(), justSelf = null
@@ -145,6 +154,18 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'optionNum' : result?.resultNum
 		]
 
+	}
+
+	def dayForWeek() {
+		def c = Calendar.getInstance()
+		c.setTime new Date()
+		def idx
+		if (c.get(Calendar.DAY_OF_WEEK) == 1) {
+			idx = 7
+		} else {
+			idx = c.get(Calendar.DAY_OF_WEEK) - 1
+		}
+		idx
 	}
 
 }

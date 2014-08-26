@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 /**
@@ -57,6 +58,7 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	 * 出生时间
 	 */
 	@Temporal(TemporalType.DATE)
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date birthday;
 
 	/**

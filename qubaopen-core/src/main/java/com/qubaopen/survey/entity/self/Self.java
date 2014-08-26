@@ -30,6 +30,13 @@ public class Self extends AbstractBaseEntity<Long> {
 	private QuestionnaireType questionnaireType;
 
 	/**
+	 * 问卷分组类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "self_type_id")
+	private SelfType selfType;
+
+	/**
 	 * 自测类型 Character性格分析, Emotional 情绪管理, Personal个人发展
 	 */
 	@Enumerated
@@ -102,12 +109,25 @@ public class Self extends AbstractBaseEntity<Long> {
 	 */
 	private String picPath;
 
+	/**
+	 * 间隔时间 单位：小时
+	 */
+	private int intervalTime;
+
 	public QuestionnaireType getQuestionnaireType() {
 		return questionnaireType;
 	}
 
 	public void setQuestionnaireType(QuestionnaireType questionnaireType) {
 		this.questionnaireType = questionnaireType;
+	}
+
+	public SelfType getSelfType() {
+		return selfType;
+	}
+
+	public void setSelfType(SelfType selfType) {
+		this.selfType = selfType;
 	}
 
 	public ManagementType getManagementType() {
@@ -204,6 +224,14 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
+	}
+
+	public int getIntervalTime() {
+		return intervalTime;
+	}
+
+	public void setIntervalTime(int intervalTime) {
+		this.intervalTime = intervalTime;
 	}
 
 }

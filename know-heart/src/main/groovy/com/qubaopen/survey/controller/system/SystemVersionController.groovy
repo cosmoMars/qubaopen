@@ -32,7 +32,7 @@ public class SystemVersionController extends AbstractBaseController<SystemVersio
 	}
 	
 	@RequestMapping(value = 'getUpdateInfo', method = RequestMethod.GET)
-	sendCaptcha(@RequestParam(required = false) String type,
+	getUpdateInfo(@RequestParam(required = false) String type,
 		@RequestParam(required = false) String version) {
 		if (type ==null || type.equals("")) {
 			return '{"success": "0", "message": "类型为空"}'
@@ -40,8 +40,12 @@ public class SystemVersionController extends AbstractBaseController<SystemVersio
 		if (version ==null || version.equals("")) {
 			return '{"success": "0", "message": "版本号为空"}'
 		}
-		def url=systemVersionService.getUrl(type, version);
-		return '{"success": "1", "path": "'+url+'"}'
+		def systemVersion=systemVersionService.getUrl(type, version);
+		if(systemVersion){
+			return '{"success": "1", "path": "'+systemVersion.downloadUrl+'","message":"'+systemVersion.version+'"}'
+		}else{
+			return '{"success": "0","message":"已是最新版本"}'
+		}
 	}
 
 }

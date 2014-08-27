@@ -13,8 +13,8 @@ class SystemVersionService {
 	SystemVersionRepository systemVersionRepository;
 
 	@Transactional
-	getUrl(String type,String version){
-		def systemVersion=new SystemVersion();
+	SystemVersion getUrl(String type,String version){
+		def systemVersion;
 		def v=Double.parseDouble(version);
 		def path="";
 		if(type.equals("0")){
@@ -22,16 +22,16 @@ class SystemVersionService {
 			if(systemVersion!=null){
 				def va=Double.parseDouble(systemVersion.getVersion());
 				if(va>v)
-					path=systemVersion.getDownloadUrl();
+					return systemVersion;
 			}
 		}else if(type.equals("1")){
 			systemVersion=systemVersionRepository.findByType(SystemVersion.Type.IOS);
 			if(systemVersion!=null){
 				def va=Double.parseDouble(systemVersion.getVersion());
 				if(va>v)
-					path=systemVersion.getDownloadUrl();
+					return systemVersion;
 			}
 		}
-		return path;
+		return null;
 	}
 }

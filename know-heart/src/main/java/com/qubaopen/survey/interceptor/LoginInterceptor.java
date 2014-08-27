@@ -23,7 +23,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 		logger.info(" =================== request preHandle =========================");
 
-		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic")) {
+		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic") || request.getRequestURI().contains("systemVersions")) {
 			return true;
 		}
 

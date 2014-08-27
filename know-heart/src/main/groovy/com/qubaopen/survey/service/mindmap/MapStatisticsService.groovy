@@ -38,11 +38,11 @@ public class MapStatisticsService {
 			mapTypes.each {
 				def maps =  mapStatisticsRepository.findByUserAndMapStatisticsType(user, it)
 				if (maps.size() > 1) {  // abcd 问卷
-					def temp = [:],
+					def temp = [],
 						typeName = ''
 					maps.each {
 						typeName = it.self.abbreviation
-						temp << ["$typeName" : it.score]
+						temp << [ name : typeName, value : it.score]
 					}
 					data << [
 						'chart' : objectMapper.writeValueAsString(temp),
@@ -72,11 +72,11 @@ public class MapStatisticsService {
 			def mapType = mapStatisticsTypeRepository.findByName(type),
 				maps = mapStatisticsRepository.findByUserAndMapStatisticsType(user, mapType)
 				if (maps.size() > 1) {  // abcd 问卷
-					def temp = [:],
+					def temp = [],
 						typeName = ''
 					maps.each {
 						typeName = it.self.abbreviation
-						temp << ["$typeName" : it.score]
+						temp << [ name : typeName, value : it.score]
 					}
 					data << [
 						'chart' : objectMapper.writeValueAsString(temp),

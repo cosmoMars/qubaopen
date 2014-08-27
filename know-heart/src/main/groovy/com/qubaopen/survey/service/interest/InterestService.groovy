@@ -1,11 +1,13 @@
 package com.qubaopen.survey.service.interest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.interest.Interest
+import com.qubaopen.survey.entity.interest.InterestType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.interest.InterestQuestionOptionRepository
@@ -56,10 +58,18 @@ public class InterestService {
 
 
 	@Transactional(readOnly = true)
-	retrieveInterest(long userId) {
+	retrieveInterest(long userId, Long interestTypeId, String turnType, Pageable pageable) {
+		
 		def user = new User(id : userId)
 		def interestList = interestRepository.findUnfinishInterest(user)
-
+		
+		if (interestTypeId) {}
+		
+		def result = interestRepository.findAll(
+			['interestType_equal' : new InterestType(id : 1l)], 
+			pageable
+		)
+		
 		// TODO 计算答问卷的好友数量
 //		def friendCount = userFriendRepository.countUserFriend(user)
 //		def friend = userFriendRepository.findByUser(user)

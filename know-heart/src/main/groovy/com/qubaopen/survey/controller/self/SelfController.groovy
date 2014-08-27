@@ -47,18 +47,29 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		logger.trace ' -- 获取用户自测问卷 -- '
 
-		def data = [], result = [],
+		def data = [], result = [], now = new Date(),
 			selfs = selfService.retrieveSelf()
-
-		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4)
-
-
-//		def epqSelfs =
-
-
-
-
-
+			
+//		def index = dayForWeek()
+//		if (index in 1..5) {
+//			if (result) {
+//				def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目
+//				def epqSelfs = selfRepository.findAll( // epq 4套题目
+//						[
+//							'selfType.name_equal' : 'EPQ'
+//						]
+//					)
+//				
+//				
+//			}
+//		} else if (index in 6..7) {
+//		
+//		}
+//		
+//		if (refresh) {
+//			
+//		}
+		
 
 			/*selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
 

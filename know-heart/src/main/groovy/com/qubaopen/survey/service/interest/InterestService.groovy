@@ -58,17 +58,42 @@ public class InterestService {
 
 
 	@Transactional(readOnly = true)
-	retrieveInterest(long userId, Long interestTypeId, String turnType, Pageable pageable) {
+	retrieveInterest(long userId, Long interestTypeId, Long sortTypeId, List<Long> ids, Pageable pageable) {
 		
-		def user = new User(id : userId)
-		def interestList = interestRepository.findUnfinishInterest(user)
+		def user = new User(id : userId),
+			interestList = []
+		def filter = [ user : user, interestTypeId : interestTypeId, sortTypeId : sortTypeId, pageable : pageable, ids : ids],
+			result = interestRepository.findByFilters(filter) as Map
+		interestList = result.get('interests') as List
+		def lastPage = false
+		if (interestList.size() < pageable.getPageSize()) {
+			lastPage = true
+		}
 		
-		if (interestTypeId) {}
+//		if ('Time' == turnType) {
+//			interestList = interestRepository.getInterestByTime(user, pageable)
+//		}
+//		
+//		if (interestTypeId && !turnType) {
+//			interestList = interestRepository.findByInterestType(user, new InterestType(id : interestTypeId))
+//		}
+//		if (turnType) {
+//			interestList = interestRepository.getInterestByTurnType(user, turnType)
+//		}
 		
-		def result = interestRepository.findAll(
-			['interestType_equal' : new InterestType(id : 1l)], 
-			pageable
-		)
+		/*else {
+			def filters = [interestTypeId : interestTypeId, turnType : turnType, user : user]
+			interestList = interestRepository.findByFilters(filters)
+		}*/
+		
+		/*if (interestTypeId) {
+			def result = interestRepository.findAll(
+				['interestType_equal' : new InterestType(id : interestTypeId)],
+				pageable
+			)
+		}*/
+		
+		
 		
 		// TODO 计算答问卷的好友数量
 //		def friendCount = userFriendRepository.countUserFriend(user)
@@ -85,7 +110,6 @@ public class InterestService {
 				'interestId' : it.id,
 				'interestType' : it.interestType.name,
 				'questionnaireTagType' : tagNames,
-				'type' : it.type.toString(),
 				'title' : it.title,
 				'golds' : it.golds,
 				'status' : it.status.toString(),
@@ -100,7 +124,9 @@ public class InterestService {
 		[
 			'success' : '1',
 			'message' : '成功',
+			'lastPage' : lastPage,
 			'data' : data
+			
 		]
 	}
 

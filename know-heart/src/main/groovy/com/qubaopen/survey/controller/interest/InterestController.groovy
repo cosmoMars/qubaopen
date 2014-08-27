@@ -42,15 +42,14 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 */
 	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.GET)
 	retrieveInterest(@RequestParam(required = false) Long interestTypeId,
-		@RequestParam(required = false) String turnType,
+		@RequestParam(required = false) Long sortTypeId,
+		@RequestParam(required = false) List<Long> ids,
 		@ModelAttribute('currentUser') User user,
 		Pageable pageable) {
 
 		logger.trace ' -- 获取用户兴趣问卷 -- '
 		
-		println pageable
-
-		interestService.retrieveInterest(user.id, interestTypeId, turnType, pageable)
+		interestService.retrieveInterest(user.id, interestTypeId, sortTypeId, ids, pageable)
 	}
 
 	/**

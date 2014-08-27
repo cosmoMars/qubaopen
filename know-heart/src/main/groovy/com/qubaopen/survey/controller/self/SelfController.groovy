@@ -1,6 +1,7 @@
 package com.qubaopen.survey.controller.self
 
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
@@ -47,68 +48,67 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		logger.trace ' -- 获取用户自测问卷 -- '
 
-		def data = [], result = [], now = new Date(),
-			selfs = selfService.retrieveSelf()
+		def data = [], result = [], now = new Date(), selfs = [],
+//			selfs = selfService.retrieveSelf(),
+			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
 			
-//		def index = dayForWeek()
-//		if (index in 1..5) {
-//			if (result) {
-//				def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目
-//				def epqSelfs = selfRepository.findAll( // epq 4套题目
-//						[
-//							'selfType.name_equal' : 'EPQ'
-//						]
-//					)
-//				
-//				
-//			}
-//		} else if (index in 6..7) {
-//		
-//		}
-//		
-//		if (refresh) {
-//			
-//		}
+		def index = dayForWeek()
 		
-
-			/*selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
-
-		def selfs = [], now = new Date(), justSelf = null
-		def justUserQuestionnaire = selfUserQuestionnaires.find { // 找到小于循环时间的问卷， 得到问卷类型
-			(now.time - it.time.time) < 20 * 60 * 1000
+		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目
+		def epqSelfs = selfRepository.findAll( // epq 4套题目
+			[
+				'selfType.name_equal' : 'EPQ'
+			]
+		)
+		def userQuestionnaire = selfUserQuestionnaires.find { // 4小时题 记录
+			it.self.id = singleSelf.id
 		}
-		if (justUserQuestionnaire) {
-			selfUserQuestionnaires.remove(justUserQuestionnaire)
-			justSelf = justUserQuestionnaire.self
-		}
-
-		if (justSelf) { // 找到刚做好的题目
-			selfUserQuestionnaires.findAll { suq ->
-				justSelf.managementType == suq.self.managementType
-			}.each {
-				selfs << it.self
+		epqSelfs.each { epq ->
+			def questionnaire = selfUserQuestionnaires.find { suq ->
+				epq.id == suq.self.id
 			}
-			selfUserQuestionnaires.findAll { suq ->
-				justSelf.managementType != suq.self.managementType
-			}.each {
-				selfs << it.self
-			}
-		} else {
-			selfUserQuestionnaires.each {
-				selfs << it.self
+			if (questionnaire) {
+				if (now.getTime() - questionnaire.time.getTime() > epq.intervalTime * 60 * 60 * 1000) {
+					selfs << epq
+				}
+			} else {
+				selfs << epq
 			}
 		}
-
-
-//		selfUserQuestionnaires.findAll { // 找到所有符合时间的问卷
-//			(now.time - it.time.time) > 1 * 60 * 1000
-//		}.each { e ->
-//			selfs << e.self
-//		}
-//		selfUserQuestionnaires.each {
-//			selfs << it.self
-//		}
-*/
+		if (index in 1..5) {
+			if (userQuestionnaire) {
+				if (now.getTime() - userQuestionnaire.time.getTime() > singleSelf.intervalTime * 60 * 60 * 1000) {
+					selfs << singleSelf
+				}
+			} 
+			def otherSelfs = selfRepository.findRandomSelfs(selfs)
+			def todayUserQuestionnaires = selfUserQuestionnaires.findAll {
+				DateUtils.isSameDay(now, it.time) && it.self.id != singleSelf.id
+			}
+			if (todayUserQuestionnaires) {
+				selfs << otherSelfs[new Random().nextInt(otherSelfs.size())]
+			}
+		} else if (index in 6..7) {
+			if (userQuestionnaire) {
+				if (now.getTime() - userQuestionnaire.time.getTime() > singleSelf.intervalTime * 60 * 60 * 1000) {
+					selfs << singleSelf
+				}
+			}
+			def otherSelfs = selfRepository.findRandomSelfs(selfs)
+			def todayUserQuestionnaires = selfUserQuestionnaires.findAll {
+				DateUtils.isSameDay(now, it.time) && it.self.id != singleSelf.id
+			}
+			if (todayUserQuestionnaires) {
+				for (i in 0..<2) {
+					def idx = new Random().nextInt(otherSelfs.size())
+					selfs << otherSelfs[idx]
+					otherSelfs.remove(otherSelfs[idx])
+				}
+			} else if (todayUserQuestionnaires.size() == 1) {
+				selfs << otherSelfs[new Random().nextInt(otherSelfs.size())]
+			}
+			
+		}
 		selfs.each {
 			def self = [
 				'selfId' : it.id,

@@ -32,7 +32,7 @@ class UserMoodService {
 			
 		}else{
 			userMood =new UserMood(
-				user : user,
+				id : user.id,
 				moodType : moodType
 			);
 		}

@@ -42,7 +42,7 @@ public class SystemVersionController extends AbstractBaseController<SystemVersio
 		}
 		def systemVersion=systemVersionService.getUrl(type, version);
 		if(systemVersion){
-			return '{"success": "1", "path": "'+systemVersion.downloadUrl+'","message":"'+systemVersion.version+'"}'
+			return '{"success": "1", "path": "'+systemVersion.downloadUrl+'","message":"'+systemVersion.detail+'"}'
 		}else{
 			return '{"success": "0","message":"已是最新版本"}'
 		}

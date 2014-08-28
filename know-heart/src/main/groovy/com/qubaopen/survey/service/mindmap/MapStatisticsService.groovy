@@ -32,6 +32,8 @@ public class MapStatisticsService {
 
 		def user = new User(id : userId),
 			data = []
+			
+		def om = new ObjectMapper()
 		if (type == 'ALL' || type == null) {
 			def mapTypes = mapStatisticsTypeRepository.findAll()
 
@@ -42,10 +44,10 @@ public class MapStatisticsService {
 						typeName = ''
 					maps.each {
 						typeName = it.self.abbreviation
-						temp << [ name : typeName, value : it.score]
+						temp << [name : typeName, value : it.score]
 					}
 					data << [
-						'chart' : objectMapper.writeValueAsString(temp),
+						'chart' : om.writeValueAsString(temp),
 						'name' : 'ABCD测试',
 						'content' : 'ABCD测试',
 						'title' : it.name,
@@ -79,7 +81,7 @@ public class MapStatisticsService {
 						temp << [ name : typeName, value : it.score]
 					}
 					data << [
-						'chart' : objectMapper.writeValueAsString(temp),
+						'chart' : om.writeValueAsString(temp),
 						'name' : 'ABCD测试',
 						'content' : 'ABCD测试',
 						'title' : mapType.name,

@@ -129,8 +129,7 @@ public class SelfResultService {
 			v.each {
 				score = score + it.score
 			}
-			def tempMap = [name : k, value : score]
-			resultList << tempMap
+			resultList << [name : k, value : score]
 
 			if (resultMap.get(score)) { // key: 种类, value: 分数
 				resultMap.get(score) << k
@@ -153,7 +152,8 @@ public class SelfResultService {
 		def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result[0], 0) // 保存心理地图
+			def om = new ObjectMapper();
+			selfPersistentService.saveMapStatistics(user, self, om.writeValueAsString(resultList), result[0], 0) // 保存心理地图
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
 		}
@@ -274,7 +274,8 @@ public class SelfResultService {
 		def result = selfResultOptionRepository.findByName(resultName)
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), result, 0)
+			def om = new ObjectMapper()
+			selfPersistentService.saveMapStatistics(user, self, om.writeValueAsString(resultList).trim(), result, 0)
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
 		}
@@ -309,7 +310,8 @@ public class SelfResultService {
 		}
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, objectMapper.writeValueAsString(resultList), null, 0)
+			def om = new ObjectMapper()
+			selfPersistentService.saveMapStatistics(user, self, om.writeValueAsString(resultList).trim(), null, 0)
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}

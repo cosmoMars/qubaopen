@@ -48,68 +48,100 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		logger.trace ' -- 获取用户自测问卷 -- '
 
-		def data = [], result = [], now = new Date(), selfs = [],
 //			selfs = selfService.retrieveSelf(),
-			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user)
+		def data = [], now = new Date(), resultSelfs = [], allSelfs = [],
+			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user) // 所有用户答过的题目记录，按照时间倒序排序
 			
 		def index = dayForWeek()
 		
-		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目
+		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目 4小时
 		def epqSelfs = selfRepository.findAll( // epq 4套题目
 			[
 				'selfType.name_equal' : 'EPQ'
 			]
 		)
+		
+		allSelfs << singleSelf
+		allSelfs += epqSelfs
+		
 		def userQuestionnaire = selfUserQuestionnaires.find { // 4小时题 记录
 			it.self.id = singleSelf.id
 		}
+		if (userQuestionnaire) { // 判断4小时是否符合时间，符合添加，没有也添加
+			if (now.getTime() - userQuestionnaire.time.getTime() > singleSelf.intervalTime * 60 * 60 * 1000) {
+				resultSelfs << singleSelf
+				selfUserQuestionnaires.remove(userQuestionnaire)
+			}
+		} else {
+			resultSelfs << singleSelf
+		}
+		
 		epqSelfs.each { epq ->
 			def questionnaire = selfUserQuestionnaires.find { suq ->
 				epq.id == suq.self.id
 			}
+			selfUserQuestionnaires.remove(questionnaire)
 			if (questionnaire) {
 				if (now.getTime() - questionnaire.time.getTime() > epq.intervalTime * 60 * 60 * 1000) {
-					selfs << epq
+					resultSelfs << epq
 				}
 			} else {
-				selfs << epq
+				resultSelfs << epq
 			}
+		}
+		def existQuestionnaires = selfUserQuestionnaires.findAll {
+			now.getTime() - it.time.getTime() < it.self.intervalTime * 60 * 60 * 1000
+		}
+		existQuestionnaires.each {
+			allSelfs << it.self
+		}
+		def todayUserQuestionnaires = selfUserQuestionnaires.findAll { // 每天额外题目
+			DateUtils.isSameDay(now, it.time)
 		}
 		if (index in 1..5) {
-			if (userQuestionnaire) {
-				if (now.getTime() - userQuestionnaire.time.getTime() > singleSelf.intervalTime * 60 * 60 * 1000) {
-					selfs << singleSelf
-				}
-			} 
-			def otherSelfs = selfRepository.findWithoutExists(selfs)
-			def todayUserQuestionnaires = selfUserQuestionnaires.findAll {
-				DateUtils.isSameDay(now, it.time) && it.self.id != singleSelf.id
-			}
 			if (!todayUserQuestionnaires) {
-				selfs << otherSelfs[new Random().nextInt(otherSelfs.size())]
+				if (refresh) {
+					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
+				} else {
+					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
+					if (relationSelfs) {
+						resultSelfs << relationSelfs[new Random().nextInt(relationSelfs.size())]
+					} else {
+						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
+					}
+				}
 			}
 		} else if (index in 6..7) {
-			if (userQuestionnaire) {
-				if (now.getTime() - userQuestionnaire.time.getTime() > singleSelf.intervalTime * 60 * 60 * 1000) {
-					selfs << singleSelf
-				}
-			}
-			def otherSelfs = selfRepository.findWithoutExists(selfs)
-			def todayUserQuestionnaires = selfUserQuestionnaires.findAll {
-				DateUtils.isSameDay(now, it.time) && it.self.id != singleSelf.id
-			}
 			if (!todayUserQuestionnaires) {
-				for (i in 0..<2) {
-					def idx = new Random().nextInt(otherSelfs.size())
-					selfs << otherSelfs[idx]
-					otherSelfs.remove(otherSelfs[idx])
+				if (refresh) {
+					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 2)
+				} else {
+					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
+					if (relationSelfs) {
+						for (i in 1..2) {
+							def randSelf = relationSelfs[new Random().nextInt(relationSelfs.size())]
+							resultSelfs << randSelf
+							resultSelfs.remove(randSelf)
+						}
+					} else {
+						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 2)
+					}
 				}
 			} else if (todayUserQuestionnaires.size() == 1) {
-				selfs << otherSelfs[new Random().nextInt(otherSelfs.size())]
+				if (refresh) {
+					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
+				} else {
+					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
+					if (relationSelfs) {
+						resultSelfs << relationSelfs[new Random().nextInt(relationSelfs.size())]
+					} else {
+						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
+					}
+				}
 			}
-			
+		
 		}
-		selfs.each {
+		resultSelfs.each {
 			def self = [
 				'selfId' : it.id,
 				'managementType' : it.managementType,

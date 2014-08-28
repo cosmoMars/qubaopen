@@ -81,11 +81,11 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 					selfs << singleSelf
 				}
 			} 
-			def otherSelfs = selfRepository.findRandomSelfs(selfs)
+			def otherSelfs = selfRepository.findWithoutExists(selfs)
 			def todayUserQuestionnaires = selfUserQuestionnaires.findAll {
 				DateUtils.isSameDay(now, it.time) && it.self.id != singleSelf.id
 			}
-			if (todayUserQuestionnaires) {
+			if (!todayUserQuestionnaires) {
 				selfs << otherSelfs[new Random().nextInt(otherSelfs.size())]
 			}
 		} else if (index in 6..7) {
@@ -94,11 +94,11 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 					selfs << singleSelf
 				}
 			}
-			def otherSelfs = selfRepository.findRandomSelfs(selfs)
+			def otherSelfs = selfRepository.findWithoutExists(selfs)
 			def todayUserQuestionnaires = selfUserQuestionnaires.findAll {
 				DateUtils.isSameDay(now, it.time) && it.self.id != singleSelf.id
 			}
-			if (todayUserQuestionnaires) {
+			if (!todayUserQuestionnaires) {
 				for (i in 0..<2) {
 					def idx = new Random().nextInt(otherSelfs.size())
 					selfs << otherSelfs[idx]

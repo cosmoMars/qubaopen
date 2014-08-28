@@ -49,6 +49,8 @@ public class SelfService {
 	retrieveSelf() {
 		selfRepository.findSelfWithoutManagement()
 	}
+	
+	
 
 	/**
 	 * 查找自测问卷问题

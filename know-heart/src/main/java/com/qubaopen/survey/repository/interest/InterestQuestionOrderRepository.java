@@ -12,4 +12,6 @@ public interface InterestQuestionOrderRepository extends MyRepository<InterestQu
 //	List<InterestQuestionOrder> findByInterestQuestion(@Param("interestQuestions") List<InterestQuestion> interestQuestions);
 
 	List<InterestQuestionOrder> findByInterestAndNextQuestionId(Interest interest, long nextQuestionId);
+
+	List<InterestQuestionOrder> findByInterest(Interest interest);
 }

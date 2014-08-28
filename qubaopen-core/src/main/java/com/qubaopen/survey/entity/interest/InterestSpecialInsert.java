@@ -29,39 +29,17 @@ public class InterestSpecialInsert extends AbstractPersistable<Long> {
 	/**
 	 * 上一题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "interest_question_id")
-	private InterestQuestion interestQuestion;
+	private long questionId;
 
 	/**
 	 * 该选项被选择后跳转特殊题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "interest_question_option_id")
-	private InterestQuestionOption interestQuestionOption;
+	private long questionOptionId;
 
 	/**
 	 * 特殊题
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "special_question_id")
-	private InterestQuestion specialQuestion;
-
-	public InterestQuestion getInterestQuestion() {
-		return interestQuestion;
-	}
-
-	public void setInterestQuestion(InterestQuestion interestQuestion) {
-		this.interestQuestion = interestQuestion;
-	}
-
-	public InterestQuestion getSpecialQuestion() {
-		return specialQuestion;
-	}
-
-	public void setSpecialQuestion(InterestQuestion specialQuestion) {
-		this.specialQuestion = specialQuestion;
-	}
+	private long specialQuestionId;
 
 	public Interest getInterest() {
 		return interest;
@@ -71,12 +49,28 @@ public class InterestSpecialInsert extends AbstractPersistable<Long> {
 		this.interest = interest;
 	}
 
-	public InterestQuestionOption getInterestQuestionOption() {
-		return interestQuestionOption;
+	public long getQuestionId() {
+		return questionId;
 	}
 
-	public void setInterestQuestionOption(InterestQuestionOption interestQuestionOption) {
-		this.interestQuestionOption = interestQuestionOption;
+	public void setQuestionId(long questionId) {
+		this.questionId = questionId;
+	}
+
+	public long getQuestionOptionId() {
+		return questionOptionId;
+	}
+
+	public void setQuestionOptionId(long questionOptionId) {
+		this.questionOptionId = questionOptionId;
+	}
+
+	public long getSpecialQuestionId() {
+		return specialQuestionId;
+	}
+
+	public void setSpecialQuestionId(long specialQuestionId) {
+		this.specialQuestionId = specialQuestionId;
 	}
 
 }

@@ -30,5 +30,9 @@ public interface SelfRepository extends MyRepository<Self, Long>, SelfRepository
 	List<Self> findBySelfTypeName(String name);
 
 	@Query("from Self s where s not in (:selfs)")
-	List<Self> findRandomSelfs(@Param("selfs") List<Self> selfs);
+	List<Self> findWithoutExists(@Param("selfs") List<Self> selfs);
+	
+	@Query("from Self s where s.managementType = :managementType and s not in (:exists)")
+	List<Self> findByTypeWithoutExists(@Param("managementType") Self.ManagementType managementType, @Param("exists") List<Self> exists);
+	
 }

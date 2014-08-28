@@ -1,5 +1,7 @@
 package com.qubaopen.survey.service.interest
 
+import java.util.Comparator;
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -7,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.interest.Interest
+import com.qubaopen.survey.entity.interest.InterestQuestion;
+import com.qubaopen.survey.entity.interest.InterestQuestionOption;
 import com.qubaopen.survey.entity.interest.InterestType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
@@ -70,46 +74,24 @@ public class InterestService {
 			lastPage = true
 		}
 		
-//		if ('Time' == turnType) {
-//			interestList = interestRepository.getInterestByTime(user, pageable)
-//		}
-//		
-//		if (interestTypeId && !turnType) {
-//			interestList = interestRepository.findByInterestType(user, new InterestType(id : interestTypeId))
-//		}
-//		if (turnType) {
-//			interestList = interestRepository.getInterestByTurnType(user, turnType)
-//		}
-		
-		/*else {
-			def filters = [interestTypeId : interestTypeId, turnType : turnType, user : user]
-			interestList = interestRepository.findByFilters(filters)
-		}*/
-		
-		/*if (interestTypeId) {
-			def result = interestRepository.findAll(
-				['interestType_equal' : new InterestType(id : interestTypeId)],
-				pageable
-			)
-		}*/
-		
-		
-		
 		// TODO 计算答问卷的好友数量
 //		def friendCount = userFriendRepository.countUserFriend(user)
 //		def friend = userFriendRepository.findByUser(user)
 
 		def data = []
 		interestList.each {
-			def tagNames = []
+			def tags = []
 			it.questionnaireTagTypes.each { q ->
-				tagNames << q.name
+				tags << [
+					'tagId' : q.id,
+					'tagName' : q.name
+				]
 			}
 			def friendCount = interestUserQuestionnaireRepository.countUserFriend(user, it)
 			def interest = [
 				'interestId' : it.id,
 				'interestType' : it.interestType.name,
-				'questionnaireTagType' : tagNames,
+				'questionnaireTagType' : tags,
 				'title' : it.title,
 				'golds' : it.golds,
 				'status' : it.status.toString(),
@@ -139,70 +121,111 @@ public class InterestService {
 	findByInterest(long interestId) {
 
 		def interest = new Interest(id : interestId),
-			questions = interestQuestionRepository.findByInterest(interest)
-
-		def specialInserts = interestSpecialInsertRepository.findByInterest(interest)
-
-		def questionList = []
+			questions = interestQuestionRepository.findByInterest(interest),
+			specialInserts = interestSpecialInsertRepository.findByInterest(interest),
+			questionOrders = interestQuestionOrderRepository.findByInterest(interest)
+		
+		def questionResult = [],
+			questionNo = 1
 		questions.each { q ->
-			def options = []
-			q.interestQuestionOptions.each { qo ->
-				def option = [
+			def options = [],
+				interestQuestionOptions = q.interestQuestionOptions as List
+			Collections.sort(interestQuestionOptions, new OptionComparator())
+			interestQuestionOptions.each { qo ->
+				options << [
 				    'optionId' : qo.id,
 					'optionNum' : qo.optionNum,
 					'optionContent' : qo.content
 				]
-				options << option
+			}
+			
+			def resultOrder = []
+			if (q.special) { // 是特殊题
+				specialInserts.each { si ->
+					if (q.id == si.questionId) { // 找到特殊题 取得上一题id 完成order
+						questionOrders.findAll { // 找到所有特殊题答题顺序
+							it.questionId == si.questionId
+						}.each {
+							resultOrder << "${it.questionId}:${it.optionId}:${it.nextQuestionId}"
+						}
+					}
+				}
 			}
 
-			def question = [
-				'questionId' : q.id,
-				'questionContent' : q.content,
-				'questionType' : q.type,
-				'optionCount' : q.optionCount,
-				'limitTime' : q.answerTimeLimit,
-				'special' : q.special,
-				'questionNum' : q.questionNum,
-				'options' : options,
-				'order' : q.qOrder
-			]
-			questionList << question
-		}
-
-		def inserts = []
-		specialInserts.each { si ->
-			def options = []
-			si.interestQuestion.interestQuestionOptions.each { siq ->
-				def option = [
-					'optionId' : siq.id,
-					'optionNum' : siq.optionNum,
-					'optionContent' : siq.content
-				]
-				options << option
+			specialInserts.findAll { si -> // 直接判断是否是特殊题的上一题，取得特殊题上一题
+				q.id == si.questionId
+			}.each {
+				resultOrder << "${it.questionId}:${it.questionOptionId}:${it.specialQuestionId}"
 			}
-
-			def insert = [
-				'lastQuestionId' : si.interestQuestion.id,
-				'lastOptionId' : si.interestQuestionOption.id,
-				'nextQuestion' : [
-					'questionId' : si.interestQuestion.id,
-					'questionContent' : si.interestQuestion.content,
-					'questionType' : si.interestQuestion.type,
-					'optionCount' : si.interestQuestion.optionCount,
-					'limitTime' : si.interestQuestion.answerTimeLimit,
-					'special' : si.interestQuestion.special,
-					'questionNum' : si.interestQuestion.questionNum,
+			
+			if (!q.children) { // 判断不是矩阵题
+				def order = ''
+				if (!resultOrder.isEmpty()) {
+					order = resultOrder.join('|')
+				} else {
+					def oResult = []
+					questionOrders.findAll {
+						q.id == it.questionId
+					}.each {
+						oResult << "${it.questionId}:${it.optionId}:${it.nextQuestionId}"
+					}
+					order = oResult.join('|')
+				}
+				questionResult << [
+					'questionId' : q.id,
+					'questionContent' : q.content,
+					'questionType' : q.type,
+					'optionCount' : q.optionCount,
+					'limitTime' : q.answerTimeLimit,
+					'special' : q.special,
+					'questionNum' : questionNo,
+					'matrix' : false,
+					'order' : order,
 					'options' : options
 				]
-			]
-			inserts << insert
-		}
+			} else if (q.children) { // 判断是矩阵题
+				def children = q.children as List
+				Collections.sort(children, new QuestionComparator())
+				children.each { c->
+					def childResult = [],
+						childOptions = c.interestQuestionOptions as List
+					Collections.sort(childOptions, new OptionComparator())
+					childOptions.each { qo -> // 选项
+						childResult << [
+							'optionId' : qo.id,
+							'optionNum' : qo.optionNum,
+							'optionContent' : qo.content
+						]
+					}
+					def orderResult = []
+					questionOrders.findAll { qo->
+						c.id == qo.questionId
+					}.each {
+						orderResult << "${it.questionId}:${it.optionId}:${it.nextQuestionId}"
+					}
 
+					questionResult << [
+						'questionId' : c.id,
+						'questionContent' : c.content,
+						'questionType' : c.type,
+						'optionCount' : c.optionCount,
+						'limitTime' : c.answerTimeLimit,
+						'special' : c.special,
+						'questionNum' : c.questionNum,
+						'matrix' : true,
+						'matrixTitle' : q.content,
+						'matrixNo' : questionNo,
+						'order' : orderResult.join('|'),
+						'options' : childResult
+					]
+				}
+			}
+			questionNo ++
+		}
 		[
 			'success' : '1',
 			'message' : '成功',
-			'questions' : questionList,
-			'specialInserts' : inserts
+			'questions' : questionResult,
 		]
 
 
@@ -292,4 +315,21 @@ public class InterestService {
 		]
 	}
 
+	
+	class OptionComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			InterestQuestionOption io1 = (InterestQuestionOption) o1
+			InterestQuestionOption io2 = (InterestQuestionOption) o2
+			return io1.optionNum.compareTo(io2.optionNum)
+		}
+	}
+	class QuestionComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			InterestQuestion io1 = (InterestQuestion) o1
+			InterestQuestion io2 = (InterestQuestion) o2
+			return io1.questionNum.compareTo(io2.questionNum)
+		}
+	}
+
+	
 }

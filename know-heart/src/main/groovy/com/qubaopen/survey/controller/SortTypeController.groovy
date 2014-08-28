@@ -30,6 +30,8 @@ public class SortTypeController extends AbstractBaseController<SortType, Long> {
 	@RequestMapping(value = 'retrieveSortTypes', method = RequestMethod.GET)
 	retrieveSortTypes(){
 		
+		logger.trace ' -- 获取排序方法名 -- '
+		
 		def sortTypes = sortTypeRepository.findAll(),
 			data = []
 		

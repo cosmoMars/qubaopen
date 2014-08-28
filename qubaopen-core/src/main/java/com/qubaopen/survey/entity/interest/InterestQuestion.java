@@ -82,7 +82,15 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	 * 问题顺序 x:y:z|x:y:z x本题id，y选项id y＝0时，直接跳转z z下一题id，z＝0时，结束问卷
 	 */
 	private String qOrder;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private InterestQuestion parent;
 
+	/**
+	 * 孩纸
+	 */
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private Set<InterestQuestion> children;
 
 	public Interest getInterest() {
 		return interest;
@@ -162,6 +170,22 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 
 	public void setqOrder(String qOrder) {
 		this.qOrder = qOrder;
+	}
+
+	public InterestQuestion getParent() {
+		return parent;
+	}
+
+	public void setParent(InterestQuestion parent) {
+		this.parent = parent;
+	}
+
+	public Set<InterestQuestion> getChildren() {
+		return children;
+	}
+
+	public void setChildren(Set<InterestQuestion> children) {
+		this.children = children;
 	}
 
 }

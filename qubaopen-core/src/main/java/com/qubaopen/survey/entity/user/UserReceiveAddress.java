@@ -58,7 +58,7 @@ public class UserReceiveAddress extends AbstractPersistable<Long> {
 	 * 电话
 	 */
 	@Pattern(regexp = "^1[0-9]{10}$", message = "{\"success\" : 0, \"message\": \"err003\"}")
-	@Column(unique = true, length = 11)
+	@Column(length = 11)
 	private String phone;
 
 	/**

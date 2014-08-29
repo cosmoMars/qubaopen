@@ -1,4 +1,4 @@
-package com.qubaopen.survey.entity.self;
+package com.qubaopen.survey.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.qubaopen.survey.entity.mindmap.MapRecord;
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
@@ -44,19 +45,25 @@ public class SelfResultService {
 
 		score = score * self.coefficient
 
-		def result = selfResultOptionRepository.findOneByFilters(
+		def resultOption = selfResultOptionRepository.findOneByFilters(
 			'selfResult.self_equal' : self,
 			'highestScore_greaterThanOrEqualTo' : score,
 			'lowestScore_lessThanOrEqualTo' : score
 		)
-
+		
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, null, result, score)
+			def mapRecord = new MapRecord(
+				name : self.abbreviation,
+				value : score
+			)
+			def result = []
+			result << mapRecord
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption, score)
 
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
 
-		result
+		resultOption
 	}
 
 	@Transactional
@@ -133,13 +140,17 @@ public class SelfResultService {
 
 		def resultMap = [:]
 
-		def resultList = []
+		def result = []
 		optionMap.each { k, v -> // 计算每一个类型的分数
 			def score = 0
 			v.each {
 				score = score + it.score
 			}
-			resultList << [name : k, value : score]
+			def mapRecord = new MapRecord(
+				name : k,
+				value : score	
+			)
+			result << mapRecord
 
 			if (resultMap.get(score)) { // key: 种类, value: 分数
 				resultMap.get(score) << k
@@ -159,16 +170,15 @@ public class SelfResultService {
 			return '{"success": 0, "error": "没有结果"}'
 		}
 
-		def result = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
+		def resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 		if (refresh) {
-			def om = new ObjectMapper();
-			selfPersistentService.saveMapStatistics(user, self, om.writeValueAsString(resultList), result[0], 0) // 保存心理地图
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption[0], 0) // 保存心理地图
 
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result[0])
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption[0])
 		}
 
-		result[0]
+		resultOption[0]
 	}
 
 	/**
@@ -198,12 +208,19 @@ public class SelfResultService {
 		}
 
 		def resultMap = [:]
-
+		
+		def result = []
+		
 		optionMap.each { k, v -> // 计算每一个类型的分数
 			def score = 0
 			v.each {
 				score += it.score
 			}
+			def mapRecord = new MapRecord(
+				name : k,
+				value : score	
+			)
+			result << mapRecord
 			if (resultMap.get(score)) { // key: 分数, value: 孔雀
 				resultMap.get(score) << k
 			} else {
@@ -213,15 +230,15 @@ public class SelfResultService {
 			}
 		}
 		def resultNames = resultMap.get(resultMap.keySet().max()) as List,
-			result = selfResultOptionRepository.findByName(resultNames[0])
+			resultOption = selfResultOptionRepository.findByName(resultNames[0])
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, null, result, 0) // 保存心理地图
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption, 0) // 保存心理地图
 
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
 
-		result
+		resultOption
 	}
 
 	/**
@@ -249,7 +266,7 @@ public class SelfResultService {
 				optionMap.put(optionType, list)
 			}
 		}
-		def resultList = []
+		def result = []
 		optionMap.each { k, v ->
 			def score = 0
 			v.each {
@@ -257,8 +274,11 @@ public class SelfResultService {
 			}
 			optionMap.get(k).clear()
 			optionMap.put(k, score)
-			def tempMap = [name : k, value : score]
-			resultList << tempMap
+			def mapRecord = new MapRecord(
+				name : k,
+				value : score	
+			)
+			result << mapRecord
 		}
 		def resultName = ''
 		if (optionMap.get('E') >= optionMap.get('I')) {
@@ -281,16 +301,15 @@ public class SelfResultService {
 		} else {
 			resultName += 'J'
 		}
-		def result = selfResultOptionRepository.findByName(resultName)
+		def resultOption = selfResultOptionRepository.findByName(resultName)
 
 		if (refresh) {
-			def om = new ObjectMapper()
-			selfPersistentService.saveMapStatistics(user, self, om.writeValueAsString(resultList).trim(), result, 0)
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption, 0)
 
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, result)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
 
-		result
+		resultOption
 	}
 
 	@Transactional
@@ -308,20 +327,17 @@ public class SelfResultService {
 				optionMap.put(optionType, list)
 			}
 		}
-		def resultList = []
+		def result = []
 		optionMap.each { k, v ->
 			def score = 0
 			v.each {
 				score += it.score
 			}
-
-			def tempMap = [name : k, value : score]
-			resultList << tempMap
+			result << [k : score]
 		}
 
 		if (refresh) {
-			def om = new ObjectMapper()
-			selfPersistentService.saveMapStatistics(user, self, om.writeValueAsString(resultList).trim(), null, 0)
+			selfPersistentService.saveMapStatistics(user, self, result, null, 0)
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}

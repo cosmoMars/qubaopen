@@ -47,6 +47,13 @@ public class Self extends AbstractBaseEntity<Long> {
 	}
 
 	/**
+	 * 自测管理类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "self_management_type_id")
+	private SelfManagementType selfManagementType;
+	
+	/**
 	 * 得分系数
 	 */
 	private int coefficient = 1;
@@ -113,6 +120,21 @@ public class Self extends AbstractBaseEntity<Long> {
 	 * 间隔时间 单位：小时
 	 */
 	private int intervalTime;
+
+	/**
+	 * 图形类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "graphics_type_id")
+	private GraphicsType graphicsType;
+	
+	/**
+	 * 问卷组
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "self_group_id")
+	private SelfGroup selfGroup;
+	
 
 	public QuestionnaireType getQuestionnaireType() {
 		return questionnaireType;
@@ -234,4 +256,19 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.intervalTime = intervalTime;
 	}
 
+	public GraphicsType getGraphicsType() {
+		return graphicsType;
+	}
+
+	public void setGraphicsType(GraphicsType graphicsType) {
+		this.graphicsType = graphicsType;
+	}
+
+	public SelfGroup getSelfGroup() {
+		return selfGroup;
+	}
+
+	public void setSelfGroup(SelfGroup selfGroup) {
+		this.selfGroup = selfGroup;
+	}
 }

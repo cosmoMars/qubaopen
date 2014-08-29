@@ -57,7 +57,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		resultSelfs.each {
 			def self = [
 				'selfId' : it.id,
-				'managementType' : it.managementType,
+				'managementType' : it.selfManagementType.name,
 				'title' : it.title,
 				'guidanceSentence' :it.guidanceSentence
 			]

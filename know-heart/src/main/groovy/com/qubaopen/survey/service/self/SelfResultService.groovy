@@ -92,7 +92,17 @@ public class SelfResultService {
 		}
 		result
 	}
-
+	@Transactional
+	calculateTurn(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+	
+	}
+	
+	
+	@Transactional
+	calculateSave(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+	
+	}
+	
 
 	/*************************************************************************************************/
 

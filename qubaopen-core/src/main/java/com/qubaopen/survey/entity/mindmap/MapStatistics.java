@@ -52,13 +52,13 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	private SelfResultOption selfResultOption;
 
 	/**
-	 * SDS, ABCD, PDP, MBTI
+	 * Cobweb 蛛网图, Line 折线图, Pie 饼图
 	 */
 	@Enumerated
 	private Type type;
 
 	public enum Type {
-		SDS, ABCD, PDP, MBTI
+		Cobweb, Line, Pie
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	 * 推荐优先级
 	 */
 	private int recommendedValue;
-
+	
 	public User getUser() {
 		return user;
 	}

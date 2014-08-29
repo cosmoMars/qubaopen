@@ -6,6 +6,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import com.qubaopen.survey.entity.self.Self;
 
@@ -32,6 +35,20 @@ public class SelfRepositoryImpl implements SelfRepositoryCustom {
 			.setParameter("limit", limit);
 
 		return query.getResultList();
+	}
+
+	@Override
+	public Self findSpecialSelf() {
+		 CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		 CriteriaQuery<Self> query = builder.createQuery(Self.class);
+		 
+		 Root<Self> root = query.from(Self.class);
+		 
+		 query.where().orderBy(builder.desc((root.get("recommendedValue"))));
+		 
+		 return entityManager.createQuery(query)
+				 .setMaxResults(1)
+				 .getSingleResult();
 	}
 
 }

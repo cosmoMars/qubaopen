@@ -48,99 +48,12 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		logger.trace ' -- 获取用户自测问卷 -- '
 
-//			selfs = selfService.retrieveSelf(),
-		def data = [], now = new Date(), resultSelfs = [], allSelfs = [],
-			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user) // 所有用户答过的题目记录，按照时间倒序排序
-			
-		def index = dayForWeek()
+		if (!refresh) {
+			refresh = false
+		}
+		def resultSelfs = selfService.retrieveSelf(user, refresh),
+			data = []
 		
-		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目 4小时
-		def epqSelfs = selfRepository.findAll( // epq 4套题目
-			[
-				'selfType.name_equal' : 'EPQ'
-			]
-		)
-		
-		allSelfs << singleSelf
-		allSelfs += epqSelfs
-		
-		def userQuestionnaire = selfUserQuestionnaires.find { // 4小时题 记录
-			it.self.id = singleSelf.id
-		}
-		if (userQuestionnaire) { // 判断4小时是否符合时间，符合添加，没有也添加
-			if (now.getTime() - userQuestionnaire.time.getTime() > singleSelf.intervalTime * 60 * 60 * 1000) {
-				resultSelfs << singleSelf
-				selfUserQuestionnaires.remove(userQuestionnaire)
-			}
-		} else {
-			resultSelfs << singleSelf
-		}
-		
-		epqSelfs.each { epq ->
-			def questionnaire = selfUserQuestionnaires.find { suq ->
-				epq.id == suq.self.id
-			}
-			selfUserQuestionnaires.remove(questionnaire)
-			if (questionnaire) {
-				if (now.getTime() - questionnaire.time.getTime() > epq.intervalTime * 60 * 60 * 1000) {
-					resultSelfs << epq
-				}
-			} else {
-				resultSelfs << epq
-			}
-		}
-		def existQuestionnaires = selfUserQuestionnaires.findAll {
-			now.getTime() - it.time.getTime() < it.self.intervalTime * 60 * 60 * 1000
-		}
-		existQuestionnaires.each {
-			allSelfs << it.self
-		}
-		def todayUserQuestionnaires = selfUserQuestionnaires.findAll { // 每天额外题目
-			DateUtils.isSameDay(now, it.time)
-		}
-		if (index in 1..5) {
-			if (!todayUserQuestionnaires) {
-				if (refresh) {
-					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
-				} else {
-					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
-					if (relationSelfs) {
-						resultSelfs << relationSelfs[new Random().nextInt(relationSelfs.size())]
-					} else {
-						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
-					}
-				}
-			}
-		} else if (index in 6..7) {
-			if (!todayUserQuestionnaires) {
-				if (refresh) {
-					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 2)
-				} else {
-					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
-					if (relationSelfs) {
-						for (i in 1..2) {
-							def randSelf = relationSelfs[new Random().nextInt(relationSelfs.size())]
-							resultSelfs << randSelf
-							resultSelfs.remove(randSelf)
-						}
-					} else {
-						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 2)
-					}
-				}
-			} else if (todayUserQuestionnaires.size() == 1) {
-				if (refresh) {
-					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
-				} else {
-					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
-					if (relationSelfs) {
-						resultSelfs << relationSelfs[new Random().nextInt(relationSelfs.size())]
-					} else {
-						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
-					}
-				}
-			}
-		
-		}
 		resultSelfs.each {
 			def self = [
 				'selfId' : it.id,
@@ -202,16 +115,5 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 	}
 
-	def dayForWeek() {
-		def c = Calendar.getInstance()
-		c.setTime new Date()
-		def idx
-		if (c.get(Calendar.DAY_OF_WEEK) == 1) {
-			idx = 7
-		} else {
-			idx = c.get(Calendar.DAY_OF_WEEK) - 1
-		}
-		idx
-	}
-
+	
 }

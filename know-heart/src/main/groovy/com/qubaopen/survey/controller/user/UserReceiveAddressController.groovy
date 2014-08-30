@@ -93,6 +93,16 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 	
 	
 	/**
+	 * 获取收货地址列表
+	 */
+	@RequestMapping(value = 'getAddressList', method = RequestMethod.GET)
+	getAddressList(@ModelAttribute('currentUser') User user){
+		
+		return userReceiveAddressService.getUserReceiveAddressList(user);
+		
+	}
+	
+	/**
 	 * 新增收货地址 v2
 	 */
 	@RequestMapping(value = 'addAddress', method = RequestMethod.POST)

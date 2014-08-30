@@ -62,7 +62,7 @@ public class SelfService {
 		def singleSelf = selfRepository.findSpecialSelf()
 		def epqSelfs = selfRepository.findAll( // epq 4套题目
 			[
-				'selfType.name_equal' : 'EPQ'
+				'selfGroup.name_equal' : 'EPQ'
 			]
 		)
 		

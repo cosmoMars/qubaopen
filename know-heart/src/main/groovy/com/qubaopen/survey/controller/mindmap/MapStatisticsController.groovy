@@ -38,11 +38,11 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveMapStatistics', method = RequestMethod.GET)
-	retrieveMapStatistics(@RequestParam(required = false) String type, @ModelAttribute('currentUser') User user) {
+	retrieveMapStatistics(@RequestParam(required = false) long typeId, @ModelAttribute('currentUser') User user) {
 
 		logger.trace(' -- 获取心理地图信息 -- ')
 
-		mapStatisticsService.retrieveMapStatistics(user.id, type)
+		mapStatisticsService.retrieveMapStatistics(user.id, typeId)
 	}
 
 }

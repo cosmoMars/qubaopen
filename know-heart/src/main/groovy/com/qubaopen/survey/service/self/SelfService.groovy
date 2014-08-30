@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
-import com.qubaopen.survey.entity.self.Self.ManagementType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
@@ -17,7 +16,7 @@ import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
-import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository;
+import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 
 @Service
 public class SelfService {
@@ -112,7 +111,7 @@ public class SelfService {
 					if (!selfUserQuestionnaires) {
 						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
 					} else {
-						def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
+						def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.selfManagementType, allSelfs)
 						if (relationSelfs) {
 							resultSelfs << relationSelfs[new Random().nextInt(relationSelfs.size())]
 						} else {
@@ -129,7 +128,7 @@ public class SelfService {
 					if (!selfUserQuestionnaires) {
 						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 2)
 					} else {
-						def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
+						def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.selfManagementType, allSelfs)
 						if (relationSelfs) {
 							for (i in 1..2) {
 								def randSelf = relationSelfs[new Random().nextInt(relationSelfs.size())]
@@ -145,7 +144,7 @@ public class SelfService {
 				if (refresh) {
 					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
 				} else {
-					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.managementType, allSelfs)
+					def relationSelfs = selfRepository.findByTypeWithoutExists(selfUserQuestionnaires[0].self.selfManagementType, allSelfs)
 					if (relationSelfs) {
 						resultSelfs << relationSelfs[new Random().nextInt(relationSelfs.size())]
 					} else {

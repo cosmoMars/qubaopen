@@ -29,22 +29,22 @@ public class Self extends AbstractBaseEntity<Long> {
 	@JoinColumn(name = "questionnaire_type_id")
 	private QuestionnaireType questionnaireType;
 
-	/**
-	 * 问卷分组类型
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "self_type_id")
-	private SelfType selfType;
+//	/**
+//	 * 问卷分组类型
+//	 */
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "self_type_id")
+//	private SelfType selfType;
 
-	/**
-	 * 自测类型 Character性格分析, Emotional 情绪管理, Personal个人发展
-	 */
-	@Enumerated
-	private ManagementType managementType;
-
-	public enum ManagementType {
-		Character, Emotional, Personal
-	}
+//	/**
+//	 * 自测类型 Character性格分析, Emotional 情绪管理, Personal个人发展
+//	 */
+//	@Enumerated
+//	private ManagementType managementType;
+//
+//	public enum ManagementType {
+//		Character, Emotional, Personal
+//	}
 
 	/**
 	 * 自测管理类型
@@ -135,6 +135,11 @@ public class Self extends AbstractBaseEntity<Long> {
 	@JoinColumn(name = "self_group_id")
 	private SelfGroup selfGroup;
 	
+	/**
+	 * 提示
+	 */
+	private String tips;
+	
 
 	public QuestionnaireType getQuestionnaireType() {
 		return questionnaireType;
@@ -144,21 +149,21 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.questionnaireType = questionnaireType;
 	}
 
-	public SelfType getSelfType() {
-		return selfType;
-	}
-
-	public void setSelfType(SelfType selfType) {
-		this.selfType = selfType;
-	}
-
-	public ManagementType getManagementType() {
-		return managementType;
-	}
-
-	public void setManagementType(ManagementType managementType) {
-		this.managementType = managementType;
-	}
+//	public SelfType getSelfType() {
+//		return selfType;
+//	}
+//
+//	public void setSelfType(SelfType selfType) {
+//		this.selfType = selfType;
+//	}
+//
+//	public ManagementType getManagementType() {
+//		return managementType;
+//	}
+//
+//	public void setManagementType(ManagementType managementType) {
+//		this.managementType = managementType;
+//	}
 
 	public int getCoefficient() {
 		return coefficient;
@@ -270,5 +275,13 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setSelfGroup(SelfGroup selfGroup) {
 		this.selfGroup = selfGroup;
+	}
+
+	public String getTips() {
+		return tips;
+	}
+
+	public void setTips(String tips) {
+		this.tips = tips;
 	}
 }

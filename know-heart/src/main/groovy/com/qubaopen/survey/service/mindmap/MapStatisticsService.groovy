@@ -44,7 +44,7 @@ public class MapStatisticsService {
 			
 			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue() // 4小时题目
 			if (!specialMaps) {
-				return '暂没有心理地图，请做题'
+				return '{"success" : "0", "message" : "暂没有心理地图，请做题"}'
 			}
 			
 			if (specialMaps && specialMaps.size() == 1) {
@@ -174,7 +174,7 @@ public class MapStatisticsService {
 				typeMaps = mapStatisticsRepository.findBySelfManagementType(selfManagementType)
 				
 			if (!typeMaps) {
-				return '该类型暂没有心理题图，请做题'
+				return '{"success" : "0", "message" : "该类型暂没有心理题图，请做题"}'
 			}
 		
 			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(typeMaps) // 4小时题目

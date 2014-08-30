@@ -100,6 +100,9 @@ public class Interest extends AbstractBaseEntity<Long> {
 	 */
 	private String abbreviation;
 
+	/**
+	 * 图片路径
+	 */
 	private String picPath;
 
 	public Set<QuestionnaireTagType> getQuestionnaireTagTypes() {

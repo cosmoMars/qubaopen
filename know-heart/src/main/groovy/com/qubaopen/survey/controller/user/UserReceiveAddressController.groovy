@@ -202,7 +202,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 			userReceiveAddress.setAreaCode(area);
 		}
 		
-		if(defaultAddress){
+		if (defaultAddress) {
 			userReceiveAddress.setDefaultAddress(defaultAddress);
 			def otherAddrees = userReceiveAddressRepository.findByUserAndOtherAddress(user, userReceiveAddress)
 			otherAddrees.each {
@@ -234,10 +234,6 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 			return '{"success": "0", "message": "不是你的收货地址"}'
 		}
 		userReceiveAddressService.deleteUserReceiveAddress(id)
-
-
 	}				
 			
-	
-
 }

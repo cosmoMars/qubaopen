@@ -20,6 +20,7 @@ import com.qubaopen.survey.entity.user.UserReceiveAddress
 import com.qubaopen.survey.repository.base.AreaCodeRepository;
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.service.user.UserReceiveAddressService
+import static com.qubaopen.survey.utils.ValidateUtil.*
 
 @RestController
 @RequestMapping('userReceiveAddresses')
@@ -172,6 +173,9 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 			userReceiveAddress.setDetialAddress(detialAddress)
 		}
 		if(phone){
+			if (phone && !validatePhone(phone)) {
+				return '{"success" : "0", "message": "err003"}'
+			}
 			userReceiveAddress.setPhone(phone)
 		}
 		if(postCode){
@@ -190,16 +194,16 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 		
 		if(defaultAddress){
 			userReceiveAddress.setDefaultAddress(defaultAddress);
+			def otherAddrees = userReceiveAddressRepository.findByUserAndOtherAddress(user, userReceiveAddress)
+			otherAddrees.each {
+				it.defaultAddress = false
+			}
+			otherAddrees << userReceiveAddress
+			userReceiveAddressRepository.save(userReceiveAddress)
+		} else {
+			userReceiveAddressRepository.save(userReceiveAddress)
 		}
-		
-		try {
-			userReceiveAddressService.modify(userReceiveAddress)
-			//'{"success": "1"}'
-		} catch (Exception e) {
-			'{"success": "0"}'
-		}
-
-
+		'{"success" : "1"}'
 	}	
 			
 			

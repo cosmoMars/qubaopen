@@ -82,6 +82,7 @@ public class UserReceiveAddressService {
 
 		addressList.each {
 			it.defaultAddress = false
+			userReceiveAddressRepository.save(it);
 		}
 
 		userReceiveAddressRepository.save(userReceiveAddress)

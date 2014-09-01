@@ -25,7 +25,7 @@ abstract class AbstractBaseEntity<ID extends Serializable> extends AbstractPersi
 	@Temporal(TIMESTAMP)
 	@Column(updatable = false)
 	@JsonIgnore
-	Date createdDate =new Date();
+	Date createdDate = new Date();
 
 	@JsonIgnore
 	Long lastModifiedBy
@@ -33,7 +33,7 @@ abstract class AbstractBaseEntity<ID extends Serializable> extends AbstractPersi
 	@LastModifiedDate
 	@Temporal(TIMESTAMP)
 	@JsonIgnore
-	Date lastModifiedDate  =new Date();
+	Date lastModifiedDate = new Date();
 
 	DateTime getCreatedDate() {
 		null == createdDate ? null : new DateTime(createdDate)

@@ -328,12 +328,17 @@ public class SelfResultService {
 			}
 		}
 		def result = []
+		
 		optionMap.each { k, v ->
 			def score = 0
 			v.each {
 				score += it.score
 			}
-			result << [k : score]
+			def mapRecord = new MapRecord(
+				name : k,
+				value : score	
+			)
+			result << mapRecord
 		}
 
 		if (refresh) {

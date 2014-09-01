@@ -182,7 +182,9 @@ public class SelfPersistentService {
 				it.mapStatistics = mapStatistics
 			}
 		}
-		mapRecordRepository.deleteByMapStatistics(mapStatistics)
+		if (!mapStatistics) {
+			mapRecordRepository.deleteByMapStatistics(mapStatistics)
+		}
 		mapStatisticsRepository.save(mapStatistics)
 		mapRecordRepository.save(result)
 	}

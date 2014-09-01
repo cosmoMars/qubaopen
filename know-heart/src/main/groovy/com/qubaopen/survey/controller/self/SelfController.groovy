@@ -90,7 +90,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		}
 
 		if (!refresh) {
-			refresh = false
+			refresh = true
 		}
 
 		def result = selfService.calculateSelfReslut(user.id, selfId, questionJson, refresh)

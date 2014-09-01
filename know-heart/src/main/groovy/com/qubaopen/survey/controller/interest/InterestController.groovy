@@ -40,7 +40,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.GET)
+	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.POST)
 	retrieveInterest(@RequestParam(required = false) Long interestTypeId,
 		@RequestParam(required = false) Long sortTypeId,
 		@RequestParam(required = false) List<Long> ids,

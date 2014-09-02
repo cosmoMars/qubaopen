@@ -31,7 +31,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 		
 		if (filters.get("interestTypeId") == null && filters.get("sortTypeId") == null) {
 			StringBuilder hql = new StringBuilder();
-			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) ");
+			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) and i.status = 1 ");
 			if (filters.get("ids") != null)
 				hql.append("and i.id not in (:ids) ");
 			hql.append("order by i.recommendedValue desc");
@@ -46,7 +46,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 		
 		if (filters.get("interestTypeId") != null && filters.get("sortTypeId") == null) {
 			StringBuilder hql = new StringBuilder();
-			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) ");
+			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) and i.status = 1 ");
 			hql.append("and i.interestType.id = :type ");
 			if (filters.get("ids") != null)
 				hql.append("and i.id not in (:ids) ");
@@ -63,7 +63,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 		
 		if (filters.get("interestTypeId") == null && filters.get("sortTypeId") != null && 2l == (long)filters.get("sortTypeId")) {
 			StringBuilder hql = new StringBuilder();
-			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) ");
+			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) and i.status = 1 ");
 			if (filters.get("ids") != null)
 				hql.append("and i.id not in (:ids) ");
 			hql.append("order by i.createdDate desc ");
@@ -80,7 +80,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 			sql.append("select * from interest i left join (select iuq.interest_id interestId,count(iuq.interest_id) countNum ");
 			sql.append("from interest_user_questionnaire iuq ");
 			sql.append("group by iuq.interest_id) a on i.id = a.interestId ");
-			sql.append("where i.id not in (select iu.interest_id from interest_user_questionnaire iu  where iu.user_id = :user) ");
+			sql.append("where i.id not in (select iu.interest_id from interest_user_questionnaire iu  where iu.user_id = :user) and i.status = 1 ");
 			if (filters.get("ids") != null)
 				sql.append("and i.id not in (:ids) ");
 			sql.append("order by a.countNum desc,i.recommended_value desc");
@@ -96,7 +96,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 		if (filters.get("interestTypeId") != null && filters.get("sortTypeId") != null && 2l == (long)filters.get("sortTypeId")) {
 			StringBuilder hql = new StringBuilder();
 			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) ");
-			hql.append("and i.interestType.id = :type ");
+			hql.append("and i.interestType.id = :type and i.status = 1 ");
 			if (filters.get("ids") != null)
 				hql.append("and i.id not in (:ids) ");
 			hql.append("order by i.recommendedValue desc,i.createdDate desc");
@@ -115,7 +115,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 			sql.append("select * from interest i left join (select iuq.interest_id interestId,count(iuq.interest_id) countNum ");
 			sql.append("from interest_user_questionnaire iuq ");
 			sql.append("group by iuq.interest_id) a on i.id = a.interestId ");
-			sql.append("where i.id not in (select iu.interest_id from interest_user_questionnaire iu  where iu.user_id = :userId)  and i.interest_type_id = :type ");
+			sql.append("where i.id not in (select iu.interest_id from interest_user_questionnaire iu  where iu.user_id = :userId)  and i.interest_type_id = :type and i.status = 1 ");
 			if (filters.get("ids") != null)
 				sql.append("and i.id not in (:ids) ");
 			sql.append("order by a.countNum desc,i.recommended_value desc");

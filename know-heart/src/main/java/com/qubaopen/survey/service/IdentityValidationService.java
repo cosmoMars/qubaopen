@@ -1,5 +1,8 @@
 package com.qubaopen.survey.service;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.stereotype.Service;
 
 import cn.id5.gboss.businesses.validator.service.app.Des2;
@@ -9,7 +12,7 @@ import cn.id5.gboss.businesses.validator.service.app.QueryValidatorServicesProxy
 @Service
 public class IdentityValidationService {
 	
-	public void identityValidation(String id, String name) throws Exception {
+	public String identityValidation(String id, String name) throws Exception {
 		
 		QueryValidatorServicesProxy proxy = new QueryValidatorServicesProxy(
 				"http://gboss.id5.cn/services/QueryValidatorServices");
@@ -23,8 +26,8 @@ public class IdentityValidationService {
 		
 		String datasource = Des2.encode(key, "1A020201".getBytes());
 		
-		id = "31011019820728511X";
-		name = "王强";
+//		id = "31011019820728511X";
+//		name = "王强";
 		String param = name + "," + id;
 		
 		String resultXML = service.querySingle(userName, password, datasource,
@@ -34,6 +37,13 @@ public class IdentityValidationService {
 		
 		resultXML = Des2.decodeValue(key, resultXML);
 		System.out.println("resultXml2 ================================ " + resultXML);
+		
+		Document document = DocumentHelper.parseText(resultXML);
+		Element root = document.getRootElement();
+		Element status = root.element("message").element("status");
+		
+		return status.getTextTrim();
+		
 	}
 
 }

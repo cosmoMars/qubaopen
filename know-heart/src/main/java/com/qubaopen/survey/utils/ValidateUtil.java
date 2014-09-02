@@ -24,4 +24,28 @@ public class ValidateUtil {
 	public static boolean validateEmail(String email) {
 		return isNotEmpty(email) && email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
 	}
+	
+	/**
+	 * 检验身份证是否合法
+	 * @param arrIdCard
+	 * @return
+	 */
+	public static boolean isIdCard(String arrIdCard) {
+		int sigma = 0;
+		Integer[] a = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
+		String[] w = { "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
+		for (int i = 0; i < 17; i++) {
+			int ai = Integer.parseInt(arrIdCard.substring(i, i + 1));
+			int wi = a[i];
+			sigma += ai * wi;
+		}
+		int number = sigma % 11;
+		String check_number = w[number];
+		if (!arrIdCard.substring(17).equalsIgnoreCase(check_number)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 }

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 /**
  * @author mars 用户身份证绑定关系表，将用户ID和其认证过的身份证ID进行绑定
@@ -18,7 +18,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Entity
 @Table(name = "user_id_card_bind")
 @Audited
-public class UserIDCardBind extends AbstractBaseEntity<Long> {
+public class UserIDCardBind extends AbstractBaseEntity2<Long> {
 
 	private static final long serialVersionUID = -8702109493101811229L;
 
@@ -26,7 +26,7 @@ public class UserIDCardBind extends AbstractBaseEntity<Long> {
 	 * 用户身份证id
 	 */
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id_card", nullable = false, unique = true)
+	@JoinColumn(name = "user_id_card", unique = true, nullable = false)
 	private UserIDCard userIDCard;
 
 	/**
@@ -34,9 +34,8 @@ public class UserIDCardBind extends AbstractBaseEntity<Long> {
 	 */
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@PrimaryKeyJoinColumn
-	//@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
-
+	
 	public UserIDCard getUserIDCard() {
 		return userIDCard;
 	}
@@ -52,5 +51,4 @@ public class UserIDCardBind extends AbstractBaseEntity<Long> {
 	public void setUser(User user) {
 		this.user = user;
 	}
-
 }

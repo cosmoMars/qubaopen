@@ -190,7 +190,6 @@ public class MapStatisticsService {
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
-						
 						data << [
 							'mapTitle' : k.title,
 							'chart' : chart,
@@ -392,8 +391,6 @@ public class MapStatisticsService {
 							recordMaps.put(rk, tScore)
 							chart << [name : rk, value : tScore]
 						}
-						
-						recordMaps
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
 						

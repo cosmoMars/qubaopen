@@ -21,6 +21,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		logger.info(" =================== request preHandle =========================");
+		
+		System.out.println(request.getSession().getId() + "-------------------------------");
 
 		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic") || request.getRequestURI().contains("systemVersions")) {
 			return true;

@@ -124,25 +124,25 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 				userInfo.sharedSina = sharedSina
 			}
 			if (sharedTencent != null) {
-				userInfo.sharedSina = sharedTencent
+				userInfo.sharedTencent = sharedTencent
 			}
 			if (sharedWeChatFriend != null) {
-				userInfo.sharedSina = sharedWeChatFriend
+				userInfo.sharedWeChatFriend = sharedWeChatFriend
 			}
 			if (sharedQQSpace != null) {
-				userInfo.sharedSina = sharedQQSpace
+				userInfo.sharedQQSpace = sharedQQSpace
 			}
 			if (sharedWeChat != null) {
-				userInfo.sharedSina = sharedWeChat
+				userInfo.sharedWeChat = sharedWeChat
 			}
 			if (publicAnswersToChief != null) {
-				userInfo.sharedSina = publicAnswersToChief
+				userInfo.publicAnswersToChief = publicAnswersToChief
 			}
 			if (publicMovementToFriend != null) {
-				userInfo.sharedSina = publicMovementToFriend
+				userInfo.publicMovementToFriend = publicMovementToFriend
 			}
 			if (publicAnswersToFriend != null) {
-				userInfo.sharedSina = publicAnswersToFriend
+				userInfo.publicAnswersToFriend = publicAnswersToFriend
 			}
 			if (saveFlow != null) {
 				userInfo.saveFlow = saveFlow

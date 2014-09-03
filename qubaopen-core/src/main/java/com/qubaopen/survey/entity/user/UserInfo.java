@@ -52,7 +52,7 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	@Enumerated
 	private Sex sex;
 
-	private enum Sex {
+	public enum Sex {
 		MALE, FEMALE, OTHER
 	}
 
@@ -70,7 +70,7 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	private BloodType bloodType;
 
 	/**
-	 * A, B, AB, O, OTHER
+	 * A, B, O, AB, OTHER
 	 */
 	private enum BloodType {
 		A, B, O, AB, OTHER

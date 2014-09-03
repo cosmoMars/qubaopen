@@ -11,6 +11,7 @@ import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
+import com.qubaopen.survey.repository.EPQBasicRepository;
 import com.qubaopen.survey.repository.self.SelfResultOptionRepository
 
 @Service
@@ -24,6 +25,9 @@ public class SelfResultService {
 
 	@Autowired
 	SelfResultOptionRepository selfResultOptionRepository
+	
+	@Autowired
+	EPQBasicRepository epqBasicRepository
 
 	/**
 	 * 计算SCORE
@@ -78,9 +82,15 @@ public class SelfResultService {
 			case 'PDP' :
 				result = calculatePDP(user, self, questionOptions, questionVos, questions, refresh)
 				break
-//			case 'EPQ' :
-//				result = calculateSDS(user, self, questionOptions, questionVos, questions, refresh)
-//				break
+			case 'E' :
+				result = calculateEPQ(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'P' :
+				result = calculateEPQ(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'N' :
+				result = calculateEPQ(user, self, questionOptions, questionVos, questions, refresh)
+				break
 		}
 		result
 	}
@@ -152,7 +162,7 @@ public class SelfResultService {
 			)
 			result << mapRecord
 
-			if (resultMap.get(score)) { // key: 种类, value: 分数
+			if (resultMap.get(score)) { // key: 分数, value: 种类
 				resultMap.get(score) << k
 			} else {
 				def typeNameList = []
@@ -348,5 +358,85 @@ public class SelfResultService {
 		}
 
 		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
+	}
+	
+	
+	/**
+	 * 计算EPQ量表
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculateEPQ(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		
+		def optionMap = [:]
+		questionOptions.each {
+			def questionType = it.selfQuestion.selfQuestionType.name
+
+			if (optionMap.get(questionType)) { // key: 种类 : E, value: 题目
+				optionMap.get(questionType) << it
+			} else {
+				def optionList = []
+				optionList << it
+				optionMap.put(questionType, optionList)
+			}
+		}
+
+		def result = []
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def score = 0
+			v.each {
+				score = score + it.score
+			}
+			def mapRecord = new MapRecord(
+				name : k,
+				value : score
+			)
+			result << mapRecord
+		}
+		
+		def option = result.find {
+			it.name == self.abbreviation
+		}
+		
+		def optionScore = option.value
+		
+//		def age = (new Date()).getYear() - user.userInfo.birthday.getYear()
+//		def epqBasic = epqBasicRepository.findOneByFilters(
+//			[
+//				'sex_equal' : user.userInfo.sex,
+//				'minAge_lessThanOrEqualTo' : age,
+//				'maxAge_greaterThanOrEqualTo' : age,
+//				'name_equal' : self.abbreviation
+//			]
+//		)
+//		
+//		def calResult = 50 + 10 * (option.value - epqBasic.mValue) / epqBasic.sdValue
+//		
+//		result << new MapRecord(
+//			name : "${self.abbreviation}T",
+//			value : calResult
+//		)
+		
+		def resultOption = selfResultOptionRepository.findOneByFilters(
+			[
+				'selfResult.self_equal' : self,
+				'highestScore_greaterThanOrEqualTo' : optionScore,
+				'lowestScore_lessThanOrEqualTo' : optionScore
+			]	
+		)
+
+		if (refresh) {
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption, optionScore) // 保存心理地图
+
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
+		}
+
+		resultOption
 	}
 }

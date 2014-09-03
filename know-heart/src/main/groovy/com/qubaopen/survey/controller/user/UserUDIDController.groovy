@@ -58,7 +58,7 @@ public class UserUDIDController extends AbstractBaseController<UserUDID, Long> {
 
 		userUDIDRepository.modify(udid)
 
-		'{"success": 1}'
+		'{"success": "1"}'
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class UserUDIDController extends AbstractBaseController<UserUDID, Long> {
 			userUDID.endTime = DateCommons.String2Date(endTime, 'HH:mm')
 		}
 		userUDIDRepository.save(userUDID)
-		'{"success": 1}'
+		'{"success": "1"}'
 	}
 
 }

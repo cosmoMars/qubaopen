@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 /**
@@ -34,6 +35,7 @@ public class UserIDCardBind extends AbstractBaseEntity2<Long> {
 	 */
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@PrimaryKeyJoinColumn
+	@JsonIgnore
 	private User user;
 	
 	public UserIDCard getUserIDCard() {

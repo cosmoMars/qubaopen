@@ -167,8 +167,8 @@ public class SelfPersistentService {
 			mapStatistics.mapMax = self.mapMax
 			mapStatistics.selfManagementType = self.selfManagementType
 			mapStatistics.recommendedValue = self.recommendedValue
+			mapRecordRepository.deleteByMapStatistics(mapStatistics)
 		} else {
-			
 			mapStatistics = new MapStatistics(
 				user : user,
 				self : self,
@@ -181,9 +181,6 @@ public class SelfPersistentService {
 			result.each {
 				it.mapStatistics = mapStatistics
 			}
-		}
-		if (!mapStatistics) {
-			mapRecordRepository.deleteByMapStatistics(mapStatistics)
 		}
 		mapStatisticsRepository.save(mapStatistics)
 		mapRecordRepository.save(result)

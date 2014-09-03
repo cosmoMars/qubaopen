@@ -8,9 +8,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.self.SelfGroup;
 import com.qubaopen.survey.entity.self.SelfManagementType;
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.repository.EPQBasicRepository;
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfGroupRepository;
+import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
+import com.qubaopen.survey.service.user.UserIDCardBindService;
 
 @Service
 public class MapStatisticsService {
@@ -26,6 +29,15 @@ public class MapStatisticsService {
 
 	@Autowired
 	ObjectMapper objectMapper
+	
+	@Autowired
+	CalculateT calculateT
+	
+	@Autowired
+	UserIDCardBindService userIDCardBindService
+	
+	@Autowired
+	EPQBasicRepository epqBasicRepository
 
 	/**
 	 * 获取心理地图
@@ -108,11 +120,22 @@ public class MapStatisticsService {
 			}
 			
 			groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
-				if (v.size() < k.selfs.size()) {
+				if (v.size() < k.selfs.size() && v != null) {
+					def allName = []
+					def completeName = []
+					k.selfs.each {
+						allName << it.abbreviation
+					}
+					v.each { s ->
+						s.mapRecords.each { 
+							completeName << it.name
+						}
+					}
+					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
 					data << [
-						'mapTitle' : k.name,
+						'mapTitle' : k.title,
 						'chart' : '',
-						'mapMax' : '',
+						'mapMax' : k.mapMax,
 						'resultName' : '',
 						'resultScore' : '',
 						'resultContent' : '',
@@ -120,30 +143,90 @@ public class MapStatisticsService {
 						'recommendedValue' : k.recommendedValue,
 						'graphicsType' : k.graphicsType.id,
 						'special' : false,
-						'lock' : true
+						'lock' : true,
+						'tips' : strName
 					]
 				} else if (v.size() == k.selfs.size()) {
+					def records = []
+					def recordMaps = [:]
 					def chart = []
-					
-					v.each { s ->
-						s.mapRecords.each {  
-							chart << [name : it.name, value : it.value]
+					if (k.name == 'EPQ') {
+						v.each { s ->
+							records += s.mapRecords
 						}
+						
+						v.each { s ->
+							s.mapRecords.each {
+								if (recordMaps.get(it.name)) {
+									recordMaps.get(it.name) << it
+								} else {
+									def tempList = []
+									tempList << it
+									recordMaps.put(it.name, tempList)
+								}
+							}
+						}
+						
+						recordMaps.each { rk, rv ->
+							def score = 0
+							rv.each {
+								score += it.value
+							}
+							def idMap = userIDCardBindService.calculateAgeByIdCard(user),
+								age = idMap.get('age'), sex = idMap.get('sex')
+							
+							def epqBasic = epqBasicRepository.findOneByFilters(
+								[
+									'minAge_lessThanOrEqualTo' : age,
+									'maxAge_greaterThanOrEqualTo' : age,
+									'sex_equal' : sex,
+									'name_equal' : rk
+								]
+							)
+							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
+							recordMaps.get(rk).clear()
+							recordMaps.put(rk, tScore)
+							chart << [name : rk, value : tScore]
+						}
+						
+						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
+						
+						data << [
+							'mapTitle' : k.title,
+							'chart' : chart,
+							'mapMax' : k.mapMax,
+							'resultName' : k.name,
+							'resultScore' : '',
+							'resultContent' : '',
+							'managementType' : k?.selfManagementType?.id,
+							'recommendedValue' : k.recommendedValue,
+							'graphicsType' : k.graphicsType.id,
+							'special' : false,
+							'lock' : false,
+							'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
+							'level' : level
+						]
+					} else {
+						chart = []
+						v.each { s ->
+							s.mapRecords.each {
+								chart << [name : it.name, value : it.value]
+							}
+						}
+						data << [
+							'mapTitle' : k.title,
+							'chart' : chart,
+							'mapMax' : k.mapMax,
+							'resultName' : k.name,
+							'resultScore' : '',
+							'resultContent' : '',
+							'managementType' : k?.selfManagementType?.id,
+							'recommendedValue' : k.recommendedValue,
+							'graphicsType' : k.graphicsType.id,
+							'special' : false,
+							'lock' : false
+						]
 					}
-				
-					data << [
-						'mapTitle' : k.name,
-						'chart' : chart,
-						'mapMax' : k.mapMax,
-						'resultName' : k.name,
-						'resultScore' : '',
-						'resultContent' : '',
-						'managementType' : k?.selfManagementType?.id,
-						'recommendedValue' : k.recommendedValue,
-						'graphicsType' : k.graphicsType.id,
-						'special' : false,
-						'lock' : false
-					]
 				}
 			}
 			
@@ -240,11 +323,23 @@ public class MapStatisticsService {
 			}
 			
 			groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
-				if (v.size() < k.selfs.size()) {
+				if (v.size() < k.selfs.size() && v != null) {
+					
+					def allName = []
+					def completeName = []
+					k.selfs.each {
+						allName << it.abbreviation
+					}
+					v.each { s ->
+						s.mapRecords.each { 
+							completeName << it.name
+						}
+					}
+					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
 					data << [
-						'mapTitle' : k.name,
+						'mapTitle' : k.title,
 						'chart' : '',
-						'mapMax' : '',
+						'mapMax' : k.mapMax,
 						'resultName' : '',
 						'resultScore' : '',
 						'resultContent' : '',
@@ -252,33 +347,97 @@ public class MapStatisticsService {
 						'recommendedValue' : k.recommendedValue,
 						'graphicsType' : k.graphicsType.id,
 						'special' : false,
-						'lock' : true
+						'lock' : true,
+						'tips' : strName
 					]
 				} else if (v.size() == k.selfs.size()) {
+					def records = []
+					def recordMaps = [:]
 					def chart = []
-					
-					v.each { s ->
-						s.mapRecords.each {
-							chart << [name : it.name, value : it.value]
+					if (k.name == 'EPQ') {
+						v.each { s ->
+							records += s.mapRecords
 						}
+						
+						v.each { s ->
+							s.mapRecords.each {
+								if (recordMaps.get(it.name)) {
+									recordMaps.get(it.name) << it
+								} else {
+									def tempList = []
+									tempList << it
+									recordMaps.put(it.name, tempList)
+								}
+							}
+						}
+						
+						recordMaps.each { rk, rv ->
+							def score = 0
+							rv.each {
+								score += it.value
+							}
+							def idMap = userIDCardBindService.calculateAgeByIdCard(user),
+								age = idMap.get('age'), sex = idMap.get('sex')
+							
+							def epqBasic = epqBasicRepository.findOneByFilters(
+								[
+									'minAge_lessThanOrEqualTo' : age,
+									'maxAge_greaterThanOrEqualTo' : age,
+									'sex_equal' : sex,
+									'name_equal' : rk
+								]
+							)
+							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
+							recordMaps.get(rk).clear()
+							recordMaps.put(rk, tScore)
+							chart << [name : rk, value : tScore]
+						}
+						
+						recordMaps
+						
+						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
+						
+						data << [
+							'mapTitle' : k.title,
+							'chart' : chart,
+							'mapMax' : k.mapMax,
+							'resultName' : k.name,
+							'resultScore' : '',
+							'resultContent' : '',
+							'managementType' : k?.selfManagementType?.id,
+							'recommendedValue' : k.recommendedValue,
+							'graphicsType' : k.graphicsType.id,
+							'special' : false,
+							'lock' : false,
+							'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
+							'level' : level
+						]
+					} else {
+						chart = []
+						
+						v.each { s ->
+							s.mapRecords.each {
+								chart << [name : it.name, value : it.value]
+							}
+						}
+					
+						data << [
+							'mapTitle' : k.title,
+							'chart' : chart,
+							'mapMax' : k.mapMax,
+							'resultName' : k.name,
+							'resultScore' : '',
+							'resultContent' : '',
+							'managementType' : k?.selfManagementType?.id,
+							'recommendedValue' : k.recommendedValue,
+							'graphicsType' : k.graphicsType.id,
+							'special' : false,
+							'lock' : false
+						]
 					}
-				
-					data << [
-						'mapTitle' : k.name,
-						'chart' : chart,
-						'mapMax' : k.mapMax,
-						'resultName' : k.name,
-						'resultScore' : '',
-						'resultContent' : '',
-						'managementType' : k?.selfManagementType?.id,
-						'recommendedValue' : k.recommendedValue,
-						'graphicsType' : k.graphicsType.id,
-						'special' : false,
-						'lock' : false
-					]
 				}
+					
 			}
-			
 			
 			singleMaps.each { // 单个题目出答案
 				def chart = []
@@ -302,20 +461,6 @@ public class MapStatisticsService {
 				]
 			}
 		}
-		data << [
-			
-			'mapTitle' : '测试坐标轴',
-			'chart' : [name : 5, value : 2],
-			'mapMax' : 10,
-			'resultName' : '测试结果',
-			'resultScore' : 5,
-			'resultContent' : '坐标轴测试用结果',
-			'managementType' : 1,
-			'recommendedValue' : 10,
-			'graphicsType' : 5,
-			'special' : false,
-			'lock' : false
-		]
 		[
 			'success' : '1',
 			'message' : '成功',

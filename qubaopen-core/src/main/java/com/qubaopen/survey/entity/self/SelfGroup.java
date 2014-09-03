@@ -54,6 +54,11 @@ public class SelfGroup extends AbstractPersistable<Long> {
 	private int recommendedValue;
 	
 	/**
+	 * 标题
+	 */
+	private String title;
+	
+	/**
 	 * 自测管理类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -97,6 +102,14 @@ public class SelfGroup extends AbstractPersistable<Long> {
 
 	public void setRecommendedValue(int recommendedValue) {
 		this.recommendedValue = recommendedValue;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public SelfManagementType getSelfManagementType() {

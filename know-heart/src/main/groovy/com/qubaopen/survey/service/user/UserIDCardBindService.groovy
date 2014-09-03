@@ -1,16 +1,15 @@
 package com.qubaopen.survey.service.user;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.entity.user.UserIDCard;
+import com.qubaopen.survey.entity.user.UserIDCard
 import com.qubaopen.survey.entity.user.UserIDCardBind
 import com.qubaopen.survey.entity.user.UserIDCardLog
-import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
+import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserIDCardLogRepository
 import com.qubaopen.survey.repository.user.UserIDCardRepository
 import com.qubaopen.survey.service.IdentityValidationService
@@ -146,4 +145,20 @@ public class UserIDCardBindService {
 			}
 		}
 	}
+	
+	def calculateAgeByIdCard(User user) {
+		def userIDCardBind = userIDCardBindRepository.findOne(user.id),
+			idCard = userIDCardBind.userIDCard.IDCard
+		def age = Integer.valueOf(DateTime.now().year) - Integer.valueOf(idCard.substring(6, 10))
+		
+		String lastValue = idCard.substring(idCard.length() - 1, idCard.length());
+		def sex
+		if (lastValue.trim().toLowerCase().equals('x') || lastValue.trim().toLowerCase().equals('e')) {
+			sex = 0
+		} else {
+			sex = Integer.parseInt(lastValue) % 2
+		}
+		[age : age, sex : sex]
+	}
+		
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 
 /**
  * EPQ 基础表
+ * 
  * @author mars
  *
  */
@@ -45,12 +46,12 @@ public class EPQBasic extends AbstractPersistable<Long> {
 	/**
 	 * m值
 	 */
-	private String mValue;
+	private double mValue;
 
 	/**
 	 * sd值
 	 */
-	private String sdValue;
+	private double sdValue;
 
 	public Sex getSex() {
 		return sex;
@@ -84,21 +85,20 @@ public class EPQBasic extends AbstractPersistable<Long> {
 		this.name = name;
 	}
 
-	public String getmValue() {
+	public double getmValue() {
 		return mValue;
 	}
 
-	public void setmValue(String mValue) {
+	public void setmValue(double mValue) {
 		this.mValue = mValue;
 	}
 
-	public String getSdValue() {
+	public double getSdValue() {
 		return sdValue;
 	}
 
-	public void setSdValue(String sdValue) {
+	public void setSdValue(double sdValue) {
 		this.sdValue = sdValue;
 	}
-
 
 }

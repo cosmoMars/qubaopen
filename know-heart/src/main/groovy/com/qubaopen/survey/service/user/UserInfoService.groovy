@@ -39,7 +39,7 @@ public class UserInfoService {
 			defaultAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
 
 		def result = [
-			'success' : "1",
+			'success' : '1',
 			'userId' : userId,
 			'name' : userInfo?.name,
 			'nickName' : userInfo?.nickName,

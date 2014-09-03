@@ -79,14 +79,14 @@ class UserController extends AbstractBaseController<User, Long> {
 				userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
 
 			return  [
-				'success' : "1",
+				'success' : '1',
 				'message' : '登录成功',
 				'userId' : loginUser?.id,
 				'phone' : loginUser?.phone,
 				'name' : userInfo?.name,
-				'sex' : userInfo?.sex,
+				'sex' : userInfo?.sex.ordinal(),
 				'nickName' : userInfo?.nickName,
-				'bloodType' : userInfo?.bloodType,
+				'bloodType' : userInfo?.bloodType.ordinal(),
 				'district' : '',
 				'email' : loginUser?.email,
 				'defaultAddress' : userReceiveAddress?.detialAddress,

@@ -406,23 +406,6 @@ public class SelfResultService {
 		
 		def optionScore = option.value
 		
-//		def age = (new Date()).getYear() - user.userInfo.birthday.getYear()
-//		def epqBasic = epqBasicRepository.findOneByFilters(
-//			[
-//				'sex_equal' : user.userInfo.sex,
-//				'minAge_lessThanOrEqualTo' : age,
-//				'maxAge_greaterThanOrEqualTo' : age,
-//				'name_equal' : self.abbreviation
-//			]
-//		)
-//		
-//		def calResult = 50 + 10 * (option.value - epqBasic.mValue) / epqBasic.sdValue
-//		
-//		result << new MapRecord(
-//			name : "${self.abbreviation}T",
-//			value : calResult
-//		)
-		
 		def resultOption = selfResultOptionRepository.findOneByFilters(
 			[
 				'selfResult.self_equal' : self,

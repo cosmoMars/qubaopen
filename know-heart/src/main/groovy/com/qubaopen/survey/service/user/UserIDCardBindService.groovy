@@ -147,9 +147,12 @@ public class UserIDCardBindService {
 	}
 	
 	def calculateAgeByIdCard(User user) {
-		def userIDCardBind = userIDCardBindRepository.findOne(user.id),
-			idCard = userIDCardBind.userIDCard.IDCard
-		def age = Integer.valueOf(DateTime.now().year) - Integer.valueOf(idCard.substring(6, 10))
+		def userIDCardBind = userIDCardBindRepository.findOne(user.id)
+		if (!userIDCardBind) {
+			return null
+		}
+		def idCard = userIDCardBind.userIDCard.IDCard,
+			age = Integer.valueOf(DateTime.now().year) - Integer.valueOf(idCard.substring(6, 10))
 		
 		String lastValue = idCard.substring(idCard.length() - 1, idCard.length());
 		def sex

@@ -77,7 +77,7 @@ public class UserUDIDController extends AbstractBaseController<UserUDID, Long> {
 		) {
 
 		def userUDID = userUDIDRepository.findOne(user.id)
-		if (isPush) {
+		if (isPush != null) {
 			userUDID.push = isPush
 		}
 		if (startTime) {

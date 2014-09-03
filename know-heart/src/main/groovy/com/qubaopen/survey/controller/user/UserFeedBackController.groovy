@@ -29,7 +29,7 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 	@Override
 	@RequestMapping(method = RequestMethod.POST)
 	add(@RequestBody @Valid UserFeedBack userFeedBack, BindingResult result) {
-		userFeedBackRepository.save(userFeedBack, result)
+		userFeedBackRepository.save(userFeedBack)
 		'{"success": "1"}'
 	}
 

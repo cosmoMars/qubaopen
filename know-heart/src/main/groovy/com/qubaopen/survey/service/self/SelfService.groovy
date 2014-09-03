@@ -17,6 +17,8 @@ import com.qubaopen.survey.repository.self.SelfQuestionRepository
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
+import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
+import com.qubaopen.survey.service.user.UserIDCardBindService;
 
 @Service
 public class SelfService {
@@ -45,6 +47,12 @@ public class SelfService {
 	@Autowired
 	SelfUserQuestionnaireRepository selfUserQuestionnaireRepository
 	
+	@Autowired
+	UserIDCardBindService userIDCardBindService
+	
+	@Autowired
+	UserIDCardBindRepository userIDCardBindRepository
+	
 	/**
 	 * 获取自测问卷
 	 * @param userId
@@ -54,20 +62,40 @@ public class SelfService {
 	retrieveSelf(User user, boolean refresh) {
 		
 		def now = new Date(), resultSelfs = [], allSelfs = [],
-		selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user) // 所有用户答过的题目记录，按照时间倒序排序
+			selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTime(user) // 所有用户答过的题目记录，按照时间倒序排序
 		
-		def index = dayForWeek()
+		def index = dayForWeek(),
+			singleSelf = selfRepository.findSpecialSelf(),
+			idMap = userIDCardBindService.calculateAgeByIdCard(user)
 		
-//		def singleSelf = selfRepository.findByManagementTypeAndIntervalTime(ManagementType.Character, 4) // 必做的题目 4小时
-		def singleSelf = selfRepository.findSpecialSelf()
-		def epqSelfs = selfRepository.findAll( // epq 4套题目
-			[
-				'selfGroup.name_equal' : 'EPQ'
-			]
-		)
+		if (idMap) {
+			def age = idMap.get('age')
+			
+			if (age > 15 && age < 70) {
+				def epqSelfs = selfRepository.findAll( // epq 4套题目
+					[
+						'selfGroup.name_equal' : 'EPQ'
+					]
+				)
+				allSelfs += epqSelfs
+				epqSelfs.each { epq ->
+					def questionnaire = selfUserQuestionnaires.find { suq ->
+						epq.id == suq.self.id
+					}
+					selfUserQuestionnaires.remove(questionnaire)
+					if (questionnaire) {
+						if (now.getTime() - questionnaire.time.getTime() > epq.intervalTime * 60 * 60 * 1000) {
+							resultSelfs << epq
+						}
+					} else {
+						resultSelfs << epq
+					}
+				}
+			}
+		}
 		
 		allSelfs << singleSelf
-		allSelfs += epqSelfs
+		
 		
 		def userQuestionnaire = selfUserQuestionnaires.find { // 4小时题 记录
 			it.self.id = singleSelf.id
@@ -81,19 +109,6 @@ public class SelfService {
 			resultSelfs << singleSelf
 		}
 		
-		epqSelfs.each { epq ->
-			def questionnaire = selfUserQuestionnaires.find { suq ->
-				epq.id == suq.self.id
-			}
-			selfUserQuestionnaires.remove(questionnaire)
-			if (questionnaire) {
-				if (now.getTime() - questionnaire.time.getTime() > epq.intervalTime * 60 * 60 * 1000) {
-					resultSelfs << epq
-				}
-			} else {
-				resultSelfs << epq
-			}
-		}
 		def existQuestionnaires = selfUserQuestionnaires.findAll {
 			now.getTime() - it.time.getTime() < it.self.intervalTime * 60 * 60 * 1000
 		}

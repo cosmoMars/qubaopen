@@ -9,9 +9,6 @@ public class CalculateT {
 
 	def calT(int x, double m, double sd) {
 		def bd = new BigDecimal(50 + 10 * (x - m) / sd)
-		if (bd > 100) {
-			bd = 100.00
-		}
 		bd.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	

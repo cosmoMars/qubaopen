@@ -108,41 +108,44 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	 * @param publicAnswersToFriend
 	 * @return
 	 */
-	@RequestMapping(value = 'sharedUserInfo', method = RequestMethod.PUT)
-	sharedUserInfo(@RequestParam long userId,
-		@RequestParam(required = false) Boolean sharedSina,
+	@RequestMapping(value = 'modifyUserInfoStatus', method = RequestMethod.POST)
+	modifyUserInfoStatus(@RequestParam(required = false) Boolean sharedSina,
 		@RequestParam(required = false) Boolean sharedTencent,
 		@RequestParam(required = false) Boolean sharedWeChatFriend,
 		@RequestParam(required = false) Boolean sharedQQSpace,
 		@RequestParam(required = false) Boolean sharedWeChat,
 		@RequestParam(required = false) Boolean publicAnswersToChief,
 		@RequestParam(required = false) Boolean publicMovementToFriend,
-		@RequestParam(required = false) Boolean publicAnswersToFriend
-		) {
-			def userInfo = userInfoRepository.findOne(userId)
-			if (sharedSina) {
+		@RequestParam(required = false) Boolean publicAnswersToFriend,
+		@RequestParam(required = false) Boolean saveFlow,
+		@ModelAttribute('currentUser') User user) {
+			def userInfo = userInfoRepository.findOne(user.id)
+			if (sharedSina != null) {
 				userInfo.sharedSina = sharedSina
 			}
-			if (sharedTencent) {
+			if (sharedTencent != null) {
 				userInfo.sharedSina = sharedTencent
 			}
-			if (sharedWeChatFriend) {
+			if (sharedWeChatFriend != null) {
 				userInfo.sharedSina = sharedWeChatFriend
 			}
-			if (sharedQQSpace) {
+			if (sharedQQSpace != null) {
 				userInfo.sharedSina = sharedQQSpace
 			}
-			if (sharedWeChat) {
+			if (sharedWeChat != null) {
 				userInfo.sharedSina = sharedWeChat
 			}
-			if (publicAnswersToChief) {
+			if (publicAnswersToChief != null) {
 				userInfo.sharedSina = publicAnswersToChief
 			}
-			if (publicMovementToFriend) {
+			if (publicMovementToFriend != null) {
 				userInfo.sharedSina = publicMovementToFriend
 			}
-			if (publicAnswersToFriend) {
+			if (publicAnswersToFriend != null) {
 				userInfo.sharedSina = publicAnswersToFriend
+			}
+			if (saveFlow != null) {
+				userInfo.saveFlow = saveFlow
 			}
 			userInfoRepository.save(userInfo)
 			'{"success" : "1"}'

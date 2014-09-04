@@ -67,17 +67,16 @@ public class SelfService {
 		def index = dayForWeek(),
 			singleSelf = selfRepository.findSpecialSelf(),
 			idMap = userIDCardBindService.calculateAgeByIdCard(user)
+			
+		def epqSelfs = selfRepository.findAll( // epq 4套题目
+			[
+				'selfGroup.name_equal' : 'EPQ'
+			]
+		)
+		allSelfs += epqSelfs
 		
 		if (idMap) {
 			def age = idMap.get('age')
-			
-		
-			def epqSelfs = selfRepository.findAll( // epq 4套题目
-				[
-					'selfGroup.name_equal' : 'EPQ'
-				]
-			)
-			allSelfs += epqSelfs
 			if (age > 15 && age < 70) {
 				epqSelfs.each { epq ->
 					def questionnaire = selfUserQuestionnaires.find { suq ->

@@ -45,11 +45,11 @@ public class UserIDCardBindService {
 			existIdCardBind = userIDCardBindRepository.findByUserIDCard(userIdCard)
 			
 		if (existIdCardBind && existIdCardBind.user != user) {
-			return '{"success" : "0", "message" : "err100003"}' // 身份证已被他人绑定
+			return '{"success" : "0", "message" : "err203"}' // 身份证已被他人绑定
 		}
 			
 		if (existLogs.size() >= 3) {
-			return '{"success" : "0", "message" : "err100001"}' // 每月绑定次数达到上线
+			return '{"success" : "0", "message" : "err201"}' // 每月绑定次数达到上线
 		}
 		if (!userIdCardBind) { // 第一次绑定
 			if (userIdCard) {
@@ -72,7 +72,7 @@ public class UserIDCardBindService {
 				userIDCardLogRepository.save(userIdCardLog)
 				
 				if (result != '0') {
-					return '{"success" : "0", "message" : "err10000"}' // 绑定失败
+					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}
 				if (result == '0') {
 					userIdCard = new UserIDCard(
@@ -90,7 +90,7 @@ public class UserIDCardBindService {
 				userIDCardBindRepository.save(userIdCardBind)
 				return '{"success" : "1", "message" : "认证成功"}'
 			} else {
-				return '{"success" : "0", "message" : "err10000"}'
+				return '{"success" : "0", "message" : "err200"}'
 			}
 		} else {
 			def correctLog = existLogs.find {
@@ -104,7 +104,7 @@ public class UserIDCardBindService {
 					status : 'used'
 				)
 				userIDCardLogRepository.save(userIdCardLog)
-				return '{"success" : "0", "message" : "err100002"}' // 每月已修改过一次
+				return '{"success" : "0", "message" : "err204"}' // 本月已成功绑定，无法修改
 			}
 				
 			if (userIdCard) {
@@ -126,7 +126,7 @@ public class UserIDCardBindService {
 				)
 				userIDCardLogRepository.save(userIdCardLog)
 				if (result != '0') {
-					return '{"success" : "0", "message" : "err10000"}' // 绑定失败
+					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}
 				if (result == '0') {
 					userIdCard = new UserIDCard(
@@ -141,7 +141,7 @@ public class UserIDCardBindService {
 				userIDCardBindRepository.save(userIdCardBind)
 				return '{"success" : "1", "message" : "认证成功"}'
 			} else {
-				return '{"success" : "0", "message" : "err10000"}'
+				return '{"success" : "0", "message" : "err200"}'
 			}
 		}
 	}

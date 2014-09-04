@@ -107,7 +107,7 @@ public class SurveyService {
 	@Transactional
 	findBySurvey(long surveyId) {
 		def survey = new Survey(id : surveyId),
-		surveyQuestions = surveyQuestionRepository.findAllBySurvey(survey)
+			surveyQuestions = surveyQuestionRepository.findAllBySurvey(survey)
 
 		def surveyLogics = []
 
@@ -132,7 +132,7 @@ public class SurveyService {
 	@Transactional
 	saveSurveyResult(long userId, long surveyId, String questionJson) {
 		def user = new User(id : userId),
-		survey = new Survey(id : surveyId)
+			survey = new Survey(id : surveyId)
 
 		def javaType = objectMapper.typeFactory.constructParametricType(ArrayList.class, QuestionVo.class)
 		def questionVos = objectMapper.readValue(questionJson, javaType)

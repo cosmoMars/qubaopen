@@ -86,7 +86,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 			userInfoRepository.save(userInfo)
 			return '{"success": "1"}'
 		}
-		'{"success": "0"}'
+		'{"success": "0", "message" : "err102"}'
 	}
 
 	private void saveFile(byte[] bytes, String filename) {

@@ -35,12 +35,12 @@ public class RewardController extends AbstractBaseController<Reward, Long> {
 		[
 			'success' : '1',
 			'message' : '成功',
-			'content' : reward.content ?: '',
-			'title' : reward.title ?: '',
-			'secretCode' : reward.secretCode ?: '',
-			'QRCode' : reward.QRCode ?: '',
-			'remark' : reward.remark ?: '',
-			'expirationDate' : reward.expirationDate ?: ''
+			'content' : reward?.content,
+			'title' : reward?.title,
+			'secretCode' : reward?.secretCode,
+			'QRCode' : reward?.QRCode,
+			'remark' : reward?.remark,
+			'expirationDate' : reward?.expirationDate
 		]
 	}
 }

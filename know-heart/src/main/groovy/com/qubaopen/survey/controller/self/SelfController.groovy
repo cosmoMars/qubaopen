@@ -86,7 +86,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		logger.trace ' -- 计算自测结果选项 -- '
 
 		if (StringUtils.isEmpty(questionJson)) {
-			return '{"success" : "0", "message" : "err1234"}'
+			return '{"success" : "0", "message" : "err600"}'
 		}
 
 		if (!refresh) {
@@ -100,7 +100,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		}
 
 		if (!result) {
-			return '{"success" : "0", "message" : "err123123"}'
+			return '{"success" : "0", "message" : "err601"}'
 		}
 		[
 			'success' : '1',

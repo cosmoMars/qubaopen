@@ -30,7 +30,7 @@ public class UserReceiveAddressService {
 		def count = userReceiveAddressRepository.countByUser(userReceiveAddress.user)
 
 		if (count >= 10) {
-			return '{"success": "0", "message": "err101"}'
+			return '{"success": "0", "message": "err401"}'
 		}
 
 		if (count == 0) { // 没有收货地址
@@ -65,7 +65,7 @@ public class UserReceiveAddressService {
 
 		def address = userReceiveAddressRepository.findOne(userReceiveAddress.id)
 		if (!address) {
-			return '{"success": "0", "message": "err102"}'
+			return '{"success": "0", "message": "err402"}'
 		}
 
 		if (address.defaultAddress == userReceiveAddress.defaultAddress) {
@@ -103,7 +103,7 @@ public class UserReceiveAddressService {
 		def userReceiveAddress = userReceiveAddressRepository.findOne(id)
 
 		if(!userReceiveAddress) {
-			return '{"success": "0", "message": "err102"}'
+			return '{"success": "0", "message": "err402"}'
 		}
 
 		if (userReceiveAddress && !userReceiveAddress.defaultAddress) {
@@ -167,8 +167,6 @@ public class UserReceiveAddressService {
 				}
 				content << data
 			}
-			
-			
 		}
 
 		[

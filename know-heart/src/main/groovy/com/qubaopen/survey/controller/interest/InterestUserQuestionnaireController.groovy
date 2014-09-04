@@ -43,22 +43,22 @@ public class InterestUserQuestionnaireController extends AbstractBaseController<
 		def interest = new Interest(id : interestId)
 
 		def questionnarie = interestUserQuestionnaireRepository.findByUserAndInterest(user, interest)
-		if (sharedSina) {
+		if (sharedSina != null) {
 			questionnarie.sharedSina = sharedSina
 		}
-		if (sharedTencent) {
+		if (sharedTencent != null) {
 			questionnarie.sharedTencent = sharedTencent
 		}
-		if (sharedWeChatFriend) {
+		if (sharedWeChatFriend != null) {
 			questionnarie.sharedWeChatFriend = sharedWeChatFriend
 		}
-		if (sharedQQSpace) {
+		if (sharedQQSpace != null) {
 			questionnarie.sharedQQSpace = sharedQQSpace
 		}
-		if (sharedWeChat) {
+		if (sharedWeChat != null) {
 			questionnarie.sharedWeChat = sharedWeChat
 		}
-		if (publicToAll) {
+		if (publicToAll != null) {
 			questionnarie.publicToAll = publicToAll
 		}
 		interestUserQuestionnaireRepository.save(questionnarie)

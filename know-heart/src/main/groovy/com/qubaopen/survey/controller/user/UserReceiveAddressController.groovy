@@ -51,7 +51,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 		logger.trace ' -- 新增收货地址 -- '
 
 		if (!userReceiveAddress) {
-			return '{"success": "0", "message": "err103"}'
+			return '{"success": "0", "message": "err400"}'
 		}
 
 		def address = userReceiveAddressService.add(userReceiveAddress)
@@ -70,13 +70,8 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 
 		logger.trace ' -- 修改收货地址 -- '
 
-		try {
-			userReceiveAddressService.modify(userReceiveAddress)
-			'{"success": "1"}'
-		} catch (Exception e) {
-			'{"success": "0"}'
-		}
-
+		userReceiveAddressService.modify(userReceiveAddress)
+		'{"success": "1"}'
 
 	}
 
@@ -171,10 +166,10 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 		def userReceiveAddress=userReceiveAddressRepository.findOne(id)
 		
 		if(!userReceiveAddress){
-			return '{"success": "0", "message": "err102"}'
+			return '{"success": "0", "message": "err402"}'
 		}
 		if(userReceiveAddress.user.id!=user.id){
-			return '{"success": "0", "message": "不是你的收货地址"}'
+			return '{"success": "0", "message": "err403"}'
 		}
 		if(consignee){
 			userReceiveAddress.setConsignee(consignee)
@@ -202,7 +197,7 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 			userReceiveAddress.setAreaCode(area);
 		}
 		
-		if (defaultAddress) {
+		if (defaultAddress != null) {
 			userReceiveAddress.setDefaultAddress(defaultAddress);
 			def otherAddrees = userReceiveAddressRepository.findByUserAndOtherAddress(user, userReceiveAddress)
 			otherAddrees.each {
@@ -228,10 +223,10 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 		def userReceiveAddress=userReceiveAddressRepository.findOne(id)
 		
 		if(!userReceiveAddress){
-			return '{"success": "0", "message": "err102"}'
+			return '{"success": "0", "message": "err402"}'
 		}
 		if(userReceiveAddress.user.id!=user.id){
-			return '{"success": "0", "message": "不是你的收货地址"}'
+			return '{"success": "0", "message": "err403"}'
 		}
 		userReceiveAddressService.deleteUserReceiveAddress(id)
 	}				

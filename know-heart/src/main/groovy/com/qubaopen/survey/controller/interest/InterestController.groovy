@@ -66,14 +66,14 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 		logger.trace ' -- 通过用户问题选项，计算得到结果选项 -- '
 		if (!questionJson) {
-			return '{"success": "0", "message": "err1234"}'
+			return '{"success": "0", "message": "err600"}'
 		}
 
 
 		def result = interestService.calculateInterestResult(user.id, interestId, questionJson)
 
 		if (!result) {
-			return '{"success" : "0", "message" : "err1234"}'
+			return '{"success" : "0", "message" : "err601"}' // 没有结果
 		}
 		[
 			'success' : '1',

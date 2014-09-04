@@ -30,15 +30,12 @@ public class UserInfoService {
 	@Transactional
 	retrievePersonalInfo(long userId) {
 
-		def userInfo = userInfoRepository.findOne(userId)
-
-		def userIdCardBind = userIDCardBindRepository.findByUserId(userId)
-
-
+		def userInfo = userInfoRepository.findOne(userId),
+			userIdCardBind = userIDCardBindRepository.findByUserId(userId)
 		def user = new User(id : userId),
 			defaultAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
 
-		def result = [
+		[
 			'success' : '1',
 			'userId' : userId,
 			'name' : userInfo?.name,
@@ -52,10 +49,7 @@ public class UserInfoService {
 			'avatarPath' : userInfo?.avatarPath,
 			'district' : '',
 			'signature' : userInfo?.signature
-
 		]
-
-		result
 	}
 
 }

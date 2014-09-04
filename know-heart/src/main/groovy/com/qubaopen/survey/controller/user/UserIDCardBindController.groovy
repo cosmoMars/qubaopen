@@ -50,7 +50,7 @@ public class UserIDCardBindController extends AbstractBaseController<UserIDCardB
 		
 		logger.trace ' -- 身份证认证 -- '
 		if (!isIdCard(idCard)) {
-			return '{"success" : "0", "message" : "err100002"}'
+			return '{"success" : "0", "message" : "err202"}'
 		}
 		
 		userIDCardBindService.submitUserIdCard(idCard, name, user)

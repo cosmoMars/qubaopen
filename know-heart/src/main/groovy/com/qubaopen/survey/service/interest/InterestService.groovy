@@ -298,7 +298,7 @@ public class InterestService {
 		def answerRecord = interestUserQuestionnaireRepository.findByUserAndInterest(friend, interest)
 
 		if (!answerRecord) {
-			return '{"success" : "0", "message" : "err没有好友问卷结果"}'
+			return '{"success" : "0", "message" : "err602"}' // 没有好友问卷结果
 		}
 
 		def friendInfo = userInfoRepository.findOne(friendId)

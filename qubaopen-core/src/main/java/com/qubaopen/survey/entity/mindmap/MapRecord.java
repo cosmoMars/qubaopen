@@ -6,12 +6,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
-import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import com.qubaopen.core.entity.AbstractBaseEntity;
 
 @Entity
 @Table(name = "map_record")
 @Audited
-public class MapRecord extends AbstractPersistable<Long> {
+public class MapRecord extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = -1998287891123862640L;
 

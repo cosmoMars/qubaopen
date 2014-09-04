@@ -103,7 +103,8 @@ public class MapStatisticsService {
 					'recommendedValue' : specialMaps[0]?.recommendedValue,
 					'graphicsType' : specialMaps[0]?.self?.graphicsType?.id,
 					'special' : true,
-					'lock' : true
+					'lock' : true,
+					'tips' : '该问卷需要答满7次方可得出结果'
 				]
 			} 
 			
@@ -122,7 +123,7 @@ public class MapStatisticsService {
 			groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
 				if (v.size() < k.selfs.size() && v != null) {
 					def allName = []
-					def completeName = []
+					def completeName = [] as Set
 					k.selfs.each {
 						allName << it.abbreviation
 					}
@@ -305,7 +306,8 @@ public class MapStatisticsService {
 					'recommendedValue' : specialMaps[0]?.recommendedValue,
 					'graphicsType' : specialMaps[0]?.self?.graphicsType?.id,
 					'special' : true,
-					'lock' : true
+					'lock' : true,
+					'tips' : '该问卷需要答满7次方可得出结果'
 				]
 			}
 			
@@ -325,7 +327,7 @@ public class MapStatisticsService {
 				if (v.size() < k.selfs.size() && v != null) {
 					
 					def allName = []
-					def completeName = []
+					def completeName = [] as Set
 					k.selfs.each {
 						allName << it.abbreviation
 					}

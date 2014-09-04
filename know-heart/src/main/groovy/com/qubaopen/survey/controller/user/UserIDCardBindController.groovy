@@ -56,4 +56,33 @@ public class UserIDCardBindController extends AbstractBaseController<UserIDCardB
 		userIDCardBindService.submitUserIdCard(idCard, name, user)
 		
 	}
+	
+	/**
+	 * 获取用户身份证信息
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveUserIdCard', method = RequestMethod.GET)
+	retrieveUserIdCard(@ModelAttribute('currentUser') User user) {
+		
+		def userIDCardBind = userIDCardBindRepository.findOne(user.id)
+		
+		if (userIDCardBind) {
+			return [
+				'success' : '1',
+				'message' : '成功',
+				'exist' : true,
+				'name' : userIDCardBind.userIDCard.name,
+				'idCard' : userIDCardBind.userIDCard.IDCard	
+			]
+		} else {
+			return [
+				'success' : '0',
+				'message' : '失败',
+				'exist' : false,
+				'name' : '',
+				'idCard' : ''
+			]
+		}
+	}
 }

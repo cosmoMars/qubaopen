@@ -91,6 +91,11 @@ public class SelfResultService {
 			case 'N' :
 				result = calculateEPQ(user, self, questionOptions, questionVos, questions, refresh)
 				break
+			case 'PANA' :
+				result = calculatePANA(user, self, questionOptions, questionVos, questions, refresh)
+				break
+
+			
 		}
 		result
 	}
@@ -422,4 +427,58 @@ public class SelfResultService {
 
 		resultOption
 	}
+	
+	
+	/**
+	 * 计算正负情感题
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculatePANA(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		def optionMap = [:]
+		questionOptions.each {
+			def questionType = it.selfQuestion.selfQuestionType.name
+
+			if (optionMap.get(questionType)) { // key: 种类 : PA NA , value: 题目
+				optionMap.get(questionType) << it
+			} else {
+				def optionList = []
+				optionList << it
+				optionMap.put(questionType, optionList)
+			}
+		}
+
+		def resultMap = [:]
+
+		def result = []
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def score = 0
+			v.each {
+				score = score + it.score
+			}
+			
+			optionMap.get(k).clear()
+			optionMap.put(k, score)
+		}
+		def panaScore = optionMap.get('PA') - optionMap.get('NA')
+		def mapRecord = new MapRecord(
+			name : new Date().time,
+			value : panaScore
+		)
+		result << mapRecord
+
+		if (refresh) {
+			selfPersistentService.saveMapStatistics(user, self, result, null, 0) // 保存心理地图
+
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
+		}
+		'已完成问卷，请通过心里地图查看结果'
+	}
+
 }

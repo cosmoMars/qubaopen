@@ -28,7 +28,7 @@ abstract class AbstractBaseEntity2<ID extends Serializable> implements Serializa
 	@Temporal(TIMESTAMP)
 	@Column(updatable = false)
 	@JsonIgnore
-	Date createdDate
+	Date createdDate = new Date()
 
 	@JsonIgnore
 	Long lastModifiedBy
@@ -36,7 +36,7 @@ abstract class AbstractBaseEntity2<ID extends Serializable> implements Serializa
 	@LastModifiedDate
 	@Temporal(TIMESTAMP)
 	@JsonIgnore
-	Date lastModifiedDate
+	Date lastModifiedDate = new Date()
 
 	DateTime getCreatedDate() {
 		null == createdDate ? null : new DateTime(createdDate)

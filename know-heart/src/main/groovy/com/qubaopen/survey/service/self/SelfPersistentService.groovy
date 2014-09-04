@@ -1,5 +1,6 @@
 package com.qubaopen.survey.service.self
 
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,6 +20,7 @@ import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.mindmap.MapRecordRepository;
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
+import com.qubaopen.survey.repository.self.SelfRepository;
 import com.qubaopen.survey.repository.self.SelfUserAnswerRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 
@@ -39,6 +41,9 @@ public class SelfPersistentService {
 	
 	@Autowired
 	MapRecordRepository mapRecordRepository
+	
+	@Autowired
+	SelfRepository selfRepository
 
 	/**
 	 * 保存用户答卷信息，用户答题内容
@@ -156,6 +161,13 @@ public class SelfPersistentService {
 	@Transactional
 	void saveMapStatistics(User user, Self self, List<MapRecord> result, SelfResultOption selfResultOption, int score) {
 
+		def special = false
+		def specialSelf = selfRepository.findSpecialSelf()
+		
+		if (self.id == specialSelf.id) {
+			special = true
+		}
+		
 		def mapStatistics = mapStatisticsRepository.findByUserAndSelf(user, self)
 		
 		if (mapStatistics) {
@@ -167,7 +179,9 @@ public class SelfPersistentService {
 			mapStatistics.mapMax = self.mapMax
 			mapStatistics.selfManagementType = self.selfManagementType
 			mapStatistics.recommendedValue = self.recommendedValue
-			mapRecordRepository.deleteByMapStatistics(mapStatistics)
+			if (!special) {
+				mapRecordRepository.deleteByMapStatistics(mapStatistics)
+			}
 		} else {
 			mapStatistics = new MapStatistics(
 				user : user,

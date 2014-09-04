@@ -54,7 +54,7 @@ public class MapStatisticsService {
 		def om = new ObjectMapper()
 		if (typeId == 4l) {
 			
-			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue() // 4小时题目
+			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(user) // 4小时题目
 			if (!specialMaps) {
 				return '{"success" : "0", "message" : "err700"}' // 暂没有心理地图，请做题
 			}
@@ -62,15 +62,18 @@ public class MapStatisticsService {
 			if (specialMaps && specialMaps.size() == 1) {
 				existMaps += specialMaps
 			}
-			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs()
+			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(user)
 			
 			existMaps += existGroupMaps
 			
 			def singleMaps
 			if (existMaps) {
-				singleMaps = mapStatisticsRepository.findMapWithoutExists(existMaps)
+				singleMaps = mapStatisticsRepository.findMapWithoutExists(existMaps, user)
 			} else {
-				singleMaps = mapStatisticsRepository.findAll()
+				singleMaps = mapStatisticsRepository.findAll(
+					['user_equal' : user]
+				)
+				
 			}
 			if (specialMaps && specialMaps.size() == 1 && specialMaps[0].mapRecords.size() >= 7) { // 特殊题
 				def chart = []
@@ -256,26 +259,26 @@ public class MapStatisticsService {
 			}
 		} else {
 			def selfManagementType = new SelfManagementType(id : typeId),
-				typeMaps = mapStatisticsRepository.findBySelfManagementType(selfManagementType)
+				typeMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
 				
-			if (!typeMaps) {
-				return '{"success" : "0", "message" : "err701"}' // 该类型暂没有心理题图，请做题
-			}
+//			if (!typeMaps) {
+//				return '{"success" : "0", "message" : "err701"}' // 该类型暂没有心理题图，请做题
+//			}
 		
-			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(typeMaps) // 4小时题目
+			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(typeMaps, user) // 4小时题目
 			
 			if (specialMaps && specialMaps.size() == 1) {
 				existMaps += specialMaps
 			}
-			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(selfManagementType)
+			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(selfManagementType, user)
 			
 			existMaps += existGroupMaps
 			
 			def singleMaps
 			if (existMaps) {
-				singleMaps = mapStatisticsRepository.findMapWithoutExists(existMaps, selfManagementType)
+				singleMaps = mapStatisticsRepository.findMapWithoutExists(existMaps, selfManagementType, user)
 			} else {
-				singleMaps = mapStatisticsRepository.findBySelfManagementType(selfManagementType)
+				singleMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
 			}
 			if (specialMaps && specialMaps.size() == 1 && specialMaps[0].mapRecords.size() >= 7) { // 特殊题
 				def chart = []

@@ -28,11 +28,15 @@ public class SelfRepositoryImpl implements SelfRepositoryCustom {
 
 		StringBuilder sql = new StringBuilder();
 
-		sql.append("select * from self s where s.id not in (:ids) order by rand() limit :limit");
-
-		Query query = entityManager.createNativeQuery(sql.toString(), Self.class);
-		query.setParameter("ids", ids)
-			.setParameter("limit", limit);
+//		sql.append("select * from self s where s.id not in (:ids) order by rand() limit :limit");
+//
+//		Query query = entityManager.createNativeQuery(sql.toString(), Self.class);
+//		query.setParameter("ids", ids)
+//			.setParameter("limit", limit);
+		sql.append("from Self s where s not in (:exists) order by rand()");
+		Query query = entityManager.createQuery(sql.toString())
+				.setParameter("exists", exists)
+				.setMaxResults(limit);
 
 		return query.getResultList();
 	}

@@ -83,7 +83,7 @@ class UserController extends AbstractBaseController<User, Long> {
 				'message' : '登录成功',
 				'userId' : loginUser?.id,
 				'phone' : loginUser?.phone,
-				'name' : userInfo?.name,
+				'name' : userIdCardBind?.userIDCard?.name,
 				'sex' : userInfo?.sex?.ordinal(),
 				'nickName' : userInfo?.nickName,
 				'bloodType' : userInfo?.bloodType?.ordinal(),

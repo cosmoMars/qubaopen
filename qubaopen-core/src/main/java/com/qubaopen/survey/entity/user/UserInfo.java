@@ -64,7 +64,7 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	private Date birthday;
 
 	/**
-	 * 血型 A, B, AB, O, OTHER
+	 * 血型 A, B, O, AB, OTHER
 	 */
 	@Enumerated
 	private BloodType bloodType;

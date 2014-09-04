@@ -71,13 +71,14 @@ public class SelfService {
 		if (idMap) {
 			def age = idMap.get('age')
 			
+		
+			def epqSelfs = selfRepository.findAll( // epq 4套题目
+				[
+					'selfGroup.name_equal' : 'EPQ'
+				]
+			)
+			allSelfs += epqSelfs
 			if (age > 15 && age < 70) {
-				def epqSelfs = selfRepository.findAll( // epq 4套题目
-					[
-						'selfGroup.name_equal' : 'EPQ'
-					]
-				)
-				allSelfs += epqSelfs
 				epqSelfs.each { epq ->
 					def questionnaire = selfUserQuestionnaires.find { suq ->
 						epq.id == suq.self.id
@@ -121,7 +122,8 @@ public class SelfService {
 		if (index in 1..5) {
 			if (!todayUserQuestionnaires) {
 				if (refresh) {
-					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
+					def test = selfRepository.findRandomSelfs(allSelfs, 1)
+					resultSelfs = resultSelfs + test
 				} else {
 					if (!selfUserQuestionnaires) {
 						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)

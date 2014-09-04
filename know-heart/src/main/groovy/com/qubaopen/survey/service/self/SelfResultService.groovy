@@ -362,7 +362,12 @@ public class SelfResultService {
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
 
-		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
+		def resultOption = new SelfQuestionOption(
+			content : '问卷已完成，请通过心里地图查看内容',
+			title : 'DISC测试'
+		)
+		resultOption
+//		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
 	}
 	
 	
@@ -478,7 +483,12 @@ public class SelfResultService {
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
-		'已完成问卷，请通过心里地图查看结果'
+		
+		def resultOption = new SelfQuestionOption(
+			content : '问卷已完成，请通过心里地图查看内容',
+			title : 'PANA测试'
+		)
+		resultOption
 	}
 
 }

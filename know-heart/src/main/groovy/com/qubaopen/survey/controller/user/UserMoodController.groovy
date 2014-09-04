@@ -37,7 +37,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 			@ModelAttribute('currentUser') User user) {
 
 		if(type<0 || type>=MoodType.values().length){
-			return '{"success": "0", "message": "err400"}' // type参数错误
+			return '{"success": "0", "message": "err800"}' // type参数错误
 		}
 
 		userMoodService.saveUserMood(user,MoodType.values()[type]);

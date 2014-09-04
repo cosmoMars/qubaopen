@@ -129,7 +129,9 @@ public class MapStatisticsService {
 					}
 					v.each { s ->
 						s.mapRecords.each { 
-							completeName << it.name
+							if (allName.contains(it.name)) {
+								completeName << it.name
+							}
 						}
 					}
 					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
@@ -333,7 +335,9 @@ public class MapStatisticsService {
 					}
 					v.each { s ->
 						s.mapRecords.each { 
-							completeName << it.name
+							if (allName.contains(it.name)) {
+								completeName << it.name
+							}
 						}
 					}
 					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String

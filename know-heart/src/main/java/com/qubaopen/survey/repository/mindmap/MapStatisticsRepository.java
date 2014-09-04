@@ -25,6 +25,9 @@ public interface MapStatisticsRepository extends MyRepository<MapStatistics, Lon
 	@Query("from MapStatistics ms where ms not in (:maps) and ms.user = :user")
 	List<MapStatistics> findMapWithoutExists(@Param("maps") List<MapStatistics> maps, @Param("user") User user);
 	
+	@Query("from MapStatistics ms where ms.user = :user")
+	List<MapStatistics> findMapWithoutExists(@Param("user") User user);
+	
 	@Query("from MapStatistics ms where ms not in (:maps) and ms.selfManagementType = :type and ms.user = :user")
 	List<MapStatistics> findMapWithoutExists(@Param("maps") List<MapStatistics> maps, @Param("type") SelfManagementType selfManagementType, @Param("user") User user);
 	

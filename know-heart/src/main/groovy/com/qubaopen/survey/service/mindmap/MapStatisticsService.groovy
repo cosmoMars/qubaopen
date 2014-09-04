@@ -55,9 +55,9 @@ public class MapStatisticsService {
 		if (typeId == 4l) {
 			
 			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(user) // 4小时题目
-			if (!specialMaps) {
-				return '{"success" : "0", "message" : "err700"}' // 暂没有心理地图，请做题
-			}
+//			if (!specialMaps) {
+//				return '{"success" : "0", "message" : "err700"}' // 暂没有心理地图，请做题
+//			}
 			
 			if (specialMaps && specialMaps.size() == 1) {
 				existMaps += specialMaps
@@ -67,6 +67,7 @@ public class MapStatisticsService {
 			existMaps += existGroupMaps
 			
 			def singleMaps
+			
 			if (existMaps) {
 				singleMaps = mapStatisticsRepository.findMapWithoutExists(existMaps, user)
 			} else {
@@ -264,8 +265,12 @@ public class MapStatisticsService {
 //			if (!typeMaps) {
 //				return '{"success" : "0", "message" : "err701"}' // 该类型暂没有心理题图，请做题
 //			}
-		
-			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(typeMaps, user) // 4小时题目
+			def specialMaps
+			if (typeMaps.isEmpty()) {
+				specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(user) // 4小时题目
+			} else {
+				specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(typeMaps, user) // 4小时题目
+			}
 			
 			if (specialMaps && specialMaps.size() == 1) {
 				existMaps += specialMaps

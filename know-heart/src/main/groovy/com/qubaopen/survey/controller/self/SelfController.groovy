@@ -111,7 +111,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'optionTitle' : result?.title,
 			'optionNum' : result?.resultNum
 		]
-
+		
 	}
 
 	

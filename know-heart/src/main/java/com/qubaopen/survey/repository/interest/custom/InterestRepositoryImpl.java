@@ -84,7 +84,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 			sql.append("where i.id not in (select iu.interest_id from interest_user_questionnaire iu where iu.user_id = :user) and i.status = 1 ");
 			if (filters.get("ids") != null)
 				sql.append("and i.id not in (:ids) ");
-			sql.append("order by a.total_respondents_count desc,i.recommended_value desc");
+			sql.append("order by i.total_respondents_count desc,i.recommended_value desc");
 			query = entityManager.createNativeQuery(sql.toString(), Interest.class)
 				.setParameter("user", ((User)filters.get("user")).getId())
 				.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
@@ -125,7 +125,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 			sql.append("where i.id not in (select iu.interest_id from interest_user_questionnaire iu  where iu.user_id = :userId)  and i.interest_type_id = :type and i.status = 1 ");
 			if (filters.get("ids") != null)
 				sql.append("and i.id not in (:ids) ");
-			sql.append("order by a.total_respondents_count desc,i.recommended_value desc");
+			sql.append("order by i.total_respondents_count desc,i.recommended_value desc");
 			
 			query = entityManager.createNativeQuery(sql.toString(), Interest.class)
 				.setParameter("userId", ((User)filters.get("user")).getId())

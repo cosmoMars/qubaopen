@@ -13,6 +13,7 @@ import com.qubaopen.survey.entity.interest.InterestUserQuestionnaire
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
+import com.qubaopen.survey.repository.interest.InterestRepository;
 import com.qubaopen.survey.repository.interest.InterestUserAnswerRepository
 import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository
 
@@ -25,6 +26,9 @@ public class InterestPersistentService {
 
 	@Autowired
 	InterestUserAnswerRepository interestUserAnswerRepository
+	
+	@Autowired
+	InterestRepository interestRepository
 
 	/**
 	 *
@@ -131,5 +135,8 @@ public class InterestPersistentService {
 			}
 		}
 		interestUserAnswerRepository.save(userAnswers)
+		
+		interest.totalRespondentsCount ++
+		interestRepository.save(interest)
 	}
 }

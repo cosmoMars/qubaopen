@@ -88,8 +88,10 @@ public class MapStatisticsService {
 			if (specialMaps && specialMaps.mapRecords.size() >= 7) { // 特殊题
 				def chart = []
 				
-				specialMaps.mapRecords.each {
-					chart << [name : it.name, value : it.value]
+				if (specialMaps?.self?.graphicsType) {
+					specialMaps.mapRecords.each {
+						chart << [name : it.name, value : it.value]
+					}
 				}
 				data << [
 			        'mapTitle' : specialMaps.self.title,
@@ -202,7 +204,10 @@ public class MapStatisticsService {
 							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
 							recordMaps.get(rk).clear()
 							recordMaps.put(rk, tScore)
-							chart << [name : rk, value : tScore]
+							if (k?.graphicsType) {
+								chart << [name : rk, value : tScore]
+							}
+							
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
@@ -214,8 +219,8 @@ public class MapStatisticsService {
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
-							'recommendedValue' : k.recommendedValue,
-							'graphicsType' : k.graphicsType.id,
+							'recommendedValue' : k?.recommendedValue,
+							'graphicsType' : k?.graphicsType?.id,
 							'special' : false,
 							'lock' : false,
 							'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
@@ -223,11 +228,15 @@ public class MapStatisticsService {
 						]
 					} else {
 						chart = []
-						v.each { s ->
-							s.mapRecords.each {
-								chart << [name : it.name, value : it.value]
+						if (k?.graphicsType) {
+							v.each { s ->
+								s.mapRecords.each {
+									chart << [name : it.name, value : it.value]
+								}
 							}
 						}
+						
+						
 						data << [
 							'mapTitle' : k.title,
 							'chart' : chart,
@@ -236,8 +245,8 @@ public class MapStatisticsService {
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
-							'recommendedValue' : k.recommendedValue,
-							'graphicsType' : k.graphicsType.id,
+							'recommendedValue' : k?.recommendedValue,
+							'graphicsType' : k?.graphicsType.id,
 							'special' : false,
 							'lock' : false
 						]
@@ -248,10 +257,11 @@ public class MapStatisticsService {
 			
 			singleMaps.each { // 单个题目出答案
 				def chart = []
-				it.mapRecords.each {
-					chart << [name : it.name, value : it.value]
+				if (it?.self?.graphicsType) {
+					it.mapRecords.each {
+						chart << [name : it.name, value : it.value]
+					}
 				}
-				
 				data << [
 					
 					'mapTitle' : it?.self?.title,
@@ -294,9 +304,10 @@ public class MapStatisticsService {
 			}
 			if (specialMaps && specialMaps.mapRecords.size() >= 7) { // 特殊题
 				def chart = []
-				
-				specialMaps.mapRecords.each {
-					chart << [name : it.name, value : it.value]
+				if (specialMaps?.self?.graphicsType) {
+					specialMaps.mapRecords.each {
+						chart << [name : it.name, value : it.value]
+					}
 				}
 				data << [
 					'mapTitle' : specialMaps.self.title,
@@ -410,7 +421,9 @@ public class MapStatisticsService {
 							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
 							recordMaps.get(rk).clear()
 							recordMaps.put(rk, tScore)
-							chart << [name : rk, value : tScore]
+							if (k.graphicsType) {
+								chart << [name : rk, value : tScore]
+							}
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
@@ -423,8 +436,8 @@ public class MapStatisticsService {
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
-							'recommendedValue' : k.recommendedValue,
-							'graphicsType' : k.graphicsType.id,
+							'recommendedValue' : k?.recommendedValue,
+							'graphicsType' : k?.graphicsType.id,
 							'special' : false,
 							'lock' : false,
 							'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
@@ -433,12 +446,13 @@ public class MapStatisticsService {
 					} else {
 						chart = []
 						
-						v.each { s ->
-							s.mapRecords.each {
-								chart << [name : it.name, value : it.value]
+						if (k?.graphicsType) {
+							v.each { s ->
+								s.mapRecords.each {
+									chart << [name : it.name, value : it.value]
+								}
 							}
 						}
-					
 						data << [
 							'mapTitle' : k.title,
 							'chart' : chart,
@@ -447,8 +461,8 @@ public class MapStatisticsService {
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
-							'recommendedValue' : k.recommendedValue,
-							'graphicsType' : k.graphicsType.id,
+							'recommendedValue' : k?.recommendedValue,
+							'graphicsType' : k?.graphicsType.id,
 							'special' : false,
 							'lock' : false
 						]
@@ -459,10 +473,11 @@ public class MapStatisticsService {
 			
 			singleMaps.each { // 单个题目出答案
 				def chart = []
-				it.mapRecords.each {
-					chart << [name : it.name, value : it.value]
+				if (it?.self?.graphicsType) {
+					it.mapRecords.each {
+						chart << [name : it.name, value : it.value]
+					}
 				}
-				
 				data << [
 					
 					'mapTitle' : it?.self?.title,

@@ -118,9 +118,11 @@ public class SelfService {
 		existQuestionnaires.each {
 			allSelfs << it.self
 		}
-		def todayUserQuestionnaires /*= selfUserQuestionnaires.findAll { // 每天额外题目
+		def test = selfRepository.findRandomSelfs(allSelfs, 1)
+		resultSelfs += test
+		/*def todayUserQuestionnaires = selfUserQuestionnaires.findAll { // 每天额外题目
 			DateUtils.isSameDay(now, it.time)
-		}*/
+		}
 		if (index in 1..5) {
 			if (!todayUserQuestionnaires) {
 				if (refresh) {
@@ -171,7 +173,7 @@ public class SelfService {
 					}
 				}
 			}
-		}
+		}*/
 	}
 	
 	/**

@@ -77,7 +77,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'calculateSelfResult', method = RequestMethod.POST)
-	calculateSelfReslut(@RequestParam(required = false) Long selfId,
+	calculateSelfReslut(@RequestParam(required = false) long selfId,
 		@RequestParam(required = false) String questionJson,
 		@RequestParam(required = false) Boolean refresh,
 		@ModelAttribute('currentUser') User user

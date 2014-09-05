@@ -118,16 +118,15 @@ public class SelfService {
 		existQuestionnaires.each {
 			allSelfs << it.self
 		}
-		def test = selfRepository.findRandomSelfs(allSelfs, 1)
-		resultSelfs += test
-		/*def todayUserQuestionnaires = selfUserQuestionnaires.findAll { // 每天额外题目
+		def todayUserQuestionnaires = selfUserQuestionnaires.findAll { // 每天额外题目
 			DateUtils.isSameDay(now, it.time)
 		}
 		if (index in 1..5) {
+			resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
+			/*
 			if (!todayUserQuestionnaires) {
 				if (refresh) {
-					def test = selfRepository.findRandomSelfs(allSelfs, 1)
-					resultSelfs += test
+					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
 				} else {
 					if (!selfUserQuestionnaires) {
 						resultSelfs += selfRepository.findRandomSelfs(allSelfs, 1)
@@ -141,7 +140,9 @@ public class SelfService {
 					}
 				}
 			}
-		} else if (index in 6..7) {
+		*/} else if (index in 6..7) {
+		resultSelfs += selfRepository.findRandomSelfs(allSelfs, 2)
+		/*
 			if (!todayUserQuestionnaires) {
 				if (refresh) {
 					resultSelfs += selfRepository.findRandomSelfs(allSelfs, 2)
@@ -173,7 +174,7 @@ public class SelfService {
 					}
 				}
 			}
-		}*/
+		*/}
 	}
 	
 	/**

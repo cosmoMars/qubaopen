@@ -69,7 +69,9 @@ public class MapStatisticsService {
 //				return '{"success" : "0", "message" : "err700"}' // 暂没有心理地图，请做题
 //			}
 			
-			existMaps += specialMaps
+			if (specialMaps) {
+				existMaps += specialMaps
+			}
 			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(user)
 			
 			existMaps += existGroupMaps

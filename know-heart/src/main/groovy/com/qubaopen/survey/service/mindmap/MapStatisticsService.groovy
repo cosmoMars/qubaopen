@@ -12,6 +12,7 @@ import com.qubaopen.survey.repository.EPQBasicRepository;
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfGroupRepository;
+import com.qubaopen.survey.repository.self.SelfRepository;
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
 import com.qubaopen.survey.service.user.UserIDCardBindService;
 
@@ -38,6 +39,9 @@ public class MapStatisticsService {
 	
 	@Autowired
 	EPQBasicRepository epqBasicRepository
+	
+	@Autowired
+	SelfRepository selfRepository
 
 	/**
 	 * 获取心理地图
@@ -52,20 +56,23 @@ public class MapStatisticsService {
 			data = [], existMaps = []
 			
 		def om = new ObjectMapper()
+		def specialSelf = selfRepository.findSpecialSelf()
 		if (typeId == 4l) {
 			
-			def specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(user) // 4小时题目
+			def specialMaps = mapStatisticsRepository.findOneByFilters(
+				[
+					self_equal : specialSelf,
+					user_equal : user
+				]	
+			)// 4小时题目
 //			if (!specialMaps) {
 //				return '{"success" : "0", "message" : "err700"}' // 暂没有心理地图，请做题
 //			}
 			
-			if (specialMaps && specialMaps.size() == 1) {
-				existMaps += specialMaps
-			}
+			existMaps += specialMaps
 			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(user)
 			
 			existMaps += existGroupMaps
-			
 			def singleMaps
 			
 			if (existMaps) {
@@ -76,36 +83,36 @@ public class MapStatisticsService {
 				)
 				
 			}
-			if (specialMaps && specialMaps.size() == 1 && specialMaps[0].mapRecords.size() >= 7) { // 特殊题
+			if (specialMaps && specialMaps.mapRecords.size() >= 7) { // 特殊题
 				def chart = []
 				
-				specialMaps[0].mapRecords.each {
+				specialMaps.mapRecords.each {
 					chart << [name : it.name, value : it.value]
 				}
 				data << [
-			        'mapTitle' : specialMaps[0].self.title,
+			        'mapTitle' : specialMaps.self.title,
 					'chart' : chart,
-					'mapMax' : specialMaps[0].mapMax,
-					'resultName' : specialMaps[0].selfResultOption.name,
+					'mapMax' : specialMaps.mapMax,
+					'resultName' : specialMaps.selfResultOption.name,
 					'resultScore' : '',
 					'resultContent' : '',
-					'managementType' : specialMaps[0]?.selfManagementType?.id,
-					'recommendedValue' : specialMaps[0]?.recommendedValue,
-					'graphicsType' : specialMaps[0]?.self?.graphicsType?.id,
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : false
 				]
-			} else if (specialMaps && specialMaps.size() == 1 && specialMaps[0].mapRecords.size() < 7) {
+			} else if (specialMaps && specialMaps.mapRecords.size() < 7) {
 				data << [
-					'mapTitle' : specialMaps[0].self.title,
+					'mapTitle' : specialMaps.self.title,
 					'chart' : '',
 					'mapMax' : '',
 					'resultName' : '',
 					'resultScore' : '',
 					'resultContent' : '',
-					'managementType' : specialMaps[0]?.selfManagementType?.id,
-					'recommendedValue' : specialMaps[0]?.recommendedValue,
-					'graphicsType' : specialMaps[0]?.self?.graphicsType?.id,
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : true,
 					'tips' : '该问卷需要答满7次方可得出结果'
@@ -259,24 +266,22 @@ public class MapStatisticsService {
 				]
 			}
 		} else {
-			def selfManagementType = new SelfManagementType(id : typeId),
-				typeMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
-				
+			def selfManagementType = new SelfManagementType(id : typeId)
+			def specialMaps = mapStatisticsRepository.findOneByFilters(
+					[
+						self_equal : specialSelf,
+						user_equal : user,
+						selfManagementType_equal : selfManagementType
+					]	
+				)
+		
 //			if (!typeMaps) {
 //				return '{"success" : "0", "message" : "err701"}' // 该类型暂没有心理题图，请做题
 //			}
-			def specialMaps
-			if (typeMaps.isEmpty()) {
-				specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(user) // 4小时题目
-			} else {
-				specialMaps = mapStatisticsRepository.findByMaxRecommendedValue(typeMaps, user) // 4小时题目
-			}
-			
-			if (specialMaps && specialMaps.size() == 1) {
+			if (specialMaps) {
 				existMaps += specialMaps
 			}
 			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(selfManagementType, user)
-			
 			existMaps += existGroupMaps
 			
 			def singleMaps
@@ -285,36 +290,36 @@ public class MapStatisticsService {
 			} else {
 				singleMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
 			}
-			if (specialMaps && specialMaps.size() == 1 && specialMaps[0].mapRecords.size() >= 7) { // 特殊题
+			if (specialMaps && specialMaps.mapRecords.size() >= 7) { // 特殊题
 				def chart = []
 				
-				specialMaps[0].mapRecords.each {
+				specialMaps.mapRecords.each {
 					chart << [name : it.name, value : it.value]
 				}
 				data << [
-					'mapTitle' : specialMaps[0].self.title,
+					'mapTitle' : specialMaps.self.title,
 					'chart' : chart,
-					'mapMax' : specialMaps[0].mapMax,
-					'resultName' : specialMaps[0].selfResultOption.name,
+					'mapMax' : specialMaps.mapMax,
+					'resultName' : specialMaps.selfResultOption.name,
 					'resultScore' : '',
 					'resultContent' : '',
-					'managementType' : specialMaps[0]?.selfManagementType?.id,
-					'recommendedValue' : specialMaps[0]?.recommendedValue,
-					'graphicsType' : specialMaps[0]?.self?.graphicsType?.id,
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : false
 				]
-			} else if (specialMaps && specialMaps.size() == 1 && specialMaps[0].mapRecords.size() < 7) {
+			} else if (specialMaps && specialMaps.mapRecords.size() < 7) {
 				data << [
-					'mapTitle' : specialMaps[0].self.title,
+					'mapTitle' : specialMaps.self.title,
 					'chart' : '',
 					'mapMax' : '',
 					'resultName' : '',
 					'resultScore' : '',
 					'resultContent' : '',
-					'managementType' : specialMaps[0]?.selfManagementType?.id,
-					'recommendedValue' : specialMaps[0]?.recommendedValue,
-					'graphicsType' : specialMaps[0]?.self?.graphicsType?.id,
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : true,
 					'tips' : '该问卷需要答满7次方可得出结果'

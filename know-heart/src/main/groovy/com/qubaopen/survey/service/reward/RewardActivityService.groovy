@@ -34,10 +34,12 @@ public class RewardActivityService {
 				status_equal: RewardActivity.Status.ONLINE
 			]
 		)
-		def result = [
-				'addressId': defaultAddress?.id,
-				'rewardList': rewardList ?: []
-			]
-		result
+		[
+			'success' : '1',
+			'message' : '成功',
+			'addressId': defaultAddress?.id,
+			'rewardList': rewardList
+		]
+		
 	}
 }

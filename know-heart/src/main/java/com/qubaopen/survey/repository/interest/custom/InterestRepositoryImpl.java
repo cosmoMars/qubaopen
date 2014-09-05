@@ -27,8 +27,6 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 		Pageable pageable = (Pageable) filters.get("pageable");
 		Query query = null;
 		
-		System.out.println(filters.get("sortTypeId") );
-		
 		if (filters.get("interestTypeId") == null && filters.get("sortTypeId") == null) {
 			StringBuilder hql = new StringBuilder();
 			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) and i.status = 1 ");

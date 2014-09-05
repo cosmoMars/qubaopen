@@ -196,27 +196,25 @@ public class RewardActivityRecordService {
 	@Transactional
 	saveRecordAndGold(RewardActivity rewardActivity, UserGold userGold, UserReceiveAddress userReceiveAddress ) {
 
-		userGold.currentGold = userGold.currentGold - rewardActivity.requireGold
-		userGoldRepository.save(userGold)
-
-		rewardActivity.currentCount ++
-
 		def user = userGold.user,
 			rewards = rewardRepository.findByRewardTypeAndUsed(rewardActivity.rewardType, false)
 			if (!rewards) {
 				return '{"success" : "0", "message" : "err404"}' //没有奖品
 			}
+		userGold.currentGold = userGold.currentGold - rewardActivity.requireGold
+		userGoldRepository.save(userGold)
+		rewardActivity.currentCount ++
 //			reward = rewardRepository.findByRewardType(rewardActivity.rewardType),
-			def reward = rewards[0]
-			reward.used = true
-			def rewardActivityRecord = new RewardActivityRecord(
-				user : user,
-				rewardActivity : rewardActivity,
-				userReceiveAddress : userReceiveAddress,
-				reward : reward,
-				status : RewardActivityRecord.Status.DELIVERING,
-				awardTime : new Date()
-			)
+		def reward = rewards[0]
+		reward.used = true
+		def rewardActivityRecord = new RewardActivityRecord(
+			user : user,
+			rewardActivity : rewardActivity,
+			userReceiveAddress : userReceiveAddress,
+			reward : reward,
+			status : RewardActivityRecord.Status.DELIVERING,
+			awardTime : new Date()
+		)
 
 		rewardActivityRecordRepository.save(rewardActivityRecord)
 	}

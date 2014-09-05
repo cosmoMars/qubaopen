@@ -94,10 +94,10 @@ public class MapStatisticsService {
 					}
 				}
 				data << [
-			        'mapTitle' : specialMaps.self.title,
+			        'mapTitle' : specialMaps?.self?.title,
 					'chart' : chart,
-					'mapMax' : specialMaps.mapMax,
-					'resultName' : specialMaps.selfResultOption.name,
+					'mapMax' : specialMaps?.mapMax,
+					'resultName' : specialMaps?.selfResultOption?.name,
 					'resultScore' : '',
 					'resultContent' : '',
 					'managementType' : specialMaps?.selfManagementType?.id,
@@ -108,7 +108,7 @@ public class MapStatisticsService {
 				]
 			} else if (specialMaps && specialMaps.mapRecords.size() < 7) {
 				data << [
-					'mapTitle' : specialMaps.self.title,
+					'mapTitle' : specialMaps?.self?.title,
 					'chart' : '',
 					'mapMax' : '',
 					'resultName' : '',
@@ -151,15 +151,15 @@ public class MapStatisticsService {
 					}
 					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
 					data << [
-						'mapTitle' : k.title,
+						'mapTitle' : k?.title,
 						'chart' : '',
-						'mapMax' : k.mapMax,
+						'mapMax' : k?.mapMax,
 						'resultName' : '',
 						'resultScore' : '',
 						'resultContent' : '',
 						'managementType' : k?.selfManagementType?.id,
-						'recommendedValue' : k.recommendedValue,
-						'graphicsType' : k.graphicsType.id,
+						'recommendedValue' : k?.recommendedValue,
+						'graphicsType' : k?.graphicsType?.id,
 						'special' : false,
 						'lock' : true,
 						'tips' : strName
@@ -212,10 +212,10 @@ public class MapStatisticsService {
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
 						data << [
-							'mapTitle' : k.title,
+							'mapTitle' : k?.title,
 							'chart' : chart,
-							'mapMax' : k.mapMax,
-							'resultName' : k.name,
+							'mapMax' : k?.mapMax,
+							'resultName' : k?.name,
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
@@ -238,15 +238,15 @@ public class MapStatisticsService {
 						
 						
 						data << [
-							'mapTitle' : k.title,
+							'mapTitle' : k?.title,
 							'chart' : chart,
-							'mapMax' : k.mapMax,
-							'resultName' : k.name,
+							'mapMax' : k?.mapMax,
+							'resultName' : k?.name,
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
-							'graphicsType' : k?.graphicsType.id,
+							'graphicsType' : k?.graphicsType?.id,
 							'special' : false,
 							'lock' : false
 						]
@@ -310,10 +310,10 @@ public class MapStatisticsService {
 					}
 				}
 				data << [
-					'mapTitle' : specialMaps.self.title,
+					'mapTitle' : specialMaps?.self?.title,
 					'chart' : chart,
-					'mapMax' : specialMaps.mapMax,
-					'resultName' : specialMaps.selfResultOption.name,
+					'mapMax' : specialMaps?.mapMax,
+					'resultName' : specialMaps?.selfResultOption?.name,
 					'resultScore' : '',
 					'resultContent' : '',
 					'managementType' : specialMaps?.selfManagementType?.id,
@@ -368,15 +368,15 @@ public class MapStatisticsService {
 					}
 					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
 					data << [
-						'mapTitle' : k.title,
+						'mapTitle' : k?.title,
 						'chart' : '',
-						'mapMax' : k.mapMax,
+						'mapMax' : k?.mapMax,
 						'resultName' : '',
 						'resultScore' : '',
 						'resultContent' : '',
 						'managementType' : k?.selfManagementType?.id,
-						'recommendedValue' : k.recommendedValue,
-						'graphicsType' : k.graphicsType.id,
+						'recommendedValue' : k?.recommendedValue,
+						'graphicsType' : k?.graphicsType?.id,
 						'special' : false,
 						'lock' : true,
 						'tips' : strName
@@ -429,15 +429,15 @@ public class MapStatisticsService {
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
 						
 						data << [
-							'mapTitle' : k.title,
+							'mapTitle' : k?.title,
 							'chart' : chart,
-							'mapMax' : k.mapMax,
-							'resultName' : k.name,
+							'mapMax' : k?.mapMax,
+							'resultName' : k?.name,
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
-							'graphicsType' : k?.graphicsType.id,
+							'graphicsType' : k?.graphicsType?.id,
 							'special' : false,
 							'lock' : false,
 							'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
@@ -454,15 +454,15 @@ public class MapStatisticsService {
 							}
 						}
 						data << [
-							'mapTitle' : k.title,
+							'mapTitle' : k?.title,
 							'chart' : chart,
-							'mapMax' : k.mapMax,
-							'resultName' : k.name,
+							'mapMax' : k?.mapMax,
+							'resultName' : k?.name,
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
-							'graphicsType' : k?.graphicsType.id,
+							'graphicsType' : k?.graphicsType?.id,
 							'special' : false,
 							'lock' : false
 						]

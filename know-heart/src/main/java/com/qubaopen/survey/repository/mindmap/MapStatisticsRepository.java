@@ -2,7 +2,6 @@ package com.qubaopen.survey.repository.mindmap;
 
 import java.util.List;
 
-import org.hibernate.annotations.Parent;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

@@ -9,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -188,6 +189,30 @@ class UserController extends AbstractBaseController<User, Long> {
 
 	userService.modify(user)
 
+	}
+	
+	/**
+	 * 修改密码
+	 * @param oldPwd
+	 * @param newPwd
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'modifyPassword', method = RequestMethod.POST)
+	modifyPassword(@RequestParam(required = false) String oldPwd, @RequestParam(required = false) String newPwd, @ModelAttribute('currentUser') User user) {
+		
+		if (!validatePwd(oldPwd)) {
+			return '{"success" : "0", "message" : "err015"}'
+		}
+		if (!StringUtils.equals(DigestUtils.md5Hex(oldPwd), user.password)) {
+			return '{"success" : "0", "message" : "err016"}'
+		}
+		if (!validatePwd(newPwd)) {
+			return '{"success": "0", "message": "err004"}'
+		}
+		user.password = DigestUtils.md5Hex(newPwd)
+		userRepository.save(user)
+		'{"success" : "1"}'
 	}
 
 }

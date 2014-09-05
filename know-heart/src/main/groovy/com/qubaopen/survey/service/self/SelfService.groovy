@@ -68,6 +68,8 @@ public class SelfService {
 			singleSelf = selfRepository.findSpecialSelf(),
 			idMap = userIDCardBindService.calculateAgeByIdCard(user)
 			
+		allSelfs << singleSelf
+			
 		def epqSelfs = selfRepository.findAll( // epq 4套题目
 			[
 				'selfGroup.name_equal' : 'EPQ'
@@ -95,15 +97,12 @@ public class SelfService {
 			}
 		}
 		
-		allSelfs << singleSelf
-		
-		
 		def userQuestionnaire = selfUserQuestionnaires.find { // 4小时题 记录
-			it.self.id = singleSelf.id
+			it.self.id == singleSelf.id
 		}
 		if (userQuestionnaire) { // 判断4小时是否符合时间，符合添加，没有也添加
 //			if ((now.getTime() - userQuestionnaire.time.getTime()) > singleSelf.intervalTime * 60 * 60 * 1000) {
-			if ((now.getTime() - userQuestionnaire.time.getTime()) > 60 * 1000) {
+			if ((now.getTime() - userQuestionnaire.time.getTime()) > 30 * 60 * 1000) {
 				resultSelfs << singleSelf
 			}
 			selfUserQuestionnaires.remove(userQuestionnaire)
@@ -113,7 +112,7 @@ public class SelfService {
 		
 		def existQuestionnaires = selfUserQuestionnaires.findAll {
 //			(now.getTime() - it.time.getTime()) < it.self.intervalTime * 60 * 60 * 1000
-			(now.getTime() - it.time.getTime()) < 60 * 1000
+			(now.getTime() - it.time.getTime()) < 30 * 60 * 1000
 		}
 		existQuestionnaires.each {
 			allSelfs << it.self

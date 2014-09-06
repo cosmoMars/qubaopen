@@ -77,8 +77,8 @@ public class UserIDCardBindController extends AbstractBaseController<UserIDCardB
 			]
 		} else {
 			return [
-				'success' : '0',
-				'message' : '失败',
+				'success' : '1',
+				'message' : '用户不存在',
 				'exist' : false,
 				'name' : '',
 				'idCard' : ''

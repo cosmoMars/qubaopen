@@ -189,6 +189,10 @@ public class SelfResultService {
 
 		def resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
+		if (!resultOption) {
+			resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%')
+		}
+		
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption[0], null) // 保存心理地图
 
@@ -318,7 +322,14 @@ public class SelfResultService {
 		} else {
 			resultName += 'J'
 		}
-		def resultOption = selfResultOptionRepository.findByName(resultName)
+//		def resultOption = selfResultOptionRepository.findByName(resultName)
+		def	resultOption = selfResultOptionRepository.findOneByFilters(
+			[
+				name_equal : resultName,
+				'selfResult.self_equal' : self
+			]
+		)
+	
 
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption, null)
@@ -345,7 +356,7 @@ public class SelfResultService {
 			}
 		}
 		def result = []
-		
+		def resultMap = [:]
 		optionMap.each { k, v ->
 			def score = 0
 			v.each {
@@ -356,19 +367,37 @@ public class SelfResultService {
 				value : score	
 			)
 			result << mapRecord
+			
+			if (resultMap.get(score)) { // key: 分数, value: 孔雀
+				resultMap.get(score) << k
+			} else {
+				def typeList = []
+				typeList << k
+				resultMap.put(score, typeList)
+			}
 		}
-
+		def resultScore = resultMap.keySet().max()
+		def resultNames = resultMap.get(resultScore) as List,
+			resultOption = selfResultOptionRepository.findOneByFilters(
+				[
+					name_equal : resultNames[0],
+					'selfResult.self_equal' : self
+				]	
+			)
+		
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, result, null, null)
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption, resultScore)
 
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
-
-//		def resultOption = new SelfQuestionOption(
+//
+//		def selfResult = new SelfResult()
+//		def resultOption = new SelfResultOption(
+//			selfResult : selfResult,
 //			content : '问卷已完成，请通过心里地图查看内容'
 //		)
-//		resultOption
-		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
+		resultOption
+//		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
 	}
 	
 	
@@ -485,9 +514,7 @@ public class SelfResultService {
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
 		
-		def selfResult =  new SelfResult(
-			
-		)
+		def selfResult =  new SelfResult()
 		def resultOption = new SelfResultOption(
 			selfResult : selfResult,
 			content : '正、负情绪情感量表需要您做满7天才会在心理地图中显示结果，请答满7天之后，记得在心理地图-情绪管理中查看结果哦！'

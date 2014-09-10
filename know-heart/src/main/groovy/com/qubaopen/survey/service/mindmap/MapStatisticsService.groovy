@@ -125,7 +125,7 @@ public class MapStatisticsService {
 					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : true,
-					'tips' : '该问卷需要答满7天方可得出结果'
+					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
 				]
 			} 
 			
@@ -210,9 +210,9 @@ public class MapStatisticsService {
 							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
 							recordMaps.get(rk).clear()
 							recordMaps.put(rk, tScore)
-							if (k?.graphicsType) {
-								chart << [name : rk, value : tScore]
-							}
+//							if (k?.graphicsType) {
+//								chart << [name : rk, value : tScore]
+//							}
 							
 						}
 						
@@ -343,7 +343,7 @@ public class MapStatisticsService {
 					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : true,
-					'tips' : '该问卷需要答满7天方可得出结果'
+					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
 				]
 			}
 			
@@ -429,9 +429,9 @@ public class MapStatisticsService {
 							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
 							recordMaps.get(rk).clear()
 							recordMaps.put(rk, tScore)
-							if (k.graphicsType) {
-								chart << [name : rk, value : tScore]
-							}
+//							if (k.graphicsType) {
+//								chart << [name : rk, value : tScore]
+//							}
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))

@@ -160,7 +160,7 @@ public class SelfPersistentService {
 	 * @param result
 	 */
 	@Transactional
-	void saveMapStatistics(User user, Self self, List<MapRecord> result, SelfResultOption selfResultOption, int score) {
+	void saveMapStatistics(User user, Self self, List<MapRecord> result, SelfResultOption selfResultOption, Integer score) {
 
 		def special = false
 		def specialSelf = selfRepository.findSpecialSelf()
@@ -176,7 +176,9 @@ public class SelfPersistentService {
 				it.mapStatistics = mapStatistics
 			}
 			mapStatistics.selfResultOption = selfResultOption
-			mapStatistics.score = score
+			if (score != null) {
+				mapStatistics.score = score
+			}
 			mapStatistics.mapMax = self.mapMax
 			mapStatistics.selfManagementType = self.selfManagementType
 			mapStatistics.recommendedValue = self.recommendedValue

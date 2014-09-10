@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.repository.user.UserMoodRepository;
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.service.user.UserService
@@ -41,6 +43,9 @@ class UserController extends AbstractBaseController<User, Long> {
 
 	@Autowired
 	UserReceiveAddressRepository userReceiveAddressRepository
+	
+	@Autowired
+	UserMoodRepository userMoodRepository
 
 	@Override
 	protected MyRepository<User, Long> getRepository() {
@@ -77,7 +82,8 @@ class UserController extends AbstractBaseController<User, Long> {
 
 			def userInfo = loginUser.userInfo,
 				userIdCardBind = loginUser.userIdCardBind,
-				userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
+				userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true),
+				userMood = userMoodRepository.getLastUserMood(loginUser.id)
 
 			return  [
 				'success' : '1',
@@ -97,7 +103,9 @@ class UserController extends AbstractBaseController<User, Long> {
 				'idCard' : userIdCardBind?.userIDCard?.IDCard,
 				'birthday' : userInfo?.birthday,
 				'avatarPath' : userInfo?.avatarPath,
-				'signature' : userInfo?.signature
+				'signature' : userInfo?.signature,
+				'mood' : userMood?.moodType?.ordinal(),
+				'moodDate' : userMood?.lastTime
 			]
 		}
 
@@ -214,5 +222,11 @@ class UserController extends AbstractBaseController<User, Long> {
 		userRepository.save(user)
 		'{"success" : "1"}'
 	}
+	@RequestMapping(value = 'test', method = RequestMethod.GET)
+	test(Pageable pageable) {
+		userRepository.findAllUsers(pageable)
+		
+	}
+	
 
 }

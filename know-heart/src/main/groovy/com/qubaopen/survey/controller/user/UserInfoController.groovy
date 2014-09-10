@@ -151,4 +151,37 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 			'{"success" : "1"}'
 		}
 
+
+		/**
+		 * 保存用户年龄和性别
+		 * @param age
+		 * @param sex
+		 * @return
+		 */
+		@RequestMapping(value = 'submitAgeAndSex', method = RequestMethod.POST)		
+		submitAgeAndSex(@RequestParam(required =false) Integer age, @RequestParam(required = false) Integer sex, @ModelAttribute('currentUser') User user) {
+			
+			if (age != null) {
+				def c = Calendar.getInstance()
+				c.setTime new Date()
+				def year = c.get(Calendar.YEAR) - age
+				
+				user.userInfo.birthday = Date.parse('yyyy-MM-dd', "$year-01-01")
+	
+			}
+			if (sex != null) {
+				switch (sex) {
+					case 0 :
+						user.userInfo.sex = UserInfo.Sex.MALE
+						break
+					case 1 :
+						user.userInfo.sex = UserInfo.Sex.FEMALE
+						break
+					case 2 :
+						user.userInfo.sex = UserInfo.Sex.OTHER
+						break
+				}
+			}
+			userInfoRepository.save(user.userInfo)
+		}
 }

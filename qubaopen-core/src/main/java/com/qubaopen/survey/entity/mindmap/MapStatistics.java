@@ -52,7 +52,7 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 	/**
 	 * 分数
 	 */
-	private int score;
+	private Integer score;
 
 	/**
 	 * 地图最大值
@@ -101,11 +101,11 @@ public class MapStatistics extends AbstractBaseEntity<Long> {
 		this.selfResultOption = selfResultOption;
 	}
 
-	public int getScore() {
+	public Integer getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(Integer score) {
 		this.score = score;
 	}
 

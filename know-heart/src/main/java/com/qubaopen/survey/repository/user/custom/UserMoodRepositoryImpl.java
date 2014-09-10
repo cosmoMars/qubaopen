@@ -23,11 +23,16 @@ public class UserMoodRepositoryImpl implements UserMoodRepositoryCustom {
 		
 		query.where(
 			builder.equal(root.get("user").get("id"), userId)
-		).orderBy(builder.desc(root.get("createdDate")));
+		).orderBy(builder.desc(root.get("lastTime")));
 		
-		return entityManager.createQuery(query)
-				.setMaxResults(1)
-				.getSingleResult();
+		try {
+			return entityManager.createQuery(query)
+					.setMaxResults(1)
+					.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 
 }

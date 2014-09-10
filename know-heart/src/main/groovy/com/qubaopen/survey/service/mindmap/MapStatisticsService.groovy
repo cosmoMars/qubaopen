@@ -9,6 +9,7 @@ import com.qubaopen.survey.entity.self.SelfGroup;
 import com.qubaopen.survey.entity.self.SelfManagementType;
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.EPQBasicRepository;
+import com.qubaopen.survey.repository.mindmap.MapRecordRepository;
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfGroupRepository;
@@ -43,6 +44,8 @@ public class MapStatisticsService {
 	@Autowired
 	SelfRepository selfRepository
 
+	@Autowired
+	MapRecordRepository mapRecordRepository
 	/**
 	 * 获取心理地图
 	 * @param userId
@@ -68,9 +71,10 @@ public class MapStatisticsService {
 //			if (!specialMaps) {
 //				return '{"success" : "0", "message" : "err700"}' // 暂没有心理地图，请做题
 //			}
-			
+			def specialMapRecords
 			if (specialMaps) {
 				existMaps += specialMaps
+				specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
 			}
 			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(user)
 			
@@ -85,7 +89,9 @@ public class MapStatisticsService {
 				)
 				
 			}
-			if (specialMaps && specialMaps.mapRecords.size() >= 7) { // 特殊题
+			
+			
+			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
 				def chart = []
 				
 				if (specialMaps?.self?.graphicsType) {
@@ -106,7 +112,7 @@ public class MapStatisticsService {
 					'special' : true,
 					'lock' : false
 				]
-			} else if (specialMaps && specialMaps.mapRecords.size() < 7) {
+			} else if (specialMaps && specialMapRecords.size() < 7) {
 				data << [
 					'mapTitle' : specialMaps?.self?.title,
 					'chart' : '',
@@ -119,7 +125,7 @@ public class MapStatisticsService {
 					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : true,
-					'tips' : '该问卷需要答满7次方可得出结果'
+					'tips' : '该问卷需要答满7天方可得出结果'
 				]
 			} 
 			
@@ -290,8 +296,10 @@ public class MapStatisticsService {
 //			if (!typeMaps) {
 //				return '{"success" : "0", "message" : "err701"}' // 该类型暂没有心理题图，请做题
 //			}
+			def specialMapRecords
 			if (specialMaps) {
 				existMaps += specialMaps
+				specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
 			}
 			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(selfManagementType, user)
 			existMaps += existGroupMaps
@@ -302,7 +310,7 @@ public class MapStatisticsService {
 			} else {
 				singleMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
 			}
-			if (specialMaps && specialMaps.mapRecords.size() >= 7) { // 特殊题
+			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
 				def chart = []
 				if (specialMaps?.self?.graphicsType) {
 					specialMaps.mapRecords.each {
@@ -322,7 +330,7 @@ public class MapStatisticsService {
 					'special' : true,
 					'lock' : false
 				]
-			} else if (specialMaps && specialMaps.mapRecords.size() < 7) {
+			} else if (specialMaps && specialMapRecords.size() < 7) {
 				data << [
 					'mapTitle' : specialMaps.self.title,
 					'chart' : '',
@@ -335,7 +343,7 @@ public class MapStatisticsService {
 					'graphicsType' : specialMaps?.self?.graphicsType?.id,
 					'special' : true,
 					'lock' : true,
-					'tips' : '该问卷需要答满7次方可得出结果'
+					'tips' : '该问卷需要答满7天方可得出结果'
 				]
 			}
 			

@@ -1,16 +1,22 @@
 package com.qubaopen.survey.controller.self
 
+import javax.servlet.http.HttpServletRequest
+
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.SessionAttributes
+import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.controller.FileUtils;
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.self.SelfRepository
@@ -30,6 +36,9 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 	@Autowired
 	SelfService selfService
+	
+	@Autowired
+	FileUtils fileUtils
 
 	@Override
 	protected MyRepository<Self, Long> getRepository() {
@@ -56,9 +65,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			def self = [
 				'selfId' : it?.id,
 				'managementType' : it?.selfManagementType?.id,
-				'title' : it?.title,
-				'guidanceSentence' :it?.guidanceSentence,
-				'tips' : it?.tips
+				'title' : it?.title
 			]
 			data << self
 		}
@@ -69,6 +76,22 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		]
 	}
 
+	/**
+	 * 获取问卷文字信息
+	 * @param selfId
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveSelfScript/{selfId}', method = RequestMethod.GET)
+	retrieveSelfScript(@PathVariable long selfId) {
+		def self = selfRepository.findOne(selfId)
+		
+		[
+			'guidanceSentence' :self?.guidanceSentence,
+			'tips' : self?.tips,
+			'remark' : self?.remark
+		]
+	}
+	
 	/**
 	 * 计算自测结果选项
 	 * @param userId
@@ -109,9 +132,37 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'resultTitle' : result?.selfResult?.title,
 			'content' : result?.content,
 			'optionTitle' : result?.title,
+			'resultRemark' : result?.selfResult?.remark,
 			'optionNum' : result?.resultNum
 		]
 		
+	}
+		
+	/**
+	 * 上传图片
+	 * @param pic
+	 * @param selfId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = 'uploadSelfPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
+	uploadAvatar(@RequestParam(required = false) MultipartFile pic, @RequestParam long selfId, HttpServletRequest request) {
+
+		logger.trace(' -- 上传头像 -- ')
+		def self = selfRepository.findOne(selfId)
+
+		if (pic) {
+
+			def filename = "${selfId}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
+				picPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
+
+			fileUtils.saveFile(pic.bytes, picPath)
+			
+			self.picPath = "/pic/$filename"
+			selfRepository.save(self)
+			return '{"success": "1"}'
+		}
+		'{"success": "0", "message" : "err102"}'
 	}
 
 	

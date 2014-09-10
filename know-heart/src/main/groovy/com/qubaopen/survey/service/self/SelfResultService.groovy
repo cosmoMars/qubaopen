@@ -5,13 +5,15 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.qubaopen.survey.entity.mindmap.MapRecord;
+import com.qubaopen.survey.entity.mindmap.MapRecord
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
+import com.qubaopen.survey.entity.self.SelfResult
+import com.qubaopen.survey.entity.self.SelfResultOption
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
-import com.qubaopen.survey.repository.EPQBasicRepository;
+import com.qubaopen.survey.repository.EPQBasicRepository
 import com.qubaopen.survey.repository.self.SelfResultOptionRepository
 
 @Service
@@ -188,7 +190,7 @@ public class SelfResultService {
 		def resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, result, resultOption[0], 0) // 保存心理地图
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption[0], null) // 保存心理地图
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption[0])
 		}
@@ -248,7 +250,7 @@ public class SelfResultService {
 			resultOption = selfResultOptionRepository.findByName(resultNames[0])
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, result, resultOption, 0) // 保存心理地图
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption, null) // 保存心理地图
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
@@ -319,7 +321,7 @@ public class SelfResultService {
 		def resultOption = selfResultOptionRepository.findByName(resultName)
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, result, resultOption, 0)
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption, null)
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
@@ -357,7 +359,7 @@ public class SelfResultService {
 		}
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, result, null, 0)
+			selfPersistentService.saveMapStatistics(user, self, result, null, null)
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
@@ -478,16 +480,20 @@ public class SelfResultService {
 		result << mapRecord
 
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, result, null, 0) // 保存心理地图
+			selfPersistentService.saveMapStatistics(user, self, result, null, null) // 保存心理地图
 
 			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
 		
-//		def resultOption = new SelfQuestionOption(
-//			content : 
-//		)
-//		resultOption
-		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
+		def selfResult =  new SelfResult(
+			
+		)
+		def resultOption = new SelfResultOption(
+			selfResult : selfResult,
+			content : '正、负情绪情感量表需要您做满7天才会在心理地图中显示结果，请答满7天之后，记得在心理地图-情绪管理中查看结果哦！'
+		)
+		resultOption
+//		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
 	}
 
 }

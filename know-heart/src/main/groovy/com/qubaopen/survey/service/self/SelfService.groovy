@@ -1,5 +1,6 @@
 package com.qubaopen.survey.service.self
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -79,6 +80,26 @@ public class SelfService {
 		
 		if (idMap) {
 			def age = idMap.get('age')
+			if (age > 15 && age < 70) {
+				epqSelfs.each { epq ->
+					def questionnaire = selfUserQuestionnaires.find { suq ->
+						epq.id == suq.self.id
+					}
+					selfUserQuestionnaires.remove(questionnaire)
+					if (questionnaire) {
+//						if ((now.getTime() - questionnaire.time.getTime()) > epq.intervalTime * 60 * 60 * 1000) {
+						if ((now.getTime() - questionnaire.time.getTime()) > 60 * 1000) {
+							resultSelfs << epq
+						}
+					} else {
+						resultSelfs << epq
+					}
+				}
+			}
+		} else if (user.userInfo.birthday && user.userInfo.sex){
+			def c = Calendar.getInstance()
+			c.setTime new Date()
+			def age = c.get(Calendar.YEAR) - (DateFormatUtils.format(user.userInfo.birthday, 'yyyy') as int)
 			if (age > 15 && age < 70) {
 				epqSelfs.each { epq ->
 					def questionnaire = selfUserQuestionnaires.find { suq ->

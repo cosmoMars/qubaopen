@@ -38,7 +38,7 @@ public class UserInfoService {
 		[
 			'success' : '1',
 			'userId' : userId,
-			'name' : userInfo?.name,
+			'name' : userIdCardBind?.userIDCard?.name,
 			'nickName' : userInfo?.nickName,
 			'sex' : userInfo?.sex?.ordinal(),
 			'birthday' : userInfo?.birthday,

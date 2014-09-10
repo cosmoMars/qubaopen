@@ -86,6 +86,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		def self = selfRepository.findOne(selfId)
 		
 		[
+			'success' : '1',
+			'message' : '成功',
 			'guidanceSentence' :self?.guidanceSentence,
 			'tips' : self?.tips,
 			'remark' : self?.remark

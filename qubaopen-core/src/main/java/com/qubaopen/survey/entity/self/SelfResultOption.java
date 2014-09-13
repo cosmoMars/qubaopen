@@ -1,7 +1,5 @@
 package com.qubaopen.survey.entity.self;
 
-import java.sql.Clob;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -29,7 +27,7 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	/**
 	 * 内容
 	 */
-	private Clob content;
+	private String content;
 
 	/**
 	 * 结果
@@ -70,12 +68,12 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public Clob getContent() {
+	
+	public String getContent() {
 		return content;
 	}
 
-	public void setContent(Clob content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 

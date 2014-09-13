@@ -1,21 +1,20 @@
 package com.qubaopen.survey.service.mindmap
 
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.qubaopen.survey.entity.self.SelfGroup;
-import com.qubaopen.survey.entity.self.SelfManagementType;
+import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.repository.EPQBasicRepository;
-import com.qubaopen.survey.repository.mindmap.MapRecordRepository;
+import com.qubaopen.survey.repository.EPQBasicRepository
+import com.qubaopen.survey.repository.mindmap.MapRecordRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
-import com.qubaopen.survey.repository.self.SelfGroupRepository;
-import com.qubaopen.survey.repository.self.SelfRepository;
-import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
-import com.qubaopen.survey.service.user.UserIDCardBindService;
+import com.qubaopen.survey.repository.self.SelfGroupRepository
+import com.qubaopen.survey.repository.self.SelfRepository
+import com.qubaopen.survey.service.user.UserIDCardBindService
 
 @Service
 public class MapStatisticsService {
@@ -48,15 +47,14 @@ public class MapStatisticsService {
 	MapRecordRepository mapRecordRepository
 	/**
 	 * 获取心理地图
-	 * @param userId
+	 * @param user
 	 * @param type
 	 * @return
 	 */
 	@Transactional
-	retrieveMapStatistics(long userId, long typeId) {
+	retrieveMapStatistics(User user, long typeId) {
 
-		def user = new User(id : userId),
-			data = [], existMaps = []
+		def data = [], existMaps = []
 			
 		def om = new ObjectMapper()
 		def specialSelf = selfRepository.findSpecialSelf()
@@ -95,9 +93,15 @@ public class MapStatisticsService {
 				def chart = []
 				
 				if (specialMaps?.self?.graphicsType) {
+					def timeChart = [], paChart = [], naChart = [], midChart = []
 					specialMaps.mapRecords.each {
-						chart << [name : it.name, value : it.value]
+						timeChart << it.name
+						paChart << it.value
+						naChart << it.naValue
+						midChart << (it.value - it.naValue)
+						
 					}
+					chart << [timeChart : timeChart, paChart : paChart, naChart : naChart, midChart : midChart]
 				}
 				data << [
 			        'mapTitle' : specialMaps?.self?.title,
@@ -171,13 +175,13 @@ public class MapStatisticsService {
 						'tips' : strName
 					]
 				} else if (v.size() == k.selfs.size()) {
-//					def records = []
+					def records = []
 					def recordMaps = [:]
 					def chart = []
 					if (k.name == 'EPQ') {
-//						v.each { s ->
-//							records += s.mapRecords
-//						}
+						v.each { s ->
+							records += s.mapRecords
+						}
 						
 						v.each { s ->
 							s.mapRecords.each {
@@ -196,8 +200,20 @@ public class MapStatisticsService {
 							rv.each {
 								score += it.value
 							}
-							def idMap = userIDCardBindService.calculateAgeByIdCard(user),
-								age = idMap.get('age'), sex = idMap.get('sex')
+							
+							
+							def idMap = userIDCardBindService.calculateAgeByIdCard(user)
+							
+							def age, sex
+							if (idMap) {
+								age = idMap.get('age')
+								sex = idMap.get('sex')
+							} else {
+								def c = Calendar.getInstance()
+								c.setTime new Date()
+								age = c.get(Calendar.YEAR) - (DateFormatUtils.format(user.userInfo.birthday, 'yyyy') as int)
+								sex = user.userInfo.sex.ordinal()
+							}
 							
 							def epqBasic = epqBasicRepository.findOneByFilters(
 								[
@@ -283,8 +299,8 @@ public class MapStatisticsService {
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.graphicsType?.id,
 					'special' : false,
-					'lock' : false,
-					'picPath' : it?.selfResultOption?.picPath
+					'lock' : false/*,
+					'picPath' : it?.selfResultOption?.picPath*/
 				]
 			}
 		} else {
@@ -316,10 +332,20 @@ public class MapStatisticsService {
 			}
 			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
 				def chart = []
+//				if (specialMaps?.self?.graphicsType) {
+//					specialMaps.mapRecords.each {
+//						chart << [name : it.name, value : it.value]
+//					}
+//				}
 				if (specialMaps?.self?.graphicsType) {
+					def timeChart = [], paChart = [], naChart = [], midChart = []
 					specialMaps.mapRecords.each {
-						chart << [name : it.name, value : it.value]
+						timeChart << it.name
+						paChart << it.value
+						naChart << it.naValue
+						midChart << (it.value - it.naValue)
 					}
+					chart << [timeChart : timeChart, paChart : paChart, naChart : naChart, midChart : midChart]
 				}
 				data << [
 					'mapTitle' : specialMaps?.self?.title,
@@ -394,13 +420,13 @@ public class MapStatisticsService {
 						'tips' : strName
 					]
 				} else if (v.size() == k.selfs.size()) {
-//					def records = []
+					def records = []
 					def recordMaps = [:]
 					def chart = []
 					if (k.name == 'EPQ') {
-//						v.each { s ->
-//							records += s.mapRecords
-//						}
+						v.each { s ->
+							records += s.mapRecords
+						}
 						
 						v.each { s ->
 							s.mapRecords.each {
@@ -419,8 +445,21 @@ public class MapStatisticsService {
 							rv.each {
 								score += it.value
 							}
-							def idMap = userIDCardBindService.calculateAgeByIdCard(user),
-								age = idMap.get('age'), sex = idMap.get('sex')
+//							def idMap = userIDCardBindService.calculateAgeByIdCard(user),
+//								age = idMap.get('age'), sex = idMap.get('sex')
+//							
+							def idMap = userIDCardBindService.calculateAgeByIdCard(user)
+							
+							def age, sex
+							if (idMap) {
+								age = idMap.get('age')
+								sex = idMap.get('sex')
+							} else {
+								def c = Calendar.getInstance()
+								c.setTime new Date()
+								age = c.get(Calendar.YEAR) - (DateFormatUtils.format(user.userInfo.birthday, 'yyyy') as int)
+								sex = user.userInfo.sex.ordinal()
+							}
 							
 							def epqBasic = epqBasicRepository.findOneByFilters(
 								[
@@ -505,15 +544,15 @@ public class MapStatisticsService {
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.graphicsType?.id,
 					'special' : false,
-					'lock' : false,
-					'picPath' : it?.selfResultOption?.picPath
+					'lock' : false/*,
+					'picPath' : it?.selfResultOption?.picPath*/
 				]
 			}
 		}
 		[
 			'success' : '1',
 			'message' : '成功',
-			'userId' : userId,
+			'userId' : user.id,
 			'data' : data
 		]
 	}

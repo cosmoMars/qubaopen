@@ -42,7 +42,7 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 
 		logger.trace(' -- 获取心理地图信息 -- ')
 
-		mapStatisticsService.retrieveMapStatistics(user.id, typeId)
+		mapStatisticsService.retrieveMapStatistics(user, typeId)
 	}
 
 }

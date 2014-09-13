@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity	;
+import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
  * @author mars 用户分享表
@@ -18,7 +18,6 @@ import com.qubaopen.core.entity.AbstractBaseEntity	;
 @Table(name = "user_share")
 @Audited
 public class UserShare extends AbstractBaseEntity<Long> {
-
 
 	private static final long serialVersionUID = -5848763450183067878L;
 
@@ -43,10 +42,10 @@ public class UserShare extends AbstractBaseEntity<Long> {
 	private ShareOrigin shareOrigin;
 
 	/**
-	 * 分享来源 		0分享软件	1问卷结果 	2自测	3兴趣	4调研
+	 * 分享来源 0分享软件 1奖品 2自测 3兴趣 4调研 5心理地图
 	 */
 	public enum ShareOrigin {
-		SOFTWARE, REWARD, SELF, INTEREST ,SURVEY
+		SOFTWARE, REWARD, SELF, INTEREST, SURVEY, MINDMAP
 	}
 
 	/**

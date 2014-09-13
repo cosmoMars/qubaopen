@@ -1,5 +1,7 @@
 package com.qubaopen.survey.entity.self;
 
+import java.sql.Clob;
+
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -89,7 +91,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * 备注
 	 */
-	private String remark;
+	private Clob remark;
 
 	/**
 	 * 答题总人数
@@ -205,11 +207,19 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.status = status;
 	}
 
-	public String getRemark() {
+	public SelfManagementType getSelfManagementType() {
+		return selfManagementType;
+	}
+
+	public void setSelfManagementType(SelfManagementType selfManagementType) {
+		this.selfManagementType = selfManagementType;
+	}
+
+	public Clob getRemark() {
 		return remark;
 	}
 
-	public void setRemark(String remark) {
+	public void setRemark(Clob remark) {
 		this.remark = remark;
 	}
 

@@ -162,6 +162,9 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		submitAgeAndSex(@RequestParam(required =false) Integer age, @RequestParam(required = false) Integer sex, @ModelAttribute('currentUser') User user) {
 			
 			if (age != null) {
+				if (age < 12 || age > 99) {
+					return '{"success" : "0", "message" : "err017"}'
+				}
 				def c = Calendar.getInstance()
 				c.setTime new Date()
 				def year = c.get(Calendar.YEAR) - age
@@ -183,5 +186,6 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 				}
 			}
 			userInfoRepository.save(user.userInfo)
+			'{"success" : "1"}'
 		}
 }

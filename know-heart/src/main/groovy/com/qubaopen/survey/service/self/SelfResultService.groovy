@@ -178,13 +178,13 @@ public class SelfResultService {
 			}
 		}
 		if (resultMap.empty || resultMap.size() == 0) {
-			return '{"success": 0, "error": "没有结果"}'
+			return '{"success": 0, "error": "err601"}'
 		}
 
 		def resultName = (resultMap.sort().values().sum() as List).reverse()
 
 		if (resultName.size() < 3) {
-			return '{"success": 0, "error": "没有结果"}'
+			return '{"success": 0, "error": "err601"}'
 		}
 
 		def resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
@@ -501,10 +501,12 @@ public class SelfResultService {
 			optionMap.get(k).clear()
 			optionMap.put(k, score)
 		}
-		def panaScore = optionMap.get('PA') - optionMap.get('NA')
+//		def panaScore = optionMap.get('PA') - optionMap.get('NA')
+		
 		def mapRecord = new MapRecord(
 			name : new Date().time,
-			value : panaScore
+			value : optionMap.get('PA'),
+			naValue : optionMap.get('NA')
 		)
 		result << mapRecord
 

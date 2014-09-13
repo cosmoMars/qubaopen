@@ -1,5 +1,7 @@
 package com.qubaopen.survey.entity.self;
 
+import java.sql.Clob;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -27,7 +29,7 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	/**
 	 * 内容
 	 */
-	private String content;
+	private Clob content;
 
 	/**
 	 * 结果
@@ -55,6 +57,11 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	 * 最高分数
 	 */
 	private Integer highestScore;
+	
+	/**
+	 * 图片地址
+	 */
+	private String picPath;
 
 	public String getName() {
 		return name;
@@ -64,11 +71,11 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 		this.name = name;
 	}
 
-	public String getContent() {
+	public Clob getContent() {
 		return content;
 	}
 
-	public void setContent(String content) {
+	public void setContent(Clob content) {
 		this.content = content;
 	}
 
@@ -110,6 +117,14 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 
 	public void setHighestScore(Integer highestScore) {
 		this.highestScore = highestScore;
+	}
+
+	public String getPicPath() {
+		return picPath;
+	}
+
+	public void setPicPath(String picPath) {
+		this.picPath = picPath;
 	}
 
 }

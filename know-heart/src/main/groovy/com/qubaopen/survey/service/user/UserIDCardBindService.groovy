@@ -70,7 +70,7 @@ public class UserIDCardBindService {
 					status : result
 				)
 				userIDCardLogRepository.save(userIdCardLog)
-				result = '0' // 测试使用
+//				result = '0' // 测试使用
 				if (result != '0') {
 					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}
@@ -125,7 +125,7 @@ public class UserIDCardBindService {
 					status : result
 				)
 				userIDCardLogRepository.save(userIdCardLog)
-				result = '0' // 测试使用
+//				result = '0' // 测试使用
 				if (result != '0') {
 					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}

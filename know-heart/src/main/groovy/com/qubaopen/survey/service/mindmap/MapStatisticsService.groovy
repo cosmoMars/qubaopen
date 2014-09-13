@@ -171,13 +171,13 @@ public class MapStatisticsService {
 						'tips' : strName
 					]
 				} else if (v.size() == k.selfs.size()) {
-					def records = []
+//					def records = []
 					def recordMaps = [:]
 					def chart = []
 					if (k.name == 'EPQ') {
-						v.each { s ->
-							records += s.mapRecords
-						}
+//						v.each { s ->
+//							records += s.mapRecords
+//						}
 						
 						v.each { s ->
 							s.mapRecords.each {
@@ -215,7 +215,10 @@ public class MapStatisticsService {
 //							}
 							
 						}
-						
+						def resultStr
+						if (recordMaps.get('L') > 60) {
+							resultStr = '由于量表中测谎题总分过高，故此次结果具有不针对性' as String
+						}
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
 						data << [
 							'mapTitle' : k?.title,
@@ -223,7 +226,7 @@ public class MapStatisticsService {
 							'mapMax' : k?.mapMax,
 							'resultName' : k?.name,
 							'resultScore' : '',
-							'resultContent' : '',
+							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
 							'graphicsType' : k?.graphicsType?.id,
@@ -280,7 +283,8 @@ public class MapStatisticsService {
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.graphicsType?.id,
 					'special' : false,
-					'lock' : false
+					'lock' : false,
+					'picPath' : it?.selfResultOption?.picPath
 				]
 			}
 		} else {
@@ -390,13 +394,13 @@ public class MapStatisticsService {
 						'tips' : strName
 					]
 				} else if (v.size() == k.selfs.size()) {
-					def records = []
+//					def records = []
 					def recordMaps = [:]
 					def chart = []
 					if (k.name == 'EPQ') {
-						v.each { s ->
-							records += s.mapRecords
-						}
+//						v.each { s ->
+//							records += s.mapRecords
+//						}
 						
 						v.each { s ->
 							s.mapRecords.each {
@@ -435,14 +439,17 @@ public class MapStatisticsService {
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
-						
+						def resultStr
+						if (recordMaps.get('L') > 60) {
+							resultStr = '由于量表中测谎题总分过高，故此次结果具有不针对性' as String
+						}
 						data << [
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
 							'resultName' : k?.name,
 							'resultScore' : '',
-							'resultContent' : '',
+							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
 							'graphicsType' : k?.graphicsType?.id,
@@ -498,7 +505,8 @@ public class MapStatisticsService {
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.graphicsType?.id,
 					'special' : false,
-					'lock' : false
+					'lock' : false,
+					'picPath' : it?.selfResultOption?.picPath
 				]
 			}
 		}

@@ -222,11 +222,11 @@ class UserController extends AbstractBaseController<User, Long> {
 		userRepository.save(user)
 		'{"success" : "1"}'
 	}
+	
+	
 	@RequestMapping(value = 'test', method = RequestMethod.GET)
 	test(Pageable pageable) {
 		userRepository.findAllUsers(pageable)
-		
 	}
 	
-
 }

@@ -20,6 +20,8 @@ public class MapRecord extends AbstractBaseEntity<Long> {
 
 	private int value;
 
+	private int naValue;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private MapStatistics mapStatistics;
 
@@ -47,4 +49,11 @@ public class MapRecord extends AbstractBaseEntity<Long> {
 		this.mapStatistics = mapStatistics;
 	}
 
+	public int getNaValue() {
+		return naValue;
+	}
+
+	public void setNaValue(int naValue) {
+		this.naValue = naValue;
+	}
 }

@@ -11,6 +11,7 @@
     <module>qubaopen-core</module>
     <module>know-heart</module>
     <module>customer-system</module>
+    <module>backend</module>
   </modules>
 
 </project>

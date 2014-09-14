@@ -4,7 +4,8 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 public class Test {
-	public static void main(String[] args) {
+	
+	/*public static void main(String[] args) {
 		def c = Calendar.getInstance()
 		c.setTime new Date()
 		
@@ -21,5 +22,5 @@ public class Test {
 		
 		println Date.parse('yyyy-MM-dd', "$year-01-01")
 
-	}
+	}*/
 }

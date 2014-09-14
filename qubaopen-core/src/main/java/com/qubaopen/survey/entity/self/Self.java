@@ -91,7 +91,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * 备注
 	 */
-	private Clob remark;
+	private String remark;
 
 	/**
 	 * 答题总人数
@@ -215,11 +215,11 @@ public class Self extends AbstractBaseEntity<Long> {
 		this.selfManagementType = selfManagementType;
 	}
 
-	public Clob getRemark() {
+	public String getRemark() {
 		return remark;
 	}
 
-	public void setRemark(Clob remark) {
+	public void setRemark(String remark) {
 		this.remark = remark;
 	}
 

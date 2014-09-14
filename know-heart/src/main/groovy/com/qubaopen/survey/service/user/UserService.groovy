@@ -291,6 +291,31 @@ public class UserService {
 		userUDIDRepository.save(userUdid)
 		userGoldRepository.save(userGold)
 	}
+	
+	/**
+	 * 保存udid idfa
+	 * @param user
+	 * @param udid
+	 * @param idfa
+	 * @return
+	 */
+	@Transactional
+	saveUserCode(User user, String udid, String idfa, String imei) {
+		def code = userUDIDRepository.findOne(user.id)
+		if (udid) {
+			code.udid = udid
+		}
+		if (idfa) {
+			code.idfa = idfa
+		}
+		if (imei) {
+			code.imei = imei
+		}
+		if (!udid && !idfa && !imei) {
+			return
+		}
+		userUDIDRepository.save(code)
+	}
 
 	private void saveFile(byte[] bytes, String filename) {
 		def fos = new FileOutputStream(filename)

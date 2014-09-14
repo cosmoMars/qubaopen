@@ -88,7 +88,6 @@ public class MapStatisticsService {
 				
 			}
 			
-			
 			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
 				def chart = []
 				
@@ -201,7 +200,6 @@ public class MapStatisticsService {
 								score += it.value
 							}
 							
-							
 							def idMap = userIDCardBindService.calculateAgeByIdCard(user)
 							
 							def age, sex
@@ -261,7 +259,6 @@ public class MapStatisticsService {
 							}
 						}
 						
-						
 						data << [
 							'mapTitle' : k?.title,
 							'chart' : chart,
@@ -299,8 +296,8 @@ public class MapStatisticsService {
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.graphicsType?.id,
 					'special' : false,
-					'lock' : false/*,
-					'picPath' : it?.selfResultOption?.picPath*/
+					'lock' : false,
+					'picPath' : it?.selfResultOption?.picPath
 				]
 			}
 		} else {
@@ -332,6 +329,7 @@ public class MapStatisticsService {
 			}
 			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
 				def chart = []
+				
 //				if (specialMaps?.self?.graphicsType) {
 //					specialMaps.mapRecords.each {
 //						chart << [name : it.name, value : it.value]
@@ -544,8 +542,8 @@ public class MapStatisticsService {
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.graphicsType?.id,
 					'special' : false,
-					'lock' : false/*,
-					'picPath' : it?.selfResultOption?.picPath*/
+					'lock' : false,
+					'picPath' : it?.selfResultOption?.picPath
 				]
 			}
 		}

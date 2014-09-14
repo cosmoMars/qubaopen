@@ -43,7 +43,7 @@ class UserController extends AbstractBaseController<User, Long> {
 
 	@Autowired
 	UserReceiveAddressRepository userReceiveAddressRepository
-	
+
 	@Autowired
 	UserMoodRepository userMoodRepository
 
@@ -57,33 +57,41 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = 'login', method = RequestMethod.PUT)
-	login(@RequestBody User user, Model model, HttpSession session) {
-
+	@RequestMapping(value = 'login', method = RequestMethod.POST)
+	login(@RequestParam(required = false) String phone,
+		@RequestParam(required = false) String password,
+		@RequestParam(required = false) String idfa,
+		@RequestParam(required = false) String udid,
+		@RequestParam(required = false) String imei,
+		Model model, HttpSession session) {
+		/*@RequestBody User user,*/
+		
 		logger.trace ' -- 用户登录 -- '
 
-		if (!user) {
-			return '{"success" : "0", "message": "err014"}'
-		}
+		/*if (!user) {
+		 return '{"success" : "0", "message": "err014"}'
+		 }*/
 
-		if (!validatePhone(user.phone)) {
+		if (!validatePhone(phone)) {
 			return '{"success" : "0", "message": "err003"}'
 		}
 
-		if (!validatePwd(user.password)) {
+		if (!validatePwd(password)) {
 			return '{"success": "0", "message": "err004"}'
 		}
 
-		def loginUser = userRepository.login(user.phone,  DigestUtils.md5Hex(user.password))
+		def loginUser = userRepository.login(phone,  DigestUtils.md5Hex(password))
 
 		if (loginUser) {
+
+			userService.saveUserCode(loginUser, udid, idfa, imei)
 
 			model.addAttribute('currentUser', loginUser)
 
 			def userInfo = loginUser.userInfo,
-				userIdCardBind = loginUser.userIdCardBind,
-				userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true),
-				userMood = userMoodRepository.getLastUserMood(loginUser.id)
+			userIdCardBind = loginUser.userIdCardBind,
+			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true),
+			userMood = userMoodRepository.getLastUserMood(loginUser.id)
 
 			return  [
 				'success' : '1',
@@ -110,7 +118,6 @@ class UserController extends AbstractBaseController<User, Long> {
 		}
 
 		'{"success" : "0", "message": "err001"}'
-
 	}
 
 	/**
@@ -120,11 +127,11 @@ class UserController extends AbstractBaseController<User, Long> {
 	 */
 	@RequestMapping(value ='register', method = RequestMethod.POST, consumes = 'multipart/form-data')
 	register(@RequestParam(required = false) String phone,
-		@RequestParam(required = false) String password,
-		@RequestParam(required = false) String captcha,
-		@RequestParam(required = false) MultipartFile avatar,
-		HttpServletRequest request
-		) {
+			@RequestParam(required = false) String password,
+			@RequestParam(required = false) String captcha,
+			@RequestParam(required = false) MultipartFile avatar,
+			HttpServletRequest request
+	) {
 
 		logger.trace ' -- 添加用户注册记录 -- '
 
@@ -150,12 +157,12 @@ class UserController extends AbstractBaseController<User, Long> {
 		logger.trace ' -- 发送验证码 -- '
 		logger.trace "phone := $phone"
 
-		if (!validatePhone(phone)) { // 验证用户手机号是否无效
+		if (!validatePhone(phone)) {
+			// 验证用户手机号是否无效
 			return '{"success" : "0", "message": "err003"}'
 		}
 
 		userService.sendCaptcha(phone)
-
 	}
 
 	/**
@@ -167,8 +174,8 @@ class UserController extends AbstractBaseController<User, Long> {
 	 */
 	@RequestMapping(value = 'resetPassword', method = RequestMethod.POST)
 	resetPassword(@RequestParam(required = false) String phone,
-		@RequestParam(required = false) String password,
-		@RequestParam(required = false) String captcha) {
+			@RequestParam(required = false) String password,
+			@RequestParam(required = false) String captcha) {
 
 		logger.trace(" -- 忘记密码重置 -- ")
 
@@ -185,7 +192,6 @@ class UserController extends AbstractBaseController<User, Long> {
 		}
 
 		userService.resetPassword(phone, password, captcha)
-
 	}
 
 	/**
@@ -195,10 +201,9 @@ class UserController extends AbstractBaseController<User, Long> {
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody User user) {
 
-	userService.modify(user)
-
+		userService.modify(user)
 	}
-	
+
 	/**
 	 * 修改密码
 	 * @param oldPwd
@@ -208,7 +213,7 @@ class UserController extends AbstractBaseController<User, Long> {
 	 */
 	@RequestMapping(value = 'modifyPassword', method = RequestMethod.POST)
 	modifyPassword(@RequestParam(required = false) String oldPwd, @RequestParam(required = false) String newPwd, @ModelAttribute('currentUser') User user) {
-		
+
 		if (!validatePwd(oldPwd)) {
 			return '{"success" : "0", "message" : "err015"}'
 		}
@@ -222,11 +227,10 @@ class UserController extends AbstractBaseController<User, Long> {
 		userRepository.save(user)
 		'{"success" : "1"}'
 	}
-	
-	
+
+
 	@RequestMapping(value = 'test', method = RequestMethod.GET)
 	test(Pageable pageable) {
 		userRepository.findAllUsers(pageable)
 	}
-	
 }

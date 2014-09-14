@@ -37,6 +37,16 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 	private String udid;
 
 	/**
+	 * idfa
+	 */
+	private String idfa;
+	
+	/**
+	 * imei
+	 */
+	private String imei;
+
+	/**
 	 * 提醒开始时间
 	 */
 	@Temporal(TemporalType.TIME)
@@ -82,6 +92,22 @@ public class UserUDID extends AbstractBaseEntity2<Long> {
 
 	public void setUdid(String udid) {
 		this.udid = udid;
+	}
+
+	public String getIdfa() {
+		return idfa;
+	}
+
+	public void setIdfa(String idfa) {
+		this.idfa = idfa;
+	}
+
+	public String getImei() {
+		return imei;
+	}
+
+	public void setImei(String imei) {
+		this.imei = imei;
 	}
 
 	public Date getStartTime() {

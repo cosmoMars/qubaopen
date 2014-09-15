@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.aspectj.weaver.ast.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,11 @@ public class InterestController {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@RequestMapping(value = "test", method = RequestMethod.POST)
+	public String test(){
+		return "{\"success\" : \"1\"}";
+	}
 
 	@Transactional
 	@RequestMapping(value = "saveInterest", method = RequestMethod.POST)
@@ -184,11 +190,11 @@ public class InterestController {
 
 			// interestService.saveInterest(interestQuestions,
 			// interestResultOptions);
-
+			return "{\"success\" : \"1\"}";
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return "{\"success\" : \"1\"}";
+		return "{\"success\" : \"0\"}";
 
 	}
 }

@@ -1,4 +1,4 @@
-package com.qubaopen.backend.repository;
+package com.qubaopen.backend.repository.interest;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

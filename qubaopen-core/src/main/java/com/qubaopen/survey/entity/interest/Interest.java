@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -44,7 +46,9 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * 问卷标签
 	 */
-	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+//	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	@ManyToMany
+	@JoinTable(name = "interest_tag_relation", joinColumns = @JoinColumn(name = "interest_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<QuestionnaireTagType> questionnaireTagTypes;
 
 	/**
@@ -66,7 +70,7 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * INITIAL 0 初始状态, ONLINE, 1 上线状态, CLOSED 2 关闭状态
 	 */
-	private enum Status {
+	public enum Status {
 		INITIAL, ONLINE, CLOSED
 	}
 
@@ -199,6 +203,14 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setAbbreviation(String abbreviation) {
 		this.abbreviation = abbreviation;
+	}
+
+	public QuestionnaireType getQuestionnaireType() {
+		return questionnaireType;
+	}
+
+	public void setQuestionnaireType(QuestionnaireType questionnaireType) {
+		this.questionnaireType = questionnaireType;
 	}
 
 }

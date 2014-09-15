@@ -38,7 +38,7 @@ function trimRight(s1){
     return r;
 }
 
-var alphbetArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+var alphbetArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
 var indexCursorForQuestionNo = 0;
 var indexCursorForAnswerNo = 0;
@@ -305,7 +305,14 @@ $(document).ready(
                 jsonSent = jsonSent + ',"title":"'
                         + trimRight($("#questionnaireTitle").val()) + '",'
                         + '"answerTitle":"' + trimRight($("#answerTitle").val()) + '",'
-                        + '"creditGain":"' + trimRight($("input#creditGain").val()) + '",'
+                       /*  + '"creditGain":"' + trimRight($("input#creditGain").val()) + '",' */
+                       
+                        + '"guidanceSentence":"' + trimRight($("#guidanceSentence").val()) + '",'
+                        + '"recommendedValue":"' + trimRight($("#recommendedValue").val()) + '",'
+                        + '"abbreviation":"' + trimRight($("#abbreviation").val()) + '",'
+                        + '"remark":"' + trimRight($("textarea.remark").val()) + '",'
+                        + '"status":"' + trimRight($("select#status").val()) + '",'
+                        + '"calType":"' + trimRight($("select#calType").val()) + '",'
                         + '"questionnaireContentType":"' + trimRight($("select#questionnareContentType").val())
                         + '"} ';
 
@@ -325,8 +332,10 @@ $(document).ready(
                     dataType: "json",
                     data: {"json": jsonSent},
                     success: function (data) {
-                       /*  xqwjZid = data.xqwjId;
-                        alert(xqwjZid); */
+                    	   alert(data);
+                        if (data.success == 1) {
+                        	alert("success");
+                        }
 
                     }
                 });
@@ -347,16 +356,40 @@ function changeCredit(){
 </script>
 </head>
 <body>
-<div>
+<!-- <div>
     <label>积分获取数:</label><input type="text" id="creditGain" value="0" maxlength="20"/>
     <label>金币获取数:</label><input type="text" id="coinGain" value="0" maxlength="20"/>
-</div>
+</div> -->
 
 <div>
     <label>问卷标题:</label><input type="text" id="questionnaireTitle" maxlength="50" size="50"/>
+    <label>问卷指导语:</label><input type="text" id="guidanceSentence" maxlength="50" size="50"/>
+</div>
+<div>
+    <label>问卷简介:</label> <textarea rows='3' cols='80' class='remark'></textarea>
+</div>
+<div>
+    <label>问卷缩写:</label><input type="text" id="abbreviation" maxlength="50" size="50"/>
+    <label>问卷推荐值:</label><input type="text" id="recommendedValue" maxlength="50" size="50"/>
+   
 </div>
 
 <div>
+    <label>问卷状态</label>
+    <select id="status">
+        <option value="0">初始状态</option>
+        <option value="1">上线状态</option>
+        <option value="2">关闭状态</option>
+    </select>
+    <label>问卷算分类型</label>
+    <select id="calType">
+        <option value="1">根据总分得结果</option>
+        <option value="2">根据问题类型得结果</option>
+        <option value="3">根据选项类型得答案</option>
+        <option value="4">跳转得答案</option>
+        <option value="5">只保存答案 </option>
+       
+    </select>
     <label>兴趣问卷类型</label>
     <select id="questionnareContentType">
         <option value="1">性格测试</option>

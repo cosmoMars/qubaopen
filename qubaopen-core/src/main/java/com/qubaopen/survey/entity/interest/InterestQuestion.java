@@ -44,7 +44,7 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	@Enumerated
 	private Type type;
 
-	private enum Type {
+	public enum Type {
 		SINGLE, MULTIPLE, QA, SORT, SCORE, MULQA
 	}
 

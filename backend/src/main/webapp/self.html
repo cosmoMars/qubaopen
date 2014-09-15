@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>self questionnaire</title>
+<style>
+    .label {
+        float: left;
+        width: 120px;
+    }
+
+    .infobox {
+        width: 200px;
+    }
+
+    .error {
+        color: red;
+        padding-left: 10px;
+    }
+
+    .submit {
+        margin-left: 125px;
+        margin-top: 10px;
+    }
+
+    div {
+        padding: 5px;
+    }
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css"/>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+
+<script type="text/javascript">
+function trimRight(s1){
+    var r = s1.replace(/~+$/, '')
+    return r;
+}
+
+var alphbetArray = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+
+var indexCursorForQuestionNo = 0;
+var indexCursorForAnswerNo = 0;
+
+//每次大于_numberOfBonus题 多奖励_creditOfEach分
+var _numberOfBonus=5;
+var _creditOfEach=10;
+
+var xqwjSxData = [];
+
+var xqwjZid = 0;
+$(document).ready(
+        function () {
+
+            $("button#questionAdd").click(function () {
+                var timesToAdd = $("input#quNumber").val();
+
+
+                for (var countTimesToAdd = 0; countTimesToAdd < timesToAdd; countTimesToAdd++) {
+                    indexCursorForQuestionNo++;
+                    var trStr = "<tr class='questionTr'>"+
+                    "<td><input type='text' class='questionNo' value='" + indexCursorForQuestionNo + "'/></td> " +
+                    "<td>" + "<textarea rows='3' cols='80' class='questionContent'></textarea></td>" +
+                    "<td align = 'center'><select id = 'wtLx'> "+
+                    "<option value='1'>单选题</option> "+
+                    "<option value='2'>多选题</option> "+
+                    "<option value='3'>问答题</option> "+
+                    "<option value='4'>排序题</option> "+
+                    "<option value='5'>打分题</option></select></td>"+
+                    "<td><input type='text' class='limitTime'/></td>"+
+                    "<td><button class='addChoiceButton'>增加选项</button><input type='text' value='1'/></td>" +
+                    "<td><button class='deleteWt'>删除题目</button></td>" +
+                    "</tr> "+
+                    "<tr class='choiceTr'><td colspan='6'><div><table cellpadding='0' cellspacing='0' border='1'>" +
+                    "<tr class='tableheadtr'></tr></table></div></td></tr>";
+
+                    $("table#questionTable").append(trStr);
+
+                    var addChoiceButtonIndex = $("tr.questionTr").length - 1;
+
+
+                    $("button.addChoiceButton:eq(" + addChoiceButtonIndex + ")").click(function () {
+                        var loopTimesToAdd = $(this).next().val();
+                        var tableHeader = $(this).parents("tr").next("tr").find("tr.tableheadtr");
+                        for (var countTimes = 0; countTimes < loopTimesToAdd; countTimes++) {
+                            var trStrAppend = "<th>选项号</th><th>选项描述</th><th>分数</th><th>删除</th>";
+                            if (tableHeader.html() == "") {
+                                tableHeader.append(trStrAppend);
+                            }
+
+                            var indexCursorForChoiceNo = tableHeader.parent().find("tr.choiceData").length;
+                            /**是否要自动填充分数**/
+                            var pointValue = "";
+                            if ($("#autoPoint:checked").length > 0) {
+                                pointValue = indexCursorForChoiceNo;
+                            }
+                            var tableTr = "<tr class='choiceData'><td class='draggableChoiceArea'><input type='text' class='choiceNo' value='"
+                                    + alphbetArray[indexCursorForChoiceNo]
+                                    + "'/></td>"
+                                    + "<td><textarea rows='3' cols='90' class='choiceContent'></textarea></td>"
+                                    + "<td><input type='text' size='3' maxlength='3' value='" + pointValue + "' class='choicePoint'/></td>"
+                                    + "<td><button class='deleteXX'>删除选项</button></td>";
+
+                            tableTr = tableTr + "</tr>";
+
+                            tableHeader.parent().append(tableTr);
+//                            $("button.deleteXX").on("click",function () {
+//                                $(this).parents("tr.choiceData").remove();
+//                                if(tableHeader.parents().find("tr.choiceData").length==0){
+//                                    tableHeader.empty();
+//                                }
+//                            });
+
+
+                        }
+                    });
+
+
+                    $("button.deleteWt:eq(" + addChoiceButtonIndex + ")").click(function () {
+                        $(this).parents("tr.questionTr").next("tr.choiceTr").remove();
+                        $(this).parents("tr.questionTr").remove();
+                        changeCredit();
+                    });
+
+                }
+
+
+                /**增加题目时所有题目增加指定的选项数量**/
+                {
+                    var timesToAddEachAnswer = $("select#answerNumber").val();
+                    var textForEachAnswer = $("#autoChoice").val().split(" ");
+                    var textToAdd = ""
+                    if (timesToAddEachAnswer != 0) {
+                        var loopTimesToAdd = timesToAddEachAnswer;
+                        var tableHeader = $("tr.tableheadtr");
+                        for (var countTimes = 0; countTimes < loopTimesToAdd; countTimes++) {
+                            var trStrAppend = "<th>选项号</th><th>选项描述</th><th>分数</th><th>删除</th>";
+                            if (tableHeader.html() == "") {
+                                tableHeader.append(trStrAppend);
+                            }
+                            textToAdd = textForEachAnswer[countTimes] == undefined ? "" : textForEachAnswer[countTimes];
+                            /**是否要自动填充分数**/
+                            var pointValue = "";
+                            if ($("#autoPoint:checked").length > 0) {
+                                pointValue = countTimes;
+                            }
+                            var tableTr = "<tr class='choiceData'><td class='draggableChoiceArea'><input type='text' class='choiceNo' value='"
+                                    + alphbetArray[countTimes]
+                                    + "'/></td>"
+                                    + "<td><textarea rows='3' cols='90' class='choiceContent'>" + textToAdd + "</textarea></td>"
+                                    + "<td><input type='text' size='3' maxlength='3' value='" + pointValue + "' class='choicePoint'/></td>"
+                                    + "<td><button class='deleteXX'>删除选项</button></td>";
+
+                            tableTr = tableTr + "</tr>";
+
+                            tableHeader.parent().append(tableTr);
+//                            $("button.deleteXX").click(function () {
+//                                if($(this).parent().parent().parent().find("tr.choiceData").length==1){
+//                                    $(this).parent().parent().parent().find("tr.tableheadtr").empty();
+//                                }
+//                                $(this).parents("tr.choiceData").remove();
+//                            });
+
+
+                        }
+                    }
+                }
+                changeCredit();
+            });
+
+            $(document).on('click', 'button.deleteXX', function () {
+                if ($(this).parent().parent().parent().find("tr.choiceData").length == 1) {
+                    $(this).parent().parent().parent().find("tr.tableheadtr").empty();
+                }
+                $(this).parents("tr.choiceData").remove();
+            });
+
+            $("button#answerAdd").click(function () {
+
+                var timesToAdd = $("input#daNumber").val();
+                for (var countsToAdd = 0; countsToAdd < timesToAdd; countsToAdd++) {
+
+
+                    var tableHeader = "<tr><th>答案号</th><th>答案标题</th><th>答案内容</th><th>答案名称</th><th>分段</th><th>删除</th>";
+
+                    tableHeader = tableHeader + "</tr>";
+                    if ($("table#answerTable").html().trim() == "") {
+                        $("table#answerTable").append(tableHeader);
+                    }
+                    var tableTr = "<tr class='answerTr'><td><input type='text' class='answerNo' value='" +
+                            alphbetArray[indexCursorForAnswerNo]
+                            + "'></td>" +"<td><textarea rows='3' cols='60' class='answerTitle'></textarea></td>"
+                            + "<td><textarea rows='3' cols='60' class='answerDescription'></textarea></td>"
+                            + "<td><textarea rows='3' cols='35' class='answerName'></textarea></td>"
+                            + "<td><input type='text' size='3' maxlength='3' class='answerPointMin'/>~<input type='text' size='3' maxlength='3' class='answerPointMax'/></td>"
+                            + "<td><button>删除</button></td>";
+
+                    tableTr = tableTr + "</tr>";
+                    $("table#answerTable").append(tableTr);
+                    indexCursorForAnswerNo++;
+                }
+            });
+
+
+            $("button#submitData").click(function () {
+
+                var jsonSent = '{"questions":[';
+                $("tr.questionTr").each(function (index, element) {
+
+                	jsonSent = jsonSent + '{"questionNo":"' +
+                    trimRight($(this).find("input.questionNo").val()) + '","questionContent":"'
+                    + trimRight($(this).find("textarea.questionContent").val()) 
+                    + '","questionLx":"'+ trimRight($(this).find("select#wtLx").val())
+                    + '","limitTime":"'+ trimRight($(this).find("input.limitTime").val())
+                    + '",' + '"choices":[';
+
+                    var trChoiceDataCollection = $(this).next().find("tr.choiceData");
+                    trChoiceDataCollection.each(function (index, element) {
+                        jsonSent = jsonSent + '{"choiceNo":"'
+                                + trimRight($(this).find("input.choiceNo").val())
+                                + '","choiceDescription":"' +
+                                trimRight($(this).find("textarea.choiceContent").val())
+                                + '","choicePoint":' + trimRight($(this).find("input.choicePoint").val()) + '}';
+                        if (index == (trChoiceDataCollection.length - 1)) {
+                            jsonSent = jsonSent + "]}";
+                        } else {
+                            jsonSent = jsonSent + ",";
+                        }
+                    });
+                    if (index == ($("tr.questionTr").length - 1)) {
+                        jsonSent = jsonSent + ']'
+                    } else {
+                        jsonSent = jsonSent + ','
+
+                    }
+
+
+                });
+                jsonSent = jsonSent + ',"answers":['
+                $("tr.answerTr").each(function (index, element) {
+                    jsonSent = jsonSent + '{"conclusionNo":"' +
+                            trimRight($(this).find("input.answerNo").val())
+                            + '","title":"'
+                            + trimRight($(this).find("textarea.answerTitle").val())
+                            + '","description":"'
+                            + trimRight($(this).find("textarea.answerDescription").val())
+                            + '","name":"'
+                            + trimRight($(this).find("textarea.answerName").val())
+                            + '","lowPoint":' + trimRight($(this).find("input.answerPointMin").val())
+                            + ',"maxPoint":' + trimRight($(this).find("input.answerPointMax").val()) + '}';
+                    if (index == ($("tr.answerTr").length - 1)) {
+                        jsonSent = jsonSent + ']';
+                    } else {
+                        jsonSent = jsonSent + ',';
+                    }
+                });
+                
+                
+                jsonSent = jsonSent + ',"title":"'
+                        + trimRight($("#questionnaireTitle").val()) + '",'
+                        + '"answerTitle":"' + trimRight($("#answerTitle").val()) + '",'
+                       /*  + '"creditGain":"' + trimRight($("input#creditGain").val()) + '",' */
+                       
+                        + '"guidanceSentence":"' + trimRight($("#guidanceSentence").val()) + '",'
+                        + '"recommendedValue":"' + trimRight($("#recommendedValue").val()) + '",'
+                        + '"abbreviation":"' + trimRight($("#abbreviation").val()) + '",'
+                        + '"remark":"' + trimRight($("textarea.remark").val()) + '",'
+                        + '"status":"' + trimRight($("select#status").val()) + '",'
+                        + '"calType":"' + trimRight($("select#calType").val()) + '",'
+                        + '"mapMax":"' + trimRight($("#mapMax").val()) + '",'
+                        + '"intervalTime":"' + trimRight($("#intervalTime").val()) + '",'
+                        + '"tips":"' + trimRight($("#tips").val()) + '",'
+                        + '"selfManagementType":"' + trimRight($("select#selfManagementType").val()) + '",'
+                        + '"graphicsType":"' + trimRight($("select#graphicsType").val())
+                        + '"} ';
+
+                //console.log(jsonSent);
+
+
+                $(":text").attr("readonly", "true");
+                $("textarea").attr("readonly", "true");
+              /*   $(this).attr("disabled", "true"); */
+
+
+//                ajax submit data
+                $.ajax({
+                    url: "self/saveSelf",
+                    type: "POST",
+                    async: false,
+                    dataType: "json",
+                    data: {"json": jsonSent},
+                    success: function (data) {
+                        if (data.success == 1) {
+                        	alert("success");
+                        }
+                    },
+                    failure: function () {
+                    	alert(url);
+                    }
+                });
+
+
+            });
+
+        });
+
+//自动调整积分
+function changeCredit(){
+    var qNumber=$(".questionTr").length;
+    if(qNumber%_numberOfBonus==0){
+        $("#creditGain").attr("value", ((qNumber/_numberOfBonus|0))*_creditOfEach);
+    }    else{
+        $("#creditGain").attr("value", ((qNumber/_numberOfBonus|0)+1)*_creditOfEach);}
+}
+</script>
+</head>
+<body>
+<h3>Self</h3>
+<!-- <div>
+    <label>积分获取数:</label><input type="text" id="creditGain" value="0" maxlength="20"/>
+    <label>金币获取数:</label><input type="text" id="coinGain" value="0" maxlength="20"/>
+</div> -->
+
+<div>
+    <label>问卷标题:</label><input type="text" id="questionnaireTitle" maxlength="50" size="50"/>
+    <label>问卷指导语:</label><input type="text" id="guidanceSentence" maxlength="50" size="50"/>
+</div>
+<div>
+    <label>问卷简介:</label> <textarea rows='3' cols='80' class='remark'></textarea>
+</div>
+<div>
+    <label>问卷缩写:</label><input type="text" id="abbreviation" maxlength="50" size="20"/>
+    <label>问卷推荐值:</label><input type="text" id="recommendedValue" maxlength="50" size="20"/>
+    <label>问卷地图区间大小:</label><input type="text" id="mapMax" maxlength="50" size="20"/>
+    <label>间隔时间 单位：小时:</label><input type="text" id="intervalTime" maxlength="50" size="20"/>
+    <label>提示:</label><input type="text" id="tips" maxlength="50" size="20"/>
+</div>
+
+<div>
+    <label>问卷状态</label>
+    <select id="status">
+        <option value="0">初始状态</option>
+        <option value="1">上线状态</option>
+        <option value="2">关闭状态</option>
+    </select>
+    <label>问卷算分类型</label>
+    <select id="calType">
+        <option value="1">根据总分得结果</option>
+        <option value="2">根据问题类型得结果</option>
+        <option value="3">根据选项类型得答案</option>
+        <option value="4">跳转得答案</option>
+        <option value="5">只保存答案 </option>
+       
+    </select>
+    <label>自测问卷类型</label>
+    <select id="selfManagementType">
+        <option value="1">性格</option>
+        <option value="2">情绪</option>
+        <option value="3">个人</option>
+    </select>
+    <label>问卷图形</label>
+    <select id="graphicsType">
+        <option value="0">无</option>
+        <option value="1">蛛网图</option>
+        <option value="2">折线图</option>
+        <option value="3">饼图</option>
+        <option value="4">组合折线图</option>
+        <option value="5">坐标图</option>
+        <option value="6">方向剪头图</option>
+                 
+    </select>
+</div>
+
+<div><input type="text" id="quNumber" value="1" maxlength="10"/>
+    <button id="questionAdd">增加题目</button>
+    选项数量:<select id="answerNumber">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+    </select>
+    内容(空格分隔):<input type="text" id="autoChoice"/>
+    自动填充分数:<input type="checkbox" id="autoPoint" checked=""/>
+</div>
+<div><input type="text" id="daNumber" value="1" maxlength="10"/>
+    <button id="answerAdd">增加答案</button>
+</div>
+
+<div>
+    <label>答案总标题:</label><input type="text" id="answerTitle" maxlength="50" size="50"/>
+</div>
+
+<div id="questionDiv">
+    <table id="questionTable" cellpadding="0" cellspacing="0" border="1">
+        <caption>答卷题目</caption>
+        <tr>
+            <th width="10%">题号</th>
+            <th width="50%">题目内容</th>
+            <th width="10%">题目类型</th>
+            <th width="10%">答题时间</th>
+            <th width="10%">增加选项</th>
+            <th width="10%">删除</th>
+        </tr>
+    </table>
+</div>
+
+
+<div id="questionnaireAnswer">
+    <table id="answerTable" cellpadding="0" cellspacing="0" border="1">
+    </table>
+</div>
+<div>
+    <button id="submitData">提交</button>
+</div>
+
+
+</body>
+</html>

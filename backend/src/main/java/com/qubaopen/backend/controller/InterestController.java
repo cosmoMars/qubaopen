@@ -122,9 +122,9 @@ public class InterestController {
 				break;
 			}
 			
+			ArrayNode questions = (ArrayNode) jsonNode.path("questions");
 			interest = interestRepository.save(interest);
 
-			ArrayNode questions = (ArrayNode) jsonNode.path("questions");
 			for (JsonNode question : questions) {
 				InterestQuestion iq = new InterestQuestion();
 				iq.setQuestionNum(question.get("questionNo").asInt());

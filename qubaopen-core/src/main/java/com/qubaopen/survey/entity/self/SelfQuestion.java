@@ -44,8 +44,8 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	@Enumerated
 	private Type type;
 
-	private enum Type {
-		SINGLE, MULTIPLE, QA, SORT, SCORE
+	public enum Type {
+		SINGLE, MULTIPLE, QA, SORT, SCORE, MULQA
 	}
 
 

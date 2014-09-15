@@ -190,8 +190,8 @@ $(document).ready(
                     }
                     var tableTr = "<tr class='answerTr'><td><input type='text' class='answerNo' value='" +
                             alphbetArray[indexCursorForAnswerNo]
-                            + "'></td>" +"<td><textarea rows='3' cols='80' class='answerTitle'></textarea></td>"+
-                            "<td><textarea rows='3' cols='80' class='answerDescription'></textarea></td>"
+                            + "'></td>" +"<td><textarea rows='3' cols='80' class='answerTitle'></textarea></td>"
+                            + "<td><textarea rows='3' cols='80' class='answerDescription'></textarea></td>"
                             + "<td><input type='text' size='3' maxlength='3' class='answerPointMin'/>~<input type='text' size='3' maxlength='3' class='answerPointMax'/></td>"
                             + "<td><button>删除</button></td>";
 
@@ -335,7 +335,9 @@ $(document).ready(
                         if (data.success == 1) {
                         	alert("success");
                         }
-
+                    },
+                    failure: function () {
+                    	alert(url);
                     }
                 });
 
@@ -355,6 +357,7 @@ function changeCredit(){
 </script>
 </head>
 <body>
+<h3>interest</h3>
 <!-- <div>
     <label>积分获取数:</label><input type="text" id="creditGain" value="0" maxlength="20"/>
     <label>金币获取数:</label><input type="text" id="coinGain" value="0" maxlength="20"/>

@@ -1,7 +1,5 @@
 package com.qubaopen.survey.entity.self;
 
-import java.sql.Clob;
-
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -84,7 +82,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * INITIAL 0 初始状态, ONLINE, 1 上线状态, CLOSED 2 关闭状态
 	 */
-	private enum Status {
+	public enum Status {
 		INITIAL, ONLINE, CLOSED
 	}
 

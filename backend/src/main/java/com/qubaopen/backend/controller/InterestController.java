@@ -35,7 +35,7 @@ import com.qubaopen.survey.entity.interest.InterestResultOption;
 import com.qubaopen.survey.entity.interest.InterestType;
 
 @RestController
-@RequestMapping("interest")
+@RequestMapping("backendInterest")
 public class InterestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(InterestController.class);

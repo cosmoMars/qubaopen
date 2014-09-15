@@ -33,7 +33,7 @@ import com.qubaopen.survey.entity.self.SelfResult;
 import com.qubaopen.survey.entity.self.SelfResultOption;
 
 @RestController
-@RequestMapping("self")
+@RequestMapping("backendSelf")
 public class SelfController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SelfController.class);

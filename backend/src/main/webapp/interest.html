@@ -68,7 +68,7 @@ $(document).ready(
                     "<option value='3'>问答题</option> "+
                     "<option value='4'>排序题</option> "+
                     "<option value='5'>打分题</option></select></td>"+
-                    "<td><input type='text' class='limitTime'/></td>"+
+                    "<td><input type='text' class='limitTime' value ='1'/></td>"+
                     "<td><button class='addChoiceButton'>增加选项</button><input type='text' value='1'/></td>" +
                     "<td><button class='deleteWt'>删除题目</button></td>" +
                     "</tr> "+
@@ -192,7 +192,7 @@ $(document).ready(
                             alphbetArray[indexCursorForAnswerNo]
                             + "'></td>" +"<td><textarea rows='3' cols='80' class='answerTitle'></textarea></td>"
                             + "<td><textarea rows='3' cols='80' class='answerDescription'></textarea></td>"
-                            + "<td><input type='text' size='3' maxlength='3' class='answerPointMin'/>~<input type='text' size='3' maxlength='3' class='answerPointMax'/></td>"
+                            + "<td><input type='text' size='3' maxlength='3' class='answerPointMin' value='0'/>~<input type='text' size='3' maxlength='3' class='answerPointMax' value='0'/></td>"
                             + "<td><button>删除</button></td>";
 
                     tableTr = tableTr + "</tr>";

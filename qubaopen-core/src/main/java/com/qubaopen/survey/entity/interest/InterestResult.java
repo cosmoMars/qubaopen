@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author mars 兴趣问卷结果表
  */
@@ -20,6 +22,7 @@ public class InterestResult extends AbstractPersistable<Long> {
 
 	private static final long serialVersionUID = 692329675843837712L;
 
+	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "interest_id", nullable = false)
 	private Interest interest;

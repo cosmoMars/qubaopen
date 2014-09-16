@@ -3,6 +3,7 @@ package com.qubaopen.survey.entity.interest;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -56,6 +57,7 @@ public class InterestQuestion extends AbstractPersistable<Long> {
 	/**
 	 * 内容
 	 */
+	@Column(columnDefinition = "LONGTEXT")
 	private String content;
 
 	/**

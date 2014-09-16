@@ -54,6 +54,13 @@ public class InterestQuestionOrder extends AbstractPersistable<Long> {
 	 */
 	private boolean interrupt;
 
+	public Interest getInterest() {
+		return interest;
+	}
+
+	public void setInterest(Interest interest) {
+		this.interest = interest;
+	}
 
 	public long getResultOptionId() {
 		return resultOptionId;

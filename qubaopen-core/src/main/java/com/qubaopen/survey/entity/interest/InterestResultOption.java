@@ -1,5 +1,6 @@
 package com.qubaopen.survey.entity.interest;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -22,6 +23,7 @@ public class InterestResultOption extends AbstractPersistable<Long> {
 	/**
 	 * 内容
 	 */
+	@Column(columnDefinition = "LONGTEXT")
 	private String content;
 
 	/**

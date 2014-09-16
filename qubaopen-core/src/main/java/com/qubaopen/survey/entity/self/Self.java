@@ -1,5 +1,6 @@
 package com.qubaopen.survey.entity.self;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -89,6 +90,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * 备注
 	 */
+	@Column(columnDefinition = "LONGTEXT")
 	private String remark;
 
 	/**

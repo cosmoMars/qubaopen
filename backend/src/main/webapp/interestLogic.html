@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>insert questionnaire</title>
+<style>
+    .label {
+        float: left;
+        width: 120px;
+    }
+
+    .infobox {
+        width: 200px;
+    }
+
+    .error {
+        color: red;
+        padding-left: 10px;
+    }
+
+    .submit {
+        margin-left: 125px;
+        margin-top: 10px;
+    }
+    .tipText{
+        font-size: 12px;
+    }
+
+    div {
+        padding: 5px;
+    }
+
+    .question{
+        overflow: auto;
+        display: block;
+        border: 1px solid black;
+    }
+
+    .question:nth-child(n+2){
+        margin-top: 30px;
+    }
+    .qTitle{
+        border-bottom: 1px solid black;
+    }
+    .choice div{
+        float: left;
+    }
+    /*第二个开始margin*/
+    .choice div:nth-child(n+2){
+        margin-left: 30px;
+    }
+    .logicButton{
+        clear: left;
+    }
+    .deleteAllLogic{
+        margin-left: 200px;
+    }
+
+    #questionnaireTitle{
+        font-weight: 800;
+    }
+
+    #questionnaireAnswer{
+        overflow: auto;
+        display: block;
+        margin-top: 5px;
+        border: 1px solid blue;
+    }
+
+
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css"/>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+<!--<link rel="stylesheet" href="css/jquery-ui.css"/>-->
+<!--<script src="js/jquery-1.9.1.js"></script>-->
+<!--<script src="js/jquery-ui.js"></script>-->
+
+
+<script type="text/javascript">
+function trimRight(s1){
+    var r = s1.replace(/~+$/, '')
+    return r;
+}
+
+function getParameter(sValue) {
+    var SearchString = window.location.search.substring(1);
+    var VariableArray = SearchString.split('&');
+    for (var i = 0; i < VariableArray.length; i++) {
+        var KeyValuePair = VariableArray[i].split('=');
+        if (KeyValuePair[0] == sValue) {
+            return KeyValuePair[1];
+        }
+    }
+}
+
+var questionnaireId;
+var aQuestionId=[];
+var aAnswerId=[];
+var isLocalData=false;
+
+function requestQuestionnaire(qid){
+    $.ajax({
+        url: "backendInterest/findInterest",
+        type: "POST",
+        async: false,
+        dataType: "json",
+        data: {"id":qid},
+        success: function (data) {
+            if (data.success == 1) {
+                console.log("success");
+                loadQuestionnaire(data);
+            }
+
+        }
+    });
+}
+
+
+function submitLogic(jsonSent){
+	jsonSent=JSON.stringify(jsonSent);
+    $.ajax({
+        url: "backendInterest/saveInterestLogic",
+        type: "POST",
+        async: false,
+        dataType: "json",
+        data: {"json": jsonSent},
+        success: function (data) {
+            if (data.success == 1) {
+                alert("提交成功");
+            }
+        }
+    });
+}
+
+
+//加载问卷
+function loadQuestionnaire(b){
+    $("#questionnaireLogic").empty();
+    var test='{"questionnaireId":20,"questionnaireTitle":"问卷标题",' +
+            '"questionList":[' +
+            '{"questionId":151,"questionContent":"请选择下列你最喜欢的水果","questionNo":"1",' +
+            'optionList:[' +
+            '{"optionId":"515","optionNo":"A",optionContent:"苹果"},' +
+            '{"optionId":"516","optionNo":"B",optionContent:"西瓜"},' +
+            '{"optionId":"517","optionNo":"C",optionContent:"草莓"},' +
+            '{"optionId":"518","optionNo":"D",optionContent:"葡萄"}],' +
+            'orderList:[' +
+            '{"orderId":1001,"questionId":151,"optionId":515,"nextQuestionId":0,"resultId":0},' +
+            '{"orderId":1002,"questionId":151,"optionId":516,"nextQuestionId":0,"resultId":10}]},' +
+            '{"questionId":152,"questionContent":"请选择下列你最喜欢的手机","questionNo":"2",' +
+            'optionList:[' +
+            '{"optionId":"519","optionNo":"A",optionContent:"苹果"},' +
+            '{"optionId":"520","optionNo":"B",optionContent:"小米"},' +
+            '{"optionId":"521","optionNo":"C",optionContent:"三星"},' +
+            '{"optionId":"522","optionNo":"D",optionContent:"锤子"}]},' +
+            '{"questionId":153,"questionContent":"请选择下列你最喜欢的电脑","questionNo":"3",' +
+            'optionList:[' +
+            '{"optionId":"523","optionNo":"A",optionContent:"苹果"},' +
+            '{"optionId":"524","optionNo":"B",optionContent:"联想"},' +
+            '{"optionId":"525","optionNo":"C",optionContent:"戴尔"},' +
+            '{"optionId":"526","optionNo":"D",optionContent:"索尼"}]},' +
+            '{"questionId":154,"questionContent":"请选择下列你最喜欢的茶叶","questionNo":"4",' +
+            'optionList:[' +
+            '{"optionId":"527","optionNo":"A",optionContent:"龙井"},' +
+            '{"optionId":"528","optionNo":"B",optionContent:"碧螺春"},' +
+            '{"optionId":"529","optionNo":"C",optionContent:"毛尖"},' +
+            '{"optionId":"529","optionNo":"D",optionContent:"祁门"},' +
+            '{"optionId":"531","optionNo":"E",optionContent:"猴魁"}]}],' +
+            '"answerList":[' +
+            '{"answerId":10,"answerNo":"1","answerContent":"你是果粉"},' +
+            '{"answerId":11,"answerNo":"2","answerContent":"你是米粉"},' +
+            '{"answerId":12,"answerNo":"3","answerContent":"你是脑残粉"}]}';
+    var jsonObj;
+    if(!isLocalData){
+        jsonObj=b;
+    }else{
+        jsonObj=eval("("+test+")");
+    }
+    //console.log(jsonObj);
+
+
+    //问卷相关
+    var questionnaireId=jsonObj.questionnaireId;
+    var questionnaireTitle=jsonObj.questionnaireTitle;
+    $('#questionnaireTitle').attr("data-qid",questionnaireId);
+    $("#questionnaireTitle").empty().append(questionnaireTitle);
+
+
+    //题目 选项 逻辑
+    var aQuestion=jsonObj.questionList;
+    var htmlQuestion;
+    for(var i=0;i<aQuestion.length;i++){
+        var qid= aQuestion[i].questionId;
+        aQuestionId.push(parseInt(qid));
+        var qNo= aQuestion[i].questionNo;
+        var qContent= aQuestion[i].questionContent;
+
+        //选项
+        var aChoice= aQuestion[i].optionList;
+        var htmlChoice="";
+        for(var j=0;j<aChoice.length;j++){
+            var oid=aChoice[j].optionId;
+            htmlChoice+='<div data-oid="'+oid+'">'+oid+' '+aChoice[j].optionNo+'.'+aChoice[j].optionContent+'</div>';
+        }
+
+        //逻辑
+        var aOrder=aQuestion[i].orderList;
+        var htmlOrder="";
+        if(aOrder){
+            for(var k=0;k<aOrder.length;k++){
+                var orderId=aOrder[k].orderId;
+                var resultOptionid=aOrder[k].resultId
+                var htmlIsAnswer="";
+                var htmlIsDisable=" disabled ";
+                if(resultOptionid!=0){
+                    htmlIsAnswer="checked";
+                    htmlIsDisable=' value="'+aOrder[k].resultId+'" ';
+                }
+
+                htmlOrder+='<div data-oid="'+orderId+'" class="logic"><label>第' +
+                        '<input class="questionId" type="text" value="'+aOrder[k].questionId+'" size="5" disabled/>题，选' +
+                        '<input class="optionId" size="5" type="text" value="'+aOrder[k].optionId+'"/>，跳至' +
+                        '<input class="nextQuestionId" size="5" type="text" value="'+aOrder[k].nextQuestionId+'"/>答案' +
+                        '<input class="isAnswer" type="checkbox"/ '+htmlIsAnswer+'>' +
+                        '<input class="resultOptionId" size="5" type="text" '+htmlIsDisable+' >' +
+                        '</label></div>';
+            }
+
+        }
+
+        htmlQuestion='<div data-qid="'+qid+'" class="question">' +
+                '<div class="qTitle">'+qid+" "+qNo+"."+qContent+'</div>' +
+                ' <div class="choice">'+htmlChoice+'</div>' +
+                ' <div class="logicButton"><button class="addSingleLogic">添加一条逻辑</button><button class="addLogicForEach">所有选项添加逻辑</button></div>' +
+                ' <div class="logicGroup">'+htmlOrder+'</div></div>';
+        $("#questionnaireLogic").append(htmlQuestion);
+
+    }
+
+
+    //答案
+    var aAnswer=jsonObj.answerList;
+    var htmlAnswer;
+    for(var i=0;i<aAnswer.length;i++){
+        var aid=parseInt(aAnswer[i].answerId);
+        aAnswerId.push(aid);
+        htmlAnswer='';
+        htmlAnswer='<div data-aid="'+aid+'" class="answer">'+aid+' '+aAnswer[i].answerContent+'</div>';
+
+        $("#questionnaireAnswer").append(htmlAnswer);
+    }
+
+}
+
+
+$(document).ready(function () {
+
+    var qid=getParameter("qid");
+    questionnaireId=qid;
+    if(isLocalData){
+        loadQuestionnaire();
+    }else{
+        requestQuestionnaire(qid);
+    }
+
+    //本问卷 题目、选项、答案id数组
+
+
+
+    /**
+     * 界面读取、提交
+     * */
+
+    $(document).on("click","#submitData",function(){
+        var jsonObj={};
+        jsonObj.questionnaireId=questionnaireId;
+        var logicList=[];
+        $(".logic").each(function(index,e){
+            var logicObj={};
+            var orderId=$(e).attr("data-oid");
+            var questionId=$(e).find(".questionId").val();
+            var optionId=$(e).find(".optionId").val();
+            var nextQuestionId=$(e).find(".nextQuestionId").val();
+            //var isAnswer=$(e).find(".isAnswer").is(":checked");
+            var resultOptionId=$(e).find(".resultOptionId").val();
+
+            logicObj.orderId=orderId?orderId:"";
+            logicObj.questionId=questionId;
+            logicObj.optionId=optionId;
+            logicObj.nextQuestionId=nextQuestionId;
+            //logicObj.isAnswer=isAnswer?1:0;
+            logicObj.resultOptionId=resultOptionId?resultOptionId:"0";
+
+            if(!optionId){
+                $(e).find(".optionId").focus();
+                return;
+            }
+            if(!nextQuestionId){
+                $(e).find(".nextQuestionId").focus();
+                return;
+            }
+
+
+            //console.log(logicObj);
+            logicList.push(logicObj);
+
+        });
+        jsonObj.logicList=logicList;
+        console.log(jsonObj);
+        submitLogic(jsonObj);
+    });
+
+    /**
+     * 界面输入控制
+     * */
+
+    //勾选答案checkbox 使得答案框启用
+    $(document).on("change",".isAnswer",function(){
+        //********判断是否checked*******
+        var value= $(this).is(":checked");
+        if(value){
+            $(this).prev(".nextQuestionId").val(0);
+            $(this).next(".resultOptionId").removeAttr("disabled");
+            $(this).prev(".nextQuestionId").css({'background-color' : ''});
+            $(this).next(".resultOptionId").focus();
+        }else{
+            $(this).next(".resultOptionId").val("");
+            $(this).next(".resultOptionId").attr("disabled","");
+            $(this).next(".resultOptionId").css({'background-color' : ''});
+        }
+
+
+    });
+
+
+     //判断输入选项id是否存在   blur为失去焦点事件， 也可以用change 不过没blur好 区别在于输入内容为空时
+    $(document).on("blur",".optionId",function(){
+        var value=parseInt($(this).val());
+        var aOptionId=[];
+        $(this).closest(".question").find(".choice").children().each(function(){
+            aOptionId.push(parseInt($(this).attr("data-oid")));
+        });
+
+        if(value!=0 && aOptionId.indexOf(value)<0){
+            $(this).css("background-color","#F00");
+        }else{
+            $(this).css("background-color","#fff");
+        }
+    });
+
+    //判断输入跳转题目id是否存在
+    $(document).on("blur",".nextQuestionId",function(){
+        var value=parseInt($(this).val());
+        if(value!=0 && aQuestionId.indexOf(parseInt(value))<0){
+            $(this).css("background-color","#F00");
+        }else{
+            $(this).css({'background-color' : ''});
+        }
+    });
+
+    //判断输入答案id是否存在
+    $(document).on("blur",".resultOptionId",function(){
+        var value=parseInt($(this).val());
+        if(value!=0 && aAnswerId.indexOf(parseInt(value))<0){
+            $(this).css("background-color","#F00");
+        }else{
+            //之后可以改进 建一个背景色的css 使用addClass  removeClass方法
+            //暂时使用了 单独删除某个特定css的方法
+            $(this).css({'background-color' : ''});
+        }
+    });
+
+
+
+    /**
+     * 界面增删改
+     * */
+
+    //**删除单个逻辑
+    $(document).on("click",".deleteSingleLogic",function(){
+        $(this).closest(".logic").remove();
+    });
+
+    //**删除所有逻辑
+    $(document).on("click",".deleteAllLogic",function(){
+        $(this).closest(".question").find(".logicGroup").empty();
+    });
+
+    //**增加单个逻辑
+    $(document).on("click",".addSingleLogic",function(){
+        //alert("单体按下") ;
+        var divQuestion=$(this).closest(".question");
+        var qid=divQuestion.attr("data-qid");
+        var divLogicGroup=divQuestion.children(".logicGroup");
+        var htmlLogic=
+                '<div class="logic"><label>第' +
+                '<input class="questionId" type="text" value="'+qid+'" size="5" disabled/>题，选' +
+                '<input class="optionId" size="5" type="text"/>，跳至' +
+                '<input class="nextQuestionId" size="5" type="text"/>答案' +
+                '<input class="isAnswer" type="checkbox"/>' +
+                '<input class="resultOptionId" size="5" type="text" disabled>' +
+                '<button class="deleteSingleLogic">删除</button>' +
+                '</label></div>';
+        divLogicGroup.append(htmlLogic);
+        //divLogicGroup.find(".logic").last().find(".optionId").focus();
+
+
+    });
+
+
+    //**增加单个逻辑
+    $(document).on("click",".addLogicForEach",function(){
+        //alert("单体按下") ;
+        var divQuestion=$(this).closest(".question");
+        var qid=divQuestion.attr("data-qid");
+        var divLogicGroup=divQuestion.children(".logicGroup");
+
+        var choiceSize=divQuestion.find(".choice").children().length;
+        var htmlLogic;
+        divQuestion.find(".choice").children().each(function(){
+            var oid=$(this).attr("data-oid");
+            htmlLogic=
+                    '<div class="logic"><label>第' +
+                    '<input class="questionId" type="text" value="'+qid+'" size="5" disabled/>题，选' +
+                    '<input class="optionId" size="5" type="text" value="'+oid+'"/>，跳至' +
+                    '<input class="nextQuestionId" size="5" type="text"/>答案' +
+                    '<input class="isAnswer" type="checkbox"/>' +
+                    '<input class="resultOptionId" size="5" type="text" disabled>' +
+                    '<button class="deleteSingleLogic">删除</button>' +
+                    '</label></div>';
+
+            divLogicGroup.append(htmlLogic);
+        });
+
+
+        //divLogicGroup.find(".logic").last().find(".optionId").focus();
+
+
+    });
+
+});
+
+</script>
+</head>
+<body>
+
+<div id="questionnaireTitle">这是这套问卷的标题</div>
+
+<div class="tipText">题目列表</div>
+<div id="questionnaireLogic">
+    <!--<div data-qid="151" class="question">-->
+        <!--<div class="qTitle">151 请选择下列你最喜欢的水果</div>-->
+        <!--<div class="choice"><div>515 苹果</div><div>516 西瓜</div><div>517 草莓</div><div>518 葡萄</div></div>-->
+        <!--<div class="logicButton"><button class="addSingleLogic">添加单体跳转</button><button class="deleteAllLogic">删除所有逻辑</button></div>-->
+        <!--<div class="logicGroup">-->
+            <!--&lt;!&ndash;<div class="logic"><label>&ndash;&gt;-->
+                <!--&lt;!&ndash;第<input class="questionId" type="text" size="5" disabled/>题，选<input class="optionId" size="5" type="text"/>，跳至<input class="nextQuestionId" size="5" type="text"/>&ndash;&gt;-->
+                <!--&lt;!&ndash;答案<input class="isAnswer" type="checkbox"/><input class="resultOptionId" size="5" type="text" disabled><button>删除</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;</label></div>&ndash;&gt;-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--<div data-qid="152" class="question">-->
+        <!--<div class="qTitle">152 请选择下列你最喜欢的手机</div>-->
+        <!--<div class="choice"><div>519 苹果</div><div>520 小米</div><div>521 三星</div><div>522 锤子</div></div>-->
+        <!--<div class="logicButton"><button class="addSingleLogic">添加单体跳转</button><button class="deleteAllLogic">删除所有逻辑</button></div>-->
+        <!--<div class="logicGroup">-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--<div data-qid="153" class="question">-->
+        <!--<div class="qTitle">153 请选择下列你最喜欢的电脑</div>-->
+        <!--<div class="choice"><div>523 苹果</div><div>524 联想</div><div>525 戴尔</div><div>526 IBM</div></div>-->
+        <!--<div class="logicButton"><button class="addSingleLogic">添加单体跳转</button><button class="deleteAllLogic">删除所有逻辑</button></div>-->
+        <!--<div class="logicGroup">-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+</div>
+
+<div class="tipText">答案列表</div>
+<div id="questionnaireAnswer">
+</div>
+
+
+<div>
+    <button id="submitData">提交</button>
+</div>
+
+
+</body>
+</html>

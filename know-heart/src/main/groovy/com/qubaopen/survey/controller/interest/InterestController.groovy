@@ -42,14 +42,23 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 */
 	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.POST)
 	retrieveInterest(@RequestParam(required = false) Long interestTypeId,
-		@RequestParam(required = false) Long sortTypeId,
-		@RequestParam(required = false) List<Long> ids,
-		@ModelAttribute('currentUser') User user,
-		Pageable pageable) {
+			@RequestParam(required = false) Long sortTypeId,
+			@RequestParam(required = false) String ids,
+			@ModelAttribute('currentUser') User user,
+			Pageable pageable) {
 
 		logger.trace ' -- 获取用户兴趣问卷 -- '
-		
-		interestService.retrieveInterest(user.id, interestTypeId, sortTypeId, ids, pageable)
+
+		def resultIds
+		if (ids != null) {
+			resultIds = []
+			def strIds = ids.split(',')
+			strIds.each {
+				resultIds << Long.valueOf(it.trim())
+			}
+		}
+
+		interestService.retrieveInterest(user.id, interestTypeId, sortTypeId, resultIds, pageable)
 	}
 
 	/**
@@ -59,10 +68,10 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 */
 	@RequestMapping(value = 'calculateInterestResult', method = RequestMethod.POST)
 	calculateInterestResult(
-		@RequestParam long interestId,
-		@RequestParam(required = false) String questionJson,
-		@ModelAttribute('currentUser') User user
-		) {
+			@RequestParam long interestId,
+			@RequestParam(required = false) String questionJson,
+			@ModelAttribute('currentUser') User user
+	) {
 
 		logger.trace ' -- 通过用户问题选项，计算得到结果选项 -- '
 		if (!questionJson) {
@@ -87,41 +96,41 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	}
 
 
-//	/**
-//	 * 上传图片
-//	 * @param interestId
-//	 * @param pic
-//	 */
-//	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
-//	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic) {
-//
-//		logger.trace(' -- 上传图片 -- ')
-//
-//		def interest = interestRepository.findOne(interestId)
-//		interest.pic = pic.bytes
-//		try {
-//			interestRepository.save(interest)
-//			'{"success": "1"}'
-//		} catch (Exception e) {
-//			'{"success": "0", "message": "上传失败"}'
-//		}
-//
-//	}
-//
-//	/**
-//	 * 显示图片
-//	 * @param interestId
-//	 * @param output
-//	 * @return
-//	 */
-//	@RequestMapping(value = 'retrievePic/{interestId}', method = RequestMethod.GET)
-//	retrieveAvatar(@PathVariable long interestId, OutputStream output) {
-//
-//		logger.trace(' -- 显示图片 -- ')
-//
-//		def interest = interestRepository.findOne(interestId)
-//		output.write(interest.pic)
-//	}
+	//	/**
+	//	 * 上传图片
+	//	 * @param interestId
+	//	 * @param pic
+	//	 */
+	//	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
+	//	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic) {
+	//
+	//		logger.trace(' -- 上传图片 -- ')
+	//
+	//		def interest = interestRepository.findOne(interestId)
+	//		interest.pic = pic.bytes
+	//		try {
+	//			interestRepository.save(interest)
+	//			'{"success": "1"}'
+	//		} catch (Exception e) {
+	//			'{"success": "0", "message": "上传失败"}'
+	//		}
+	//
+	//	}
+	//
+	//	/**
+	//	 * 显示图片
+	//	 * @param interestId
+	//	 * @param output
+	//	 * @return
+	//	 */
+	//	@RequestMapping(value = 'retrievePic/{interestId}', method = RequestMethod.GET)
+	//	retrieveAvatar(@PathVariable long interestId, OutputStream output) {
+	//
+	//		logger.trace(' -- 显示图片 -- ')
+	//
+	//		def interest = interestRepository.findOne(interestId)
+	//		output.write(interest.pic)
+	//	}
 
 	/**
 	 * 获取好友问卷结果

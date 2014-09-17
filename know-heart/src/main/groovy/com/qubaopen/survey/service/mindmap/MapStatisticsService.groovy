@@ -97,8 +97,9 @@ public class MapStatisticsService {
 				if (specialMaps?.self?.graphicsType) {
 					def timeChart = [], paChart = [], naChart = [], midChart = []
 					
-					Collections.sort(specialMaps.mapRecords, new MapRecordComparator())
-					specialMaps.mapRecords.each {
+					def mapRecords = specialMaps.mapRecords as List
+					Collections.sort(mapRecords, new MapRecordComparator())
+					mapRecords.each {
 						timeChart << it.name
 						paChart << it.value
 						naChart << it.naValue

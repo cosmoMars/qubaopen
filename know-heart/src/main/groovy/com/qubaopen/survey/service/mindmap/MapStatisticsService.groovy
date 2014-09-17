@@ -1,11 +1,14 @@
 package com.qubaopen.survey.service.mindmap
 
+import java.util.Comparator;
+
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.qubaopen.survey.entity.mindmap.MapRecord;
 import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.EPQBasicRepository
@@ -93,6 +96,8 @@ public class MapStatisticsService {
 				
 				if (specialMaps?.self?.graphicsType) {
 					def timeChart = [], paChart = [], naChart = [], midChart = []
+					
+					Collections.sort(specialMaps.mapRecords, new MapRecordComparator())
 					specialMaps.mapRecords.each {
 						timeChart << it.name
 						paChart << it.value
@@ -553,5 +558,13 @@ public class MapStatisticsService {
 			'userId' : user.id,
 			'data' : data
 		]
+	}
+	
+	class MapRecordComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			MapRecord m1 = (MapRecord) o1
+			MapRecord m2 = (MapRecord) o2
+			return m1.createdDate.compareTo(m2.createdDate)
+		}
 	}
 }

@@ -28,7 +28,7 @@ public class SelfResultOption extends AbstractPersistable<Long> {
 	/**
 	 * 内容
 	 */
-	@Column(columnDefinition = "LONGTEXT")
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
 	/**

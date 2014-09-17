@@ -453,7 +453,7 @@ public class SelfResultService {
 				'lowestScore_lessThanOrEqualTo' : optionScore
 			]	
 		)
-
+		
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption, optionScore) // 保存心理地图
 

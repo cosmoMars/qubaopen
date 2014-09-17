@@ -76,7 +76,7 @@ public class Interest extends AbstractBaseEntity<Long> {
 	/**
 	 * 备注
 	 */
-	@Column(columnDefinition = "LONGTEXT")
+	@Column(columnDefinition = "TEXT")
 	private String remark;
 
 	/**

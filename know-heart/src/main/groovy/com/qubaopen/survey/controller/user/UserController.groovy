@@ -69,8 +69,8 @@ class UserController extends AbstractBaseController<User, Long> {
 		logger.trace ' -- 用户登录 -- '
 
 		/*if (!user) {
-		 return '{"success" : "0", "message": "err014"}'
-		 }*/
+			return '{"success" : "0", "message": "err014"}'
+		}*/
 
 		if (!validatePhone(phone)) {
 			return '{"success" : "0", "message": "err003"}'

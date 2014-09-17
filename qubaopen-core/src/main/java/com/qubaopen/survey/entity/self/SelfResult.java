@@ -1,5 +1,6 @@
 package com.qubaopen.survey.entity.self;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -45,6 +46,7 @@ public class SelfResult extends AbstractPersistable<Long> {
 	/**
 	 * 备注
 	 */
+	@Column(columnDefinition = "TEXT")
 	private String remark;
 
 	public Self getSelf() {

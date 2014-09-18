@@ -230,6 +230,7 @@ public class InterestController {
 					InterestQuestionOption option = new InterestQuestionOption();
 					option.setContent(questionOption.get("choiceDescription").asText());
 					option.setScore(questionOption.get("choicePoint").asInt());
+					option.setOptionNum(questionOption.get("choiceNo").asInt());
 					option.setInterestQuestion(iq);
 					interestQuestionOptionRepository.save(option);
 				}

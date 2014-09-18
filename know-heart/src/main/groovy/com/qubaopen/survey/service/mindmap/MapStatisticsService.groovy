@@ -102,11 +102,11 @@ public class MapStatisticsService {
 					mapRecords.each {
 						timeChart << it.name
 						paChart << it.value
-						naChart << it.naValue
+						naChart << -it.naValue
 						midChart << (it.value - it.naValue)
 						
 					}
-					chart << [timeChart : timeChart, paChart : paChart, naChart : naChart, midChart : midChart]
+					chart = [timeChart : timeChart, paChart : paChart, naChart : naChart, midChart : midChart]
 				}
 				data << [
 			        'mapTitle' : specialMaps?.self?.title,
@@ -343,10 +343,12 @@ public class MapStatisticsService {
 //				}
 				if (specialMaps?.self?.graphicsType) {
 					def timeChart = [], paChart = [], naChart = [], midChart = []
-					specialMaps.mapRecords.each {
+					def mapRecords = specialMaps.mapRecords as List
+					Collections.sort(mapRecords, new MapRecordComparator())
+					mapRecords.each {
 						timeChart << it.name
 						paChart << it.value
-						naChart << it.naValue
+						naChart << -it.naValue
 						midChart << (it.value - it.naValue)
 					}
 					chart << [timeChart : timeChart, paChart : paChart, naChart : naChart, midChart : midChart]

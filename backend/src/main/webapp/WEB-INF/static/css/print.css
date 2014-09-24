@@ -1,0 +1,41 @@
+body {
+    margin: 0px;
+    padding: 10px;
+}
+
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: none;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+table tr {
+    /*height: 18px;*/
+}
+
+table td {
+    border: solid #2575B4 1px;
+}
+
+table th {
+    border: solid #2575B4 1px;
+    background-color: #A2D4F7;
+    text-align: center;
+    padding: 2px;
+}
+
+table td .username,.fullname {
+    border: solid #2575B4 1px;
+    padding: 2px;
+}
+
+/*.hover {*/
+    /*background-color: #E6F4FF;*/
+/*}*/
+
+/*.btnDelete,.btnUpdate,.btnAdd,.btnReset {*/
+    /*text-align: center;*/
+/*}*/

@@ -1,4 +1,4 @@
-package com.qubaopen.backend.controller;
+package com.qubaopen.backend.controller.self;
 
 import java.io.IOException;
 import java.util.ArrayList;

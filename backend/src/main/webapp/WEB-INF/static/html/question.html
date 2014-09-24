@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>questionnaire insert</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+
+
+    <script>
+        function validate() {
+            var userField = document.getElementById("username");
+            var passwordField = document.getElementById("password");
+            if (userField.value.trim() == "" || passwordField.value.trim() == "") {
+                return false;
+            } else {
+                return true;
+            }
+
+
+        }
+
+        /**
+         * initialize
+         */
+        $(function () {
+
+        });
+    </script>
+</head>
+<body>
+<form name="input" action="../../login.htm" method="post" onsubmit="validate();">
+    username: <input type="text" name="username" id="username"><br>
+    password: <input type="password" name="password" id="password"><br>
+    modual:<input type="radio" name="modual" value="1">兴趣问卷录入
+    <input type="radio" name="modual" value="6">分数问卷录入
+    <input type="radio" name="modual" value="2">调研问卷录入
+    <input type="radio" name="modual" value="3">抽奖活动录入
+    <input type="radio" name="modual" value="4">兑奖活动录入
+    <input type="radio" name="modual" value="5">抽奖活动开奖
+    <input type="radio" name="modual" value="7">用户使用情况<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="modual" value="8">信息推送服务
+    <input type="radio" name="modual" value="9">话题审核
+    <input type="radio" name="modual" value="10">调研问卷审核
+    <input type="radio" name="modual" value="14">调研用户问卷审核
+    <input type="radio" name="modual" value="18">录入调研筛选条件<br>
+    <input type="radio" name="modual" value="15">话题录入
+    <input type="radio" name="modual" value="16">金币提现
+    <input type="radio" name="modual" value="17">红包开奖
+   
+    <br></br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="modual" value="11">公告录入
+    <input type="radio" name="modual" value="12">兴趣问卷录入（新）
+    <input type="radio" name="modual" value="13">分数问卷录入（新）<br>
+
+
+    <input type="submit" value="Submit">
+
+
+</form>
+
+
+</body>
+</html>

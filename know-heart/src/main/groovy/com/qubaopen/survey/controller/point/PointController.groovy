@@ -1,12 +1,11 @@
 package com.qubaopen.survey.controller.point;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 
-import com.mathworks.toolbox.javabuilder.MWClassID;
-import com.mathworks.toolbox.javabuilder.MWException;
-import com.mathworks.toolbox.javabuilder.MWNumericArray;
+import com.mathworks.toolbox.javabuilder.MWClassID
+import com.mathworks.toolbox.javabuilder.MWNumericArray
 
 
 /**

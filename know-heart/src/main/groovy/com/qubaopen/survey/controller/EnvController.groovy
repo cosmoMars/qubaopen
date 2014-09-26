@@ -13,7 +13,7 @@ public class EnvController {
 	@RequestMapping(value = 'getEnv', method = RequestMethod.POST)
 	getEnv(){
 		[
-			'DYLD_LIBRARY_PATH' : System.getenv("DYLD_LIBRARY_PATH"),
+			'DYLD_LIBRARY_PATH' : System.getenv("LD_LIBRARY_PATH"),
 			'os.name' : System.getProperty("os.name"),
 			'os.arch' : System.getProperty("os.arch"),
 			'os.version' : System.getProperty("os.version"),

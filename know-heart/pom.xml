@@ -102,7 +102,11 @@
 	  <artifactId>javabuilder</artifactId>
 	  <version>1.0</version>
 	</dependency>
-
+    <dependency>
+      <groupId>com.mathworks</groupId>
+      <artifactId>createFit</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 
 </project>

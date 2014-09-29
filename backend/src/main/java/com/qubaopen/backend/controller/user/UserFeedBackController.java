@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qubaopen.backend.repository.user.UserFeedBackRepository;
@@ -25,14 +26,13 @@ public class UserFeedBackController {
 	@Autowired
 	private UserFeedBackRepository userFeedBackRepository;
 
-	@SuppressWarnings("unused")
-	private String findAllUserFeedBack(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "findAllUserFeedBack", method = RequestMethod.GET)
+	public String findAllUserFeedBack(HttpServletRequest request, HttpServletResponse response) {
 		logger.debug(" =======================  request = {}");
 		Sort sort = new Sort(Direction.DESC, "createDate");
-		List<UserFeedBack> userFeedBacks =  userFeedBackRepository.findAll(sort);
-		
+		List<UserFeedBack> userFeedBacks = userFeedBackRepository.findAll(sort);
+
 		request.setAttribute("userFeedBacks", userFeedBacks);
 		return "success";
 	}
-
-} 
+}

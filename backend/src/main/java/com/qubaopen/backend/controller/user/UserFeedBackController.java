@@ -1,7 +1,9 @@
 package com.qubaopen.backend.controller.user;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,12 +29,15 @@ public class UserFeedBackController {
 	private UserFeedBackRepository userFeedBackRepository;
 
 	@RequestMapping(value = "findAllUserFeedBack", method = RequestMethod.GET)
-	public String findAllUserFeedBack(HttpServletRequest request, HttpServletResponse response) {
+	public String findAllUserFeedBack(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		logger.debug(" =======================  request = {}");
-		Sort sort = new Sort(Direction.DESC, "createDate");
+		Sort sort = new Sort(Direction.DESC, "feedBackTime");
 		List<UserFeedBack> userFeedBacks = userFeedBackRepository.findAll(sort);
 
 		request.setAttribute("userFeedBacks", userFeedBacks);
+		request.getRequestDispatcher("/userFeedBack.jsp").forward(request, response);
+//		response.setContentType("text/html; charset=UTF-8");
+//		response.sendRedirect("/userFeedBack.jsp");
 		return "success";
 	}
 }

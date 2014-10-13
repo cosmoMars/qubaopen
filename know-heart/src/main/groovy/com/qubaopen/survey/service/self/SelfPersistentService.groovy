@@ -149,8 +149,8 @@ public class SelfPersistentService {
 			}
 		}
 		selfUserAnswerRepository.save(userAnswers)
-		self.totalRespondentsCount ++
-		selfRepository.save(self)
+//		self.totalRespondentsCount ++
+//		selfRepository.save(self)
 	}
 
 	/**

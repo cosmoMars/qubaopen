@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mathworks.toolbox.javabuilder.MWClassID;
 import com.mathworks.toolbox.javabuilder.MWException;
 import com.mathworks.toolbox.javabuilder.MWNumericArray;
+import com.mathworks.toolbox.javabuilder.internal.MWMCR;
 
 import createFit.MatFactory;
 
@@ -24,6 +25,8 @@ public class PointController {
 	@RequestMapping(value = "getPoint", method = RequestMethod.POST)
 	public List<Double> getPoint () throws MWException {
 
+		MWMCR current = MWMCR.getCurrent();
+		System.out.println(current);
 		MatFactory matFactory = new MatFactory();
 		Double[] d1, d2;
 		Object[] o1;

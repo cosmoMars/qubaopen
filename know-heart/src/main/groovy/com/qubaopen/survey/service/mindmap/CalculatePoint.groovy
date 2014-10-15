@@ -16,14 +16,10 @@ public class CalculatePoint {
 
 	@Transactional
 	getPoint(List<Double> time, List<Double> chart, List<Double> timeC) {
+		
 		MatFactory matFactory = new MatFactory()
-		def d1, d2
-		d1 = new Double[chart.size()]
-		d2 = new Double[chart.size()]
-		for (int i = 0; i < chart.size(); i++) {
-			d1[i] = time[i];
-			d2[i] = chart[i];
-		}
+		def d1 = time as Double[]
+		def d2 = chart as Double[]
 
 		MWNumericArray n1 = new MWNumericArray(d1, MWClassID.DOUBLE)
 		MWNumericArray n2 = new MWNumericArray(d2, MWClassID.DOUBLE)

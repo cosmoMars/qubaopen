@@ -39,7 +39,7 @@ public class CalculatePoint {
 		def chartC = []
 		timeC.each {
 			def resultC = console[0] + console[1] * Math.cos(it * console[3]) + console[2] * Math.sin(it * console[3])
-			chartC << resultC
+			chartC << (int)resultC
 		}
 		chartC
 	}

@@ -381,7 +381,34 @@ public class MapStatisticsService {
 						naChart << -it.naValue
 						midChart << (it.value - it.naValue)
 					}
-					chart << [timeChart : timeChart, paChart : paChart, naChart : naChart, midChart : midChart]
+					def cal = Calendar.getInstance()
+					cal.add(Calendar.DAY_OF_MONTH, 1)
+					cal.set(Calendar.HOUR_OF_DAY, 12)
+					cal.set(Calendar.MINUTE, 0)
+					cal.set(Calendar.SECOND, 0)
+					def todayTime = cal.getTime().getTime()
+					
+					def timeChartC = []
+					timeChartC << todayTime
+					timeChartC << todayTime + 86400248
+					timeChartC << todayTime + 86400248 * 2
+					timeChartC << todayTime + 86400248 * 3
+					timeChartC << todayTime + 86400248 * 4
+					
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
+					
+					chart = [
+						timeChart : timeChart,
+						paChart : paChart,
+						naChart : naChart,
+						midChart : midChart,
+						timeChartC : timeChartC,
+						paChartC : paChartC,
+						naChartC : naChartC,
+						midChartC : midChartC
+					]
 				}
 				data << [
 					'mapTitle' : specialMaps?.self?.title,

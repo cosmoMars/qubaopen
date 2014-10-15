@@ -32,11 +32,11 @@ public class PointController {
 		d2 = new Double[16];
 //		o1 = new Object[16];
 
-//		for (int i = 0; i < 16; i++) {
-//			d1[i] = new Double(i);
-//			d2[i] = new Double(i);
+		for (int i = 0; i < 16; i++) {
+			d1[i] = new Double(i);
+			d2[i] = new Double(i);
 //			o1[i] = i;
-//		}
+		}
 
 		MWNumericArray n1 = new MWNumericArray(d1, MWClassID.DOUBLE);
 

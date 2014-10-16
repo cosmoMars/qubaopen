@@ -123,9 +123,9 @@ public class MapStatisticsService {
 					timeChartC << todayTime + 86400248 * 3
 					timeChartC << todayTime + 86400248 * 4
 					
-					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
-					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
-					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC) as List
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC) as List
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC) as List
 					
 					chart = [
 						timeChart : timeChart,

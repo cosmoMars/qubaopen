@@ -117,11 +117,11 @@ public class MapStatisticsService {
 					def todayTime = cal.getTime().getTime()
 					
 					def timeChartC = []
-					timeChartC << todayTime
-					timeChartC << todayTime + 86400248
-					timeChartC << todayTime + 86400248 * 2
-					timeChartC << todayTime + 86400248 * 3
-					timeChartC << todayTime + 86400248 * 4
+					timeChartC << todayTime as String
+					timeChartC << todayTime + 86400248 as String
+					timeChartC << todayTime + 86400248 * 2 as String
+					timeChartC << todayTime + 86400248 * 3 as String
+					timeChartC << todayTime + 86400248 * 4 as String
 					
 					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
 					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)

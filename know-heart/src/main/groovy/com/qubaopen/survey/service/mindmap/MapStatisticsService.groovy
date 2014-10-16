@@ -116,16 +116,22 @@ public class MapStatisticsService {
 					cal.set(Calendar.SECOND, 0)
 					def todayTime = cal.getTime().getTime()
 					
-					def timeChartC = []
+					def timeC = [], timeChartC = []
+					timeC << todayTime
+					timeC << todayTime + 86400248
+					timeC << todayTime + 86400248 * 2
+					timeC << todayTime + 86400248 * 3
+					timeC << todayTime + 86400248 * 4
+					
 					timeChartC << todayTime as String
 					timeChartC << todayTime + 86400248 as String
 					timeChartC << todayTime + 86400248 * 2 as String
 					timeChartC << todayTime + 86400248 * 3 as String
 					timeChartC << todayTime + 86400248 * 4 as String
 					
-					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
-					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
-					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeC)
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeC)
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeC)
 					
 					chart = [
 						timeChart : timeChart,
@@ -388,16 +394,22 @@ public class MapStatisticsService {
 					cal.set(Calendar.SECOND, 0)
 					def todayTime = cal.getTime().getTime()
 					
-					def timeChartC = []
+					def timeC = [], timeChartC = []
+					timeC << todayTime
+					timeC << todayTime + 86400248
+					timeC << todayTime + 86400248 * 2
+					timeC << todayTime + 86400248 * 3
+					timeC << todayTime + 86400248 * 4
+					
 					timeChartC << todayTime as String
 					timeChartC << todayTime + 86400248 as String
 					timeChartC << todayTime + 86400248 * 2 as String
 					timeChartC << todayTime + 86400248 * 3 as String
 					timeChartC << todayTime + 86400248 * 4 as String
 					
-					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
-					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
-					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeC)
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeC)
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeC)
 					
 					chart = [
 						timeChart : timeChart,

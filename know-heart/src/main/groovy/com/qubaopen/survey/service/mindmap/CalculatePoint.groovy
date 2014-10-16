@@ -15,7 +15,7 @@ import createFit.MatFactory;
 public class CalculatePoint {
 
 	@Transactional
-	getPoint(List<Double> time, List<Double> chart, List<String> timeC) {
+	getPoint(List<Double> time, List<Double> chart, List<Double> timeC) {
 		
 		MatFactory matFactory = new MatFactory()
 		def d1 = time as Double[]
@@ -38,7 +38,6 @@ public class CalculatePoint {
 		
 		def chartC = []
 		timeC.each {
-			it = Double.parseDouble(it)
 			def resultC = console[0] + console[1] * Math.cos(it * console[3]) + console[2] * Math.sin(it * console[3])
 			chartC << (int)resultC
 		}

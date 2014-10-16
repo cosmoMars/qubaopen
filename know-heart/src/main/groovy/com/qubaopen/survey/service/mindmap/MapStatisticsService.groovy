@@ -131,11 +131,11 @@ public class MapStatisticsService {
 						timeChart : timeChart,
 						paChart : paChart,
 						naChart : naChart,
-						midChart : midChart,
+						midChart : midChart/*,
 						timeChartC : timeChartC,
 						paChartC : paChartC,
 						naChartC : naChartC,
-						midChartC : midChartC
+						midChartC : midChartC*/
 					]
 				}
 				data << [
@@ -395,19 +395,19 @@ public class MapStatisticsService {
 					timeChartC << todayTime + 86400248 * 3
 					timeChartC << todayTime + 86400248 * 4
 					
-					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
-					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
-					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC) as List
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC) as List
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC) as List
 					
 					chart = [
 						timeChart : timeChart,
 						paChart : paChart,
 						naChart : naChart,
-						midChart : midChart,
-						timeChartC : timeChartC,
-						paChartC : paChartC,
-						naChartC : naChartC,
-						midChartC : midChartC
+						midChart : midChart//,
+//						timeChartC : timeChartC,
+//						paChartC : paChartC,
+//						naChartC : naChartC,
+//						midChartC : midChartC
 					]
 				}
 				data << [

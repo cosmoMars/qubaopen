@@ -14,8 +14,7 @@ import createFit.MatFactory;
 @Service
 public class CalculatePoint {
 
-	@Transactional
-	getPoint(List<Double> time, List<Double> chart, List<Double> timeC) {
+	def getPoint(List<Double> time, List<Double> chart, List<Double> timeC) {
 		
 		MatFactory matFactory = new MatFactory()
 		def d1 = time as Double[]

@@ -95,8 +95,8 @@ public class MapStatisticsService {
 			}
 			
 			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
-				def chart = []
-				
+				def chart
+				def c = []
 				if (specialMaps?.self?.graphicsType) {
 					def timeChart = [], paChart = [], naChart = [], midChart = []
 					
@@ -137,10 +137,12 @@ public class MapStatisticsService {
 						naChartC : naChartC,
 						midChartC : midChartC
 					]
+					
+					c << chart
 				}
 				data << [
 			        'mapTitle' : specialMaps?.self?.title,
-					'chart' : chart as List,
+					'chart' : c,
 					'mapMax' : specialMaps?.mapMax,
 					'resultName' : specialMaps?.selfResultOption?.name,
 					'resultScore' : '',
@@ -323,7 +325,7 @@ public class MapStatisticsService {
 				data << [
 					
 					'mapTitle' : it?.self?.title,
-					'chart' : chart as List,
+					'chart' : chart,
 					'mapMax' : it?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
 					'resultScore' : it?.score,
@@ -364,8 +366,8 @@ public class MapStatisticsService {
 				singleMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
 			}
 			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
-				def chart = []
-				
+				def chart
+				def c = []
 //				if (specialMaps?.self?.graphicsType) {
 //					specialMaps.mapRecords.each {
 //						chart << [name : it.name, value : it.value]
@@ -409,10 +411,11 @@ public class MapStatisticsService {
 						naChartC : naChartC,
 						midChartC : midChartC
 					]
+					c << chart
 				}
 				data << [
 					'mapTitle' : specialMaps?.self?.title,
-					'chart' : chart,
+					'chart' : c,
 					'mapMax' : specialMaps?.mapMax,
 					'resultName' : specialMaps?.selfResultOption?.name,
 					'resultScore' : '',

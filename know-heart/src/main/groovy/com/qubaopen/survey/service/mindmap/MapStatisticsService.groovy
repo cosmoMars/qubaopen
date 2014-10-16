@@ -103,7 +103,7 @@ public class MapStatisticsService {
 					def mapRecords = specialMaps.mapRecords as List
 					Collections.sort(mapRecords, new MapRecordComparator())
 					mapRecords.each {
-						timeChart << it.name
+						timeChart << it.name as String
 						paChart << it.value
 						naChart << -it.naValue
 						midChart << (it.value - it.naValue)
@@ -382,7 +382,7 @@ public class MapStatisticsService {
 					def mapRecords = specialMaps.mapRecords as List
 					Collections.sort(mapRecords, new MapRecordComparator())
 					mapRecords.each {
-						timeChart << it.name
+						timeChart << it.name as String
 						paChart << it.value
 						naChart << -it.naValue
 						midChart << (it.value - it.naValue)

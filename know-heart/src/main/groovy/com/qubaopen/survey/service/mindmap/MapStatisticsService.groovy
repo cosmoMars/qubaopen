@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.mindmap.MapRecord;
-import com.qubaopen.survey.entity.mindmap.MapStatistics;
 import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.EPQBasicRepository
@@ -95,87 +94,79 @@ public class MapStatisticsService {
 				
 			}
 			
-			getData(specialMaps, specialMapRecords, data)
-			
-//			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
-//				def chart = []
-//				
-//				if (specialMaps?.self?.graphicsType) {
-//					def timeChart = [], paChart = [], naChart = [], midChart = []
-//					
-//					def mapRecords = specialMaps.mapRecords as List
-//					Collections.sort(mapRecords, new MapRecordComparator())
-//					mapRecords.each {
-//						timeChart << it.name as String
-//						paChart << it.value
-//						naChart << -it.naValue
-//						midChart << (it.value - it.naValue)
-//					}
-//					
-//					def cal = Calendar.getInstance()
-//					cal.add(Calendar.DAY_OF_MONTH, 1)
-//					cal.set(Calendar.HOUR_OF_DAY, 12)
-//					cal.set(Calendar.MINUTE, 0)
-//					cal.set(Calendar.SECOND, 0)
-//					def todayTime = cal.getTime().getTime()
-//					
-//					def timeC = [], timeChartC = []
-//					timeC << todayTime
-//					timeC << todayTime + 86400248
-//					timeC << todayTime + 86400248 * 2
-//					timeC << todayTime + 86400248 * 3
-//					timeC << todayTime + 86400248 * 4
-//					
-//					timeChartC << todayTime as String
-//					timeChartC << todayTime + 86400248 as String
-//					timeChartC << todayTime + 86400248 * 2 as String
-//					timeChartC << todayTime + 86400248 * 3 as String
-//					timeChartC << todayTime + 86400248 * 4 as String
-//					
-//					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeC)
-//					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeC)
-//					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeC)
-//					
-//					chart = [
-//						timeChart : timeChart,
-//						paChart : paChart,
-//						naChart : naChart,
-//						midChart : midChart,
-//						timeChartC : timeChartC,
-//						paChartC : paChartC,
-//						naChartC : naChartC,
-//						midChartC : midChartC
-//					]
-//				}
-//				data << [
-//			        'mapTitle' : specialMaps?.self?.title,
-//					'chart' : chart,
-//					'mapMax' : specialMaps?.mapMax,
-//					'resultName' : specialMaps?.selfResultOption?.name,
-//					'resultScore' : '',
-//					'resultContent' : '',
-//					'managementType' : specialMaps?.selfManagementType?.id,
-//					'recommendedValue' : specialMaps?.recommendedValue,
-//					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-//					'special' : true,
-//					'lock' : false
-//				]
-//			} else if (specialMaps && specialMapRecords.size() < 7) {
-//				data << [
-//					'mapTitle' : specialMaps?.self?.title,
-//					'chart' : '',
-//					'mapMax' : '',
-//					'resultName' : '',
-//					'resultScore' : '',
-//					'resultContent' : '',
-//					'managementType' : specialMaps?.selfManagementType?.id,
-//					'recommendedValue' : specialMaps?.recommendedValue,
-//					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-//					'special' : true,
-//					'lock' : true,
-//					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
-//				]
-//			} 
+			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
+				def chart = []
+				
+				if (specialMaps?.self?.graphicsType) {
+					def timeChart = [], paChart = [], naChart = [], midChart = []
+					
+					def mapRecords = specialMaps.mapRecords as List
+					Collections.sort(mapRecords, new MapRecordComparator())
+					mapRecords.each {
+						timeChart << it.name
+						paChart << it.value
+						naChart << -it.naValue
+						midChart << (it.value - it.naValue)
+					}
+					
+					def cal = Calendar.getInstance()
+					cal.add(Calendar.DAY_OF_MONTH, 1)
+					cal.set(Calendar.HOUR_OF_DAY, 12)
+					cal.set(Calendar.MINUTE, 0)
+					cal.set(Calendar.SECOND, 0)
+					def todayTime = cal.getTime().getTime()
+					
+					def timeChartC = []
+					timeChartC << todayTime
+					timeChartC << todayTime + 86400248
+					timeChartC << todayTime + 86400248 * 2
+					timeChartC << todayTime + 86400248 * 3
+					timeChartC << todayTime + 86400248 * 4
+					
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
+					
+					chart = [
+						timeChart : timeChart,
+						paChart : paChart,
+						naChart : naChart,
+						midChart : midChart,
+						timeChartC : timeChartC,
+						paChartC : paChartC,
+						naChartC : naChartC,
+						midChartC : midChartC
+					]
+				}
+				data << [
+			        'mapTitle' : specialMaps?.self?.title,
+					'chart' : chart,
+					'mapMax' : specialMaps?.mapMax,
+					'resultName' : specialMaps?.selfResultOption?.name,
+					'resultScore' : '',
+					'resultContent' : '',
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
+					'special' : true,
+					'lock' : false
+				]
+			} else if (specialMaps && specialMapRecords.size() < 7) {
+				data << [
+					'mapTitle' : specialMaps?.self?.title,
+					'chart' : '',
+					'mapMax' : '',
+					'resultName' : '',
+					'resultScore' : '',
+					'resultContent' : '',
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
+					'special' : true,
+					'lock' : true,
+					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
+				]
+			} 
 			
 			def groupResultMaps = [:]
 			
@@ -372,84 +363,82 @@ public class MapStatisticsService {
 			} else {
 				singleMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
 			}
-			getData(specialMaps, specialMapRecords, data)
-//			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
-//				def chart = []
-//				
+			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
+				def chart = []
+				
 //				if (specialMaps?.self?.graphicsType) {
-//					def timeChart = [], paChart = [], naChart = [], midChart = []
-//					def mapRecords = specialMaps.mapRecords as List
-//					Collections.sort(mapRecords, new MapRecordComparator())
-//					mapRecords.each {
-//						timeChart << it.name as String
-//						paChart << it.value
-//						naChart << -it.naValue
-//						midChart << (it.value - it.naValue)
+//					specialMaps.mapRecords.each {
+//						chart << [name : it.name, value : it.value]
 //					}
-//					def cal = Calendar.getInstance()
-//					cal.add(Calendar.DAY_OF_MONTH, 1)
-//					cal.set(Calendar.HOUR_OF_DAY, 12)
-//					cal.set(Calendar.MINUTE, 0)
-//					cal.set(Calendar.SECOND, 0)
-//					def todayTime = cal.getTime().getTime()
-//					
-//					def timeC = [], timeChartC = []
-//					timeC << todayTime
-//					timeC << todayTime + 86400248
-//					timeC << todayTime + 86400248 * 2
-//					timeC << todayTime + 86400248 * 3
-//					timeC << todayTime + 86400248 * 4
-//					
-//					timeChartC << todayTime as String
-//					timeChartC << todayTime + 86400248 as String
-//					timeChartC << todayTime + 86400248 * 2 as String
-//					timeChartC << todayTime + 86400248 * 3 as String
-//					timeChartC << todayTime + 86400248 * 4 as String
-//					
-//					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeC)
-//					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeC)
-//					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeC)
-//					
-//					chart = [
-//						timeChart : timeChart,
-//						paChart : paChart,
-//						naChart : naChart,
-//						midChart : midChart,
-//						timeChartC : timeChartC,
-//						paChartC : paChartC,
-//						naChartC : naChartC,
-//						midChartC : midChartC
-//					]
 //				}
-//				data << [
-//					'mapTitle' : specialMaps?.self?.title,
-//					'chart' : chart,
-//					'mapMax' : specialMaps?.mapMax,
-//					'resultName' : specialMaps?.selfResultOption?.name,
-//					'resultScore' : '',
-//					'resultContent' : '',
-//					'managementType' : specialMaps?.selfManagementType?.id,
-//					'recommendedValue' : specialMaps?.recommendedValue,
-//					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-//					'special' : true,
-//					'lock' : false
-//				]
-//			} else if (specialMaps && specialMapRecords.size() < 7) {
-//				data << [
-//					'mapTitle' : specialMaps.self.title,
-//					'chart' : '',
-//					'mapMax' : '',
-//					'resultName' : '',
-//					'resultScore' : '',
-//					'resultContent' : '',
-//					'managementType' : specialMaps?.selfManagementType?.id,
-//					'recommendedValue' : specialMaps?.recommendedValue,
-//					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-//					'special' : true,
-//					'lock' : true,
-//					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
-//				]
-//			}
+				if (specialMaps?.self?.graphicsType) {
+					def timeChart = [], paChart = [], naChart = [], midChart = []
+					def mapRecords = specialMaps.mapRecords as List
+					Collections.sort(mapRecords, new MapRecordComparator())
+					mapRecords.each {
+						timeChart << it.name
+						paChart << it.value
+						naChart << -it.naValue
+						midChart << (it.value - it.naValue)
+					}
+					def cal = Calendar.getInstance()
+					cal.add(Calendar.DAY_OF_MONTH, 1)
+					cal.set(Calendar.HOUR_OF_DAY, 12)
+					cal.set(Calendar.MINUTE, 0)
+					cal.set(Calendar.SECOND, 0)
+					def todayTime = cal.getTime().getTime()
+					
+					def timeChartC = []
+					timeChartC << todayTime
+					timeChartC << todayTime + 86400248
+					timeChartC << todayTime + 86400248 * 2
+					timeChartC << todayTime + 86400248 * 3
+					timeChartC << todayTime + 86400248 * 4
+					
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
+					
+					chart = [
+						timeChart : timeChart,
+						paChart : paChart,
+						naChart : naChart,
+						midChart : midChart,
+						timeChartC : timeChartC,
+						paChartC : paChartC,
+						naChartC : naChartC,
+						midChartC : midChartC
+					]
+				}
+				data << [
+					'mapTitle' : specialMaps?.self?.title,
+					'chart' : chart,
+					'mapMax' : specialMaps?.mapMax,
+					'resultName' : specialMaps?.selfResultOption?.name,
+					'resultScore' : '',
+					'resultContent' : '',
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
+					'special' : true,
+					'lock' : false
+				]
+			} else if (specialMaps && specialMapRecords.size() < 7) {
+				data << [
+					'mapTitle' : specialMaps.self.title,
+					'chart' : '',
+					'mapMax' : '',
+					'resultName' : '',
+					'resultScore' : '',
+					'resultContent' : '',
+					'managementType' : specialMaps?.selfManagementType?.id,
+					'recommendedValue' : specialMaps?.recommendedValue,
+					'graphicsType' : specialMaps?.self?.graphicsType?.id,
+					'special' : true,
+					'lock' : true,
+					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
+				]
+			}
 			
 			def groupResultMaps = [:]
 			
@@ -636,86 +625,6 @@ public class MapStatisticsService {
 			MapRecord m1 = (MapRecord) o1
 			MapRecord m2 = (MapRecord) o2
 			return m1.createdDate.compareTo(m2.createdDate)
-		}
-	}
-	
-	Map<String, Object> getData(MapStatistics specialMaps, List<MapRecord> specialMapRecords, Map<String, Object> data) {
-		if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
-			def chart = []
-			
-			if (specialMaps?.self?.graphicsType) {
-				def timeChart = [], paChart = [], naChart = [], midChart = []
-				def mapRecords = specialMaps.mapRecords as List
-				Collections.sort(mapRecords, new MapRecordComparator())
-				mapRecords.each {
-					timeChart << it.name as String
-					paChart << it.value
-					naChart << -it.naValue
-					midChart << (it.value - it.naValue)
-				}
-				def cal = Calendar.getInstance()
-				cal.add(Calendar.DAY_OF_MONTH, 1)
-				cal.set(Calendar.HOUR_OF_DAY, 12)
-				cal.set(Calendar.MINUTE, 0)
-				cal.set(Calendar.SECOND, 0)
-				def todayTime = cal.getTime().getTime()
-				
-				def timeC = [] //, timeChartC = []
-				timeC << todayTime
-				timeC << todayTime + 86400248
-				timeC << todayTime + 86400248 * 2
-				timeC << todayTime + 86400248 * 3
-				timeC << todayTime + 86400248 * 4
-				
-//				timeChartC << todayTime as String
-//				timeChartC << todayTime + 86400248 as String
-//				timeChartC << todayTime + 86400248 * 2 as String
-//				timeChartC << todayTime + 86400248 * 3 as String
-//				timeChartC << todayTime + 86400248 * 4 as String
-				
-				def paChartC = calculatePoint.getPoint(timeChart, paChart, timeC)
-				def naChartC = calculatePoint.getPoint(timeChart, naChart, timeC)
-				def midChartC = calculatePoint.getPoint(timeChart, midChart, timeC)
-				
-				chart = [
-					timeChart : timeChart,
-					paChart : paChart,
-					naChart : naChart,
-					midChart : midChart,
-					timeChartC : timeC,
-					paChartC : paChartC,
-					naChartC : naChartC,
-					midChartC : midChartC
-				]
-			}
-			data << [
-				'mapTitle' : specialMaps?.self?.title,
-				'chart' : chart,
-				'mapMax' : specialMaps?.mapMax,
-				'resultName' : specialMaps?.selfResultOption?.name,
-				'resultScore' : '',
-				'resultContent' : '',
-				'managementType' : specialMaps?.selfManagementType?.id,
-				'recommendedValue' : specialMaps?.recommendedValue,
-				'graphicsType' : specialMaps?.self?.graphicsType?.id,
-				'special' : true,
-				'lock' : false
-			]
-		} else if (specialMaps && specialMapRecords.size() < 7) {
-			data << [
-				'mapTitle' : specialMaps.self.title,
-				'chart' : '',
-				'mapMax' : '',
-				'resultName' : '',
-				'resultScore' : '',
-				'resultContent' : '',
-				'managementType' : specialMaps?.selfManagementType?.id,
-				'recommendedValue' : specialMaps?.recommendedValue,
-				'graphicsType' : specialMaps?.self?.graphicsType?.id,
-				'special' : true,
-				'lock' : true,
-				'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
-			]
 		}
 	}
 }

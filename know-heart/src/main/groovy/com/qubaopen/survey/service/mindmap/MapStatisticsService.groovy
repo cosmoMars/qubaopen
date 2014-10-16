@@ -123,24 +123,24 @@ public class MapStatisticsService {
 					timeChartC << todayTime + 86400248 * 3
 					timeChartC << todayTime + 86400248 * 4
 					
-					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC) as List
-					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC) as List
-					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC) as List
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
 					
 					chart = [
 						timeChart : timeChart,
 						paChart : paChart,
 						naChart : naChart,
-						midChart : midChart/*,
+						midChart : midChart,
 						timeChartC : timeChartC,
 						paChartC : paChartC,
 						naChartC : naChartC,
-						midChartC : midChartC*/
+						midChartC : midChartC
 					]
 				}
 				data << [
 			        'mapTitle' : specialMaps?.self?.title,
-					'chart' : chart,
+					'chart' : chart as List,
 					'mapMax' : specialMaps?.mapMax,
 					'resultName' : specialMaps?.selfResultOption?.name,
 					'resultScore' : '',
@@ -323,7 +323,7 @@ public class MapStatisticsService {
 				data << [
 					
 					'mapTitle' : it?.self?.title,
-					'chart' : chart,
+					'chart' : chart as List,
 					'mapMax' : it?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
 					'resultScore' : it?.score,
@@ -395,19 +395,19 @@ public class MapStatisticsService {
 					timeChartC << todayTime + 86400248 * 3
 					timeChartC << todayTime + 86400248 * 4
 					
-					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC) as List
-					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC) as List
-					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC) as List
+					def paChartC = calculatePoint.getPoint(timeChart, paChart, timeChartC)
+					def naChartC = calculatePoint.getPoint(timeChart, naChart, timeChartC)
+					def midChartC = calculatePoint.getPoint(timeChart, midChart, timeChartC)
 					
 					chart = [
 						timeChart : timeChart,
 						paChart : paChart,
 						naChart : naChart,
-						midChart : midChart//,
-//						timeChartC : timeChartC,
-//						paChartC : paChartC,
-//						naChartC : naChartC,
-//						midChartC : midChartC
+						midChart : midChart,
+						timeChartC : timeChartC,
+						paChartC : paChartC,
+						naChartC : naChartC,
+						midChartC : midChartC
 					]
 				}
 				data << [

@@ -58,11 +58,12 @@ public class UserDataController{
 		
 		while (resultSet.next()) {
 			def phone = resultSet.getString('sjhm')
+			def email = resultSet.getString('yx') ?: null
 			def user = new User(
 				userName : resultSet.getString('yhm') ?: null,
 				password : resultSet.getString('mm') ?: null,
 				phone : phone,
-				email : resultSet.getString('yx') ?: null,
+				email : email,
 				activated : true
 			)
 			
@@ -70,7 +71,11 @@ public class UserDataController{
 				it.phone == phone
 			}
 			
-			if (!userP) {
+			def emailP = users.findAll() { 
+				it.email == email
+			}
+			
+			if (!userP && !emailP) {
 				userBs << user
 				
 				def sex = resultSet.getString('xb')

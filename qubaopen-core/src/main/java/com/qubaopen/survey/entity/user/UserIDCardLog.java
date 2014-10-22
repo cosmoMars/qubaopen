@@ -38,7 +38,7 @@ public class UserIDCardLog extends AbstractBaseEntity<Long>{
 	private String photoPath;
 	
 	/**
-	 * 验证状态
+	 * 验证状态 0 处理成功  compStatus 3 一致 2 不一致
 	 */
 	private String status;
 

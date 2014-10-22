@@ -5,22 +5,22 @@ import java.sql.DriverManager
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
-import org.apache.tomcat.util.buf.UDecoder;
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.entity.user.UserCaptcha
 import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserUDID
-import com.qubaopen.survey.repository.user.UserGoldRepository;
-import com.qubaopen.survey.repository.user.UserInfoRepository;
+import com.qubaopen.survey.repository.user.UserCaptchaRepository;
+import com.qubaopen.survey.repository.user.UserGoldRepository
+import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserRepository
-import com.qubaopen.survey.repository.user.UserUDIDRepository;
-import com.qubaopen.survey.service.user.UserInfoService;
+import com.qubaopen.survey.repository.user.UserUDIDRepository
 import com.qubaopen.survey.utils.DateCommons
 
 @RestController
@@ -38,6 +38,9 @@ public class UserDataController{
 	
 	@Autowired
 	UserInfoRepository userInfoRepository
+	
+	@Autowired
+	UserCaptchaRepository userCaptchaRepository
 
 	@Transactional
 	@RequestMapping(value = 'getData', method = RequestMethod.GET)
@@ -45,20 +48,27 @@ public class UserDataController{
 		Class.forName("com.mysql.jdbc.Driver");
 		
 		Connection conn = DriverManager.getConnection("jdbc:mysql://115.28.210.110:3306/survey", "surveyadmin", "x7d91jd9lkx81");
-		def sql = "select u.yhm,u.mm,u.sjhm, u.nc,u.yx, ui.xm,ui.xb,ui.xx,ui.csrq,ui.is_xlwb,ui.is_txwb,ui.is_pyq,ui.is_qqkj,ui.is_wx,ui.is_mzgkwj,ui.is_sllms,ui.is_gkdt,ui.is_hygkwj from yh_z u left join yh_xx_s ui on u.id = ui.yh_z_id where u.is_jh =1";
-
+		//def sql = "select u.yhm,u.mm,u.sjhm, u.nc,u.yx, ui.xm,ui.xb,ui.xx,ui.csrq,ui.is_xlwb,ui.is_txwb,ui.is_pyq,ui.is_qqkj,ui.is_wx,ui.is_mzgkwj,ui.is_sllms,ui.is_gkdt,ui.is_hygkwj from yh_z u left join yh_xx_s ui on u.id = ui.yh_z_id where u.is_jh =1";
+		def sql = new StringBuffer()
+		sql.append('select z.yhm,z.mm,z.sjhm,z.nc,z.yx,ui.xm,ui.xb,ui.xx,ui.csrq,ui.is_xlwb, ')
+		sql.append('ui.is_txwb,ui.is_pyq,ui.is_qqkj,ui.is_wx,ui.is_mzgkwj,ui.is_sllms,ui.is_gkdt, ')
+		sql.append('ui.is_hygkwj,h.sfz_hm,h.xm,h.zp from yh_z z	left join yh_xx_s ui ON z.id = ui.yh_z_id ')
+		
+		sql.append('left join ht_sfzbd_s ht on z.id = ht.yh_z_id left join ht_yhsfz_s h on ht.ht_yhsfz_s_id = h.id')
+		sql.append(' where u.is_jh =1')
 		println sql
-		PreparedStatement pstmt = conn.prepareStatement(sql) ;
+		PreparedStatement pstmt = conn.prepareStatement(sql.toString()) ;
 		ResultSet resultSet = pstmt.executeQuery();
 		
 		def users = userRepository.findAll()
 		
 		def userBs = [], userUdids = [], userGolds = [], userInfos = []
 		
-		
 		while (resultSet.next()) {
+			
 			def phone = resultSet.getString('sjhm')
 			def email = resultSet.getString('yx') ?: null
+			
 			def user = new User(
 				userName : resultSet.getString('yhm') ?: null,
 				password : resultSet.getString('mm') ?: null,
@@ -68,15 +78,23 @@ public class UserDataController{
 			)
 			
 			def userP = users.findAll() { 
-				it.phone == phone
+				it.phone == phone || it.email == email
 			}
 			
-			def emailP = users.findAll() { 
-				it.email == email
-			}
-			
-			if (!userP && !emailP) {
-				userBs << user
+			if (!userP) {
+				
+				def userEmail = userBs.find(){
+					it.email == email
+				}
+				user.email == null
+				userRepository.save(user)
+				
+				def userCaptcha = new UserCaptcha(
+					id : user.id,
+					captcha : '000000',
+					sentNum : 0
+				)
+				userCaptchaRepository.save(userCaptcha)
 				
 				def sex = resultSet.getString('xb')
 				def sexResult
@@ -119,6 +137,7 @@ public class UserDataController{
 					friendNum : 0
 				)
 				userInfos << userInfo
+//				userInfoRepository.save(userInfo)
 			
 				def userUdid = new UserUDID(
 					id : user.id,
@@ -127,16 +146,17 @@ public class UserDataController{
 					endTime : DateCommons.String2Date('22:00','HH:mm')
 				)
 				userUdids << userUdid
+//				userUDIDRepository.save(userUdid)
 				
 				def userGold = new UserGold(
 					id : user.id
 				)
-				userGolds << userUdid
+				userGolds << userGold
 			
 			}
 		
 		}
-		userRepository.save(userBs)
+//		userRepository.save(userBs)
 		userInfoRepository.save(userInfos)
 		userUDIDRepository.save(userUdids)
 		userGoldRepository.save(userGolds)

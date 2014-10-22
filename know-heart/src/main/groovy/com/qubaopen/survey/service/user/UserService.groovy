@@ -266,7 +266,7 @@ public class UserService {
 			userInfo = new UserInfo(
 				id : user.id,
 				publicAnswersToFriend : true,
-				avatarPath : avatarPath
+				avatarPath : "/pic/$filename"
 			)
 			saveFile(avatar.bytes, avatarPath)
 		} else {

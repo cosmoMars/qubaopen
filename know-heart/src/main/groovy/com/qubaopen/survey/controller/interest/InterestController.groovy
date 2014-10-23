@@ -1,7 +1,10 @@
 package com.qubaopen.survey.controller.interest
 
+import javax.servlet.http.HttpServletRequest
+
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -12,9 +15,8 @@ import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.QuestionnaireTagType
+import com.qubaopen.survey.controller.FileUtils
 import com.qubaopen.survey.entity.interest.Interest
-import com.qubaopen.survey.entity.interest.InterestType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.interest.InterestRepository
 import com.qubaopen.survey.service.interest.InterestService
@@ -116,6 +118,33 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	//		}
 	//
 	//	}
+	
+	/**
+	 * 上传兴趣问卷图片
+	 * @param userId
+	 * @param avatar
+	 */
+	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
+	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic, HttpServletRequest request) {
+
+		logger.trace(' -- 上传兴趣问卷图片 -- ')
+		
+		def interest = interestRepository.findOne(interestId)
+
+		if (interest) {
+
+			def filename = "${interestId}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
+				interestPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
+
+			FileUtils.saveFile(pic.bytes, interestPath)
+
+			interest.picPath = "/pic/$filename"
+			interestRepository.save(interest)
+			return '{"success": "1"}'
+		}
+		'{"success": "0", "message" : "err111"}'
+	}
+	
 	//
 	//	/**
 	//	 * 显示图片

@@ -14,10 +14,14 @@ import org.springframework.web.bind.annotation.RestController
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserCaptcha
 import com.qubaopen.survey.entity.user.UserGold
+import com.qubaopen.survey.entity.user.UserIDCard
+import com.qubaopen.survey.entity.user.UserIDCardBind
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserUDID
-import com.qubaopen.survey.repository.user.UserCaptchaRepository;
+import com.qubaopen.survey.repository.user.UserCaptchaRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
+import com.qubaopen.survey.repository.user.UserIDCardBindRepository
+import com.qubaopen.survey.repository.user.UserIDCardRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.repository.user.UserUDIDRepository
@@ -41,6 +45,12 @@ public class UserDataController{
 	
 	@Autowired
 	UserCaptchaRepository userCaptchaRepository
+	
+	@Autowired
+	UserIDCardRepository userIDCardRepository
+	
+	@Autowired
+	UserIDCardBindRepository userIDCardBindRepository
 
 	@Transactional
 	@RequestMapping(value = 'getData', method = RequestMethod.GET)
@@ -50,12 +60,12 @@ public class UserDataController{
 		Connection conn = DriverManager.getConnection("jdbc:mysql://115.28.210.110:3306/survey", "surveyadmin", "x7d91jd9lkx81");
 		//def sql = "select u.yhm,u.mm,u.sjhm, u.nc,u.yx, ui.xm,ui.xb,ui.xx,ui.csrq,ui.is_xlwb,ui.is_txwb,ui.is_pyq,ui.is_qqkj,ui.is_wx,ui.is_mzgkwj,ui.is_sllms,ui.is_gkdt,ui.is_hygkwj from yh_z u left join yh_xx_s ui on u.id = ui.yh_z_id where u.is_jh =1";
 		def sql = new StringBuffer()
-		sql.append('select z.yhm,z.mm,z.sjhm,z.nc,z.yx,ui.xm,ui.xb,ui.xx,ui.csrq,ui.is_xlwb, ')
+		sql.append('select distinct z.sjhm,z.yhm,z.mm,z.nc,z.yx,ui.xm uixm,ui.xb,ui.xx,ui.csrq,ui.is_xlwb, ')
 		sql.append('ui.is_txwb,ui.is_pyq,ui.is_qqkj,ui.is_wx,ui.is_mzgkwj,ui.is_sllms,ui.is_gkdt, ')
-		sql.append('ui.is_hygkwj,h.sfz_hm,h.xm,h.zp from yh_z z	left join yh_xx_s ui ON z.id = ui.yh_z_id ')
+		sql.append('ui.is_hygkwj,h.sfz_hm,h.xm hxm,h.zp from yh_z z	left join yh_xx_s ui ON z.id = ui.yh_z_id ')
 		
 		sql.append('left join ht_sfzbd_s ht on z.id = ht.yh_z_id left join ht_yhsfz_s h on ht.ht_yhsfz_s_id = h.id')
-		sql.append(' where u.is_jh =1')
+		sql.append(' where z.is_jh =1')
 		println sql
 		PreparedStatement pstmt = conn.prepareStatement(sql.toString()) ;
 		ResultSet resultSet = pstmt.executeQuery();
@@ -64,6 +74,7 @@ public class UserDataController{
 		
 		def userBs = [], userUdids = [], userGolds = [], userInfos = []
 		
+		def count = 1
 		while (resultSet.next()) {
 			
 			def phone = resultSet.getString('sjhm')
@@ -78,16 +89,39 @@ public class UserDataController{
 			)
 			
 			def userP = users.findAll() { 
-				it.phone == phone || it.email == email
+				it.phone == phone
 			}
-			
 			if (!userP) {
+				count ++
 				
-				def userEmail = userBs.find(){
+				def userE = users.findAll() {
 					it.email == email
 				}
-				user.email == null
+				if (userE) {
+					user.email == null
+				}
+				
+//				def userEmail = userBs.find(){
+//					it.email == email
+//				}
+//				user.email == null
 				userRepository.save(user)
+				
+				def idcard = resultSet.getString('sfz_hm') ?: null
+				
+				if (idcard) {
+					def userIdCard = new UserIDCard(
+						IDCard : idcard,
+						name : resultSet.getString('hxm') ?: null
+					)
+					userIDCardRepository.save(userIdCard)
+					
+					def userIdCardBind = new UserIDCardBind(
+						id : user.id,
+						userIDCard : userIdCard
+					)
+					userIDCardBindRepository.save(userIdCardBind)
+				}
 				
 				def userCaptcha = new UserCaptcha(
 					id : user.id,
@@ -95,6 +129,7 @@ public class UserDataController{
 					sentNum : 0
 				)
 				userCaptchaRepository.save(userCaptcha)
+				
 				
 				def sex = resultSet.getString('xb')
 				def sexResult
@@ -120,7 +155,7 @@ public class UserDataController{
 			
 				def userInfo = new UserInfo(
 					id : user.id,
-					name : resultSet.getString('xm'),
+					name : resultSet.getString('uixm'),
 					nickName : resultSet.getString('nc'),
 					sex : sexResult,
 					bloodType : type,
@@ -154,9 +189,10 @@ public class UserDataController{
 				userGolds << userGold
 			
 			}
-		
+//			println resultSet.getRow()
 		}
 //		userRepository.save(userBs)
+		println count
 		userInfoRepository.save(userInfos)
 		userUDIDRepository.save(userUdids)
 		userGoldRepository.save(userGolds)

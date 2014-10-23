@@ -22,30 +22,39 @@ public class UserIdCardConnection {
 	
 	@RequestMapping(value = 'idCardConnection', method = RequestMethod.GET)
 	idCardConnection() {
-//		Class.forName("com.mysql.jdbc.Driver");
-//		
-//		Connection conn = DriverManager.getConnection("jdbc:mysql://115.28.210.110:3306/survey", "surveyadmin", "x7d91jd9lkx81");
-//		def sql = "select sfz_hm, xm from ht_yhsfz_s";
-//
-//		PreparedStatement pstmt = conn.prepareStatement(sql) ;
-//		ResultSet resultSet = pstmt.executeQuery();
-//		
-//		def userIdCards = userIDCardRepository.findAll()
-//		
-//		def idCards = []
-//		
-//		while (resultSet.next()) {
-//			def  id = resultSet.getString('sfz_hm')
-//			def name = resultSet.getString('xm')
-//			def userIdCard = new UserIDCard(
-//				IDCard : id,
-//				name : name
-//			)
-//			
-//			idCards << userIdCard
-//		}
+		Class.forName("com.mysql.jdbc.Driver");
 		
+		Connection conn = DriverManager.getConnection("jdbc:mysql://115.28.210.110:3306/survey", "surveyadmin", "x7d91jd9lkx81");
+		def sql = "select sfz_hm, xm from ht_yhsfz_s";
+
+		PreparedStatement pstmt = conn.prepareStatement(sql) ;
+		ResultSet resultSet = pstmt.executeQuery();
 		
+		def userIdCards = userIDCardRepository.findAll()
 		
+		def idCards = []
+		
+		def count = 1
+		while (resultSet.next()) {
+			
+			def id = resultSet.getString('sfz_hm'),
+				name = resultSet.getString('xm')
+			
+			def userall = userIdCards.findAll() {
+				id == it.IDCard && 	name == it.name
+			}
+			
+			if (!userall) {
+				count ++
+				def userIdCard = new UserIDCard(
+					IDCard : id,
+					name : name
+				)
+				idCards << userIdCard
+			}
+		}
+		println count
+		userIDCardRepository.save(idCards)
+		'success'
 	}
 }

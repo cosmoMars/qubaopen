@@ -15,9 +15,11 @@ import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserCaptcha
+import com.qubaopen.survey.entity.user.UserCaptchaLog;
 import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserUDID
+import com.qubaopen.survey.repository.user.UserCaptchaLogRepository;
 import com.qubaopen.survey.repository.user.UserCaptchaRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository
@@ -42,6 +44,9 @@ public class UserService {
 
 	@Autowired
 	UserCaptchaRepository userCaptchaRepository
+	
+	@Autowired
+	UserCaptchaLogRepository userCaptchaLogRepository
 
 	@Autowired
 	UserReceiveAddressRepository userReceiveAddressRepository
@@ -171,8 +176,16 @@ public class UserService {
 		// 生成6位数字格式的验证码
 		def captcha = RandomStringUtils.randomNumeric(6)
 		// 给指定的用户手机号发送6位随机数的验证码
-		def success = smsService.sendCaptcha(phone, captcha)
-		if (!success) {
+		def result = smsService.sendCaptcha(phone, captcha)
+		
+		def userCaptchaLog = new UserCaptchaLog(
+			user : user,
+			captcha : captcha,
+			status : result.get('resCode')
+		)
+		userCaptchaLogRepository.save(userCaptchaLog)
+		
+		if (!result.get('isSuccess')) {
 			return '{"success": "0", "message": "err011"}'
 		}
 

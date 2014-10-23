@@ -178,7 +178,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			@RequestParam(required = false) String captcha) {
 
 		logger.trace(" -- 忘记密码重置 -- ")
-
+		
 		if (StringUtils.isEmpty(captcha)) {
 			return '{"success": "0", "message": "err007"}'
 		}
@@ -186,7 +186,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (!validatePhone(phone)) {
 			return '{"success" : "0", "message": "err003"}'
 		}
-
+		
 		if (!validatePwd(password)) {
 			return '{"success": "0", "message": "err004"}'
 		}

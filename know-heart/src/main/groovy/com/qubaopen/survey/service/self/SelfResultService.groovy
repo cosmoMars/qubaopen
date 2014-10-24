@@ -189,10 +189,10 @@ public class SelfResultService {
 			return '{"success": 0, "error": "err601"}'
 		}
 
-		def resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%')
+		def resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%', self)
 
 		if (!resultOption) {
-			resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%')
+			resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', self)
 		}
 		
 		if (refresh) {

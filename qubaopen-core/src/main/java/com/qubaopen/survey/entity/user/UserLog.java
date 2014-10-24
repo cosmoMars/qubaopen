@@ -42,7 +42,7 @@ public class UserLog extends AbstractBaseEntity<Long> {
 	 * 发生时间
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date Time;
+	private Date time;
 
 	public UserLogType getUserLogType() {
 		return userLogType;
@@ -52,12 +52,13 @@ public class UserLog extends AbstractBaseEntity<Long> {
 		this.userLogType = userLogType;
 	}
 
+
 	public Date getTime() {
-		return Time;
+		return time;
 	}
 
 	public void setTime(Date time) {
-		Time = time;
+		this.time = time;
 	}
 
 	public User getUser() {

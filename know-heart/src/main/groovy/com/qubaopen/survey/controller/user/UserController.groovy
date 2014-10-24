@@ -8,9 +8,9 @@ import javax.servlet.http.HttpSession
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -22,7 +22,10 @@ import org.springframework.web.multipart.MultipartFile
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.repository.user.UserMoodRepository;
+import com.qubaopen.survey.entity.user.UserLog
+import com.qubaopen.survey.entity.user.UserLogType
+import com.qubaopen.survey.repository.user.UserLogRepository;
+import com.qubaopen.survey.repository.user.UserMoodRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.service.user.UserService
@@ -46,6 +49,10 @@ class UserController extends AbstractBaseController<User, Long> {
 
 	@Autowired
 	UserMoodRepository userMoodRepository
+	
+	@Autowired
+	UserLogRepository userLogRepository
+	
 
 	@Override
 	protected MyRepository<User, Long> getRepository() {
@@ -85,7 +92,14 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (loginUser) {
 
 			userService.saveUserCode(loginUser, udid, idfa, imei)
-
+			
+			def	userLog = new UserLog(
+				user : loginUser,
+				userLogType : new UserLogType(id : 1l),
+				time : new Date()
+			)
+			userLogRepository.save(userLog)
+			
 			model.addAttribute('currentUser', loginUser)
 
 			def userInfo = loginUser.userInfo,

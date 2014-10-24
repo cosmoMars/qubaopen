@@ -4,11 +4,13 @@ import java.util.Comparator;
 
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.qubaopen.survey.controller.self.SelfResultOptionController;
 import com.qubaopen.survey.entity.mindmap.MapRecord;
 import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
@@ -18,6 +20,7 @@ import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfGroupRepository
 import com.qubaopen.survey.repository.self.SelfRepository
+import com.qubaopen.survey.repository.self.SelfResultOptionRepository;
 import com.qubaopen.survey.service.user.UserIDCardBindService
 
 @Service
@@ -52,6 +55,9 @@ public class MapStatisticsService {
 	
 	@Autowired
 	CalculatePoint calculatePoint
+	
+	@Autowired
+	SelfResultOptionRepository selfResultOptionRepository
 	/**
 	 * 获取心理地图
 	 * @param user
@@ -73,9 +79,6 @@ public class MapStatisticsService {
 					user_equal : user
 				]	
 			)// 4小时题目
-//			if (!specialMaps) {
-//				return '{"success" : "0", "message" : "err700"}' // 暂没有心理地图，请做题
-//			}
 			def specialMapRecords
 			if (specialMaps) {
 				existMaps += specialMaps
@@ -110,19 +113,6 @@ public class MapStatisticsService {
 						naChart << -it.naValue
 						midChart << (it.value - it.naValue)
 					}
-//					def cal = Calendar.getInstance()
-//					cal.add(Calendar.DAY_OF_MONTH, 1)
-//					cal.set(Calendar.HOUR_OF_DAY, 12)
-//					cal.set(Calendar.MINUTE, 0)
-//					cal.set(Calendar.SECOND, 0)
-//					def todayTime = cal.getTime().getTime()
-//					
-//					def timeChartC = []
-//					timeChartC << todayTime
-//					timeChartC << todayTime + 86400248
-//					timeChartC << todayTime + 86400248 * 2
-//					timeChartC << todayTime + 86400248 * 3
-//					timeChartC << todayTime + 86400248 * 4
 					
 					def paChartC = calculatePoint.getPoint(timeChart, paChart)
 					def naChartC = calculatePoint.getPoint(timeChart, naChart)
@@ -130,10 +120,7 @@ public class MapStatisticsService {
 					
 					chart = [
 						timeChart : timeChart,
-//						paChart : paChart,
-//						naChart : naChart,
 						midChart : midChart,
-//						timeChartC : timeChartC,
 						paChartC : paChartC,
 						naChartC : naChartC,
 						midChartC : midChartC
@@ -263,9 +250,6 @@ public class MapStatisticsService {
 							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
 							recordMaps.get(rk).clear()
 							recordMaps.put(rk, tScore)
-//							if (k?.graphicsType) {
-//								chart << [name : rk, value : tScore]
-//							}
 							
 						}
 						def resultStr = "根据您对EPQ量表的测试，经过量表的标准分数换算得到你的性格偏向，如上图"
@@ -277,7 +261,7 @@ public class MapStatisticsService {
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : k?.name,
+							'resultName' : k?.content,
 							'resultScore' : '',
 							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
@@ -297,12 +281,12 @@ public class MapStatisticsService {
 								}
 							}
 						}
-						
+		
 						data << [
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : k?.name,
+							'resultName' : k?.content,
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
@@ -323,13 +307,32 @@ public class MapStatisticsService {
 						chart << [name : it.name, value : it.value]
 					}
 				}
+				
+				if (it?.self?.id == 13l || it?.self?.id == 10l) {
+					def selfResult = selfResultOptionRepository.findOne(145l)
+					data << [
+						'mapTitle' : selfResult.title,
+						'chart' : [],
+						'mapMax' : '',
+						'resultName' : selfResult.name,
+						'resultScore' : '',
+						'resultContent' : selfResult?.content,
+						'managementType' : it?.selfManagementType?.id,
+						'recommendedValue' : '',
+						'graphicsType' : '',
+						'special' : false,
+						'lock' : false,
+						'picPath' : ''
+					]
+				}
+				
 				data << [
 					
 					'mapTitle' : it?.self?.title,
 					'chart' : chart,
 					'mapMax' : it?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
-					'resultScore' : it?.score,
+					'resultScore' : '',
 					'resultContent' : it?.selfResultOption?.content,
 					'managementType' : it?.selfManagementType?.id,
 					'recommendedValue' : it?.recommendedValue,
@@ -349,9 +352,6 @@ public class MapStatisticsService {
 					]	
 				)
 		
-//			if (!typeMaps) {
-//				return '{"success" : "0", "message" : "err701"}' // 该类型暂没有心理题图，请做题
-//			}
 			def specialMapRecords
 			if (specialMaps) {
 				existMaps += specialMaps
@@ -369,11 +369,6 @@ public class MapStatisticsService {
 			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
 				def chart
 				def c = []
-//				if (specialMaps?.self?.graphicsType) {
-//					specialMaps.mapRecords.each {
-//						chart << [name : it.name, value : it.value]
-//					}
-//				}
 				if (specialMaps?.self?.graphicsType) {
 					def timeChart = [], paChart = [], naChart = [], midChart = []
 //					def mapRecords = specialMapRecords as List
@@ -386,19 +381,6 @@ public class MapStatisticsService {
 						naChart << -it.naValue
 						midChart << (it.value - it.naValue)
 					}
-//					def cal = Calendar.getInstance()
-//					cal.add(Calendar.DAY_OF_MONTH, 1)
-//					cal.set(Calendar.HOUR_OF_DAY, 12)
-//					cal.set(Calendar.MINUTE, 0)
-//					cal.set(Calendar.SECOND, 0)
-//					def todayTime = cal.getTime().getTime()
-//					
-//					def timeChartC = []
-//					timeChartC << todayTime
-//					timeChartC << todayTime + 86400248
-//					timeChartC << todayTime + 86400248 * 2
-//					timeChartC << todayTime + 86400248 * 3
-//					timeChartC << todayTime + 86400248 * 4
 					
 					def paChartC = calculatePoint.getPoint(timeChart, paChart)
 					def naChartC = calculatePoint.getPoint(timeChart, naChart)
@@ -406,10 +388,7 @@ public class MapStatisticsService {
 					
 					chart = [
 						timeChart : timeChart,
-//						paChart : paChart,
-//						naChart : naChart,
 						midChart : midChart,
-//						timeChartC : timeChartC,
 						paChartC : paChartC,
 						naChartC : naChartC,
 						midChartC : midChartC
@@ -514,9 +493,6 @@ public class MapStatisticsService {
 							rv.each {
 								score += it.value
 							}
-//							def idMap = userIDCardBindService.calculateAgeByIdCard(user),
-//								age = idMap.get('age'), sex = idMap.get('sex')
-//							
 							def idMap = userIDCardBindService.calculateAgeByIdCard(user)
 							
 							def age, sex
@@ -541,9 +517,6 @@ public class MapStatisticsService {
 							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
 							recordMaps.get(rk).clear()
 							recordMaps.put(rk, tScore)
-//							if (k.graphicsType) {
-//								chart << [name : rk, value : tScore]
-//							}
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
@@ -555,7 +528,7 @@ public class MapStatisticsService {
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : k?.name,
+							'resultName' : k?.content,
 							'resultScore' : '',
 							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
@@ -580,7 +553,7 @@ public class MapStatisticsService {
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : k?.name,
+							'resultName' : k?.content,
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
@@ -601,13 +574,32 @@ public class MapStatisticsService {
 						chart << [name : it.name, value : it.value]
 					}
 				}
+				
+				if (it?.self?.id == 13l || it?.self?.id == 10l) {
+					def selfResult = selfResultOptionRepository.findOne(145l)
+					data << [
+						'mapTitle' : selfResult.title,
+						'chart' : [],
+						'mapMax' : '',
+						'resultName' : selfResult.name,
+						'resultScore' : '',
+						'resultContent' : selfResult?.content,
+						'managementType' : it?.selfManagementType?.id,
+						'recommendedValue' : '',
+						'graphicsType' : '',
+						'special' : false,
+						'lock' : false,
+						'picPath' : ''
+					]
+				}
+				
 				data << [
 					
 					'mapTitle' : it?.self?.title,
 					'chart' : chart,
 					'mapMax' : it?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
-					'resultScore' : it?.score,
+					'resultScore' : '',
 					'resultContent' : it?.selfResultOption?.content,
 					'managementType' : it?.selfManagementType?.id,
 					'recommendedValue' : it?.recommendedValue,
@@ -618,7 +610,6 @@ public class MapStatisticsService {
 				]
 			}
 		} else {
-		
 			def selfManagementType = new SelfManagementType(id : typeId)
 			def specialMaps = mapStatisticsRepository.findOneByFilters(
 					[
@@ -628,9 +619,6 @@ public class MapStatisticsService {
 					]
 				)
 			
-//			if (!typeMaps) {
-//				return '{"success" : "0", "message" : "err701"}' // 该类型暂没有心理题图，请做题
-//			}
 			def specialMapRecords
 			if (specialMaps) {
 				existMaps += specialMaps
@@ -648,11 +636,6 @@ public class MapStatisticsService {
 			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
 				def chart
 				def c = []
-//				if (specialMaps?.self?.graphicsType) {
-//					specialMaps.mapRecords.each {
-//						chart << [name : it.name, value : it.value]
-//					}
-//				}
 				if (specialMaps?.self?.graphicsType) {
 					def timeChart = [], paChart = [], naChart = [], midChart = []
 //					def mapRecords = specialMaps.mapRecords as List
@@ -793,9 +776,6 @@ public class MapStatisticsService {
 							rv.each {
 								score += it.value
 							}
-			//							def idMap = userIDCardBindService.calculateAgeByIdCard(user),
-			//								age = idMap.get('age'), sex = idMap.get('sex')
-			//
 							def idMap = userIDCardBindService.calculateAgeByIdCard(user)
 							
 							def age, sex
@@ -820,9 +800,6 @@ public class MapStatisticsService {
 							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
 							recordMaps.get(rk).clear()
 							recordMaps.put(rk, tScore)
-			//							if (k.graphicsType) {
-			//								chart << [name : rk, value : tScore]
-			//							}
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
@@ -834,7 +811,7 @@ public class MapStatisticsService {
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : k?.name,
+							'resultName' : k?.content,
 							'resultScore' : '',
 							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
@@ -859,7 +836,7 @@ public class MapStatisticsService {
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : k?.name,
+							'resultName' : k?.content,
 							'resultScore' : '',
 							'resultContent' : '',
 							'managementType' : k?.selfManagementType?.id,
@@ -880,13 +857,31 @@ public class MapStatisticsService {
 						chart << [name : it.name, value : it.value]
 					}
 				}
+				if (it?.self?.id == 13l || it?.self?.id == 10l) {
+					def selfResult = selfResultOptionRepository.findOne(145l)
+					data << [
+						'mapTitle' : selfResult.title,
+						'chart' : [],
+						'mapMax' : '',
+						'resultName' : selfResult.name,
+						'resultScore' : '',
+						'resultContent' : selfResult?.content,
+						'managementType' : it?.selfManagementType?.id,
+						'recommendedValue' : '',
+						'graphicsType' : '',
+						'special' : false,
+						'lock' : false,
+						'picPath' : ''
+					]
+				}
+				
 				data << [
 					
 					'mapTitle' : it?.self?.title,
 					'chart' : chart,
 					'mapMax' : it?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
-					'resultScore' : it?.score,
+					'resultScore' : '',
 					'resultContent' : it?.selfResultOption?.content,
 					'managementType' : it?.selfManagementType?.id,
 					'recommendedValue' : it?.recommendedValue,

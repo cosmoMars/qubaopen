@@ -31,6 +31,9 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 	@Autowired
 	InterestService interestService
+	
+	@Autowired
+	FileUtils fileUtils
 
 	@Override
 	protected MyRepository<Interest, Long> getRepository() {
@@ -133,10 +136,10 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 		if (interest) {
 
-			def filename = "${interestId}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
+			def filename = "i_${interestId}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
 				interestPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
 
-			FileUtils.saveFile(pic.bytes, interestPath)
+			fileUtils.saveFile(pic.bytes, interestPath)
 
 			interest.picPath = "/pic/$filename"
 			interestRepository.save(interest)
@@ -145,7 +148,6 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		'{"success": "0", "message" : "err111"}'
 	}
 	
-	//
 	//	/**
 	//	 * 显示图片
 	//	 * @param interestId

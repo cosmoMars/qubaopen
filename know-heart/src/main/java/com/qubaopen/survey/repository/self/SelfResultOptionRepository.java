@@ -16,6 +16,9 @@ public interface SelfResultOptionRepository extends MyRepository<SelfResultOptio
 
 	@Query("from SelfResultOption sro where sro.name like :s1 and sro.name like :s2 and sro.name like :s3 and sro.selfResult.self = :self")
 	List<SelfResultOption> findByTypeAlphabet(@Param("s1") String s1, @Param("s2") String s2, @Param("s3") String s3, @Param("self") Self self);
+	
+	@Query("from SelfResultOption sro where sro.name like :s1 and sro.name like :s2 and sro.name like :s3 and sro.name like :s4 and sro.selfResult.self = :self")
+	List<SelfResultOption> findByTypeAlphabet(@Param("s1") String s1, @Param("s2") String s2, @Param("s3") String s3, @Param("s4") String s4, @Param("self") Self self);
 
 	@Query("from SelfResultOption sro where sro.name like :s1 and sro.name like :s2 and sro.selfResult.self = :self")
 	List<SelfResultOption> findByTypeAlphabet(@Param("s1") String s1, @Param("s2") String s2, @Param("self") Self self);

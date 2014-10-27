@@ -104,7 +104,7 @@ public class UserService {
 			return result
 		}
 
-		'{"success" : "0", "message": "err001"}'
+		'{"success" : "0", "message": "亲，您输入的帐号或密码有误哟！"}'
 	}
 
 
@@ -190,13 +190,13 @@ public class UserService {
 		}
 
 		if (userCaptcha) {
-			userCaptcha.captcha = captcha
-			userCaptcha.lastSentDate = today
 			if (DateUtils.isSameDay(today, userCaptcha.lastSentDate)) {
 				userCaptcha.sentNum ++
 			} else {
 				userCaptcha.sentNum = 0
 			}
+			userCaptcha.captcha = captcha
+			userCaptcha.lastSentDate = today
 		} else {
 			userCaptcha = new UserCaptcha(
 				id : user.id,

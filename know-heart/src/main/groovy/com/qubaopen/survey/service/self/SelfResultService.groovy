@@ -303,6 +303,7 @@ public class SelfResultService {
 			)
 			result << mapRecord
 		}
+		
 		def resultName = ''
 		if (optionMap.get('E') >= optionMap.get('I')) {
 			resultName += 'E'
@@ -324,22 +325,26 @@ public class SelfResultService {
 		} else {
 			resultName += 'J'
 		}
-//		def resultOption = selfResultOptionRepository.findByName(resultName)
-		def	resultOption = selfResultOptionRepository.findOneByFilters(
-			[
-				name_equal : resultName,
-				'selfResult.self_equal' : self
-			]
-		)
-	
-
+//		def	resultOption = selfResultOptionRepository.findOneByFilters(
+//			[
+//				name_equal : resultName,
+//				'selfResult.self_equal' : self
+//			]
+//		)
+		def resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%','%' + resultName[3] + '%', self)
+		if (!resultOption) {
+			resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', '%' + resultName[2] + '%', self)
+		}
+		if (!resultOption) {
+			resultOption = selfResultOptionRepository.findByTypeAlphabet(resultName[0] + '%', '%' + resultName[1] + '%', self)
+		}
 		if (refresh) {
-			selfPersistentService.saveMapStatistics(user, self, result, resultOption, null)
+			selfPersistentService.saveMapStatistics(user, self, result, resultOption[0], null)
 
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
+			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption[0])
 		}
 
-		resultOption
+		resultOption[0]
 	}
 
 	@Transactional

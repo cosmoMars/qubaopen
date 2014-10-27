@@ -131,7 +131,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			]
 		}
 
-		'{"success" : "0", "message": "err001"}'
+		'{"success" : "0", "message": "亲，您输入的帐号或密码有误哟！"}'
 	}
 
 	/**

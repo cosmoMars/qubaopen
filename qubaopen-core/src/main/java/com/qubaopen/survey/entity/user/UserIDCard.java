@@ -1,5 +1,6 @@
 package com.qubaopen.survey.entity.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -19,6 +20,7 @@ public class UserIDCard extends AbstractPersistable<Long> {
 	/**
 	 * 身份证
 	 */
+	@Column(unique = true)
 	private String IDCard;
 
 	/**

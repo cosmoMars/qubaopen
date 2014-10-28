@@ -38,7 +38,7 @@ public class UserIDCardLog extends AbstractBaseEntity<Long>{
 	private String photoPath;
 	
 	/**
-	 * 验证状态 0 处理成功  compStatus 3 一致 2 不一致
+	 * 验证状态 0 处理成功  compStatus 3 一致 2 不一致 1 库中无此号 local 绑定本地数据 used 已经被绑定
 	 */
 	private String status;
 

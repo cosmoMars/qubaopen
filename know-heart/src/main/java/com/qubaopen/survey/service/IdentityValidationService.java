@@ -1,5 +1,8 @@
 package com.qubaopen.survey.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -12,7 +15,7 @@ import cn.id5.gboss.businesses.validator.service.app.QueryValidatorServicesProxy
 @Service
 public class IdentityValidationService {
 	
-	public String identityValidation(String id, String name) throws Exception {
+	public Map<String, Object> identityValidation(String id, String name) throws Exception {
 		
 		QueryValidatorServicesProxy proxy = new QueryValidatorServicesProxy(
 				"http://gboss.id5.cn/services/QueryValidatorServices");
@@ -38,11 +41,19 @@ public class IdentityValidationService {
 		resultXML = Des2.decodeValue(key, resultXML);
 		System.out.println("resultXml2 ================================ " + resultXML);
 		
+		Map<String, Object> map = new HashMap<String, Object>();
 		Document document = DocumentHelper.parseText(resultXML);
 		Element root = document.getRootElement();
 		Element status = root.element("message").element("status");
 		
-		return status.getTextTrim();
+		map.put("status", status.getTextTrim());
+		
+		if ("0".equals(status.getTextTrim())) {
+			Element compStatus = root.element("policeCheckInfos").element("policeCheckInfo").element("compStatus");
+			map.put("compStatus", compStatus.getTextTrim());
+		}
+		
+		return map;
 		
 	}
 

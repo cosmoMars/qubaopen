@@ -9,6 +9,6 @@ import com.qubaopen.survey.entity.user.UserIDCard;
 public interface UserIDCardRepository extends MyRepository<UserIDCard, Long> {
 
 	
-	@Query("from UserIDCard u where u.IDCard = :idCard and u.name = :name")
-	UserIDCard findByIDCardAndName(@Param("idCard") String idCard,@Param("name") String name);
+	@Query("from UserIDCard u where u.IDCard = :idCard")
+	UserIDCard findByIDCard(@Param("idCard") String idCard);
 }

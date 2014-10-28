@@ -40,7 +40,7 @@ public class UserIDCardBindService {
 	def submitUserIdCard(String idCard, String name, User user) {
 		
 		def userIdCardBind = userIDCardBindRepository.findOne(user.id),
-			userIdCard = userIDCardRepository.findByIDCardAndName(idCard, name),
+			userIdCard = userIDCardRepository.findByIDCard(idCard),
 			existLogs = userIDCardLogRepository.findCurrentMonthIdCardLogByUser(user),
 			existIdCardBind = userIDCardBindRepository.findByUserIDCard(userIdCard)
 			
@@ -59,10 +59,18 @@ public class UserIDCardBindService {
 					name : name,
 					status : 'local'
 				)
+				userIdCard.name = name
 				userIDCardLogRepository.save(userIdCardLog)
 			} else {
-				def result = identityValidationService.identityValidation(idCard, name)
-//				def result = '0'
+				def result,
+					map = identityValidationService.identityValidation(idCard, name),
+					mapStatus = map.get('status')
+				
+				if ('0' == mapStatus) {
+					result = map.get('compStatus')
+				} else {
+					result = mapStatus
+				}
 				def userIdCardLog = new UserIDCardLog(
 					user : user,
 					IDCard : idCard,
@@ -70,16 +78,17 @@ public class UserIDCardBindService {
 					status : result
 				)
 				userIDCardLogRepository.save(userIdCardLog)
-//				result = '0' // 测试使用
-				if (result != '0') {
+				if ('0' != mapStatus) {
 					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}
-				if (result == '0') {
+				if ('0' == mapStatus && '1' == result) {
+					return '{"success" : "0", "message" : "库中无此号,请到户籍所在地进行核实!"}'
+				}
+				if ('0' == mapStatus && '1' != result) {
 					userIdCard = new UserIDCard(
 						IDCard : idCard,
 						name : name
 					)
-					userIDCardRepository.save(userIdCard)
 				}
 			}
 			if (userIdCard) {
@@ -87,6 +96,7 @@ public class UserIDCardBindService {
 					id : user.id,
 					userIDCard : userIdCard
 				)
+				userIDCardRepository.save(userIdCard)
 				userIDCardBindRepository.save(userIdCardBind)
 				return '{"success" : "1", "message" : "认证成功"}'
 			} else {
@@ -94,7 +104,7 @@ public class UserIDCardBindService {
 			}
 		} else {
 			def correctLog = existLogs.find {
-				it.status == '0' || it.status == 'local'
+				it.status == 'local' || it.status == '2' || it.status == '3'
 			}
 			if (correctLog) {
 				def userIdCardLog = new UserIDCardLog(
@@ -114,10 +124,20 @@ public class UserIDCardBindService {
 					name : name,
 					status : 'local'
 				)
+				userIdCard.name = name
+				userIDCardRepository.save(userIdCard)
+				userIDCardLogRepository.save(userIdCardLog)
 				return '{"success" : "1", "message" : "认证成功"}'
 			} else {
-				def result = identityValidationService.identityValidation(idCard, name)
-//				def result = '0'
+				def result,
+					map = identityValidationService.identityValidation(idCard, name),
+					mapStatus = map.get('status')
+				if ('0' == mapStatus) {
+					result = map.get('compStatus')
+				} else {
+					result = mapStatus
+				}
+					
 				def userIdCardLog = new UserIDCardLog(
 					user : user,
 					IDCard : idCard,
@@ -125,11 +145,13 @@ public class UserIDCardBindService {
 					status : result
 				)
 				userIDCardLogRepository.save(userIdCardLog)
-//				result = '0' // 测试使用
-				if (result != '0') {
+				if ('0' != mapStatus) {
 					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}
-				if (result == '0') {
+				if ('0' == mapStatus && '1' == result) {
+					return '{"success" : "0", "message" : "库中无此号,请到户籍所在地进行核实!"}'
+				}
+				if ('0' == mapStatus && '1' != result) {
 					userIdCard = new UserIDCard(
 						IDCard : idCard,
 						name : name

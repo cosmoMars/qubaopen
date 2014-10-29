@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>每日注册情况</title>
+<title>知心用户情况</title>
 <style>
     .label {
         float: left;
@@ -77,12 +77,11 @@
 
 function requestReport(){
     $.ajax({
-        url: "userReport/getUserReports",
+        url: "userReport/countUserInfo",
         type: "GET",
         async: false,
         dataType: "json",
         success: function (data) {
-        	console.log(data);
             if (data.success == 1) {
                 console.log("success");
                 loadReport(data);
@@ -94,13 +93,19 @@ function requestReport(){
 //加载
 function loadReport(data){
 	
-    var reports = data.reports;
+    var reports = data.userInfoReports;
     
     for (var i = 0; i < reports.length; i ++) {
-    	var date = reports[i].date;
-    	var registerCount = reports[i].registerCount;
-    	var userCount = reports[i].userCount;
-    	var html = '<tr><td align="center">' + date + '</td><td align="center">' + registerCount + '</td><td align="center">' + userCount + '</td></tr>';
+    	var totalUser = reports[i].totalUser;
+    	var avatarUser = reports[i].avatarUser;
+    	var nickNameUser = reports[i].nickNameUser;
+    	var signatureUser = reports[i].signatureUser;
+    	var bindUser = reports[i].bindUser;
+    	var moodUser = reports[i].moodUser;
+    	var html = '<tr><td align="center">' + totalUser + '</td><td align="center">'
+    	   + avatarUser + '</td><td align="center">' + nickNameUser + '</td><td align="center">'
+    	   + signatureUser + '</td><td align="center">' + bindUser + '</td><td align="center">' 
+    	   + moodUser + '</td></tr>';
     	$("#reportTable").append(html);
     }
 
@@ -115,14 +120,18 @@ $(document).ready(function () {
 </head>
 <body>
 
-<h3 align="center">每日注册情况</h3>
+<h3 align="center">知心用户情况</h3>
 
 <div align="center" id="report">
     <table width="900px" border="1px" id = "reportTable">
         <tr>
-            <td align="center">日期</td>
-            <td align="center">总注册人数</td>
-            <td align="center">成功注册人数</td>
+            <td align="center">总用户数量</td>
+            <td align="center">有头像用户</td>
+            <td align="center">有昵称用户</td>
+            <td align="center">有签名用户</td>
+            <td align="center">有身份验证用户</td>
+            <td align="center">用过每日心情用户</td>
+          
         </tr>
     
     </table>

@@ -6,10 +6,19 @@ public class UserReportVo implements Serializable {
 
 	private static final long serialVersionUID = -7551780391634146572L;
 
+	/**
+	 * 日期
+	 */
 	private String date;
 
+	/**
+	 * 总注册人数
+	 */
 	private int registerCount;
 
+	/**
+	 * 成功注册人数
+	 */
 	private int userCount;
 
 	public String getDate() {

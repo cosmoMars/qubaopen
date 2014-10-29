@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>每日注册情况</title>
+<title>用户反馈</title>
 <style>
     .label {
         float: left;
@@ -73,16 +73,16 @@
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 
+
 <script type="text/javascript">
 
 function requestReport(){
     $.ajax({
-        url: "userReport/getUserReports",
+        url: "userFeedBack/getUserFeedBack",
         type: "GET",
         async: false,
         dataType: "json",
         success: function (data) {
-        	console.log(data);
             if (data.success == 1) {
                 console.log("success");
                 loadReport(data);
@@ -94,13 +94,18 @@ function requestReport(){
 //加载
 function loadReport(data){
 	
-    var reports = data.reports;
+    var backs = data.feedBacks;
     
-    for (var i = 0; i < reports.length; i ++) {
-    	var date = reports[i].date;
-    	var registerCount = reports[i].registerCount;
-    	var userCount = reports[i].userCount;
-    	var html = '<tr><td align="center">' + date + '</td><td align="center">' + registerCount + '</td><td align="center">' + userCount + '</td></tr>';
+    for (var i = 0; i < backs.length; i ++) {
+    	var content = backs[i].content;
+    	var feedBackTime = backs[i].feedBackTime;
+    	var contactMethod = backs[i].contactMethod;
+    	var userId = backs[i].userId;
+    	var feedBackType = backs[i].feedBackType;
+    	var createDate = backs[i].createDate;
+    	var html = '<tr><td align="center">' + userId + '</td><td align="center">' + feedBackTime 
+    	   + '</td><td align="center">' + contactMethod + '</td><td align="center">' + feedBackType 
+    	   + '</td><td align="center">' + content + '</td><td align="center">' + createDate + '</td></tr>';
     	$("#reportTable").append(html);
     }
 
@@ -115,14 +120,17 @@ $(document).ready(function () {
 </head>
 <body>
 
-<h3 align="center">每日注册情况</h3>
+<h3 align="center">用户反馈</h3>
 
 <div align="center" id="report">
     <table width="900px" border="1px" id = "reportTable">
         <tr>
-            <td align="center">日期</td>
-            <td align="center">总注册人数</td>
-            <td align="center">成功注册人数</td>
+            <td align="center">用户ID</td>
+            <td align="center">反馈时间</td>
+            <td align="center">联系方式</td>
+            <td align="center">用户类型</td>
+            <td align="center">内容</td>
+            <td align="center">创建时间</td>
         </tr>
     
     </table>

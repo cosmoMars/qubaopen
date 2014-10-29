@@ -17,19 +17,62 @@ import com.qubaopen.backend.vo.UserReportVo;
 @RestController
 @RequestMapping("userReport")
 public class UserReportController {
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserReportController.class);
-	
+
 	@RequestMapping(value = "getUserReports", method = RequestMethod.GET)
-	public Map<String, Object> getUserReports(){
-		logger.trace(" -- 用户统计 -- ");
-		List<UserReportVo> userReports = userRepository.calUserReports();
+	public Map<String, Object> getUserReports() {
+		logger.trace(" -- 每日注册情况 -- ");
+		List<UserReportVo> userReports = userRepository.countUserReports();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("success", "1");
 		map.put("reports", userReports);
 		return map;
 	}
+
+	@RequestMapping(value = "countUserInfo", method = RequestMethod.GET)
+	public Map<String, Object> countUserInfo() {
+		
+		logger.trace(" -- 知心用户情况 -- ");
+		List<Map<String, Object>> userInfoReports = userRepository.countUserInfo();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("success", "1");
+		map.put("userInfoReports", userInfoReports);
+		return map;
+	}
+	
+	@RequestMapping(value = "countFinalMood", method = RequestMethod.GET)
+	public Map<String, Object> countFinalMood() {
+		
+		logger.trace(" -- 每日最终心情 -- ");
+		List<Map<String, Object>> finalMoodReports = userRepository.countFinalMood();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("success", "1");
+		map.put("finalMoodReports", finalMoodReports);
+		return map;
+	}
+	
+	@RequestMapping(value = "conutChangeMood", method = RequestMethod.GET)
+	public Map<String, Object> conutChangeMood() {
+		logger.trace(" -- 	今日心情变化 -- ");
+		List<Map<String, Object>> changeMoodReports = userRepository.countChangeMood();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("success", "1");
+		map.put("changeMoodReports", changeMoodReports);
+		return map;
+	}
+	
+	@RequestMapping(value = "conutTodayMood", method = RequestMethod.GET)
+	public Map<String, Object> conutTodayMood() {
+		logger.trace(" -- 	今日心情变化 -- ");
+		List<Map<String, Object>> todayMoodReports = userRepository.countTodayMood();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("success", "1");
+		map.put("todayMoodReports", todayMoodReports);
+		return map;
+	}
+	
 }

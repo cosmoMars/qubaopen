@@ -14,13 +14,17 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.qubaopen.core.entity.AbstractBaseEntity;
+
 /**
  * @author mars 用户反馈表
  */
 @Entity
 @Table(name = "user_feed_back")
 @Audited
-public class UserFeedBack extends AbstractPersistable<Long> {
+public class UserFeedBack extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = -4149843099074806989L;
 
@@ -43,6 +47,7 @@ public class UserFeedBack extends AbstractPersistable<Long> {
 	/**
 	 * 用户id
 	 */
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -56,7 +61,7 @@ public class UserFeedBack extends AbstractPersistable<Long> {
 	/**
 	 * ORDINARY 0 普通用户, ENTERPRISE 1 企业用户
 	 */
-	private enum FeedBackType {
+	public enum FeedBackType {
 		ORDINARY, ENTERPRISE
 	}
 

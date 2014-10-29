@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>User FeedBack</title>
+<style>
+    .label {
+        float: left;
+        width: 120px;
+    }
+
+    .infobox {
+        width: 200px;
+    }
+
+    .error {
+        color: red;
+        padding-left: 10px;
+    }
+
+    .submit {
+        margin-left: 125px;
+        margin-top: 10px;
+    }
+    .tipText{
+        font-size: 12px;
+    }
+
+    div {
+        padding: 5px;
+    }
+
+    .question{
+        overflow: auto;
+        display: block;
+        border: 1px solid black;
+    }
+
+    .question:nth-child(n+2){
+        margin-top: 30px;
+    }
+    .qTitle{
+        border-bottom: 1px solid black;
+    }
+    .choice div{
+        float: left;
+    }
+    /*第二个开始margin*/
+    .choice div:nth-child(n+2){
+        margin-left: 30px;
+    }
+    .logicButton{
+        clear: left;
+    }
+    .deleteAllLogic{
+        margin-left: 200px;
+    }
+
+    #questionnaireTitle{
+        font-weight: 800;
+    }
+
+    #questionnaireAnswer{
+        overflow: auto;
+        display: block;
+        margin-top: 5px;
+        border: 1px solid blue;
+    }
+
+
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css"/>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+
+<script type="text/javascript">
+
+function requestReport(){
+    $.ajax({
+        url: "userFeedBack/getUserFeedBack",
+        type: "GET",
+        async: false,
+        dataType: "json",
+        success: function (data) {
+        	console.log(data);
+            if (data.success == 1) {
+                console.log("success");
+                loadReport(data);
+            }
+        }
+    });
+}
+
+//加载
+function loadReport(data){
+	
+    var backs = data.feedBacks;
+    
+    for (var i = 0; i < backs.length; i ++) {
+    	var content = backs[i].content;
+    	var feedBackTime = backs[i].feedBackTime;
+    	var contactMethod = backs[i].contactMethod;
+    	var userId = backs[i].userId;
+    	var feedBackType = backs[i].feedBackType;
+    	var createDate = backs[i].createDate;
+    	var html = '<tr><td align="center">' + userId + '</td><td align="center">' + feedBackTime 
+    	   + '</td><td align="center">' + contactMethod + '</td><td align="center">' + feedBackType 
+    	   + '</td><td align="center">' + content + '</td><td align="center">' + createDate + '</td></tr>';
+    	$("#reportTable").append(html);
+    }
+
+}
+
+
+$(document).ready(function () {
+	requestReport();
+});
+
+</script>
+</head>
+<body>
+
+<div align="center" id="reportTitle">用户反馈</div>
+
+<div align="center" class="tipText">列表</div>
+<div align="center" id="report">
+    <table width="900px" border="1px" id = "reportTable">
+        <tr>
+            <td align="center">用户ID</td>
+            <td align="center">反馈时间</td>
+            <td align="center">联系方式</td>
+            <td align="center">用户类型</td>
+            <td align="center">内容</td>
+            <td align="center">创建时间</td>
+        </tr>
+    
+    </table>
+</div>
+
+</body>
+</html>

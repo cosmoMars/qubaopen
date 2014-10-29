@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import com.qubaopen.backend.vo.UserReport;
+import com.qubaopen.backend.vo.UserReportVo;
 
 public class UserRepositoryImpl implements UserReportRepositoryCustom {
 
@@ -15,7 +15,7 @@ public class UserRepositoryImpl implements UserReportRepositoryCustom {
 	private EntityManager entityManager;
 	
 	@Override
-	public List<UserReport> calUserReports() {
+	public List<UserReportVo> calUserReports() {
 		
 		StringBuffer sql = new StringBuffer();
 		
@@ -29,9 +29,9 @@ public class UserRepositoryImpl implements UserReportRepositoryCustom {
 		
 		@SuppressWarnings("unchecked")
 		List<Object[]> list = query.getResultList();
-		List<UserReport> userReports = new ArrayList<UserReport>();
+		List<UserReportVo> userReports = new ArrayList<UserReportVo>();
 		for (Object[] objects : list) {
-			UserReport ur = new UserReport();
+			UserReportVo ur = new UserReportVo();
 			
 			ur.setDate((String)objects[0]);
 			ur.setRegisterCount(Integer.parseInt(objects[1].toString()));

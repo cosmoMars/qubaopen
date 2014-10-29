@@ -68,7 +68,7 @@ public class InterestResultService {
 
 		def resultOrder = questionOrders.find {
 			questionOptions.find {  qo ->
-				it.optionId = qo.id
+				it.optionId == qo.id
 			}
 		}
 

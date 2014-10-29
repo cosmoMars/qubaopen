@@ -168,7 +168,7 @@ public class UserService {
 				return '{"success": "0", "message": "err009"}'
 			}
 
-			if (userCaptcha.sentNum > 10) {
+			if (DateUtils.isSameDay(today, userCaptcha.lastSentDate) && userCaptcha.sentNum > 10) {
 				return '{"success": "0", "message": "err010"}'
 			}
 		}
@@ -193,7 +193,7 @@ public class UserService {
 			if (DateUtils.isSameDay(today, userCaptcha.lastSentDate)) {
 				userCaptcha.sentNum ++
 			} else {
-				userCaptcha.sentNum = 0
+				userCaptcha.sentNum = 1
 			}
 			userCaptcha.captcha = captcha
 			userCaptcha.lastSentDate = today

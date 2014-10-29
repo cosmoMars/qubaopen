@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mathworks.toolbox.javabuilder.MWClassID;
 import com.mathworks.toolbox.javabuilder.MWException;
 import com.mathworks.toolbox.javabuilder.MWNumericArray;
-import com.mathworks.toolbox.javabuilder.internal.MWMCR;
 
 import createFit.MatFactory;
 

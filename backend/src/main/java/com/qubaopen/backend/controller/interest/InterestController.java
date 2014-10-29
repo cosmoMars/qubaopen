@@ -83,6 +83,10 @@ public class InterestController {
 	@RequestMapping(value = "findInterest", method = RequestMethod.POST)
 	public Map<String, Object> findInterest(long id) {
 		Interest interest = interestRepository.findOne(id);
+		
+		if (interest == null) {
+			return null;
+		}
 
 		List<InterestQuestion> interestQuestions = interestQuestionRepository.findByInterest(interest);
 

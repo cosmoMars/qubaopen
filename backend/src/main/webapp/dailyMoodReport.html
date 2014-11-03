@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>今日心情（汇总）</title>
+<style>
+    .label {
+        float: left;
+        width: 120px;
+    }
+
+    .infobox {
+        width: 200px;
+    }
+
+    .error {
+        color: red;
+        padding-left: 10px;
+    }
+
+    .submit {
+        margin-left: 125px;
+        margin-top: 10px;
+    }
+    .tipText{
+        font-size: 12px;
+    }
+
+    div {
+        padding: 5px;
+    }
+
+    .question{
+        overflow: auto;
+        display: block;
+        border: 1px solid black;
+    }
+
+    .question:nth-child(n+2){
+        margin-top: 30px;
+    }
+    .qTitle{
+        border-bottom: 1px solid black;
+    }
+    .choice div{
+        float: left;
+    }
+    /*第二个开始margin*/
+    .choice div:nth-child(n+2){
+        margin-left: 30px;
+    }
+    .logicButton{
+        clear: left;
+    }
+    .deleteAllLogic{
+        margin-left: 200px;
+    }
+
+    #questionnaireTitle{
+        font-weight: 800;
+    }
+
+    #questionnaireAnswer{
+        overflow: auto;
+        display: block;
+        margin-top: 5px;
+        border: 1px solid blue;
+    }
+
+
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css"/>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+
+function requestReport(){
+    $.ajax({
+        url: "userReport/countDailyMood",
+        type: "GET",
+        async: false,
+        dataType: "json",
+        success: function (data) {
+            if (data.success == 1) {
+                console.log("success");
+                loadReport(data);
+            }
+        }
+    });
+}
+
+//加载
+function loadReport(data){
+	
+    var reports = data.dailyMoodReports;
+    
+    for (var i = 0; i < reports.length; i ++) {
+    	var applyNum = reports[i].applyNum;
+    	var applyUser = reports[i].applyUser;
+    	var depressedUser = reports[i].depressedUser;
+    	var boredUser = reports[i].boredUser;
+    	var flauntUser = reports[i].flauntUser;
+    	var disgracedUser = reports[i].disgracedUser;
+    	var comfortUser = reports[i].comfortUser;
+    	var kinkUser = reports[i].kinkUser;
+    	var depressedRatio = reports[i].depressedRatio;
+    	var boredRatio = reports[i].boredRatio;
+    	var flauntRatio = reports[i].flauntRatio;
+    	var disgracedRatio = reports[i].disgracedRatio;
+    	var comfortRatio = reports[i].comfortRatio;
+    	var kinkRatio = reports[i].kinkRatio;
+    	var html = '<tr><td align="center">' + applyNum + '</td><td align="center">' + applyUser + '</td><td align="center">'
+    	   + depressedUser + '</td><td align="center">' + boredUser + '</td><td align="center">' + flauntUser + '</td><td align="center">'
+    	   + disgracedUser + '</td><td align="center">' + comfortUser + '</td><td align="center">' + kinkUser + '</td><td align="center">'
+    	   + depressedRatio + '</td><td align="center">' + boredRatio + '</td><td align="center">' + flauntRatio + '</td><td align="center">'
+    	   + disgracedRatio + '</td><td align="center">' + comfortRatio + '</td><td align="center">' + kinkRatio + '</td></tr>';
+    	$("#reportTable").append(html);
+    }
+
+}
+
+
+$(document).ready(function () {
+	requestReport();
+});
+
+</script>
+</head>
+<body>
+
+<h3 align="center">每日最终心情</h3>
+
+<div align="center" id="report">
+    <table width="900px" border="1px" id = "reportTable">
+        <tr>
+            <td align="center">今日总使用次数</td>
+            <td align="center">今日使用人数</td>
+            <td align="center">郁闷人数</td>
+            <td align="center">无聊人数</td>
+            <td align="center">得瑟人数</td>
+            <td align="center">丢人人数</td>
+            <td align="center">求安慰人数</td>
+            <td align="center">纠结人数</td>
+            <td align="center">郁闷比例</td>
+            <td align="center">无聊比例</td>
+            <td align="center">得瑟比例</td>
+            <td align="center">丢人比例</td>
+            <td align="center">求安慰比例</td>
+            <td align="center">纠结比例</td>
+        </tr>
+    
+    </table>
+</div>
+
+</body>
+</html>

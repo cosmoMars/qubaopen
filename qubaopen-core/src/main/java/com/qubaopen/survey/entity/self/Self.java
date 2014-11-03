@@ -30,12 +30,12 @@ public class Self extends AbstractBaseEntity<Long> {
 	@JoinColumn(name = "questionnaire_type_id")
 	private QuestionnaireType questionnaireType;
 
-//	/**
-//	 * 问卷分组类型
-//	 */
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "self_type_id")
-//	private SelfType selfType;
+	/**
+	 * 问卷分组类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "self_type_id")
+	private SelfType selfType;
 
 //	/**
 //	 * 自测类型 Character性格分析, Emotional 情绪管理, Personal个人发展
@@ -166,6 +166,14 @@ public class Self extends AbstractBaseEntity<Long> {
 //	public void setManagementType(ManagementType managementType) {
 //		this.managementType = managementType;
 //	}
+
+	public SelfType getSelfType() {
+		return selfType;
+	}
+
+	public void setSelfType(SelfType selfType) {
+		this.selfType = selfType;
+	}
 
 	public int getCoefficient() {
 		return coefficient;

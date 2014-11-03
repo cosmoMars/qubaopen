@@ -55,15 +55,21 @@ public class SelfPersistentService {
 	 * @param resultOption
 	 */
 	@Transactional
-	void saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption) {
+	void saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption, boolean refresh) {
 
+		if (refresh) {
+			
+			
+		}
+		
 		def selfUserQuestionnaire = new SelfUserQuestionnaire(
 			user : user,
 			self : self,
 			selfResultOption : resultOption,
 			status : SelfUserQuestionnaire.Status.COMPLETED,
 			transmit : SelfUserQuestionnaire.Transmit.NOTRANSMIT,
-			time : new Date()
+			time : new Date(),
+			used : refresh
 		)
 		selfUserQuestionnaire = selfUserQuestionnaireRepository.save(selfUserQuestionnaire)
 

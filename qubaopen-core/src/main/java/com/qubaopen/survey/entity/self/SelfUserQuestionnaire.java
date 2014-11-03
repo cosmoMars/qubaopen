@@ -71,6 +71,11 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
+	
+	/**
+	 * 使用
+	 */
+	private boolean used;
 
 	/**
 	 * 新浪分享
@@ -162,6 +167,14 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 
 	public void setTime(Date time) {
 		this.time = time;
+	}
+
+	public boolean isUsed() {
+		return used;
+	}
+
+	public void setUsed(boolean used) {
+		this.used = used;
 	}
 
 	public boolean isSharedSina() {

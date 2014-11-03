@@ -21,7 +21,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> findByFilters(Map<String, Object> filters) {
+	public Map<String, Object> findByFilters2(Map<String, Object> filters) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		Pageable pageable = (Pageable) filters.get("pageable");
@@ -145,7 +145,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String, Object> findByFilters2(Map<String, Object> filters) {
+	public Map<String, Object> findByFilters(Map<String, Object> filters) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		Pageable pageable = (Pageable) filters.get("pageable");

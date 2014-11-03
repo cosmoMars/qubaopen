@@ -50,7 +50,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveInterest2', method = RequestMethod.POST)
-	retrieveInterest(@RequestParam(required = false) Long interestTypeId,
+	retrieveInterest2(@RequestParam(required = false) Long interestTypeId,
 			@RequestParam(required = false) Long sortTypeId,
 			@RequestParam(required = false) String ids,
 			@ModelAttribute('currentUser') User user,
@@ -76,7 +76,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.POST)
-	retrieveInterest2(@RequestParam(required = false) Long typeId,
+	retrieveInterest(@RequestParam(required = false) Long typeId,
 			@RequestParam(required = false) String ids,
 			@ModelAttribute('currentUser') User user,
 			Pageable pageable) {

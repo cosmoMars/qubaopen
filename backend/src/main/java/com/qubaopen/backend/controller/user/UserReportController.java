@@ -57,7 +57,7 @@ public class UserReportController {
 	
 	@RequestMapping(value = "conutChangeMood", method = RequestMethod.GET)
 	public Map<String, Object> conutChangeMood() {
-		logger.trace(" -- 	今日心情变化 -- ");
+		logger.trace(" -- 今日心情变化 -- ");
 		List<Map<String, Object>> changeMoodReports = userRepository.countChangeMood();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("success", "1");
@@ -67,7 +67,7 @@ public class UserReportController {
 	
 	@RequestMapping(value = "conutTodayMood", method = RequestMethod.GET)
 	public Map<String, Object> conutTodayMood() {
-		logger.trace(" -- 	今日心情变化 -- ");
+		logger.trace(" -- 今日心情 -- ");
 		List<Map<String, Object>> todayMoodReports = userRepository.countTodayMood();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("success", "1");
@@ -75,4 +75,13 @@ public class UserReportController {
 		return map;
 	}
 	
+	@RequestMapping(value = "countDailyMood", method = RequestMethod.GET)
+	public Map<String, Object> countDailyMood() {
+		logger.trace(" -- 今日心情（汇总） -- ");
+		List<Map<String, Object>> dailyMoodReports = userRepository.countDailyMood();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("success", "1");
+		map.put("dailyMoodReports", dailyMoodReports);
+		return map;
+	}
 }

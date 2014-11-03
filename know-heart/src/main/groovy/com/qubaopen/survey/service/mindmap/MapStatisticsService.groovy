@@ -79,10 +79,10 @@ public class MapStatisticsService {
 					user_equal : user
 				]	
 			)// 4小时题目
-			def specialMapRecords
+//			def specialMapRecords
 			if (specialMaps) {
 				existMaps += specialMaps
-				specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
+//				specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
 			}
 			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(user)
 			
@@ -96,67 +96,6 @@ public class MapStatisticsService {
 					['user_equal' : user]
 				)
 			}
-			
-			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
-				def chart
-				def c = []
-				if (specialMaps?.self?.graphicsType) {
-					def timeChart = [], paChart = [], naChart = [], midChart = []
-//					def mapRecords = specialMaps.mapRecords as List
-					Collections.sort(specialMapRecords, new MapRecordComparator())
-					specialMapRecords.each {
-						def thatTime = new Date(it.name as long),
-							time = DateUtils.parseDate(DateFormatUtils.format(thatTime, 'yyyy-MM-dd') + ' 12:00', 'yyyy-MM-dd HH:mm')
-						timeChart << time.getTime()
-						paChart << it.value
-						naChart << -it.naValue
-						midChart << (it.value - it.naValue)
-					}
-					
-					def paChartC = calculatePoint.getPoint(timeChart, paChart)
-					def naChartC = calculatePoint.getPoint(timeChart, naChart)
-					def midChartC = calculatePoint.getPoint(timeChart, midChart)
-					
-					chart = [
-						timeChart : timeChart,
-						midChart : midChart,
-						paChartC : paChartC,
-						naChartC : naChartC,
-						midChartC : midChartC
-					]
-					
-					c << chart
-				}
-				data << [
-			        'mapTitle' : specialMaps?.self?.title,
-					'chart' : c,
-					'mapMax' : specialMaps?.mapMax,
-					'resultName' : specialMaps?.selfResultOption?.name,
-					'resultScore' : '',
-					'resultContent' : '',
-					'managementType' : specialMaps?.selfManagementType?.id,
-					'recommendedValue' : specialMaps?.recommendedValue,
-					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-					'special' : true,
-					'lock' : false
-				]
-			} else if (specialMaps && specialMapRecords.size() < 7) {
-				data << [
-					'mapTitle' : specialMaps?.self?.title,
-					'chart' : '',
-					'mapMax' : '',
-					'resultName' : '',
-					'resultScore' : '',
-					'resultContent' : '',
-					'managementType' : specialMaps?.selfManagementType?.id,
-					'recommendedValue' : specialMaps?.recommendedValue,
-					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-					'special' : true,
-					'lock' : true,
-					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
-				]
-			} 
-			
 			def groupResultMaps = [:]
 			
 			existGroupMaps.each {
@@ -350,10 +289,10 @@ public class MapStatisticsService {
 					]
 				)
 			
-			def specialMapRecords
+//			def specialMapRecords
 			if (specialMaps) {
 				existMaps += specialMaps
-				specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
+//				specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
 			}
 			def existGroupMaps = mapStatisticsRepository.findMapByGroupSelfs(selfManagementType, user)
 			existMaps += existGroupMaps
@@ -364,64 +303,6 @@ public class MapStatisticsService {
 			} else {
 				singleMaps = mapStatisticsRepository.findBySelfManagementTypeAndUser(selfManagementType, user)
 			}
-			if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
-				def chart
-				def c = []
-				if (specialMaps?.self?.graphicsType) {
-					def timeChart = [], paChart = [], naChart = [], midChart = []
-//					def mapRecords = specialMaps.mapRecords as List
-					Collections.sort(specialMapRecords, new MapRecordComparator())
-					specialMapRecords.each {
-						def thatTime = new Date(it.name as long),
-							time = DateUtils.parseDate(DateFormatUtils.format(thatTime, 'yyyy-MM-dd') + ' 12:00', 'yyyy-MM-dd HH:mm')
-						timeChart << time.getTime()
-						paChart << it.value
-						naChart << -it.naValue
-						midChart << (it.value - it.naValue)
-					}
-						def paChartC = calculatePoint.getPoint(timeChart, paChart)
-					def naChartC = calculatePoint.getPoint(timeChart, naChart)
-					def midChartC = calculatePoint.getPoint(timeChart, midChart)
-					
-					chart = [
-						timeChart : timeChart,
-						midChart : midChart,
-						paChartC : paChartC,
-						naChartC : naChartC,
-						midChartC : midChartC
-					]
-					c << chart
-				}
-				data << [
-					'mapTitle' : specialMaps?.self?.title,
-					'chart' : c,
-					'mapMax' : specialMaps?.mapMax,
-					'resultName' : specialMaps?.selfResultOption?.name,
-					'resultScore' : '',
-					'resultContent' : '',
-					'managementType' : specialMaps?.selfManagementType?.id,
-					'recommendedValue' : specialMaps?.recommendedValue,
-					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-					'special' : true,
-					'lock' : false
-				]
-			} else if (specialMaps && specialMapRecords.size() < 7) {
-				data << [
-					'mapTitle' : specialMaps.self.title,
-					'chart' : '',
-					'mapMax' : '',
-					'resultName' : '',
-					'resultScore' : '',
-					'resultContent' : '',
-					'managementType' : specialMaps?.selfManagementType?.id,
-					'recommendedValue' : specialMaps?.recommendedValue,
-					'graphicsType' : specialMaps?.self?.graphicsType?.id,
-					'special' : true,
-					'lock' : true,
-					'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
-				]
-			}
-			
 			def groupResultMaps = [:]
 			
 			existGroupMaps.each {
@@ -616,6 +497,88 @@ public class MapStatisticsService {
 			'userId' : user.id,
 			'data' : data
 		]
+	}
+	
+	@Transactional
+	retrieveSpecialMap(User user) {
+		def data
+		def specialSelf = selfRepository.findSpecialSelf()
+		def specialMaps = mapStatisticsRepository.findOneByFilters(
+			[
+				self_equal : specialSelf,
+				user_equal : user
+			]
+		)// 4小时题目
+		def specialMapRecords
+		if (specialMaps) {
+			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
+		}
+		if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
+			def chart
+			def c = []
+			if (specialMaps?.self?.graphicsType) {
+				def timeChart = [], paChart = [], naChart = [], midChart = []
+//					def mapRecords = specialMaps.mapRecords as List
+				Collections.sort(specialMapRecords, new MapRecordComparator())
+				specialMapRecords.each {
+					def thatTime = new Date(it.name as long),
+						time = DateUtils.parseDate(DateFormatUtils.format(thatTime, 'yyyy-MM-dd') + ' 12:00', 'yyyy-MM-dd HH:mm')
+					timeChart << time.getTime()
+					paChart << it.value
+					naChart << -it.naValue
+					midChart << (it.value - it.naValue)
+				}
+				
+				def paChartC = calculatePoint.getPoint(timeChart, paChart)
+				def naChartC = calculatePoint.getPoint(timeChart, naChart)
+				def midChartC = calculatePoint.getPoint(timeChart, midChart)
+				
+				chart = [
+					timeChart : timeChart,
+					midChart : midChart,
+					paChartC : paChartC,
+					naChartC : naChartC,
+					midChartC : midChartC
+				]
+				
+				c << chart
+			}
+			data << [
+				'mapTitle' : specialMaps?.self?.title,
+				'chart' : c,
+				'mapMax' : specialMaps?.mapMax,
+				'resultName' : specialMaps?.selfResultOption?.name,
+				'resultScore' : '',
+				'resultContent' : '',
+				'managementType' : specialMaps?.selfManagementType?.id,
+				'recommendedValue' : specialMaps?.recommendedValue,
+				'graphicsType' : specialMaps?.self?.graphicsType?.id,
+				'special' : true,
+				'lock' : false
+			]
+		} else if (specialMaps && specialMapRecords.size() < 7) {
+			data << [
+				'mapTitle' : specialMaps?.self?.title,
+				'chart' : '',
+				'mapMax' : '',
+				'resultName' : '',
+				'resultScore' : '',
+				'resultContent' : '',
+				'managementType' : specialMaps?.selfManagementType?.id,
+				'recommendedValue' : specialMaps?.recommendedValue,
+				'graphicsType' : specialMaps?.self?.graphicsType?.id,
+				'special' : true,
+				'lock' : true,
+				'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
+			]
+		}
+		[
+			'success' : '1',
+			'message' : '成功',
+			'userId' : user.id,
+			'data' : data
+		]
+		
 	}
 	
 	class MapRecordComparator implements Comparator {

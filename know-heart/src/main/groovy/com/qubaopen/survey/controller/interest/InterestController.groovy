@@ -65,6 +65,31 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 		interestService.retrieveInterest(user.id, interestTypeId, sortTypeId, resultIds, pageable)
 	}
+			
+	/**
+	 * 获取用户兴趣问卷
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveInterest2', method = RequestMethod.POST)
+	retrieveInterest2(@RequestParam(required = false) Long typeId,
+			@RequestParam(required = false) String ids,
+			@ModelAttribute('currentUser') User user,
+			Pageable pageable) {
+
+		logger.trace ' -- 获取用户兴趣问卷 -- '
+
+		def resultIds
+		if (ids != null) {
+			resultIds = []
+			def strIds = ids.split(',')
+			strIds.each {
+				resultIds << Long.valueOf(it.trim())
+			}
+		}
+
+		interestService.retrieveInterest2(user.id, typeId, resultIds, pageable)
+	}
 
 	/**
 	 * 通过用户问题选项，计算得到结果选项
@@ -177,5 +202,5 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		interestService.retrieveFriendAnswer(friendId, interestId)
 
 	}
-
+	
 }

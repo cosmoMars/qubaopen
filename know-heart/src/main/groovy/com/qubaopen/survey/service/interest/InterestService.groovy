@@ -113,6 +113,59 @@ public class InterestService {
 			
 		]
 	}
+	
+	@Transactional(readOnly = true)
+	retrieveInterest2(long userId, Long typeId, List<Long> ids, Pageable pageable) {
+		
+		def user = new User(id : userId),
+			interestList = []
+		def filter = [ user : user, typeId : typeId, pageable : pageable, ids : ids],
+			result = interestRepository.findByFilters(filter) as Map
+		interestList = result.get('interests') as List
+		def lastPage = false
+		if (interestList.size() < pageable.getPageSize()) {
+			lastPage = true
+		}
+		
+		// TODO 计算答问卷的好友数量
+//		def friendCount = userFriendRepository.countUserFriend(user)
+//		def friend = userFriendRepository.findByUser(user)
+
+		def data = []
+		interestList.each {
+			def tags = []
+			it.questionnaireTagTypes.each { q ->
+				tags << [
+					'tagId' : q.id,
+					'tagName' : q.name
+				]
+			}
+			def friendCount = interestUserQuestionnaireRepository.countUserFriend(user, it)
+			def interest = [
+				'interestId' : it.id,
+				'interestType' : it.interestType.name,
+				'questionnaireTagType' : tags,
+				'title' : it.title,
+				'golds' : it.golds,
+				'status' : it.status.toString(),
+				'remark' : it.remark,
+				'totalRespondentsCount' : it.totalRespondentsCount,
+				'recommendedValue' : it.recommendedValue,
+				'friendCount' : friendCount,
+				'picPath' :it.picPath
+//				'guidanceSentence' : it.guidanceSentence,
+				
+			]
+			data << interest
+		}
+		[
+			'success' : '1',
+			'message' : '成功',
+			'lastPage' : lastPage,
+			'data' : data
+			
+		]
+	}
 
 	/**
 	 * 通过interestId查找问卷

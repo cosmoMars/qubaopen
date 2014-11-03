@@ -45,4 +45,18 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 		mapStatisticsService.retrieveMapStatistics(user, typeId)
 	}
 
+	/**
+	 * 获取心理地图信息
+	 * @param userId
+	 * @param selfId
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveSpecialMap', method = RequestMethod.GET)
+	retrieveSpecialMap(@ModelAttribute('currentUser') User user) {
+
+		logger.trace(' -- 获取心理地图信息 -- ')
+
+		mapStatisticsService.retrieveSpecialMap(user)
+	}
+	
 }

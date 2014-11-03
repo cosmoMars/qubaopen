@@ -32,4 +32,9 @@ public interface UserReportRepositoryCustom {
 	 */
 	List<Map<String, Object>> countTodayMood();
 	
+	/**
+	 * @return 今日心情（汇总）
+	 */
+	List<Map<String, Object>> countDailyMood();
+	
 }

@@ -6,4 +6,6 @@ public interface InterestRepositoryCustom {
 
 	Map<String, Object> findByFilters(Map<String, Object> filters);
 
+	Map<String, Object> findByFilters2(Map<String, Object> filters);
+
 }

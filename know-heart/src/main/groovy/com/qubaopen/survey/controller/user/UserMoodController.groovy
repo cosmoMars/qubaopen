@@ -48,4 +48,5 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 
 		userMoodService.getUserMood(user);
 	}
+	
 }

@@ -28,6 +28,7 @@ import com.qubaopen.survey.repository.user.UserLogRepository;
 import com.qubaopen.survey.repository.user.UserMoodRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
+import com.qubaopen.survey.service.SmsServiceToken;
 import com.qubaopen.survey.service.user.UserService
 
 /**
@@ -52,6 +53,9 @@ class UserController extends AbstractBaseController<User, Long> {
 	
 	@Autowired
 	UserLogRepository userLogRepository
+	
+	@Autowired
+	SmsServiceToken smsServiceToken
 	
 
 	@Override
@@ -127,7 +131,9 @@ class UserController extends AbstractBaseController<User, Long> {
 				'avatarPath' : userInfo?.avatarPath,
 				'signature' : userInfo?.signature,
 				'mood' : userMood?.moodType?.ordinal(),
-				'moodDate' : userMood?.lastTime
+				'moodDate' : userMood?.lastTime,
+				'designation' : userInfo?.designation,
+				'prcent' : userInfo?.resolution
 			]
 		}
 
@@ -247,4 +253,5 @@ class UserController extends AbstractBaseController<User, Long> {
 	test(Pageable pageable) {
 		userRepository.findAllUsers(pageable)
 	}
+	
 }

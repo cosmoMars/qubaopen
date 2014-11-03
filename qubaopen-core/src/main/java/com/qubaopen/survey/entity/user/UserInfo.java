@@ -140,6 +140,16 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	 * 向好友公开测试答案
 	 */
 	private boolean publicAnswersToFriend;
+	
+	/**
+	 * 称号
+	 */
+	private String designation;
+	
+	/**
+	 * 解析度
+	 */
+	private String resolution;
 
 	public User getUser() {
 		return user;
@@ -205,84 +215,100 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		this.signature = signature;
 	}
 
-	public Boolean getSharedSina() {
+	public boolean isSharedSina() {
 		return sharedSina;
 	}
 
-	public void setSharedSina(Boolean sharedSina) {
+	public void setSharedSina(boolean sharedSina) {
 		this.sharedSina = sharedSina;
 	}
 
-	public Boolean getSharedTencent() {
+	public boolean isSharedTencent() {
 		return sharedTencent;
 	}
 
-	public void setSharedTencent(Boolean sharedTencent) {
+	public void setSharedTencent(boolean sharedTencent) {
 		this.sharedTencent = sharedTencent;
 	}
 
-	public Boolean getSharedWeChatFriend() {
+	public boolean isSharedWeChatFriend() {
 		return sharedWeChatFriend;
 	}
 
-	public void setSharedWeChatFriend(Boolean sharedWeChatFriend) {
+	public void setSharedWeChatFriend(boolean sharedWeChatFriend) {
 		this.sharedWeChatFriend = sharedWeChatFriend;
 	}
 
-	public Boolean getSharedQQSpace() {
+	public boolean isSharedQQSpace() {
 		return sharedQQSpace;
 	}
 
-	public void setSharedQQSpace(Boolean sharedQQSpace) {
+	public void setSharedQQSpace(boolean sharedQQSpace) {
 		this.sharedQQSpace = sharedQQSpace;
 	}
 
-	public Boolean getSharedWeChat() {
+	public boolean isSharedWeChat() {
 		return sharedWeChat;
 	}
 
-	public void setSharedWeChat(Boolean sharedWeChat) {
+	public void setSharedWeChat(boolean sharedWeChat) {
 		this.sharedWeChat = sharedWeChat;
 	}
 
-	public Integer getFriendNum() {
+	public int getFriendNum() {
 		return friendNum;
 	}
 
-	public void setFriendNum(Integer friendNum) {
+	public void setFriendNum(int friendNum) {
 		this.friendNum = friendNum;
 	}
 
-	public Boolean getPublicAnswersToChief() {
+	public boolean isPublicAnswersToChief() {
 		return publicAnswersToChief;
 	}
 
-	public void setPublicAnswersToChief(Boolean publicAnswersToChief) {
+	public void setPublicAnswersToChief(boolean publicAnswersToChief) {
 		this.publicAnswersToChief = publicAnswersToChief;
 	}
 
-	public Boolean getSaveFlow() {
+	public boolean isSaveFlow() {
 		return saveFlow;
 	}
 
-	public void setSaveFlow(Boolean saveFlow) {
+	public void setSaveFlow(boolean saveFlow) {
 		this.saveFlow = saveFlow;
 	}
 
-	public Boolean getPublicMovementToFriend() {
+	public boolean isPublicMovementToFriend() {
 		return publicMovementToFriend;
 	}
 
-	public void setPublicMovementToFriend(Boolean publicMovementToFriend) {
+	public void setPublicMovementToFriend(boolean publicMovementToFriend) {
 		this.publicMovementToFriend = publicMovementToFriend;
 	}
 
-	public Boolean getPublicAnswersToFriend() {
+	public boolean isPublicAnswersToFriend() {
 		return publicAnswersToFriend;
 	}
 
-	public void setPublicAnswersToFriend(Boolean publicAnswersToFriend) {
+	public void setPublicAnswersToFriend(boolean publicAnswersToFriend) {
 		this.publicAnswersToFriend = publicAnswersToFriend;
 	}
 
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public String getResolution() {
+		return resolution;
+	}
+
+	public void setResolution(String resolution) {
+		this.resolution = resolution;
+	}
+	
 }

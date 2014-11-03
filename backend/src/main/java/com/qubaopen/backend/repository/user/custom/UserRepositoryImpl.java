@@ -88,7 +88,7 @@ public class UserRepositoryImpl implements UserReportRepositoryCustom {
 		sql.append("left join user_mood as b on a.user_id = b.user_id and a.time = b.last_time ");
 		sql.append("left join user_basic as c on a.user_id = c.id ");
 		sql.append("left join user_info as d on a.user_id = d.id ");
-		sql.append("order by a.user_id ");
+		sql.append("order by a.user_id, a.time desc");
 
 		Query query = entityManager.createNativeQuery(sql.toString());
 
@@ -159,6 +159,48 @@ public class UserRepositoryImpl implements UserReportRepositoryCustom {
 			map.put("nickName", objects[1]);
 			map.put("time", DateFormatUtils.format((Date)objects[2], "yyyy-MM-dd HH:mm:ss"));
 			map.put("mood", objects[3]);
+			result.add(map);
+		}
+		return result;
+	}
+
+	@Override
+	public List<Map<String, Object>> countDailyMood() {
+		StringBuilder sql = new StringBuilder();
+		sql.append("select a.cs as '今日总使用次数',b.cs as '今日使用人数',c.cs as '郁闷人数',d.cs as '无聊人数',e.cs as '得瑟人数', ");
+		sql.append("f.cs as '丢人人数',g.cs as '求安慰人数',h.cs as '纠结人数',c.cs/a.cs as '郁闷比例',d.cs/a.cs as '无聊比例', ");
+		sql.append("e.cs/a.cs as '得瑟比例',f.cs/a.cs as '丢人比例',g.cs/a.cs as '求安慰比例',h.cs/a.cs as '纠结比例' ");
+		sql.append("from (select count(*) as cs from user_mood where substring(last_time,1,10) = substring(now(),1,10)) as a ");
+		sql.append("left join (select count(*) as cs from (select user_id from user_mood where substring(last_time,1,10) = substring(now(),1,10) group by user_id) as a) as b on 1=1 ");
+		sql.append("left join (select count(*) as cs from user_mood where substring(last_time,1,10) = substring(now(),1,10) and mood_type =1) as c on 1=1 ");
+		sql.append("left join (select count(*) as cs from user_mood where substring(last_time,1,10) = substring(now(),1,10) and mood_type =2) as d on 1=1 ");
+		sql.append("left join (select count(*) as cs from user_mood where substring(last_time,1,10) = substring(now(),1,10) and mood_type =3) as e on 1=1 ");
+		sql.append("left join (select count(*) as cs from user_mood where substring(last_time,1,10) = substring(now(),1,10) and mood_type =4) as f on 1=1 ");
+		sql.append("left join (select count(*) as cs from user_mood where substring(last_time,1,10) = substring(now(),1,10) and mood_type =5) as g on 1=1 ");
+		sql.append("left join (select count(*) as cs from user_mood where substring(last_time,1,10) = substring(now(),1,10) and mood_type =6) as h on 1=1 ");
+
+		Query query = entityManager.createNativeQuery(sql.toString());
+
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = query.getResultList();
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+
+		for (Object[] objects : list) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("applyNum", objects[0]);
+			map.put("applyUser", objects[1]);
+			map.put("depressedUser", objects[2]);
+			map.put("boredUser", objects[3]);
+			map.put("flauntUser", objects[4]);
+			map.put("disgracedUser", objects[5]);
+			map.put("comfortUser", objects[6]);
+			map.put("kinkUser", objects[7]);
+			map.put("depressedRatio", objects[8]);
+			map.put("boredRatio", objects[9]);
+			map.put("flauntRatio", objects[10]);
+			map.put("disgracedRatio", objects[11]);
+			map.put("comfortRatio", objects[12]);
+			map.put("kinkRatio", objects[13]);
 			result.add(map);
 		}
 		return result;

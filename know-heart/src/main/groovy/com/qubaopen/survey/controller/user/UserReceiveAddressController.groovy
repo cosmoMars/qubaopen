@@ -117,6 +117,10 @@ public class UserReceiveAddressController extends AbstractBaseController<UserRec
 			userReceiveAddress.setPhone(phone)
 			userReceiveAddress.setPostCode(postCode)
 			
+			if (areaId == null) {
+				return '{"success" : "0", "message" : "亲，你还没有选择地区哦！"}'
+			}
+			
 			def area;
 			if(areaId){
 				area=areaCodeRepository.findOne(areaId);

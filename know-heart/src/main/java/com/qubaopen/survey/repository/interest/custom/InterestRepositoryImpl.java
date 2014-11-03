@@ -143,4 +143,50 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> findByFilters2(Map<String, Object> filters) {
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		Pageable pageable = (Pageable) filters.get("pageable");
+		Query query = null;
+		
+		if (6l == (long)filters.get("typeId")) { // 人气排序
+			StringBuilder sql = new StringBuilder();
+			sql.append("select * from interest i ");
+			sql.append("where i.id not in (select iu.interest_id from interest_user_questionnaire iu where iu.user_id = :user) and i.status = 1 ");
+			if (filters.get("ids") != null)
+				sql.append("and i.id not in (:ids) ");
+			sql.append("order by i.total_respondents_count desc,i.recommended_value desc");
+			query = entityManager.createNativeQuery(sql.toString(), Interest.class)
+				.setParameter("user", ((User)filters.get("user")).getId())
+				.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+				.setMaxResults(pageable.getPageSize());
+			if (filters.get("ids") != null) 
+				query.setParameter("ids", filters.get("ids"));
+		} else if (filters.get("typeId") == null) {
+			StringBuilder hql = new StringBuilder();
+			hql.append("from Interest i where i not in (select iuq.interest from InterestUserQuestionnaire iuq where iuq.user = :user) and i.status = 1 ");
+			if (filters.get("ids") != null)
+				hql.append("and i.id not in (:ids) ");
+			hql.append("order by i.recommendedValue desc");
+			
+			query = entityManager.createQuery(hql.toString());
+			query.setParameter("user", filters.get("user"))
+				.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+				.setMaxResults(pageable.getPageSize());
+			if (filters.get("ids") != null) 
+				query.setParameter("ids", filters.get("ids"));
+		}
+		
+		List<Interest> interests = new ArrayList<>();
+		try {
+			interests = query.getResultList();
+		} catch (Exception e) {
+		}
+		
+		result.put("interests", interests);
+		return result;
+	}
+
 }

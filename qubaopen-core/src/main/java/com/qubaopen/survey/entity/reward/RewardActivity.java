@@ -60,16 +60,16 @@ public class RewardActivity extends AbstractBaseEntity<Long> {
 	private int requireGold;
 
 	/**
-	 * 兑奖活动状态 0 未上线 1 上线 2 结束
+	 * 兑奖活动状态 0 未上线 1 上线 2 结束 3自动活动
 	 */
 	@Enumerated
 	private Status status;
 
 	/**
-	 * OFFLINE 0 未上线, ONLINE 1 上线, END 2 结束
+	 * OFFLINE 0 未上线, ONLINE 1 上线, END 2 结束  3自动活动
 	 */
 	private enum Status {
-		OFFLINE, ONLINE, END
+		OFFLINE, ONLINE, END, AUTO
 	}
 
 	/**

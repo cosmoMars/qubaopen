@@ -195,27 +195,20 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 	@RequestMapping(value = 'findSelfUserQuestionnaire', method = RequestMethod.GET)
 	findSelfUserQuestionnaire(@ModelAttribute('currentUser') User user) {
-
-		selfUserQuestionnaireRepository.findOneByFilters(
-				[
-					user_equal : user
-				]
-				)
+		
+		selfUserQuestionnaireRepository.findRecentQuestionnarie(user)
 	}
 
 
 
 	/**
-	 * 用来测试   要删的
+	 * 更新性格解析度
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = 'test', method = RequestMethod.GET)
+	@RequestMapping(value = 'refreshAnalysis', method = RequestMethod.GET)
 	test(@ModelAttribute('currentUser') User user) {
-		selfService.calcUserAnalysisRadio(user);
-
-		
-		selfUserQuestionnaireRepository.findRecentQuestionnarie(user)
+		selfService.calcUserAnalysisRadio(user);		
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.qubaopen.survey.service.self
 
 import java.text.DecimalFormat
+
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,7 @@ import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.entity.user.UserSelfTitle
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
 import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
@@ -20,6 +22,9 @@ import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
+import com.qubaopen.survey.repository.user.UserInfoRepository
+import com.qubaopen.survey.repository.user.UserRepository
+import com.qubaopen.survey.repository.user.UserSelfTitleRepository;
 import com.qubaopen.survey.service.user.UserIDCardBindService;
 
 @Service
@@ -54,6 +59,12 @@ public class SelfService {
 	
 	@Autowired
 	UserIDCardBindRepository userIDCardBindRepository
+	
+	@Autowired
+	UserSelfTitleRepository userSelfTitleRepository
+	
+	@Autowired
+	UserInfoRepository userInfoRepository
 	
 	/**
 	 * 获取自测问卷
@@ -402,10 +413,22 @@ public class SelfService {
 		float f=userDone/all*100
 		String s = df.format(f)
 		
+		UserSelfTitle userSelfTitle=userSelfTitleRepository.findOneByFilters(
+			[
+				minScore_lessThanOrEqualTo : f,
+				maxScore_greaterThan : f
+			]			
+		)
+		def userInfo = user.userInfo
+		userInfo.resolution=s;
+		userInfo.userSelfTitle=userSelfTitle;
+		
+		userInfoRepository.save(userInfo);
 
 		[
 			'success' : '1',
-			'analysis' : s
+			'analysis' : s,
+			'name' : userSelfTitle.name
 		]
 	}
 

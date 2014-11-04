@@ -132,7 +132,6 @@ class UserController extends AbstractBaseController<User, Long> {
 				'signature' : userInfo?.signature,
 				'mood' : userMood?.moodType?.ordinal(),
 				'moodDate' : userMood?.lastTime,
-				'designation' : userInfo?.designation,
 				'prcent' : userInfo?.resolution
 			]
 		}

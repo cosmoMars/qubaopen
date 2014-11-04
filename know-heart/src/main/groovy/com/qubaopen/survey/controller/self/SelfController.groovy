@@ -192,10 +192,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	
 	@RequestMapping(value = 'findSelfUserQuestionnaire', method = RequestMethod.GET)
 	findSelfUserQuestionnaire(@ModelAttribute('currentUser') User user) {
-		selfUserQuestionnaireRepository.findOneByFilters(
-			[
-				user_equal : user
-			]	
-		)
+		
+		selfUserQuestionnaireRepository.findRecentQuestionnarie(user)
+		
 	}
 }

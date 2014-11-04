@@ -95,7 +95,7 @@ final class MyRepositoryImpl<T, ID extends Serializable> extends
 
 		def builder = entityManager.criteriaBuilder
 		def query = builder.createQuery getDomainClass()
-
+	
 		def root =  query.from getDomainClass()
 		query.select(root)
 
@@ -112,7 +112,7 @@ final class MyRepositoryImpl<T, ID extends Serializable> extends
 
 		def builder = entityManager.criteriaBuilder
 		def query = builder.createQuery Long.class
-
+		
 		def root =  query.from getDomainClass()
 
 		applyFiltersToCriteria(filters, query)

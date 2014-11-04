@@ -169,13 +169,14 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	}
 
 	/**
+	 * 获取自测问卷
 	 * @param typeId
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveSelfByType/{typeId}', method = RequestMethod.GET)
 	retrieveSelfByType(@PathVariable Long typeId) {
 		def selfs = selfRepository.findAll(
-				['selfType.id_equal' : typeId]
+				['selfManagementType.id_equal' : typeId]
 				)
 		def data = []
 		selfs.each {

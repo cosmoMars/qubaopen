@@ -532,7 +532,7 @@ public class MapStatisticsService {
 				def paChartC = calculatePoint.getPoint(timeChart, paChart)
 				def naChartC = calculatePoint.getPoint(timeChart, naChart)
 				def midChartC = calculatePoint.getPoint(timeChart, midChart)
-//				
+				
 				chart = [
 					timeChart : timeChart,
 					midChart : midChart,

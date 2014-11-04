@@ -44,6 +44,9 @@ public class SelfPersistentService {
 	
 	@Autowired
 	SelfRepository selfRepository
+	
+	@Autowired
+	SelfService selfService
 
 	/**
 	 * 保存用户答卷信息，用户答题内容
@@ -89,6 +92,8 @@ public class SelfPersistentService {
 	
 		selfUserQuestionnaire = selfUserQuestionnaireRepository.save(selfUserQuestionnaire)
 
+		selfService.calcUserAnalysisRadio(user)
+		
 		def userAnswers = []
 
 		questions.each { q ->

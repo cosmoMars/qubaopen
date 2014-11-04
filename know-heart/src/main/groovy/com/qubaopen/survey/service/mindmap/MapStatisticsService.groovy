@@ -69,7 +69,6 @@ public class MapStatisticsService {
 
 		def data = [], existMaps = []
 			
-		def om = new ObjectMapper()
 		def specialSelf = selfRepository.findSpecialSelf()
 		if (typeId == 4l) {
 			
@@ -501,22 +500,23 @@ public class MapStatisticsService {
 	
 	@Transactional
 	retrieveSpecialMap(User user) {
-		def data
+		def data = []
 		def specialSelf = selfRepository.findSpecialSelf()
-		def specialMaps = mapStatisticsRepository.findOneByFilters(
+		def specialMap = mapStatisticsRepository.findOneByFilters(
 			[
 				self_equal : specialSelf,
 				user_equal : user
 			]
 		)// 4小时题目
 		def specialMapRecords
-		if (specialMaps) {
-			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
+		if (specialMap) {
+			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
 		}
-		if (specialMaps && specialMapRecords.size() >= 7) { // 特殊题
+		
+		if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
 			def chart
 			def c = []
-			if (specialMaps?.self?.graphicsType) {
+			if (specialMap?.self?.graphicsType) {
 				def timeChart = [], paChart = [], naChart = [], midChart = []
 //					def mapRecords = specialMaps.mapRecords as List
 				Collections.sort(specialMapRecords, new MapRecordComparator())
@@ -532,7 +532,7 @@ public class MapStatisticsService {
 				def paChartC = calculatePoint.getPoint(timeChart, paChart)
 				def naChartC = calculatePoint.getPoint(timeChart, naChart)
 				def midChartC = calculatePoint.getPoint(timeChart, midChart)
-				
+//				
 				chart = [
 					timeChart : timeChart,
 					midChart : midChart,
@@ -544,29 +544,29 @@ public class MapStatisticsService {
 				c << chart
 			}
 			data << [
-				'mapTitle' : specialMaps?.self?.title,
-				'chart' : c,
-				'mapMax' : specialMaps?.mapMax,
-				'resultName' : specialMaps?.selfResultOption?.name,
+				'mapTitle' : specialMap?.self?.title,
+				'chart' : chart,
+				'mapMax' : specialMap?.mapMax,
+				'resultName' : specialMap?.selfResultOption?.name,
 				'resultScore' : '',
 				'resultContent' : '',
-				'managementType' : specialMaps?.selfManagementType?.id,
-				'recommendedValue' : specialMaps?.recommendedValue,
-				'graphicsType' : specialMaps?.self?.graphicsType?.id,
+				'managementType' : specialMap?.selfManagementType?.id,
+				'recommendedValue' : specialMap?.recommendedValue,
+				'graphicsType' : specialMap?.self?.graphicsType?.id,
 				'special' : true,
 				'lock' : false
 			]
-		} else if (specialMaps && specialMapRecords.size() < 7) {
+		} else if (specialMap && specialMapRecords.size() < 7) {
 			data << [
-				'mapTitle' : specialMaps?.self?.title,
+				'mapTitle' : specialMap?.self?.title,
 				'chart' : '',
 				'mapMax' : '',
 				'resultName' : '',
 				'resultScore' : '',
 				'resultContent' : '',
-				'managementType' : specialMaps?.selfManagementType?.id,
-				'recommendedValue' : specialMaps?.recommendedValue,
-				'graphicsType' : specialMaps?.self?.graphicsType?.id,
+				'managementType' : specialMap?.selfManagementType?.id,
+				'recommendedValue' : specialMap?.recommendedValue,
+				'graphicsType' : specialMap?.self?.graphicsType?.id,
 				'special' : true,
 				'lock' : true,
 				'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String

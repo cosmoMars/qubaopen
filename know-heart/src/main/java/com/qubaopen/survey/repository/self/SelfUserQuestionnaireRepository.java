@@ -15,6 +15,6 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	List<SelfUserQuestionnaire> findByMaxTime(@Param("user") User user);
 
 	
-	@Query("select * from SelfUserQuestionnaire sq where sq.time = (select max(s.time) from SelfUserQuestionnaire s where s.user = :user and s.used = true) ")
+	@Query("from SelfUserQuestionnaire sq where sq.time = (select max(s.time) from SelfUserQuestionnaire s where s.user = :user and s.used = true) ")
 	SelfUserQuestionnaire findRecentQuestionnarie(@Param("user") User user);
 }

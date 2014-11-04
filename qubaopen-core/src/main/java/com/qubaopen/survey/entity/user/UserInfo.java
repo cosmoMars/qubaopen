@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -142,14 +143,15 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	private boolean publicAnswersToFriend;
 	
 	/**
-	 * 称号
-	 */
-	private String designation;
-	
-	/**
 	 * 解析度
 	 */
 	private String resolution;
+	
+	/**
+	 * 用户
+	 */
+	@ManyToOne
+	private UserSelfTitle userSelfTitle;
 
 	public User getUser() {
 		return user;
@@ -295,20 +297,20 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		this.publicAnswersToFriend = publicAnswersToFriend;
 	}
 
-	public String getDesignation() {
-		return designation;
-	}
-
-	public void setDesignation(String designation) {
-		this.designation = designation;
-	}
-
 	public String getResolution() {
 		return resolution;
 	}
 
 	public void setResolution(String resolution) {
 		this.resolution = resolution;
+	}
+
+	public UserSelfTitle getUserSelfTitle() {
+		return userSelfTitle;
+	}
+
+	public void setUserSelfTitle(UserSelfTitle userSelfTitle) {
+		this.userSelfTitle = userSelfTitle;
 	}
 	
 }

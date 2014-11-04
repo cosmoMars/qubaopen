@@ -395,10 +395,13 @@ public class SelfService {
 			['analysis_equal' : true]
 		).size();
 	
+		
 		int all=allMust+8
 		
-		DecimalFormat df = new DecimalFormat("0.00");//格式化小数
-		String s = df.format(userDone/all*100);//返回的是String类型
+		DecimalFormat df = new DecimalFormat("0.00")
+		float f=userDone/all*100
+		String s = df.format(f)
+		
 
 		[
 			'success' : '1',

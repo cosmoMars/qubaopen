@@ -7,5 +7,5 @@ build
 .gradle
 .idea
 *.iml
-know-heart.log*
+knowheart.log*
 customer-systom.log*

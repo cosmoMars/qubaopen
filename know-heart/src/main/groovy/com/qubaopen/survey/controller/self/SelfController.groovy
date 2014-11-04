@@ -168,6 +168,10 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		'{"success": "0", "message" : "err102"}'
 	}
 
+	/**
+	 * @param typeId
+	 * @return
+	 */
 	@RequestMapping(value = 'retrieveSelfByType/{typeId}', method = RequestMethod.GET)
 	retrieveSelfByType(@PathVariable Long typeId) {
 		def selfs = selfRepository.findAll(
@@ -191,6 +195,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 	@RequestMapping(value = 'findSelfUserQuestionnaire', method = RequestMethod.GET)
 	findSelfUserQuestionnaire(@ModelAttribute('currentUser') User user) {
+
 		selfUserQuestionnaireRepository.findOneByFilters(
 				[
 					user_equal : user
@@ -208,5 +213,9 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	@RequestMapping(value = 'test', method = RequestMethod.GET)
 	test(@ModelAttribute('currentUser') User user) {
 		selfService.calcUserAnalysisRadio(user);
+
+		
+		selfUserQuestionnaireRepository.findRecentQuestionnarie(user)
 	}
+	
 }

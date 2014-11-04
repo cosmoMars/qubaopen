@@ -56,21 +56,37 @@ public class SelfPersistentService {
 	 */
 	@Transactional
 	void saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption, boolean refresh) {
-
-		if (refresh) {
+		def selfUserQuestionnaire, questionnaire 
+		if (refresh) { // 重做
+			questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self)
+			def	now = new Date(),
+				intervalTime = questionnaire.self.intervalTime as Long
 			
-			
+			if (questionnaire && now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
+				questionnaire.used = false
+				selfUserQuestionnaireRepository.save(questionnaire)
+			}
+			selfUserQuestionnaire = new SelfUserQuestionnaire(
+				user : user,
+				self : self,
+				selfResultOption : resultOption,
+				status : SelfUserQuestionnaire.Status.COMPLETED,
+				transmit : SelfUserQuestionnaire.Transmit.NOTRANSMIT,
+				time : new Date(),
+				used : true
+			)
+		} else {
+			selfUserQuestionnaire = new SelfUserQuestionnaire(
+				user : user,
+				self : self,
+				selfResultOption : resultOption,
+				status : SelfUserQuestionnaire.Status.COMPLETED,
+				transmit : SelfUserQuestionnaire.Transmit.NOTRANSMIT,
+				time : new Date(),
+				used : false
+			)
 		}
-		
-		def selfUserQuestionnaire = new SelfUserQuestionnaire(
-			user : user,
-			self : self,
-			selfResultOption : resultOption,
-			status : SelfUserQuestionnaire.Status.COMPLETED,
-			transmit : SelfUserQuestionnaire.Transmit.NOTRANSMIT,
-			time : new Date(),
-			used : refresh
-		)
+	
 		selfUserQuestionnaire = selfUserQuestionnaireRepository.save(selfUserQuestionnaire)
 
 		def userAnswers = []

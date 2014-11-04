@@ -13,5 +13,8 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 
 	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.time in (select max(s.time) from SelfUserQuestionnaire s where s.user = :user group by s.self) order by suq.time desc")
 	List<SelfUserQuestionnaire> findByMaxTime(@Param("user") User user);
+	
+	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.self.")
+	List<SelfUserQuestionnaire> findByAnalysis(@Param("user") User user,boolean anaylsis);
 
 }

@@ -32,6 +32,12 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		userMoodRepository
 	}
 
+	/**
+	 * 用户提交心情
+	 * @param type
+	 * @param user
+	 * @return
+	 */
 	@RequestMapping(value = 'setMood', method = RequestMethod.POST)
 	userMood(@RequestParam int type,
 			@ModelAttribute('currentUser') User user) {
@@ -43,10 +49,25 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		userMoodService.saveUserMood(user,MoodType.values()[type]);
 	}
 
+	/**
+	 * 获取用户心情 停用并 已并入登录接口
+	 * @param user
+	 * @return
+	 */
 	@RequestMapping(value = 'getMood', method = RequestMethod.GET)
 	getMood(@ModelAttribute('currentUser') User user) {
 
 		userMoodService.getUserMood(user);
 	}
 	
+	/**
+	 * 获取用户指定月份的心情数据 每日的最后一次
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'getMoodList', method = RequestMethod.POST)
+	getMoodList(@RequestParam int month,
+		@ModelAttribute('currentUser') User user) {
+		userMoodService.getUserMood(user,month);
+	}
 }

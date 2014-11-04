@@ -142,6 +142,11 @@ public class Self extends AbstractBaseEntity<Long> {
 	 */
 	private String tips;
 	
+	/**
+	 * 是否性格解析度 必做
+	 */
+	private boolean analysis;
+	
 
 	public QuestionnaireType getQuestionnaireType() {
 		return questionnaireType;
@@ -301,5 +306,13 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setTips(String tips) {
 		this.tips = tips;
+	}
+
+	public boolean isAnalysis() {
+		return analysis;
+	}
+
+	public void setAnalysis(boolean analysis) {
+		this.analysis = analysis;
 	}
 }

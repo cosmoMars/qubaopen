@@ -1,5 +1,6 @@
 package com.qubaopen.survey.service.self
 
+import java.text.DecimalFormat
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -373,6 +374,36 @@ public class SelfService {
 
 		result
 
+	}
+	
+	
+	/**
+	 * 计算 更新用户性格解析度
+	 * @param user
+	 */
+	@Transactional
+	calcUserAnalysisRadio(User user) {
+		
+		//用户已经做了的必做 选做的数量
+		int userDoMust= selfUserQuestionnaireRepository.findByAnalysis(user, true).size();
+		int userDoOther= selfUserQuestionnaireRepository.findByAnalysis(user, false).size();
+		
+		int userDone=userDoMust+userDoOther;
+		
+		//必做题总数
+		int allMust= selfRepository.findAll(
+			['analysis_equal' : true]
+		).size();
+	
+		int all=allMust+8
+		
+		DecimalFormat df = new DecimalFormat("0.00");//格式化小数
+		String s = df.format(userDone/all*100);//返回的是String类型
+
+		[
+			'success' : '1',
+			'analysis' : s
+		]
 	}
 
 	class OptionComparator implements Comparator {

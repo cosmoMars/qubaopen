@@ -38,7 +38,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 	@Autowired
 	SelfService selfService
-	
+
 	@Autowired
 	FileUtils fileUtils
 
@@ -61,8 +61,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			refresh = false
 		}
 		def resultSelfs = selfService.retrieveSelf(user, refresh),
-			data = []
-		
+		data = []
+
 		resultSelfs.each {
 			def self = [
 				'selfId' : it?.id,
@@ -86,7 +86,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	@RequestMapping(value = 'retrieveSelfScript/{selfId}', method = RequestMethod.GET)
 	retrieveSelfScript(@PathVariable long selfId) {
 		def self = selfRepository.findOne(selfId)
-		
+
 		[
 			'success' : '1',
 			'message' : '成功',
@@ -95,7 +95,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'remark' : self?.remark
 		]
 	}
-	
+
 	/**
 	 * 计算自测结果选项
 	 * @param userId
@@ -105,10 +105,10 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 */
 	@RequestMapping(value = 'calculateSelfResult', method = RequestMethod.POST)
 	calculateSelfReslut(@RequestParam(required = false) long selfId,
-		@RequestParam(required = false) String questionJson,
-		@RequestParam(required = false) Boolean refresh,
-		@ModelAttribute('currentUser') User user
-		) {
+			@RequestParam(required = false) String questionJson,
+			@RequestParam(required = false) Boolean refresh,
+			@ModelAttribute('currentUser') User user
+	) {
 
 		logger.trace ' -- 计算自测结果选项 -- '
 
@@ -139,9 +139,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'resultRemark' : result?.selfResult?.remark,
 			'optionNum' : result?.resultNum
 		]
-		
 	}
-		
+
 	/**
 	 * 上传图片
 	 * @param pic
@@ -158,10 +157,10 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		if (pic) {
 
 			def filename = "${selfId}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
-				picPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
+			picPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
 
 			fileUtils.saveFile(pic.bytes, picPath)
-			
+
 			self.picPath = "/pic/$filename"
 			selfRepository.save(self)
 			return '{"success": "1"}'
@@ -172,8 +171,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	@RequestMapping(value = 'retrieveSelfByType/{typeId}', method = RequestMethod.GET)
 	retrieveSelfByType(@PathVariable Long typeId) {
 		def selfs = selfRepository.findAll(
-			['selfType.id_equal' : typeId]	
-		)
+				['selfType.id_equal' : typeId]
+				)
 		def data = []
 		selfs.each {
 			def self = [
@@ -189,13 +188,25 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'data' : data
 		]
 	}
-	
+
 	@RequestMapping(value = 'findSelfUserQuestionnaire', method = RequestMethod.GET)
 	findSelfUserQuestionnaire(@ModelAttribute('currentUser') User user) {
 		selfUserQuestionnaireRepository.findOneByFilters(
-			[
-				user_equal : user
-			]	
-		)
+				[
+					user_equal : user
+				]
+				)
+	}
+
+
+
+	/**
+	 * 用来测试   要删的
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'test', method = RequestMethod.GET)
+	test(@ModelAttribute('currentUser') User user) {
+		selfService.calcUserAnalysisRadio(user);
 	}
 }

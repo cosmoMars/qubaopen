@@ -207,19 +207,5 @@ public class SelfPersistentService {
 		}
 		mapStatisticsRepository.save(mapStatistics)
 		mapRecordRepository.save(result)
-	}
-	
-	/**
-	 * 计算 更新用户性格解析度
-	 * @param user
-	 */
-	@Transactional
-	void calcUserAnalysisRadio(User user) {
-	
-		selfUserQuestionnaireRepository.findOne(user.id);
-		
-		
-
-	}
-	
+	}	
 }

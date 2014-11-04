@@ -1,5 +1,7 @@
 package com.qubaopen.survey.controller.self
 
+import java.net.Authenticator.RequestorType;
+
 import javax.servlet.http.HttpServletRequest
 
 import org.apache.commons.lang3.StringUtils
@@ -167,5 +169,33 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		'{"success": "0", "message" : "err102"}'
 	}
 
+	@RequestMapping(value = 'retrieveSelfByType/{typeId}', method = RequestMethod.GET)
+	retrieveSelfByType(@PathVariable Long typeId) {
+		def selfs = selfRepository.findAll(
+			['selfType.id_equal' : typeId]	
+		)
+		def data = []
+		selfs.each {
+			def self = [
+				'selfId' : it?.id,
+				'managementType' : it?.selfManagementType?.id,
+				'title' : it?.title
+			]
+			data <<	self
+		}
+		[
+			'success' : '1',
+			'message' : '成功',
+			'data' : data
+		]
+	}
 	
+	@RequestMapping(value = 'findSelfUserQuestionnaire', method = RequestMethod.GET)
+	findSelfUserQuestionnaire(@ModelAttribute('currentUser') User user) {
+		selfUserQuestionnaireRepository.findOneByFilters(
+			[
+				user_equal : user
+			]	
+		)
+	}
 }

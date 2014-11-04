@@ -19,6 +19,7 @@ import com.qubaopen.survey.controller.FileUtils
 import com.qubaopen.survey.entity.interest.Interest
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.interest.InterestRepository
+import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository;
 import com.qubaopen.survey.service.interest.InterestService
 
 @RestController
@@ -33,6 +34,9 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	InterestService interestService
 	
 	@Autowired
+	InterestUserQuestionnaireRepository interestUserQuestionnaireRepository
+	
+	@Autowired
 	FileUtils fileUtils
 
 	@Override
@@ -45,8 +49,8 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.POST)
-	retrieveInterest(@RequestParam(required = false) Long interestTypeId,
+	@RequestMapping(value = 'retrieveInterest2', method = RequestMethod.POST)
+	retrieveInterest2(@RequestParam(required = false) Long interestTypeId,
 			@RequestParam(required = false) Long sortTypeId,
 			@RequestParam(required = false) String ids,
 			@ModelAttribute('currentUser') User user,
@@ -63,7 +67,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			}
 		}
 
-		interestService.retrieveInterest(user.id, interestTypeId, sortTypeId, resultIds, pageable)
+		interestService.retrieveInterest2(user.id, interestTypeId, sortTypeId, resultIds, pageable)
 	}
 			
 	/**
@@ -71,8 +75,8 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveInterest2', method = RequestMethod.POST)
-	retrieveInterest2(@RequestParam(required = false) Long typeId,
+	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.POST)
+	retrieveInterest(@RequestParam(required = false) Long typeId,
 			@RequestParam(required = false) String ids,
 			@ModelAttribute('currentUser') User user,
 			Pageable pageable) {
@@ -88,7 +92,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			}
 		}
 
-		interestService.retrieveInterest2(user.id, typeId, resultIds, pageable)
+		interestService.retrieveInterest(user.id, typeId, resultIds, pageable)
 	}
 
 	/**
@@ -201,6 +205,32 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 		interestService.retrieveFriendAnswer(friendId, interestId)
 
+	}
+	
+	/**
+	 * 获取用户兴趣测试答题纪录
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveInterestHistory', method = RequestMethod.GET)
+	retrieveInterestHistory(@ModelAttribute('currentUser') User user) {
+		
+		def interstUserQuestionnaires = interestUserQuestionnaireRepository.findAll(
+			[user_equal : user]	
+		)
+		def data = []
+		interstUserQuestionnaires.each {
+			data << [
+				'interestId' : it?.interest?.id,
+				'interestTitle' : it?.interest?.title,
+				'resultId' : it?.interestResultOption?.id,
+				'resultTitle' : it?.interestResultOption?.interestResult?.title,
+				'content' : it?.interestResultOption?.content,
+				'optionTitle' : it?.interestResultOption?.title,
+				'resultNum' : it?.interestResultOption?.resultNum
+			]
+		}
+		data
 	}
 	
 }

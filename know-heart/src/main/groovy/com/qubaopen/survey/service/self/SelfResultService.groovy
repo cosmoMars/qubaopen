@@ -65,10 +65,8 @@ public class SelfResultService {
 			def result = []
 			result << mapRecord
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption, score)
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
-
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh)
 		resultOption
 	}
 
@@ -197,9 +195,8 @@ public class SelfResultService {
 		
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption[0], null) // 保存心理地图
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption[0])
 		}
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption[0], refresh)
 
 		resultOption[0]
 	}
@@ -257,9 +254,8 @@ public class SelfResultService {
 
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption, null) // 保存心理地图
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh)
 
 		resultOption
 	}
@@ -340,9 +336,8 @@ public class SelfResultService {
 		}
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption[0], null)
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption[0])
 		}
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption[0], refresh)
 
 		resultOption[0]
 	}
@@ -394,9 +389,9 @@ public class SelfResultService {
 		
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption, resultScore)
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh)
+		
 //
 //		def selfResult = new SelfResult()
 //		def resultOption = new SelfResultOption(
@@ -463,9 +458,8 @@ public class SelfResultService {
 		
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption, optionScore) // 保存心理地图
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption)
 		}
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh)
 
 		resultOption
 	}
@@ -519,9 +513,9 @@ public class SelfResultService {
 
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, self, result, null, null) // 保存心理地图
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null, refresh)
+		
 		
 		def selfResult =  new SelfResult()
 		def resultOption = new SelfResultOption(
@@ -588,9 +582,9 @@ public class SelfResultService {
 		if (refresh) {
 			
 			selfPersistentService.saveMapStatistics(user, self, result, resultOption, allScore) // 保存心理地图
-
-			selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null)
 		}
+		selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null, refresh)
+		
 		resultOption
 	}
 	

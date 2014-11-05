@@ -212,4 +212,10 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		selfService.calcUserAnalysisRadio(user);		
 	}
 	
+	
+	@RequestMapping(value = 'retrieveSelfByGroupId', method = RequestMethod.GET)
+	retrieveSelfByGroupId() {
+		
+	}
+	
 }

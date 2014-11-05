@@ -66,6 +66,9 @@ public class SelfService {
 	@Autowired
 	UserInfoRepository userInfoRepository
 	
+	@Autowired
+	UserRepository userRepository
+	
 	/**
 	 * 获取自测问卷
 	 * @param userId
@@ -394,6 +397,7 @@ public class SelfService {
 	 */
 	@Transactional
 	calcUserAnalysisRadio(User user) {
+		user = userRepository.findOne(user.id)
 		
 		//用户已经做了的必做 选做的数量
 		int userDoMust= selfUserQuestionnaireRepository.findByAnalysis(user, true).size();

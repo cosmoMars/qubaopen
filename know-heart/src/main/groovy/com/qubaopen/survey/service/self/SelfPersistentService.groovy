@@ -62,12 +62,13 @@ public class SelfPersistentService {
 		def selfUserQuestionnaire, questionnaire 
 		if (refresh) { // 重做
 			questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self)
-			def	now = new Date(),
-				intervalTime = questionnaire.self.intervalTime as Long
-			
-			if (questionnaire && now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
-				questionnaire.used = false
-				selfUserQuestionnaireRepository.save(questionnaire)
+			def	now = new Date()
+			if (questionnaire) {
+				def intervalTime = questionnaire.self.intervalTime as Long
+				if (now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
+					questionnaire.used = false
+					selfUserQuestionnaireRepository.save(questionnaire)
+				}
 			}
 			selfUserQuestionnaire = new SelfUserQuestionnaire(
 				user : user,
@@ -191,6 +192,18 @@ public class SelfPersistentService {
 
 		def special = false
 		def specialSelf = selfRepository.findSpecialSelf()
+		
+		def questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self),
+			now = new Date()
+		if (questionnaire) {
+			def intervalTime = questionnaire.self.intervalTime as Long
+			if (now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
+				if (questionnaire.self.id == specialSelf.id) {
+					def record = mapRecordRepository.findMaxRecordBySpecialSelf(self, user)
+					mapRecordRepository.delete(record)
+				}
+			}
+		}
 		
 		if (self.id == specialSelf.id) {
 			special = true

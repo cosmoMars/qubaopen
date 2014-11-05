@@ -123,6 +123,7 @@ public class MapStatisticsService {
 					}
 					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
 					data << [
+						'groupId' : k?.id,
 						'mapTitle' : k?.title,
 						'chart' : '',
 						'mapMax' : k?.mapMax,
@@ -196,6 +197,7 @@ public class MapStatisticsService {
 							resultStr = '由于量表中测谎题总分过高，故此次结果具有不针对性' as String
 						}
 						data << [
+							'groupId' : k?.id,
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
@@ -221,6 +223,7 @@ public class MapStatisticsService {
 							}
 						}
 						data << [
+							'groupId' : k?.id,
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
@@ -251,6 +254,7 @@ public class MapStatisticsService {
 					selfResultCount ++
 					def selfResult = selfResultOptionRepository.findOne(145l)
 					data << [
+						'groupId' : '',
 						'mapTitle' : selfResult.title,
 						'chart' : [],
 						'mapMax' : '',
@@ -267,7 +271,7 @@ public class MapStatisticsService {
 				}
 				
 				data << [
-					
+					'groupId' : it?.self?.selfGroup?.id,
 					'mapTitle' : it?.self?.title,
 					'chart' : chart,
 					'mapMax' : it?.mapMax,
@@ -334,6 +338,7 @@ public class MapStatisticsService {
 					}
 					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
 					data << [
+						'groupId' : k?.id,
 						'mapTitle' : k?.title,
 						'chart' : '',
 						'mapMax' : k?.mapMax,
@@ -408,6 +413,7 @@ public class MapStatisticsService {
 						}
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
 						data << [
+							'groupId' : k?.id,
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
@@ -433,6 +439,7 @@ public class MapStatisticsService {
 						}
 		
 						data << [
+							'groupId' : k?.id,
 							'mapTitle' : k?.title,
 							'chart' : chart,
 							'mapMax' : k?.mapMax,
@@ -461,6 +468,7 @@ public class MapStatisticsService {
 					selfResultCount ++
 					def selfResult = selfResultOptionRepository.findOne(145l)
 					data << [
+						'groupId' : '',
 						'mapTitle' : selfResult.title,
 						'chart' : [],
 						'mapMax' : '',
@@ -477,6 +485,7 @@ public class MapStatisticsService {
 				}
 				
 				data << [
+					'groupId' : it?.self?.selfGroup?.id,
 					'mapTitle' : it?.self?.title,
 					'chart' : chart,
 					'mapMax' : it?.mapMax,

@@ -60,8 +60,4 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 		mapStatisticsService.retrieveSpecialMap(user)
 	}
 	
-	@RequestMapping(value = 'test/{typeId}', method = RequestMethod.GET)
-	test(@PathVariable long typeId, @ModelAttribute('currentUser') User user) {
-		mapStatisticsService.calMap(user, typeId)
-	}
 }

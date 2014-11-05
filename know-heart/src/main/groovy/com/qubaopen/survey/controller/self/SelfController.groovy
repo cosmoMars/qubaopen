@@ -21,6 +21,7 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.controller.FileUtils;
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.repository.self.SelfGroupRepository;
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 import com.qubaopen.survey.service.self.SelfService
@@ -41,6 +42,9 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 	@Autowired
 	FileUtils fileUtils
+	
+	@Autowired
+	SelfGroupRepository selfGroupRepository
 
 	@Override
 	protected MyRepository<Self, Long> getRepository() {
@@ -213,9 +217,22 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	}
 	
 	
-	@RequestMapping(value = 'retrieveSelfByGroupId', method = RequestMethod.GET)
-	retrieveSelfByGroupId() {
-		
+	@RequestMapping(value = 'retrieveSelfByGroupId/{groupId}', method = RequestMethod.GET)
+	retrieveSelfByGroupId(@PathVariable Long groupId) {
+		def selfGroup = selfGroupRepository.findOne(groupId),
+			data = []
+		selfGroup.selfs.each {
+			def self = [
+				'selfId' : it?.id,
+				'managementType' : it?.selfManagementType?.id,
+				'title' : it?.title
+			]
+			data <<	self
+		}
+		[
+			'success' : '1',
+			'message' : '成功',
+			'data' : data
+		]
 	}
-	
 }

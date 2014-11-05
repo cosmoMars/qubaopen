@@ -2,6 +2,7 @@ package com.qubaopen.survey.controller.mindmap
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -55,8 +56,12 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 	retrieveSpecialMap(@ModelAttribute('currentUser') User user) {
 
 		logger.trace(' -- 获取心理地图信息 -- ')
-
+		
 		mapStatisticsService.retrieveSpecialMap(user)
 	}
 	
+	@RequestMapping(value = 'test/{typeId}', method = RequestMethod.GET)
+	test(@PathVariable long typeId, @ModelAttribute('currentUser') User user) {
+		mapStatisticsService.calMap(user, typeId)
+	}
 }

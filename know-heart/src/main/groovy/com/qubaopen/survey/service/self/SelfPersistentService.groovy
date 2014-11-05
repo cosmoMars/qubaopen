@@ -23,6 +23,7 @@ import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfRepository;
 import com.qubaopen.survey.repository.self.SelfUserAnswerRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
+import com.qubaopen.survey.repository.user.UserRepository;
 
 @Service
 public class SelfPersistentService {
@@ -47,6 +48,9 @@ public class SelfPersistentService {
 	
 	@Autowired
 	SelfService selfService
+	
+	@Autowired
+	UserRepository userRepository
 
 	/**
 	 * 保存用户答卷信息，用户答题内容
@@ -93,7 +97,7 @@ public class SelfPersistentService {
 	
 		selfUserQuestionnaire = selfUserQuestionnaireRepository.save(selfUserQuestionnaire)
 
-		selfService.calcUserAnalysisRadio(user)
+		selfService.calcUserAnalysisRadio(userRepository.findOne(user.id))
 		
 		def userAnswers = []
 

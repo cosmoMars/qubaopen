@@ -212,8 +212,19 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'refreshAnalysis', method = RequestMethod.GET)
-	test(@ModelAttribute('currentUser') User user) {
+	refreshAnalysis(@ModelAttribute('currentUser') User user) {
 		selfService.calcUserAnalysisRadio(user);		
+	}
+	
+	
+	/**
+	 * 更新心理指数
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'refreshMentalStatus', method = RequestMethod.GET)
+	refreshMentalStatus(@ModelAttribute('currentUser') User user) {
+		selfService.calcUserMentalStatus(user);
 	}
 	
 	

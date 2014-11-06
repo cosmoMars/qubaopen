@@ -1,6 +1,11 @@
 package com.qubaopen.survey.service.self
 
 import java.text.DecimalFormat
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils
@@ -12,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
+import com.qubaopen.survey.entity.self.SelfUserQuestionnaire;
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserSelfTitle
 import com.qubaopen.survey.entity.vo.QuestionVo
@@ -19,6 +25,7 @@ import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
 import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
 import com.qubaopen.survey.repository.self.SelfRepository
+import com.qubaopen.survey.repository.self.SelfResultOptionRepository;
 import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
@@ -65,6 +72,9 @@ public class SelfService {
 	
 	@Autowired
 	UserInfoRepository userInfoRepository
+		
+	@PersistenceContext
+	private EntityManager entityManager;
 	
 	/**
 	 * 获取自测问卷
@@ -432,6 +442,53 @@ public class SelfService {
 		]
 	}
 
+	
+	/**
+	 * 计算 更新 用户心理指数
+	 * @param user
+	 */
+	@Transactional
+	calcUserMentalStatus(User user) {
+		
+		List<SelfUserQuestionnaire> list1=selfUserQuestionnaireRepository.findByMentalStatus(user);
+		
+		StringBuilder sql
+		Query query
+		List<Long> list
+		def minusScore=0;
+		
+		list1.each {
+			
+			sql = new StringBuilder();
+			sql.append("SELECT id FROM self_result_option ");
+			sql.append("where self_result_id=(select id from self_result where self_id="+it.self.id+" ) ");
+	
+			query = entityManager.createNativeQuery(sql.toString());
+	
+			list = query.getResultList()
+			
+			def sro=it.selfResultOption.id
+			def index=0;
+			for(def i=0;i<list.size();i++){
+				if(list.get(i)==sro || list.get(i).equals(sro)){
+					index=i;
+					break;
+				}
+			}
+			
+			
+			def score= index/(list.size()-1)*20;
+			
+			minusScore+=score
+		}
+		
+		[
+			'success' : '1',
+			'minusScore' : minusScore
+		]
+	}
+	
+	
 	class OptionComparator implements Comparator {
 		public int compare(Object o1, Object o2) {
 			SelfQuestionOption so1 = (SelfQuestionOption) o1

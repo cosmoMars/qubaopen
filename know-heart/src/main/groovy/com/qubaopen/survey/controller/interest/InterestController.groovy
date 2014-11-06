@@ -257,7 +257,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 					resultIds << Long.valueOf(it.trim())
 				}
 			}
-			interestUserQuestionnaireRepository.findQuestionnaireByFilter(user, typeId, resultIds, pageable)
+			interstUserQuestionnaires = interestUserQuestionnaireRepository.findQuestionnaireByFilter(user, typeId, resultIds, pageable)
 		}
 		
 		def data = []
@@ -272,7 +272,11 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 				'resultNum' : it?.interestResultOption?.resultNum
 			]
 		}
-		data
+		[
+			'success' : '1',
+			'message' : '成功',
+			'data' : data
+		]
 	}
 	
 }

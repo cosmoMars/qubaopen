@@ -555,6 +555,7 @@ public class MapStatisticsService {
 				c << chart
 			}
 			data << [
+				'groupId' : specialMap?.self?.selfGroup?.id,
 				'mapTitle' : specialMap?.self?.title,
 				'chart' : c,
 				'mapMax' : specialMap?.mapMax,
@@ -569,6 +570,7 @@ public class MapStatisticsService {
 			]
 		} else if (specialMap && specialMapRecords.size() < 7) {
 			data << [
+				'groupId' : specialMap?.self?.selfGroup?.id,
 				'mapTitle' : specialMap?.self?.title,
 				'chart' : '',
 				'mapMax' : '',

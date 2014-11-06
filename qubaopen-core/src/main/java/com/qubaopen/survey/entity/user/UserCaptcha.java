@@ -35,7 +35,7 @@ public class UserCaptcha extends AbstractBaseEntity2<Long> {
 	/**
 	 * 验证码
 	 */
-	@Column(nullable = false, length = 6)
+	@Column(length = 6)
 	private String captcha;
 
 	/**

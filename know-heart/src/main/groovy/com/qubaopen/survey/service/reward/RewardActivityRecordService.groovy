@@ -258,7 +258,7 @@ public class RewardActivityRecordService {
 		def s=result.get("analysis");
 		
 		if(Double.parseDouble(s)<100){ 
-			return '{"success": 0, "message": "性格解析度没有到达100%"}'
+			return '{"success": "0", "message": "性格解析度没有到达100%"}'
 		}
 		
 		def rewardActivity = rewardActivityRepository.findOneByFilters([
@@ -266,13 +266,13 @@ public class RewardActivityRecordService {
 		])
 
 		if (rewardActivity == null) {
-			return '{"success": 0, "message": "err301"}'
+			return '{"success": "0", "message": "err301"}'
 		}
 		
 		def activityCount = rewardActivityRecordRepository.countByUser(user)
 
 		if (rewardActivity.eachCountLimit != 0 && activityCount >= rewardActivity.eachCountLimit) {
-			return '{"success": 0, "message": "err303"}'
+			return '{"success": "0", "message": "err303"}'
 		}
 
 		def userReceiveAddress = userReceiveAddressRepository.findOneByFilters([
@@ -281,7 +281,7 @@ public class RewardActivityRecordService {
 		])
 		
 		if(userReceiveAddress==null){
-			return '{"success": 0, "message": "err402"}'
+			return '{"success": "0", "message": "err402"}'
 		}
 
 		rewardActivity.currentCount ++

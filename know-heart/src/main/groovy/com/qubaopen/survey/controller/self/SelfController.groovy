@@ -218,6 +218,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	
 	
 	/**
+<<<<<<< HEAD
 	 * 更新心理指数
 	 * @param user
 	 * @return
@@ -228,6 +229,12 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	}
 	
 	
+=======
+	 * 获取自测问卷组问卷
+	 * @param groupId
+	 * @return
+	 */
+>>>>>>> origin/master
 	@RequestMapping(value = 'retrieveSelfByGroupId/{groupId}', method = RequestMethod.GET)
 	retrieveSelfByGroupId(@PathVariable Long groupId) {
 		def selfGroup = selfGroupRepository.findOne(groupId),

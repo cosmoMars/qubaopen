@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -124,12 +125,18 @@ public class UserService {
 			if (u.activated) {
 				return '{"success": "0", "message": "err006"}'
 			}
-
+			def userCaptchaLog = new UserCaptchaLog(
+				user : u,
+				captcha : captcha,
+				action : '1'
+			)
 			def userCaptcha = userCaptchaRepository.findOne(u.id)
 			if (userCaptcha?.captcha != captcha) {
 				return '{"success": "0", "message": "err007"}'
 			}
-
+			userCaptcha.captcha = null
+			userCaptchaRepository.save(userCaptcha)
+			
 			u.password = DigestUtils.md5Hex(password)
 			u.activated = true
 			saveUserAndUserAvatar(u, avatar, request)
@@ -172,16 +179,23 @@ public class UserService {
 				return '{"success": "0", "message": "err010"}'
 			}
 		}
-
-		// 生成6位数字格式的验证码
-		def captcha = RandomStringUtils.randomNumeric(6)
+		def captcha
+		
+		if (userCaptcha.captcha) {
+			captcha = userCaptcha.captcha
+		} else {
+			// 生成6位数字格式的验证码
+			captcha = RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)
+		}
+		
 		// 给指定的用户手机号发送6位随机数的验证码
 		def result = smsService.sendCaptcha(phone, captcha)
 		
 		def userCaptchaLog = new UserCaptchaLog(
 			user : user,
 			captcha : captcha,
-			status : result.get('resCode')
+			status : result.get('resCode'),
+			action : '0'
 		)
 		userCaptchaLogRepository.save(userCaptchaLog)
 		

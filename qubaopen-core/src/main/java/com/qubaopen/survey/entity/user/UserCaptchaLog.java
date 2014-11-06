@@ -35,6 +35,11 @@ public class UserCaptchaLog extends AbstractBaseEntity<Long>{
 	 * 返回验证码的状态 0 成功
 	 */
 	private String status;
+	
+	/**
+	 *  0 客户端发送，1 客户端接收用户验证码
+	 */
+	private String action;
 
 	public User getUser() {
 		return user;
@@ -58,6 +63,14 @@ public class UserCaptchaLog extends AbstractBaseEntity<Long>{
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 }

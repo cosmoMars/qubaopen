@@ -113,7 +113,7 @@ class UserMoodService {
 		}
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("success", 1);
+		result.put("success", '1');
 		result.put("moodList", datalist);
 		
 		return result;

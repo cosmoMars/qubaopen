@@ -2,6 +2,7 @@ package com.qubaopen.survey.controller.interest
 
 import javax.servlet.http.HttpServletRequest
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
@@ -212,12 +213,53 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param user
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveInterestHistory', method = RequestMethod.GET)
-	retrieveInterestHistory(@ModelAttribute('currentUser') User user) {
+	@RequestMapping(value = 'retrieveInterestHistory', method = RequestMethod.POST)
+	retrieveInterestHistory(@RequestParam(required = false) Long typeId,
+		@RequestParam(required = false) String ids,
+		@ModelAttribute('currentUser') User user,
+		Pageable pageable) {
 		
-		def interstUserQuestionnaires = interestUserQuestionnaireRepository.findAll(
-			[user_equal : user]	
-		)
+		def interstUserQuestionnaires = []
+		if (!typeId && StringUtils.isEmpty(ids)) {
+			interstUserQuestionnaires = interestUserQuestionnaireRepository.findAll(
+				[
+					user_equal : user
+				],
+				pageable
+			)
+		}
+		if (typeId && StringUtils.isEmpty(ids)) {
+			interstUserQuestionnaires = interestUserQuestionnaireRepository.findAll(
+				[
+					user_equal : user,
+					'interest.interestType.id_equal' : typeId
+				],
+				pageable
+			)
+		}
+		if (!typeId && !StringUtils.isEmpty(ids)) {
+			def resultIds = []
+			if (ids != null) {
+				resultIds = []
+				def strIds = ids.split(',')
+				strIds.each {
+					resultIds << Long.valueOf(it.trim())
+				}
+			}
+			interstUserQuestionnaires = interestUserQuestionnaireRepository.findQuestionnaireByFilter(user, resultIds, pageable)
+		}
+		if (typeId && !StringUtils.isEmpty(ids)) {
+			def resultIds = []
+			if (ids != null) {
+				resultIds = []
+				def strIds = ids.split(',')
+				strIds.each {
+					resultIds << Long.valueOf(it.trim())
+				}
+			}
+			interestUserQuestionnaireRepository.findQuestionnaireByFilter(user, typeId, resultIds, pageable)
+		}
+		
 		def data = []
 		interstUserQuestionnaires.each {
 			data << [

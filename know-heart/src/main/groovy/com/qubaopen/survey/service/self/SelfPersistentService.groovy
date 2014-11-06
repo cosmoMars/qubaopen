@@ -23,6 +23,7 @@ import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfRepository;
 import com.qubaopen.survey.repository.self.SelfUserAnswerRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
+import com.qubaopen.survey.repository.user.UserRepository;
 
 @Service
 public class SelfPersistentService {
@@ -44,6 +45,12 @@ public class SelfPersistentService {
 	
 	@Autowired
 	SelfRepository selfRepository
+	
+	@Autowired
+	SelfService selfService
+	
+	@Autowired
+	UserRepository userRepository
 
 	/**
 	 * 保存用户答卷信息，用户答题内容
@@ -59,12 +66,13 @@ public class SelfPersistentService {
 		def selfUserQuestionnaire, questionnaire 
 		if (refresh) { // 重做
 			questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self)
-			def	now = new Date(),
-				intervalTime = questionnaire.self.intervalTime as Long
-			
-			if (questionnaire && now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
-				questionnaire.used = false
-				selfUserQuestionnaireRepository.save(questionnaire)
+			def	now = new Date()
+			if (questionnaire) {
+				def intervalTime = questionnaire.self.intervalTime as Long
+				if (now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
+					questionnaire.used = false
+					selfUserQuestionnaireRepository.save(questionnaire)
+				}
 			}
 			selfUserQuestionnaire = new SelfUserQuestionnaire(
 				user : user,
@@ -89,6 +97,8 @@ public class SelfPersistentService {
 	
 		selfUserQuestionnaire = selfUserQuestionnaireRepository.save(selfUserQuestionnaire)
 
+		selfService.calcUserAnalysisRadio(userRepository.findOne(user.id))
+		
 		def userAnswers = []
 
 		questions.each { q ->
@@ -186,6 +196,18 @@ public class SelfPersistentService {
 
 		def special = false
 		def specialSelf = selfRepository.findSpecialSelf()
+		
+		def questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self),
+			now = new Date()
+		if (questionnaire) {
+			def intervalTime = questionnaire.self.intervalTime as Long
+			if (now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
+				if (questionnaire.self.id == specialSelf.id) {
+					def record = mapRecordRepository.findMaxRecordBySpecialSelf(self, user)
+					mapRecordRepository.delete(record)
+				}
+			}
+		}
 		
 		if (self.id == specialSelf.id) {
 			special = true

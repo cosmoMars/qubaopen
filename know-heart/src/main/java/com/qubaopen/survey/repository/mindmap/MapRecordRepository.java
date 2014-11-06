@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.mindmap.MapRecord;
 import com.qubaopen.survey.entity.mindmap.MapStatistics;
+import com.qubaopen.survey.entity.self.Self;
+import com.qubaopen.survey.entity.user.User;
 
 public interface MapRecordRepository extends MyRepository<MapRecord, Long> {
 
@@ -15,5 +17,8 @@ public interface MapRecordRepository extends MyRepository<MapRecord, Long> {
 
 	@Query("from MapRecord mr where mr.mapStatistics = :mapStatistics group by DATE_FORMAT(mr.createdDate,'%Y-%m-%d') order by mr.createdDate desc")
 	List<MapRecord> findEveryDayMapRecords(@Param("mapStatistics") MapStatistics mapStatistics);
+	
+	@Query("from MapRecord m where m.createdDate = (select max(mr.createdDate) from MapRecord mr where mr.mapStatistics.user = :user and mr.mapStatistics.self = :self)")
+	MapRecord findMaxRecordBySpecialSelf(@Param("self") Self self, @Param("user") User user);
 
 }

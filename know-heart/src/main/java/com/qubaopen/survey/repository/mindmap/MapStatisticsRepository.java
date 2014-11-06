@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.mindmap.MapStatistics;
 import com.qubaopen.survey.entity.self.Self;
+import com.qubaopen.survey.entity.self.SelfGroup;
 import com.qubaopen.survey.entity.self.SelfManagementType;
 import com.qubaopen.survey.entity.user.User;
 
@@ -38,6 +39,12 @@ public interface MapStatisticsRepository extends MyRepository<MapStatistics, Lon
 	
 	@Query("from MapStatistics ms where ms.self.selfGroup is not null and ms.selfManagementType = :type and ms.user = :user")
 	List<MapStatistics> findMapByGroupSelfs(@Param("type") SelfManagementType selfManagementType, @Param("user") User user);
+	
+	@Query("from MapStatistics ms where ms.selfManagementType = :type and ms.user = :user and ms.self.selfGroup != :specialGroup")
+	List<MapStatistics> findMapWithoutSpecialGroup(@Param("type") SelfManagementType selfManagementType, @Param("user") User user, @Param("specialGroup") SelfGroup specialGroup);
+	
+	@Query("from MapStatistics ms where ms.user = :user and ms.self.selfGroup != :specialGroup")
+	List<MapStatistics> findMapWithoutSpecialGroup(@Param("user") User user, @Param("specialGroup") SelfGroup specialGroup);
 	
 	List<MapStatistics> findBySelfManagementTypeAndUser(SelfManagementType selfManagementType, User user);
 	

@@ -234,6 +234,8 @@ public class UserService {
 			u.password = DigestUtils.md5Hex(password)
 			userRepository.save(u)
 			return '{"success": "1"}'
+		} else {
+			return '{"success": "0", "message" : "err007"}'
 		}
 	}
 

@@ -199,6 +199,12 @@ class UserController extends AbstractBaseController<User, Long> {
 
 		logger.trace(" -- 忘记密码重置 -- ")
 		
+		def u = userRepository.findByPhone(phone)
+		
+		if (!u.activated) {
+			return '{"success": "0", "message": "err019"}'
+		}
+		
 		if (StringUtils.isEmpty(captcha)) {
 			return '{"success": "0", "message": "err007"}'
 		}

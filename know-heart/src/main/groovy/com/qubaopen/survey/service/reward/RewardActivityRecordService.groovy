@@ -17,6 +17,7 @@ import com.qubaopen.survey.repository.reward.RewardAssignRecordRepository
 import com.qubaopen.survey.repository.reward.RewardRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
+import com.qubaopen.survey.service.self.SelfService;
 import com.qubaopen.survey.utils.DateCommons
 
 @Service
@@ -39,6 +40,9 @@ public class RewardActivityRecordService {
 
 	@Autowired
 	UserReceiveAddressRepository userReceiveAddressRepository
+	
+	@Autowired
+	SelfService selfService;
 
 
 	/**
@@ -64,7 +68,7 @@ public class RewardActivityRecordService {
 		def user = new User(id : userId),
 			activityCount = rewardActivityRecordRepository.countByUser(user)
 
-		if (rewardActivity.eachCountLimit != 0 && activityCount > rewardActivity.eachCountLimit) {
+		if (rewardActivity.eachCountLimit != 0 && activityCount >= rewardActivity.eachCountLimit) {
 			return '{"success": 0, "message": "err303"}'
 		}
 
@@ -237,4 +241,64 @@ public class RewardActivityRecordService {
 		rewardActivityRecordRepository.save(record)
 		rewardAssignRecordRepository.save(rewardAssignRecord)
 	}
+	
+	
+	
+	/**
+	 * 性格解析度100%  参与心理体检报告报告活动
+	 * @param userId
+	 * @param addressId
+	 * @return
+	 */
+	@Transactional
+	selfReportReward(User user, long addressId) {
+
+		Map result=selfService.calcUserAnalysisRadio(user);
+		
+		def s=result.get("analysis");
+		
+		if(Double.parseDouble(s)<100){ 
+			return '{"success": 0, "message": "性格解析度没有到达100%"}'
+		}
+		
+		def rewardActivity = rewardActivityRepository.findOneByFilters([
+			'status_equal' : 3
+		])
+
+		if (rewardActivity == null) {
+			return '{"success": 0, "message": "err301"}'
+		}
+		
+		def activityCount = rewardActivityRecordRepository.countByUser(user)
+
+		if (rewardActivity.eachCountLimit != 0 && activityCount >= rewardActivity.eachCountLimit) {
+			return '{"success": 0, "message": "err303"}'
+		}
+
+		def userReceiveAddress = userReceiveAddressRepository.findOneByFilters([
+			'id_equal' : addressId,
+			'user_equal' : user
+		])
+		
+		if(userReceiveAddress==null){
+			return '{"success": 0, "message": "err402"}'
+		}
+
+		rewardActivity.currentCount ++
+	
+		def rewardActivityRecord = new RewardActivityRecord(
+			user : user,
+			rewardActivity : rewardActivity,
+			userReceiveAddress : userReceiveAddress,
+			status : RewardActivityRecord.Status.DELIVERING,
+			awardTime : new Date()
+		)
+
+		rewardActivityRepository.save(rewardActivity);
+		rewardActivityRecordRepository.save(rewardActivityRecord)
+		
+		
+		'{"success": "1"}'
+	}
+
 }

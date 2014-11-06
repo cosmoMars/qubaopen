@@ -83,4 +83,24 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 
 		rewardActivityRecordService.findByStatus(user.id, status)
 	}
+	
+	
+	/**
+	 * 性格解析度100%  参与心理体检报告报告活动
+	 * @param userId
+	 * @param activityId
+	 * @param addressId
+	 * @return
+	 */
+	@RequestMapping(value = 'selfReportReward', method = RequestMethod.POST)
+	selfReportReward(@RequestParam long addressId, @ModelAttribute('currentUser') User user) {
+
+		logger.trace ' -- 创建兑奖信息记录 -- '
+
+		if (!addressId) {
+			return '{"success": "0", "message": "err306"}'
+		}
+
+		rewardActivityRecordService.selfReportReward(user, addressId)
+	}
 }

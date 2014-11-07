@@ -2,10 +2,13 @@ package com.qubaopen.survey.controller.interest
 
 import javax.servlet.http.HttpServletRequest
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -20,7 +23,7 @@ import com.qubaopen.survey.controller.FileUtils
 import com.qubaopen.survey.entity.interest.Interest
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.interest.InterestRepository
-import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository;
+import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository
 import com.qubaopen.survey.service.interest.InterestService
 
 @RestController
@@ -276,6 +279,42 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			'success' : '1',
 			'message' : '成功',
 			'data' : data
+		]
+	}
+		
+	@RequestMapping(value = 'retrieveInterestHistoryByFilter', method = RequestMethod.POST)
+	retrieveInterestHistoryById(@RequestParam(required = false) Long historyId,
+		@RequestParam(required = false) Long typeId,
+		@ModelAttribute('currentUser') User user,
+		@PageableDefault(page = 0, size = 20, sort = 'id', direction = Direction.DESC)
+		Pageable pageable) {
+		
+		println pageable
+		
+		def interstUserQuestionnaires = interestService.retrieveInterestHistoryById(historyId, typeId, user, pageable)
+		
+		def data = []
+		interstUserQuestionnaires.each {
+			data << [
+				'id' : it?.id,
+				'interestId' : it?.interest?.id,
+				'interestTitle' : it?.interest?.title,
+				'resultId' : it?.interestResultOption?.id,
+				'resultTitle' : it?.interestResultOption?.interestResult?.title,
+				'content' : it?.interestResultOption?.content,
+				'optionTitle' : it?.interestResultOption?.title,
+				'resultNum' : it?.interestResultOption?.resultNum
+			]
+		}
+		def more = true
+		if (data.size() < 20) {
+			more = false
+		}
+		[
+			'success' : '1',
+			'message' : '成功',
+			'data' : data,
+			'more' : more
 		]
 	}
 	

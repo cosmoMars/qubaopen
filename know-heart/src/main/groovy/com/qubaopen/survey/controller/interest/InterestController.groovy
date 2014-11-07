@@ -300,6 +300,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 				'date' : it?.time,
 				'interestId' : it?.interest?.id,
 				'interestTitle' : it?.interest?.title,
+				'interestType' : it?.interest?.interestType?.id,
 				'resultId' : it?.interestResultOption?.id,
 				'resultTitle' : it?.interestResultOption?.interestResult?.title,
 				'content' : it?.interestResultOption?.content,

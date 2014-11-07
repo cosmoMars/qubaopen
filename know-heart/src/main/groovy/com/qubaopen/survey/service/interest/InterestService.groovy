@@ -12,6 +12,7 @@ import com.qubaopen.survey.entity.interest.Interest
 import com.qubaopen.survey.entity.interest.InterestQuestion;
 import com.qubaopen.survey.entity.interest.InterestQuestionOption;
 import com.qubaopen.survey.entity.interest.InterestType
+import com.qubaopen.survey.entity.interest.InterestUserQuestionnaire;
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.interest.InterestQuestionOptionRepository
@@ -370,6 +371,49 @@ public class InterestService {
 		]
 	}
 
+	
+	def retrieveInterestHistoryById(Long historyId, Long typeId, User user, Pageable pageable) {
+		def questionnaires = []
+		
+		if (!historyId && !typeId) {
+			questionnaires = interestUserQuestionnaireRepository.findAll(
+				[
+					user_equal : user,
+				],
+				pageable
+			)
+		}
+		if (historyId && !typeId) {
+			questionnaires = interestUserQuestionnaireRepository.findAll(
+				[
+					user_equal : user,
+					'id_lessThan' : historyId
+				],
+				pageable
+			)
+		}
+		if (!historyId && typeId) {
+			questionnaires = interestUserQuestionnaireRepository.findAll(
+				[
+					user_equal : user,
+					'interest.interestType.id_equal' : typeId
+				],
+				pageable
+			)
+		}
+		
+		if (historyId != null && typeId != null) {
+			questionnaires = interestUserQuestionnaireRepository.findAll(
+				[
+					user_equal : user,
+					'interest.interestType.id_equal' : typeId,
+					'id_lessThan' : historyId
+				],
+				pageable
+			)
+		}
+		questionnaires
+	}
 	
 	class OptionComparator implements Comparator {
 		public int compare(Object o1, Object o2) {

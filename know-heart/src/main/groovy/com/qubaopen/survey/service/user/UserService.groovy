@@ -25,10 +25,12 @@ import com.qubaopen.survey.repository.user.UserCaptchaRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
+import com.qubaopen.survey.repository.user.UserMoodRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.repository.user.UserUDIDRepository
 import com.qubaopen.survey.service.SmsService
+import com.qubaopen.survey.service.self.SelfService
 import com.qubaopen.survey.utils.DateCommons
 
 @Service
@@ -60,6 +62,12 @@ public class UserService {
 
 	@Autowired
 	SmsService smsService
+	
+	@Autowired
+	SelfService selfService
+	
+	@Autowired
+	UserMoodRepository userMoodRepository;
 
 	/** 用户登录
 	 * @param user
@@ -346,10 +354,36 @@ public class UserService {
 		userUDIDRepository.save(code)
 	}
 
+	/**
+	 * 获取用户首页数据，心情、性格解析度、心理指数 
+	 * @param user
+	 * @return
+	 */
+	@Transactional
+	getIndexInfo(User user) {
+		selfService.calcUserAnalysisRadio(user)
+		selfService.calcUserMentalStatus(user)
+		
+		def userMood = userMoodRepository.findLastByTime(user)
+	    def userInfo = userInfoRepository.findOne(user.id)
+			
+		return [
+			'success' : '1',
+			'moodType' : userMood?.moodType.ordinal() ?: '',
+			'lastTime' : userMood?.lastTime ?: '',
+			'userSelfTitle' : userInfo?.userSelfTitle?.name ?: '',
+			'deduction' : userInfo?.deduction ?: '',
+			'resolution' : userInfo?.resolution ?: ''
+			]
+	}
+	
 	private void saveFile(byte[] bytes, String filename) {
 		def fos = new FileOutputStream(filename)
 		fos.write(bytes)
 		fos.close()
 	}
+	
+	
+	
 
 }

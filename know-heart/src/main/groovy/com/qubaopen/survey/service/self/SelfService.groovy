@@ -33,6 +33,7 @@ import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.repository.user.UserSelfTitleRepository;
 import com.qubaopen.survey.service.user.UserIDCardBindService;
+import com.qubaopen.survey.utils.DateCommons;
 
 @Service
 public class SelfService {
@@ -481,6 +482,27 @@ public class SelfService {
 			
 			minusScore+=score
 		}
+		
+		def lastSuo=selfUserQuestionnaireRepository.findLastByTime(user)
+		
+		if(lastSuo!=null){
+			def differHour=DateCommons.getDifferHour(lastSuo.time,new Date()) / 24;
+				
+			if(differHour >=14){
+				minusScore+=20;
+			}else if(differHour >=7 ){
+				minusScore+=10;
+			}
+		}
+		
+		
+		DecimalFormat df = new DecimalFormat("0.00")
+		String s = df.format(minusScore)
+		
+		def userInfo = user.userInfo
+		userInfo.deduction=s;
+		
+		userInfoRepository.save(userInfo);
 		
 		[
 			'success' : '1',

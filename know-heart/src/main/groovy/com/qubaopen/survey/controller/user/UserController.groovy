@@ -254,6 +254,15 @@ class UserController extends AbstractBaseController<User, Long> {
 		'{"success" : "1"}'
 	}
 
+	/**
+	 * 获取用户首页数据，心情、性格解析度、心理指数 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'getIndexInfo', method = RequestMethod.GET)
+	getIndexInfo(@ModelAttribute('currentUser') User user) {
+		userService.getIndexInfo(user)
+	}
 
 	@RequestMapping(value = 'test', method = RequestMethod.GET)
 	test(Pageable pageable) {

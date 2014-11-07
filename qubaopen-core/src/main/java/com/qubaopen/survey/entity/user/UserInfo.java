@@ -152,6 +152,11 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	 */
 	@ManyToOne
 	private UserSelfTitle userSelfTitle;
+	
+	/**
+	 * 心情指数  扣分
+	 */
+	private String deduction;
 
 	public User getUser() {
 		return user;
@@ -311,6 +316,14 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 
 	public void setUserSelfTitle(UserSelfTitle userSelfTitle) {
 		this.userSelfTitle = userSelfTitle;
+	}
+
+	public String getDeduction() {
+		return deduction;
+	}
+
+	public void setDeduction(String deduction) {
+		this.deduction = deduction;
 	}
 	
 }

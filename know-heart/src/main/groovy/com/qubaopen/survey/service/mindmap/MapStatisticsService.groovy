@@ -527,6 +527,7 @@ public class MapStatisticsService {
 		if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
 			def chart
 			def c = []
+			def resultContent = "err"
 			if (specialMap?.self?.graphicsType) {
 				def timeChart = [], paChart = [], naChart = [], midChart = []
 //					def mapRecords = specialMaps.mapRecords as List
@@ -543,6 +544,25 @@ public class MapStatisticsService {
 				def paChartC = calculatePoint.getPoint(timeChart, paChart)
 				def naChartC = calculatePoint.getPoint(timeChart, naChart)
 				def midChartC = calculatePoint.getPoint(timeChart, midChart)
+				
+				//计算 正负情感趋势 上升 下降
+				def time=System.currentTimeMillis() 
+				def timeBefore = time - 60 * 60 * 24 * 1000 * 2
+				def timeAfter = time + 60 * 60 * 24 * 1000 * 2
+				
+				def resultToday = midChartC[0] + midChartC[1] * Math.cos(time * midChartC[3]) + midChartC[2] * Math.sin(time * midChartC[3])
+				def resultBefore = midChartC[0] + midChartC[1] * Math.cos(timeBefore * midChartC[3]) + midChartC[2] * Math.sin(timeBefore * midChartC[3])
+				def resultAfter = midChartC[0] + midChartC[1] * Math.cos(timeAfter * midChartC[3]) + midChartC[2] * Math.sin(timeAfter * midChartC[3])
+								
+				if( resultBefore <= resultToday  && resultToday<resultAfter){
+					resultContent = "up"
+				}else if( resultBefore > resultToday  && resultToday >=resultAfter){
+					resultContent = "down"
+				}else if( resultBefore <= resultToday  && resultToday >=resultAfter){
+					resultContent = "top"
+				}else if( resultBefore > resultToday  && resultToday < resultAfter){
+					resultContent = "bottom"
+				}
 				
 				chart = [
 					timeChart : timeChart,
@@ -561,7 +581,7 @@ public class MapStatisticsService {
 				'mapMax' : specialMap?.mapMax,
 				'resultName' : specialMap?.selfResultOption?.name,
 				'resultScore' : '',
-				'resultContent' : '',
+				'resultContent' : resultContent,
 				'managementType' : specialMap?.selfManagementType?.id,
 				'recommendedValue' : specialMap?.recommendedValue,
 				'graphicsType' : specialMap?.self?.graphicsType?.id,

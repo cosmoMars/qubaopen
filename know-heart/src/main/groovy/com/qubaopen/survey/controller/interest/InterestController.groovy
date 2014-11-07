@@ -296,7 +296,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		def data = []
 		interstUserQuestionnaires.each {
 			data << [
-				'id' : it?.id,
+				'historyId' : it?.id,
 				'interestId' : it?.interest?.id,
 				'interestTitle' : it?.interest?.title,
 				'resultId' : it?.interestResultOption?.id,

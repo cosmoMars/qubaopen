@@ -297,6 +297,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		interstUserQuestionnaires.each {
 			data << [
 				'historyId' : it?.id,
+				'date' : it?.time,
 				'interestId' : it?.interest?.id,
 				'interestTitle' : it?.interest?.title,
 				'resultId' : it?.interestResultOption?.id,

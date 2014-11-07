@@ -283,7 +283,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	}
 		
 	@RequestMapping(value = 'retrieveInterestHistoryByFilter', method = RequestMethod.POST)
-	retrieveInterestHistoryById(@RequestParam(required = false) Long historyId,
+	retrieveInterestHistoryByFilter(@RequestParam(required = false) Long historyId,
 		@RequestParam(required = false) Long typeId,
 		@ModelAttribute('currentUser') User user,
 		@PageableDefault(page = 0, size = 20, sort = 'id', direction = Direction.DESC)
@@ -291,14 +291,16 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		
 		println pageable
 		
-		def interstUserQuestionnaires = interestService.retrieveInterestHistoryById(historyId, typeId, user, pageable)
+		def interstUserQuestionnaires = interestService.retrieveInterestHistoryByFilter(historyId, typeId, user, pageable)
 		
 		def data = []
 		interstUserQuestionnaires.each {
 			data << [
 				'historyId' : it?.id,
+				'date' : it?.time,
 				'interestId' : it?.interest?.id,
 				'interestTitle' : it?.interest?.title,
+				'interestType' : it?.interest?.interestType?.id,
 				'resultId' : it?.interestResultOption?.id,
 				'resultTitle' : it?.interestResultOption?.interestResult?.title,
 				'content' : it?.interestResultOption?.content,

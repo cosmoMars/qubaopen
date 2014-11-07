@@ -372,7 +372,7 @@ public class InterestService {
 	}
 
 	
-	def retrieveInterestHistoryById(Long historyId, Long typeId, User user, Pageable pageable) {
+	def retrieveInterestHistoryByFilter(Long historyId, Long typeId, User user, Pageable pageable) {
 		def questionnaires = []
 		
 		if (!historyId && !typeId) {

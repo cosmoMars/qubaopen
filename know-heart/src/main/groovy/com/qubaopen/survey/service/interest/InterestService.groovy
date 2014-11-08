@@ -63,7 +63,7 @@ public class InterestService {
 
 
 	@Transactional(readOnly = true)
-	retrieveInterest2(long userId, Long interestTypeId, Long sortTypeId, List<Long> ids, Pageable pageable) {
+	retrieveInterest(long userId, Long interestTypeId, Long sortTypeId, List<Long> ids, Pageable pageable) {
 		
 		def user = new User(id : userId),
 			interestList = []
@@ -116,7 +116,7 @@ public class InterestService {
 	}
 	
 	@Transactional(readOnly = true)
-	retrieveInterest(long userId, Long typeId, List<Long> ids, Pageable pageable) {
+	newRetrieveInterest(long userId, Long typeId, List<Long> ids, Pageable pageable) {
 		
 		def user = new User(id : userId),
 			interestList = []

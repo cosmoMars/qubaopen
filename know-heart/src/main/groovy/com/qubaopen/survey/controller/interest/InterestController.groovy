@@ -53,8 +53,8 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveInterest2', method = RequestMethod.POST)
-	retrieveInterest2(@RequestParam(required = false) Long interestTypeId,
+	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.POST)
+	retrieveInterest(@RequestParam(required = false) Long interestTypeId,
 			@RequestParam(required = false) Long sortTypeId,
 			@RequestParam(required = false) String ids,
 			@ModelAttribute('currentUser') User user,
@@ -71,7 +71,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			}
 		}
 
-		interestService.retrieveInterest2(user.id, interestTypeId, sortTypeId, resultIds, pageable)
+		interestService.retrieveInterest(user.id, interestTypeId, sortTypeId, resultIds, pageable)
 	}
 			
 	/**
@@ -79,8 +79,8 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	 * @param userId
 	 * @return
 	 */
-	@RequestMapping(value = 'retrieveInterest', method = RequestMethod.POST)
-	retrieveInterest(@RequestParam(required = false) Long typeId,
+	@RequestMapping(value = 'newRetrieveInterest', method = RequestMethod.POST)
+	newRetrieveInterest(@RequestParam(required = false) Long typeId,
 			@RequestParam(required = false) String ids,
 			@ModelAttribute('currentUser') User user,
 			Pageable pageable) {
@@ -96,7 +96,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			}
 		}
 
-		interestService.retrieveInterest(user.id, typeId, resultIds, pageable)
+		interestService.newRetrieveInterest(user.id, typeId, resultIds, pageable)
 	}
 
 	/**
@@ -282,6 +282,14 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		]
 	}
 		
+	/**
+	 * 根据条件查询问卷历史
+	 * @param historyId
+	 * @param typeId
+	 * @param user
+	 * @param pageable
+	 * @return
+	 */
 	@RequestMapping(value = 'retrieveInterestHistoryByFilter', method = RequestMethod.POST)
 	retrieveInterestHistoryByFilter(@RequestParam(required = false) Long historyId,
 		@RequestParam(required = false) Long typeId,

@@ -544,7 +544,7 @@ public class MapStatisticsService {
 
 				def paChartC = [], naChartC = [], midChartC = []
 				
-				def coefficient = mapCoefficientRepository.findOne(id : user.id)
+				def coefficient = mapCoefficientRepository.findOne(user.id)
 				
 				if (coefficient) {
 					def chartTime = new Date(timeChart[timeChart.size() - 1] as long) 

@@ -554,8 +554,8 @@ public class MapStatisticsService {
 						midChartC = calculatePoint.getPoint(timeChart, midChart)
 						coefficient.pa1 = paChartC[0]
 						coefficient.pa2 = paChartC[1]
-						coefficient.pa3 = paChartC[3]
-						coefficient.pa4 = paChartC[4]
+						coefficient.pa3 = paChartC[2]
+						coefficient.pa4 = paChartC[3]
 						coefficient.na1 = naChartC[0]
 						coefficient.na2 = naChartC[1]
 						coefficient.na3 = naChartC[2]
@@ -573,8 +573,8 @@ public class MapStatisticsService {
 					midChartC = calculatePoint.getPoint(timeChart, midChart)
 					coefficient.pa1 = paChartC[0]
 					coefficient.pa2 = paChartC[1]
-					coefficient.pa3 = paChartC[3]
-					coefficient.pa4 = paChartC[4]
+					coefficient.pa3 = paChartC[2]
+					coefficient.pa4 = paChartC[3]
 					coefficient.na1 = naChartC[0]
 					coefficient.na2 = naChartC[1]
 					coefficient.na3 = naChartC[2]

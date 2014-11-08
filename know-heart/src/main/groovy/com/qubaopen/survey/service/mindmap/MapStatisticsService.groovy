@@ -542,9 +542,7 @@ public class MapStatisticsService {
 					midChart << (it.value - it.naValue)
 				}
 
-				def paChartC = calculatePoint.getPoint(timeChart, paChart)
-				def naChartC = calculatePoint.getPoint(timeChart, naChart)
-				def midChartC = calculatePoint.getPoint(timeChart, midChart)
+				def paChartC = [], naChartC = [], midChartC = []
 				
 				def coefficient = mapCoefficientRepository.findOne(id : user.id)
 				
@@ -568,7 +566,7 @@ public class MapStatisticsService {
 						coefficient.mid4 = midChartC[3]
 						coefficient.time = chartTime
 						mapCoefficientRepository.save(coefficient)
-					} 
+					}
 				} else {
 					paChartC = calculatePoint.getPoint(timeChart, paChart)
 					naChartC = calculatePoint.getPoint(timeChart, naChart)
@@ -611,9 +609,9 @@ public class MapStatisticsService {
 				chart = [
 					timeChart : timeChart,
 					midChart : midChart,
-					paChartC : paChartC,
-					naChartC : naChartC,
-					midChartC : midChartC
+					paChartC : [coefficient.pa1, coefficient.pa2, coefficient.pa3, coefficient.pa4],
+					naChartC : [coefficient.na1, coefficient.na2, coefficient.na3, coefficient.na4],
+					midChartC : [coefficient.mid1, coefficient.mid2, coefficient.mid3, coefficient.mid4]
 				]
 				
 				c << chart

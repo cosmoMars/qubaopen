@@ -309,7 +309,7 @@ public class UserService {
 		} else {
 			userInfo = new UserInfo(
 				id : user.id,
-				publicAnswersToFriend : true,
+				publicAnswersToFriend : true
 			)
 		}
 

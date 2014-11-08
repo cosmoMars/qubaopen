@@ -11,6 +11,7 @@ import com.qubaopen.survey.entity.mindmap.MapRecord
 import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.EPQBasicRepository
+import com.qubaopen.survey.repository.mindmap.MapCoefficientRepository;
 import com.qubaopen.survey.repository.mindmap.MapRecordRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
@@ -54,6 +55,10 @@ public class MapStatisticsService {
 	
 	@Autowired
 	SelfResultOptionRepository selfResultOptionRepository
+	
+	@Autowired
+	MapCoefficientRepository mapCoefficientRepository
+	
 	/**
 	 * 获取心理地图
 	 * @param user
@@ -536,19 +541,62 @@ public class MapStatisticsService {
 					naChart << -it.naValue
 					midChart << (it.value - it.naValue)
 				}
-				
+
 				def paChartC = calculatePoint.getPoint(timeChart, paChart)
 				def naChartC = calculatePoint.getPoint(timeChart, naChart)
 				def midChartC = calculatePoint.getPoint(timeChart, midChart)
+				
+				def coefficient = mapCoefficientRepository.findOne(id : user.id)
+				
+				if (coefficient) {
+					def chartTime = new Date(timeChart[timeChart.size() - 1] as long) 
+					if (chartTime - coefficient.time >= 0) {
+						paChartC = calculatePoint.getPoint(timeChart, paChart)
+						naChartC = calculatePoint.getPoint(timeChart, naChart)
+						midChartC = calculatePoint.getPoint(timeChart, midChart)
+						coefficient.pa1 = paChartC[0]
+						coefficient.pa2 = paChartC[1]
+						coefficient.pa3 = paChartC[3]
+						coefficient.pa4 = paChartC[4]
+						coefficient.na1 = naChartC[0]
+						coefficient.na2 = naChartC[1]
+						coefficient.na3 = naChartC[2]
+						coefficient.na4 = naChartC[3]
+						coefficient.mid1 = midChartC[0]
+						coefficient.mid2 = midChartC[1]
+						coefficient.mid3 = midChartC[2]
+						coefficient.mid4 = midChartC[3]
+						coefficient.time = chartTime
+						mapCoefficientRepository.save(coefficient)
+					} 
+				} else {
+					paChartC = calculatePoint.getPoint(timeChart, paChart)
+					naChartC = calculatePoint.getPoint(timeChart, naChart)
+					midChartC = calculatePoint.getPoint(timeChart, midChart)
+					coefficient.pa1 = paChartC[0]
+					coefficient.pa2 = paChartC[1]
+					coefficient.pa3 = paChartC[3]
+					coefficient.pa4 = paChartC[4]
+					coefficient.na1 = naChartC[0]
+					coefficient.na2 = naChartC[1]
+					coefficient.na3 = naChartC[2]
+					coefficient.na4 = naChartC[3]
+					coefficient.mid1 = midChartC[0]
+					coefficient.mid2 = midChartC[1]
+					coefficient.mid3 = midChartC[2]
+					coefficient.mid4 = midChartC[3]
+					coefficient.time = new Date(timeChart[timeChart.size() - 1] as long)
+					mapCoefficientRepository.save(coefficient)
+				}
 				
 				//计算 正负情感趋势 上升 下降
 				def time=System.currentTimeMillis() 
 				def timeBefore = time - 60 * 60 * 24 * 1000 * 2
 				def timeAfter = time + 60 * 60 * 24 * 1000 * 2
 				
-				def resultToday = midChartC[0] + midChartC[1] * Math.cos(time * midChartC[3]) + midChartC[2] * Math.sin(time * midChartC[3])
-				def resultBefore = midChartC[0] + midChartC[1] * Math.cos(timeBefore * midChartC[3]) + midChartC[2] * Math.sin(timeBefore * midChartC[3])
-				def resultAfter = midChartC[0] + midChartC[1] * Math.cos(timeAfter * midChartC[3]) + midChartC[2] * Math.sin(timeAfter * midChartC[3])
+				def resultToday = coefficient.mid1 + coefficient.mid2 * Math.cos(time * coefficient.mid4) + coefficient.mid3 * Math.sin(time * coefficient.mid4)
+				def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
+				def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
 								
 				if( resultBefore <= resultToday  && resultToday<resultAfter){
 					resultContent = "up"

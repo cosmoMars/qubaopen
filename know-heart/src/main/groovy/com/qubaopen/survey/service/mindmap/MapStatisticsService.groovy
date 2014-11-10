@@ -573,6 +573,7 @@ public class MapStatisticsService {
 					naChartC = calculatePoint.getPoint(timeChart, naChart)
 					midChartC = calculatePoint.getPoint(timeChart, midChart)
 					coefficient = new MapCoefficient(
+						id : user.id,
 						pa1 : paChartC[0],
 						pa2 : paChartC[1],
 						pa3 : paChartC[2],

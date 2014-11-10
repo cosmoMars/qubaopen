@@ -189,7 +189,7 @@ public class UserService {
 		}
 		def captcha
 		
-		if (userCaptcha.captcha) {
+		if (userCaptcha && userCaptcha.captcha) {
 			captcha = userCaptcha.captcha
 		} else {
 			// 生成6位数字格式的验证码
@@ -309,7 +309,7 @@ public class UserService {
 		} else {
 			userInfo = new UserInfo(
 				id : user.id,
-				publicAnswersToFriend : true,
+				publicAnswersToFriend : true
 			)
 		}
 

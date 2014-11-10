@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.qubaopen.survey.entity.mindmap.MapCoefficient
 import com.qubaopen.survey.entity.mindmap.MapRecord
 import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
@@ -571,19 +572,21 @@ public class MapStatisticsService {
 					paChartC = calculatePoint.getPoint(timeChart, paChart)
 					naChartC = calculatePoint.getPoint(timeChart, naChart)
 					midChartC = calculatePoint.getPoint(timeChart, midChart)
-					coefficient.pa1 = paChartC[0]
-					coefficient.pa2 = paChartC[1]
-					coefficient.pa3 = paChartC[2]
-					coefficient.pa4 = paChartC[3]
-					coefficient.na1 = naChartC[0]
-					coefficient.na2 = naChartC[1]
-					coefficient.na3 = naChartC[2]
-					coefficient.na4 = naChartC[3]
-					coefficient.mid1 = midChartC[0]
-					coefficient.mid2 = midChartC[1]
-					coefficient.mid3 = midChartC[2]
-					coefficient.mid4 = midChartC[3]
-					coefficient.time = new Date(timeChart[timeChart.size() - 1] as long)
+					coefficient = new MapCoefficient(
+						pa1 : paChartC[0],
+						pa2 : paChartC[1],
+						pa3 : paChartC[2],
+						pa4 : paChartC[3],
+						na1 : naChartC[0],
+						na2 : naChartC[1],
+						na3 : naChartC[2],
+						na4 : naChartC[3],
+						mid1 : midChartC[0],
+						mid2 : midChartC[1],
+						mid3 : midChartC[2],
+						mid4 : midChartC[3],
+						time : new Date(timeChart[timeChart.size() - 1] as long)
+					)
 					mapCoefficientRepository.save(coefficient)
 				}
 				

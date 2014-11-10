@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -162,6 +163,9 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (!validatePwd(password)) {
 			return '{"success": "0", "message": "err004"}'
 		}
+		if (!StringUtils.isNotEmpty(captcha)) {
+			return '{"success": "0", "message": "err012"}'
+		}
 
 		userService.register(phone, password, captcha, avatar, request)
 	}
@@ -254,19 +258,4 @@ class UserController extends AbstractBaseController<User, Long> {
 		'{"success" : "1"}'
 	}
 
-	/**
-	 * 获取用户首页数据，心情、性格解析度、心理指数 
-	 * @param user
-	 * @return
-	 */
-	@RequestMapping(value = 'getIndexInfo', method = RequestMethod.GET)
-	getIndexInfo(@ModelAttribute('currentUser') User user) {
-		userService.getIndexInfo(user)
-	}
-
-	@RequestMapping(value = 'test', method = RequestMethod.GET)
-	test(Pageable pageable) {
-		userRepository.findAllUsers(pageable)
-	}
-	
 }

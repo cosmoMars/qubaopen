@@ -163,6 +163,9 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (!validatePwd(password)) {
 			return '{"success": "0", "message": "err004"}'
 		}
+		if (!StringUtils.isNotEmpty(captcha)) {
+			return '{"success": "0", "message": "err012"}'
+		}
 
 		userService.register(phone, password, captcha, avatar, request)
 	}

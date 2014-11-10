@@ -592,7 +592,7 @@ public class MapStatisticsService {
 				}
 				
 				//计算 正负情感趋势 上升 下降
-				def time=System.currentTimeMillis() 
+				def time=System.currentTimeMillis()
 				def timeBefore = time - 60 * 60 * 24 * 1000 * 2
 				def timeAfter = time + 60 * 60 * 24 * 1000 * 2
 				

@@ -1,9 +1,12 @@
 package com.qubaopen.survey.controller.user
 
+import groovy.transform.AutoClone;
+
 import javax.servlet.http.HttpServletRequest
 
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,7 +21,9 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.repository.user.UserInfoRepository
+import com.qubaopen.survey.repository.user.UserRepository;
 import com.qubaopen.survey.service.user.UserInfoService
+import com.qubaopen.survey.service.user.UserService;
 
 @RestController
 @RequestMapping('userInfos')
@@ -30,6 +35,12 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 	@Autowired
 	UserInfoService userInfoService
+	
+	@Autowired
+	UserRepository userRepository
+	
+	@Autowired
+	UserService userService
 
 	@Override
 	protected MyRepository<UserInfo, Long> getRepository() {
@@ -187,5 +198,23 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 			}
 			userInfoRepository.save(user.userInfo)
 			'{"success" : "1"}'
+		}
+		
+		/**
+		 * 获取用户首页数据，心情、性格解析度、心理指数
+		 * @param user
+		 * @return
+		 */
+		@RequestMapping(value = 'getIndexInfo', method = RequestMethod.GET)
+		getIndexInfo(@ModelAttribute('currentUser') User user) {
+			if (!user) {
+				return '{"success" : "0", "message" : "err000"}'
+			}
+			userService.getIndexInfo(user)
+		}
+	
+		@RequestMapping(value = 'test', method = RequestMethod.GET)
+		test(Pageable pageable) {
+			userRepository.findAllUsers(pageable)
 		}
 }

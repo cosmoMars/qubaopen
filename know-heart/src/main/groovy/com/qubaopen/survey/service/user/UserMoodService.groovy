@@ -43,7 +43,7 @@ class UserMoodService {
 	 * @return
 	 */
 	@Transactional
-	saveUserMood(User user, MoodType moodType) {
+	saveUserMood(User user, MoodType moodType, String message) {
 //		def userMood=userMoodRepository.findOne(user.id);
 //		if(userMood){
 //			userMood.setMoodType(moodType);
@@ -58,12 +58,13 @@ class UserMoodService {
 		def userMood = new UserMood(
 			user : user,
 			moodType : moodType,
-			lastTime : new Date()	
+			lastTime : new Date(),
+			message : message
 		)
 		
 		userMoodRepository.save(userMood);
 		
-		return ['success' : '1','moodType':userMood.moodType.ordinal(),'lastTime':userMood.lastTime]		
+		return ['success' : '1','moodType':userMood.moodType.ordinal(),'lastTime':userMood.lastTime, 'message' : message]		
 	}
 	
 	
@@ -95,7 +96,7 @@ class UserMoodService {
 	getUserMood(User user,int month) {
 			
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT max(id),convert(subString(last_time,1,10),char) last_date,mood_type ");
+		sql.append(" SELECT max(id),convert(subString(last_time,1,10),char) last_date,mood_type, message ");
 		sql.append("FROM user_mood where ");
 		sql.append("user_id="+user.id+" and month(last_time)="+month+" ");
 		sql.append("group by last_date ");
@@ -109,6 +110,7 @@ class UserMoodService {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("date", objects[1]);
 			map.put("mood", objects[2]);
+			map.put('message', objects[3])
 			datalist.add(map);
 		}
 		

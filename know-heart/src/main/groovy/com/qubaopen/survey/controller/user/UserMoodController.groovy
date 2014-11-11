@@ -40,13 +40,14 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 	 */
 	@RequestMapping(value = 'setMood', method = RequestMethod.POST)
 	userMood(@RequestParam int type,
+			@RequestParam(required = false) String message,
 			@ModelAttribute('currentUser') User user) {
 
 		if(type<0 || type>=MoodType.values().length){
 			return '{"success": "0", "message": "err800"}' // type参数错误
 		}
 
-		userMoodService.saveUserMood(user,MoodType.values()[type]);
+		userMoodService.saveUserMood(user, MoodType.values()[type], message);
 	}
 
 	/**

@@ -37,6 +37,11 @@ public class UserMood extends AbstractPersistable<Long> {
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastTime = new Date();
+	
+	/**
+	 * 留言
+	 */
+	private String message;
 
 	/**
 	 * 签到心情类型 0无心情 1郁闷 2无聊 3得瑟 4丢人 5求安慰 6纠结
@@ -67,6 +72,14 @@ public class UserMood extends AbstractPersistable<Long> {
 
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

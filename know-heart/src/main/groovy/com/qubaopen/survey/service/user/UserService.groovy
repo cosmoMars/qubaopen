@@ -369,11 +369,12 @@ public class UserService {
 			
 		return [
 			'success' : '1',
-			'moodType' : userMood?.moodType.ordinal() ?: '',
-			'lastTime' : userMood?.lastTime ?: '',
-			'userSelfTitle' : userInfo?.userSelfTitle?.name ?: '',
-			'deduction' : userInfo?.deduction ?: '',
-			'resolution' : userInfo?.resolution ?: ''
+			'moodType' : userMood?.moodType.ordinal(),
+			'lastTime' : userMood?.lastTime,
+			'userSelfTitle' : userInfo?.userSelfTitle?.name,
+			'deduction' : userInfo?.deduction,
+			'resolution' : userInfo?.resolution,
+			'message' : userMood?.message
 			]
 	}
 	

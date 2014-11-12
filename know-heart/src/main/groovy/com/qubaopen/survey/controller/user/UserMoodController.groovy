@@ -46,6 +46,9 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		if(type<0 || type>=MoodType.values().length){
 			return '{"success": "0", "message": "err800"}' // type参数错误
 		}
+		if (message && message.length() > 50) {
+			return '{"success" : "0", "message" : "心情短语过长"}'
+		}
 
 		userMoodService.saveUserMood(user, MoodType.values()[type], message);
 	}

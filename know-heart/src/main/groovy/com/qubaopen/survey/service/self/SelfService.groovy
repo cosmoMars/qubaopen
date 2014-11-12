@@ -420,9 +420,7 @@ public class SelfService {
 		
 		int all=allMust+8
 		
-		DecimalFormat df = new DecimalFormat("0.00")
-		float f=userDone/all*100
-		String s = df.format(f)
+		int f=userDone/all*100
 		
 		UserSelfTitle userSelfTitle=userSelfTitleRepository.findOneByFilters(
 			[

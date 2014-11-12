@@ -20,6 +20,7 @@ import com.qubaopen.survey.entity.user.UserCaptchaLog;
 import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserUDID
+import com.qubaopen.survey.repository.reward.RewardActivityRecordRepository;
 import com.qubaopen.survey.repository.user.UserCaptchaLogRepository;
 import com.qubaopen.survey.repository.user.UserCaptchaRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
@@ -67,7 +68,10 @@ public class UserService {
 	SelfService selfService
 	
 	@Autowired
-	UserMoodRepository userMoodRepository;
+	UserMoodRepository userMoodRepository
+	
+	@Autowired
+	RewardActivityRecordRepository rewardActivityRecordRepository
 
 	/** 用户登录
 	 * @param user
@@ -366,8 +370,14 @@ public class UserService {
 		
 		def userMood = userMoodRepository.findLastByTime(user)
 	    def userInfo = userInfoRepository.findOne(user.id)
-			
-		return [
+		
+		def userRewards = rewardActivityRecordRepository.findAll(
+			[
+				user_equal : user,
+				'rewardActivity.rewardType.rewardLevel.id_equal' : 100
+			]	
+		)
+		def reslut = [
 			'success' : '1',
 			'moodType' : userMood?.moodType.ordinal(),
 			'lastTime' : userMood?.lastTime,
@@ -376,6 +386,13 @@ public class UserService {
 			'resolution' : userInfo?.resolution,
 			'message' : userMood?.message
 			]
+		
+		if (userRewards != null && userRewards.size() > 0) {
+			reslut << ['isJoined' : true]
+		} else {
+			reslut << ['isJoined' : false]
+		}
+		return reslut
 	}
 	
 	private void saveFile(byte[] bytes, String filename) {
@@ -384,7 +401,4 @@ public class UserService {
 		fos.close()
 	}
 	
-	
-	
-
 }

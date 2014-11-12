@@ -234,6 +234,9 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 */
 	@RequestMapping(value = 'retrieveSelfByGroupId/{groupId}', method = RequestMethod.GET)
 	retrieveSelfByGroupId(@PathVariable Long groupId) {
+		
+		logger.trace ' -- 查询自测组问卷 -- '
+		
 		def selfGroup = selfGroupRepository.findOne(groupId),
 			data = []
 		selfGroup.selfs.each {

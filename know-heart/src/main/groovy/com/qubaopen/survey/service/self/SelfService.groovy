@@ -429,14 +429,14 @@ public class SelfService {
 			]			
 		)
 		def userInfo = user.userInfo
-		userInfo.resolution=s;
+		userInfo.resolution=f;
 		userInfo.userSelfTitle=userSelfTitle;
 		
 		userInfoRepository.save(userInfo);
 
 		[
 			'success' : '1',
-			'analysis' : s,
+			'analysis' : f,
 			'name' : userSelfTitle.name
 		]
 	}

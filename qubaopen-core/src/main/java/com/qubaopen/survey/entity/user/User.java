@@ -9,7 +9,6 @@ import javax.validation.constraints.Pattern;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
@@ -38,7 +37,7 @@ public class User extends AbstractBaseEntity<Long> {
 	/**
 	 * 电话
 	 */
-	@NotEmpty(message = "{\"success\" : 0, \"message\": \"err003\"}")
+//	@NotEmpty(message = "{\"success\" : 0, \"message\": \"err003\"}")
 	@Pattern(regexp = "^1[0-9]{10}$", message = "{\"success\" : 0, \"message\": \"err003\"}")
 	@Column(unique = true, length = 11)
 	private String phone;
@@ -60,6 +59,11 @@ public class User extends AbstractBaseEntity<Long> {
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
 	private UserIDCardBind userIdCardBind;
+	
+	/**
+	 * 是否第三方
+	 */
+	private boolean third;
 
 	public String getUserName() {
 		return userName;
@@ -115,6 +119,14 @@ public class User extends AbstractBaseEntity<Long> {
 
 	public void setUserIdCardBind(UserIDCardBind userIdCardBind) {
 		this.userIdCardBind = userIdCardBind;
+	}
+
+	public boolean isThird() {
+		return third;
+	}
+
+	public void setThird(boolean third) {
+		this.third = third;
 	}
 
 }

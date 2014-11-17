@@ -8,10 +8,8 @@ import javax.servlet.http.HttpSession
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -22,15 +20,24 @@ import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.user.ThirdUser
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.entity.user.UserGold
+import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserLog
 import com.qubaopen.survey.entity.user.UserLogType
-import com.qubaopen.survey.repository.user.UserLogRepository;
+import com.qubaopen.survey.entity.user.UserUDID
+import com.qubaopen.survey.repository.user.ThirdUserRepository
+import com.qubaopen.survey.repository.user.UserGoldRepository
+import com.qubaopen.survey.repository.user.UserInfoRepository
+import com.qubaopen.survey.repository.user.UserLogRepository
 import com.qubaopen.survey.repository.user.UserMoodRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
-import com.qubaopen.survey.service.SmsServiceToken;
+import com.qubaopen.survey.repository.user.UserUDIDRepository
+import com.qubaopen.survey.service.SmsServiceToken
 import com.qubaopen.survey.service.user.UserService
+import com.qubaopen.survey.utils.DateCommons
 
 /**
  * @author mars 用户表
@@ -58,6 +65,17 @@ class UserController extends AbstractBaseController<User, Long> {
 	@Autowired
 	SmsServiceToken smsServiceToken
 	
+	@Autowired
+	UserInfoRepository userInfoRepository
+	
+	@Autowired
+	UserGoldRepository userGoldRepository
+	
+	@Autowired
+	UserUDIDRepository userUDIDRepository
+	
+	@Autowired
+	ThirdUserRepository thirdUserRepository
 
 	@Override
 	protected MyRepository<User, Long> getRepository() {
@@ -137,6 +155,77 @@ class UserController extends AbstractBaseController<User, Long> {
 		'{"success" : "0", "message": "亲，您输入的帐号或密码有误哟！"}'
 	}
 
+	/**
+	 * 第三方登陆
+	 * @param token
+	 * @param nickName
+	 * @param avatarUrl
+	 * @param model
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value = 'thirdLogin', method = RequestMethod.POST)
+	thirdLogin(@RequestParam String token,
+		@RequestParam(required = false) String nickName,
+		@RequestParam(required = false) String avatarUrl,
+		Model model, HttpSession session) {
+		
+		def thirdUser 
+		thirdUser = thirdUserRepository.findByToken(token)
+		// 第一次登陆
+		if (!thirdUser) {
+			
+			def user = new User(
+				activated : true
+			)
+			user = userRepository.save(user)
+			def userInfo = new UserInfo(
+				id : user.id,
+				nickName : nickName,
+				avatarPath :avatarUrl,
+				publicAnswersToFriend : true
+			)
+			def userUdid = new UserUDID(
+				id : user.id,
+				push : true,
+				startTime : DateCommons.String2Date('09:00','HH:mm'),
+				endTime : DateCommons.String2Date('22:00','HH:mm')
+			)
+			def userGold = new UserGold(
+				id : user.id
+			)
+			thirdUser = new ThirdUser(
+				id : user.id,
+				token : token,
+				nickName : nickName,
+				avatarUrl : avatarUrl	
+			)
+			thirdUserRepository.save(thirdUser)
+		}
+		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(thirdUser.user, true)
+		return  [
+			'success' : '1',
+			'message' : '登录成功',
+			'userId' : thirdUser?.id,
+			'phone' : thirdUser?.user?.phone,
+			'name' : thirdUser?.user?.userIdCardBind?.userIDCard?.name,
+			'sex' : thirdUser?.user?.userInfo?.sex?.ordinal(),
+			'nickName' : thirdUser?.user?.userInfo?.nickName,
+			'bloodType' : thirdUser?.user?.userInfo?.bloodType?.ordinal(),
+			'district' : '',
+			'email' : thirdUser?.user?.email,
+			'defaultAddress' : userReceiveAddress?.detialAddress,
+			'defaultAddressId' : userReceiveAddress?.id,
+			'consignee' : userReceiveAddress?.consignee,
+			'defaultAddressPhone' : userReceiveAddress?.phone,
+			'idCard' : thirdUser?.user?.userIdCardBind?.userIDCard?.IDCard,
+			'birthday' : thirdUser?.user?.userInfo?.birthday,
+			'avatarPath' : thirdUser?.user?.userInfo?.avatarPath,
+			'signature' : thirdUser?.user?.userInfo?.signature
+		]
+		
+	}
+		
 	/**
 	 * 添加用户注册记录
 	 * @param user

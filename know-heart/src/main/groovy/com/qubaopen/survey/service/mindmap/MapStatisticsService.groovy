@@ -546,10 +546,10 @@ public class MapStatisticsService {
 				def paChartC = [], naChartC = [], midChartC = []
 				
 				def coefficient = mapCoefficientRepository.findOne(user.id)
-				
+				// 计算时间差
 				if (coefficient) {
 					def chartTime = new Date(timeChart[timeChart.size() - 1] as long) 
-					if (chartTime - coefficient.time >= 0) {
+					if (chartTime - coefficient.time > 0) {
 						paChartC = calculatePoint.getPoint(timeChart, paChart)
 						naChartC = calculatePoint.getPoint(timeChart, naChart)
 						midChartC = calculatePoint.getPoint(timeChart, midChart)

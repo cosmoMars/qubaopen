@@ -43,7 +43,7 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 	@RequestMapping(value = 'addUserFeedBack', method = RequestMethod.POST)
 	addUserFeedBack(@RequestParam(required = false) String content,
 		@RequestParam(required = false) String contactMethod,
-		@RequestParam(required = false) int backType,
+		@RequestParam(required = false) Integer backType,
 		@ModelAttribute('currentUser') User user) {
 		
 		def feedBackType

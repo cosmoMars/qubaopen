@@ -38,7 +38,7 @@ public class SmsToken extends AbstractBaseEntity<Long>{
 	 * url
 	 */
 	private String url;
-
+	
 	public String getOpenId() {
 		return openId;
 	}
@@ -78,5 +78,5 @@ public class SmsToken extends AbstractBaseEntity<Long>{
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
 }

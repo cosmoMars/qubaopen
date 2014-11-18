@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
 
 import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.ui.Model
@@ -21,13 +22,13 @@ import org.springframework.web.multipart.MultipartFile
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.ThirdUser
-import com.qubaopen.survey.entity.user.ThirdUser.ThirdType;
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserLog
 import com.qubaopen.survey.entity.user.UserLogType
 import com.qubaopen.survey.entity.user.UserUDID
+import com.qubaopen.survey.entity.user.ThirdUser.ThirdType
 import com.qubaopen.survey.repository.user.ThirdUserRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
@@ -172,20 +173,28 @@ class UserController extends AbstractBaseController<User, Long> {
 		@RequestParam(required = false) Integer type,
 		Model model, HttpSession session) {
 		
-		def thirdUser 
+		def thirdUser, user, userInfo
 		thirdUser = thirdUserRepository.findByToken(token)
 		// 第一次登陆
 		if (!thirdUser) {
 			
-			def user = new User(
+			user = new User(
 				activated : true,
 				third : true
 			)
 			user = userRepository.save(user)
-			def userInfo = new UserInfo(
+
+			def tempName = ''
+			switch (type) {
+				case 0 : tempName = "微博用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+				case 1 : tempName = "微信用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+				case 2 : tempName = "QQ用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+			}
+			
+			userInfo = new UserInfo(
 				id : user.id,
-				nickName : nickName,
-				avatarPath :avatarUrl,
+				nickName : tempName,
+				avatarPath : avatarUrl,
 				publicAnswersToFriend : true
 			)
 			def userUdid = new UserUDID(
@@ -210,27 +219,34 @@ class UserController extends AbstractBaseController<User, Long> {
 				thirdType : thirdType
 			)
 			thirdUserRepository.save(thirdUser)
+			userInfoRepository.save(userInfo)
+			userGoldRepository.save(userGold)
+			userUDIDRepository.save(userUdid)
+		} else {
+			user = thirdUser.user
+			userInfo = thirdUser.user.userInfo
 		}
+		
 		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(thirdUser.user, true)
 		return  [
 			'success' : '1',
 			'message' : '登录成功',
-			'userId' : thirdUser?.id,
-			'phone' : thirdUser?.user?.phone,
-			'name' : thirdUser?.user?.userIdCardBind?.userIDCard?.name,
-			'sex' : thirdUser?.user?.userInfo?.sex?.ordinal(),
-			'nickName' : thirdUser?.user?.userInfo?.nickName,
-			'bloodType' : thirdUser?.user?.userInfo?.bloodType?.ordinal(),
+			'userId' : user?.id,
+			'phone' : user?.phone,
+			'name' : user?.userIdCardBind?.userIDCard?.name,
+			'sex' : userInfo?.sex?.ordinal(),
+			'nickName' : userInfo?.nickName,
+			'bloodType' : userInfo?.bloodType?.ordinal(),
 			'district' : '',
-			'email' : thirdUser?.user?.email,
+			'email' : user?.email,
 			'defaultAddress' : userReceiveAddress?.detialAddress,
 			'defaultAddressId' : userReceiveAddress?.id,
 			'consignee' : userReceiveAddress?.consignee,
 			'defaultAddressPhone' : userReceiveAddress?.phone,
-			'idCard' : thirdUser?.user?.userIdCardBind?.userIDCard?.IDCard,
-			'birthday' : thirdUser?.user?.userInfo?.birthday,
-			'avatarPath' : thirdUser?.user?.userInfo?.avatarPath,
-			'signature' : thirdUser?.user?.userInfo?.signature
+			'idCard' : user?.userIdCardBind?.userIDCard?.IDCard,
+			'birthday' : userInfo?.birthday,
+			'avatarPath' : userInfo?.avatarPath,
+			'signature' : userInfo?.signature
 		]
 		
 	}

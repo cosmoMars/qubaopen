@@ -1,10 +1,9 @@
 package com.qubaopen.survey.repository.user;
 
 import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.survey.entity.user.ThirdUser;
+import com.qubaopen.survey.entity.user.UserThird;
 
-public interface ThirdUserRepository extends MyRepository<ThirdUser, Long> {
+public interface ThirdUserRepository extends MyRepository<UserThird, Long> {
 
-	ThirdUser findByToken(String token);
-	
+	UserThird findByToken(String token);
 }

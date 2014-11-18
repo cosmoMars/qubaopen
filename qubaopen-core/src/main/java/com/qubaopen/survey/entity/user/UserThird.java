@@ -1,5 +1,6 @@
 package com.qubaopen.survey.entity.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
@@ -11,9 +12,9 @@ import org.hibernate.envers.Audited;
 import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 @Entity
-@Table(name = "third_user")
+@Table(name = "user_third")
 @Audited
-public class ThirdUser extends AbstractBaseEntity2<Long>{
+public class UserThird extends AbstractBaseEntity2<Long>{
 
 	private static final long serialVersionUID = -3618846295054686658L;
 	
@@ -24,6 +25,7 @@ public class ThirdUser extends AbstractBaseEntity2<Long>{
 	/**
 	 * token
 	 */
+	@Column(unique = true)
 	private String token;
 	
 	/**

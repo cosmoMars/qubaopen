@@ -21,14 +21,14 @@ import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.user.ThirdUser
+import com.qubaopen.survey.entity.user.UserThird
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserLog
 import com.qubaopen.survey.entity.user.UserLogType
 import com.qubaopen.survey.entity.user.UserUDID
-import com.qubaopen.survey.entity.user.ThirdUser.ThirdType
+import com.qubaopen.survey.entity.user.UserThird.ThirdType
 import com.qubaopen.survey.repository.user.ThirdUserRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
@@ -173,10 +173,10 @@ class UserController extends AbstractBaseController<User, Long> {
 		@RequestParam(required = false) Integer type,
 		Model model, HttpSession session) {
 		
-		def thirdUser, user, userInfo
-		thirdUser = thirdUserRepository.findByToken(token)
+		def userThird, user, userInfo
+		userThird = thirdUserRepository.findByToken(token)
 		// 第一次登陆
-		if (!thirdUser) {
+		if (!userThird) {
 			
 			user = new User(
 				activated : true,
@@ -211,23 +211,23 @@ class UserController extends AbstractBaseController<User, Long> {
 				thirdType = ThirdType.values()[type]
 			}
 			
-			thirdUser = new ThirdUser(
+			userThird = new UserThird(
 				id : user.id,
 				token : token,
 				nickName : nickName,
 				avatarUrl : avatarUrl,
 				thirdType : thirdType
 			)
-			thirdUserRepository.save(thirdUser)
+			thirdUserRepository.save(userThird)
 			userInfoRepository.save(userInfo)
 			userGoldRepository.save(userGold)
 			userUDIDRepository.save(userUdid)
 		} else {
-			user = thirdUser.user
-			userInfo = thirdUser.user.userInfo
+			user = userThird.user
+			userInfo = userThird.user.userInfo
 		}
 		
-		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(thirdUser.user, true)
+		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(userThird.user, true)
 		return  [
 			'success' : '1',
 			'message' : '登录成功',

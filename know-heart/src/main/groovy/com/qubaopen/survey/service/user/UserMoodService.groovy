@@ -94,31 +94,24 @@ class UserMoodService {
 	 */
 	@Transactional
 	getUserMood(User user,int month) {
-			
-		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT max(id),convert(subString(last_time,1,10),char) last_date,mood_type, message ");
-		sql.append("FROM user_mood where ");
-		sql.append("user_id="+user.id+" and month(last_time)="+month+" ");
-		sql.append("group by last_date ");
-
-		Query query = entityManager.createNativeQuery(sql.toString());
-
-		List<Object[]> list = query.getResultList();
-		List<Map<String, Object>> datalist = new ArrayList<Map<String, Object>>();
-
-		for (Object[] objects : list) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("date", objects[1]);
-			map.put("mood", objects[2]);
-			map.put('message', objects[3])
-			datalist.add(map);
+		
+		def userMoods = userMoodRepository.retrieveUserMoodByMonth(user, month)
+		
+//		StringBuilder sql = new StringBuilder();
+//		sql.append(" SELECT max(id),convert(subString(last_time,1,10),char) last_date,mood_type, message ");
+//		sql.append("FROM user_mood where ");
+//		sql.append("user_id="+user.id+" and month(last_time)="+month+" ");
+//		sql.append("group by last_date ");
+		def datalist = []
+		userMoods.each {
+			datalist << [
+				'data' : it.lastTime,
+				'mood' : it.moodType.ordinal(),
+				'message' : it.message
+			]
 		}
 		
-		Map<String, Object> result = new HashMap<String, Object>();
-		result.put("success", '1');
-		result.put("moodList", datalist);
-		
-		return result;
+		return ["success" : "1", "moodList" : datalist]
 		
 	}
 }

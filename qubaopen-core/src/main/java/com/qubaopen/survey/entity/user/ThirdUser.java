@@ -35,6 +35,15 @@ public class ThirdUser extends AbstractBaseEntity2<Long>{
 	 * 头像
 	 */
 	private String avatarUrl;
+	
+	/**
+	 * 第三方类型
+	 */
+	private ThirdType thirdType;
+	
+	public enum ThirdType {
+		Sina, WeChat, Qzone
+	}
 
 	public String getToken() {
 		return token;
@@ -58,6 +67,14 @@ public class ThirdUser extends AbstractBaseEntity2<Long>{
 
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
+	}
+
+	public ThirdType getThirdType() {
+		return thirdType;
+	}
+
+	public void setThirdType(ThirdType thirdType) {
+		this.thirdType = thirdType;
 	}
 	
 }

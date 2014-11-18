@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.ThirdUser
+import com.qubaopen.survey.entity.user.ThirdUser.ThirdType;
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserGold
 import com.qubaopen.survey.entity.user.UserInfo
@@ -168,6 +169,7 @@ class UserController extends AbstractBaseController<User, Long> {
 	thirdLogin(@RequestParam String token,
 		@RequestParam(required = false) String nickName,
 		@RequestParam(required = false) String avatarUrl,
+		@RequestParam(required = false) Integer type,
 		Model model, HttpSession session) {
 		
 		def thirdUser 
@@ -176,7 +178,8 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (!thirdUser) {
 			
 			def user = new User(
-				activated : true
+				activated : true,
+				third : true
 			)
 			user = userRepository.save(user)
 			def userInfo = new UserInfo(
@@ -194,11 +197,17 @@ class UserController extends AbstractBaseController<User, Long> {
 			def userGold = new UserGold(
 				id : user.id
 			)
+			def thirdType
+			if (type != null) {
+				thirdType = ThirdType.values()[type]
+			}
+			
 			thirdUser = new ThirdUser(
 				id : user.id,
 				token : token,
 				nickName : nickName,
-				avatarUrl : avatarUrl	
+				avatarUrl : avatarUrl,
+				thirdType : thirdType
 			)
 			thirdUserRepository.save(thirdUser)
 		}
@@ -261,7 +270,7 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @return 判断手机用户，不存在创建，存在给用户手机发一条验证码短信
 	 */
 	@RequestMapping(value = 'sendCaptcha', method = RequestMethod.GET)
-	sendCaptcha(@RequestParam(required = false) String phone) {
+	sendCaptcha(@RequestParam(required = false) String phone, @RequestParam(required = false) Boolean activated) {
 
 		logger.trace ' -- 发送验证码 -- '
 		logger.trace "phone := $phone"
@@ -270,8 +279,13 @@ class UserController extends AbstractBaseController<User, Long> {
 			// 验证用户手机号是否无效
 			return '{"success" : "0", "message": "err003"}'
 		}
+		
+		// true 忘记密码判断， false 新用户注册判断
+		if (activated == null) {
+			activated == false
+		}
 
-		userService.sendCaptcha(phone)
+		userService.sendCaptcha(phone, activated)
 	}
 
 	/**

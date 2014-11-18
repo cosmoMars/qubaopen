@@ -168,10 +168,16 @@ public class UserService {
 	 * @return
 	 */
 	@Transactional
-	sendCaptcha(String phone) {
+	sendCaptcha(String phone, activated) {
 
 		// 判断用户是否存在
 		def user = userRepository.findByPhone(phone)
+		if (!activated && user) {
+			return '{"success" : "0", "message" : "err020"}'
+		}
+		if (activated && !user) {
+			return '{"success" : "0", "message" : "err001"}'
+		}
 		if (!user) {
 			user = new User(
 				phone : phone

@@ -1,5 +1,7 @@
 package com.qubaopen.survey.service.user
 
+import groovy.model.FormModel;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -105,7 +107,7 @@ class UserMoodService {
 		def datalist = []
 		userMoods.each {
 			datalist << [
-				'data' : it.lastTime,
+				'date' : DateFormatUtils.format(it.lastTime, 'yyyy-MM-dd'),
 				'mood' : it.moodType.ordinal(),
 				'message' : it.message
 			]

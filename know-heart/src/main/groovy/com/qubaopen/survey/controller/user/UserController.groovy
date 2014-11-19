@@ -175,8 +175,10 @@ class UserController extends AbstractBaseController<User, Long> {
 		
 		def userThird, user, userInfo
 		userThird = thirdUserRepository.findByToken(token)
+		def register = false
 		// 第一次登陆
 		if (!userThird) {
+			register = true
 			
 			user = new User(
 				activated : true,
@@ -246,7 +248,8 @@ class UserController extends AbstractBaseController<User, Long> {
 			'idCard' : user?.userIdCardBind?.userIDCard?.IDCard,
 			'birthday' : userInfo?.birthday,
 			'avatarPath' : userInfo?.avatarPath,
-			'signature' : userInfo?.signature
+			'signature' : userInfo?.signature,
+			'newUser' : register
 		]
 		
 	}

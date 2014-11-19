@@ -204,6 +204,9 @@ class UserController extends AbstractBaseController<User, Long> {
 			)
 			def userUdid = new UserUDID(
 				id : user.id,
+				idfa : idfa,
+				udid : udid,
+				imei : imei,
 				push : true,
 				startTime : DateCommons.String2Date('09:00','HH:mm'),
 				endTime : DateCommons.String2Date('22:00','HH:mm')

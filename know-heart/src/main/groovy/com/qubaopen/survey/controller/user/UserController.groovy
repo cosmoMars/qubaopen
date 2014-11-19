@@ -181,6 +181,10 @@ class UserController extends AbstractBaseController<User, Long> {
 		def register = false
 		// 第一次登陆
 		if (!userThird) {
+			if (type == null) {
+				return '{"success" : "0", "message" : "亲，平台出错啦"}'
+			}
+			
 			register = true
 			
 			user = new User(
@@ -234,11 +238,20 @@ class UserController extends AbstractBaseController<User, Long> {
 			userGoldRepository.save(userGold)
 			userUDIDRepository.save(userUdid)
 		} else {
+			if (nickName) {
+				userThird.nickName = nickName
+			}
+			if (avatarUrl) {
+				userThird.avatarUrl = avatarUrl
+			}
+			if (nickName || avatarUrl) {
+				thirdUserRepository.save(userThird)
+			}
 			user = userThird.user
-			userService.saveUserCode(user, udid, idfa, imei)
 			userInfo = userThird.user.userInfo
 		}
-		
+		model.addAttribute('currentUser', user)
+		userService.saveUserCode(user, udid, idfa, imei)
 		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(userThird.user, true)
 		return  [
 			'success' : '1',

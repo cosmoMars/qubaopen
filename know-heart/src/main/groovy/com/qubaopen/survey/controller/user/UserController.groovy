@@ -171,6 +171,9 @@ class UserController extends AbstractBaseController<User, Long> {
 		@RequestParam(required = false) String nickName,
 		@RequestParam(required = false) String avatarUrl,
 		@RequestParam(required = false) Integer type,
+		@RequestParam(required = false) String idfa,
+		@RequestParam(required = false) String udid,
+		@RequestParam(required = false) String imei,
 		Model model, HttpSession session) {
 		
 		def userThird, user, userInfo
@@ -226,6 +229,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			userUDIDRepository.save(userUdid)
 		} else {
 			user = userThird.user
+			userService.saveUserCode(user, udid, idfa, imei)
 			userInfo = userThird.user.userInfo
 		}
 		

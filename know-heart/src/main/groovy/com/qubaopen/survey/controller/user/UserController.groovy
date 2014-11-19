@@ -192,8 +192,11 @@ class UserController extends AbstractBaseController<User, Long> {
 			def tempName = ''
 			switch (type) {
 				case 0 : tempName = "微博用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+					break
 				case 1 : tempName = "微信用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+					break
 				case 2 : tempName = "QQ用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+					break
 			}
 			
 			userInfo = new UserInfo(

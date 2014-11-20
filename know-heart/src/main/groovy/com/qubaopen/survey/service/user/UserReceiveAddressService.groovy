@@ -166,6 +166,8 @@ public class UserReceiveAddressService {
 						data << ["thirdCode":codeArray.get(2)]
 				}
 				content << data
+			}else {
+				content << data
 			}
 		}
 

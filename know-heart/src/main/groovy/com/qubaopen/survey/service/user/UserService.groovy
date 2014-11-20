@@ -371,11 +371,11 @@ public class UserService {
 	 */
 	@Transactional
 	getIndexInfo(User user) {
-		selfService.calcUserAnalysisRadio(user)
-		selfService.calcUserMentalStatus(user)
+		def userInfo = userInfoRepository.findOne(user.id)
+		selfService.calcUserAnalysisRadio(userInfo)
+		selfService.calcUserMentalStatus(userInfo)
 		
 		def userMood = userMoodRepository.findLastByTime(user)
-	    def userInfo = userInfoRepository.findOne(user.id)
 		
 		def userRewards = rewardActivityRecordRepository.findAll(
 			[

@@ -1,13 +1,12 @@
 package com.qubaopen.survey.service.self
 
 import java.text.DecimalFormat
-import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 import javax.persistence.Query
 
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -17,23 +16,22 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfQuestion
 import com.qubaopen.survey.entity.self.SelfQuestionOption
-import com.qubaopen.survey.entity.self.SelfUserQuestionnaire;
+import com.qubaopen.survey.entity.self.SelfUserQuestionnaire
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserSelfTitle
 import com.qubaopen.survey.entity.vo.QuestionVo
 import com.qubaopen.survey.repository.self.SelfQuestionOptionRepository
 import com.qubaopen.survey.repository.self.SelfQuestionOrderRepository
 import com.qubaopen.survey.repository.self.SelfQuestionRepository
 import com.qubaopen.survey.repository.self.SelfRepository
-import com.qubaopen.survey.repository.self.SelfResultOptionRepository;
 import com.qubaopen.survey.repository.self.SelfSpecialInsertRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
-import com.qubaopen.survey.repository.user.UserIDCardBindRepository;
+import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
-import com.qubaopen.survey.repository.user.UserRepository
-import com.qubaopen.survey.repository.user.UserSelfTitleRepository;
-import com.qubaopen.survey.service.user.UserIDCardBindService;
-import com.qubaopen.survey.utils.DateCommons;
+import com.qubaopen.survey.repository.user.UserSelfTitleRepository
+import com.qubaopen.survey.service.user.UserIDCardBindService
+import com.qubaopen.survey.utils.DateCommons
 
 @Service
 public class SelfService {
@@ -404,11 +402,11 @@ public class SelfService {
 	 * @param user
 	 */
 	@Transactional
-	calcUserAnalysisRadio(User user) {
+	calcUserAnalysisRadio(UserInfo userInfo) {
 		
 		//用户已经做了的必做 选做的数量
-		int userDoMust= selfUserQuestionnaireRepository.findByAnalysis(user, true).size();
-		int userDoOther= selfUserQuestionnaireRepository.findByAnalysis(user, false).size();
+		int userDoMust= selfUserQuestionnaireRepository.findByAnalysis(new User(id : userInfo.id), true).size();
+		int userDoOther= selfUserQuestionnaireRepository.findByAnalysis(new User(id : userInfo.id), false).size();
 		
 		int userDone=userDoMust+userDoOther;
 		
@@ -428,7 +426,6 @@ public class SelfService {
 				maxScore_greaterThan : f
 			]			
 		)
-		def userInfo = user.userInfo
 		userInfo.resolution=f;
 		userInfo.userSelfTitle=userSelfTitle;
 		
@@ -447,9 +444,9 @@ public class SelfService {
 	 * @param user
 	 */
 	@Transactional
-	calcUserMentalStatus(User user) {
+	calcUserMentalStatus(UserInfo userInfo) {
 		
-		List<SelfUserQuestionnaire> list1=selfUserQuestionnaireRepository.findByMentalStatus(user);
+		List<SelfUserQuestionnaire> list1=selfUserQuestionnaireRepository.findByMentalStatus(new User(id : userInfo.id));
 		
 		StringBuilder sql
 		Query query
@@ -481,7 +478,7 @@ public class SelfService {
 			minusScore+=score
 		}
 		
-		def lastSuo=selfUserQuestionnaireRepository.findLastByTime(user)
+		def lastSuo=selfUserQuestionnaireRepository.findLastByTime(new User(id : userInfo.id))
 		
 		if(lastSuo!=null){
 			def differHour=DateCommons.getDifferHour(lastSuo.time,new Date()) / 24;
@@ -497,7 +494,6 @@ public class SelfService {
 		DecimalFormat df = new DecimalFormat("0.00")
 		String s = df.format(minusScore)
 		
-		def userInfo = user.userInfo
 		userInfo.deduction=s;
 		
 		userInfoRepository.save(userInfo);

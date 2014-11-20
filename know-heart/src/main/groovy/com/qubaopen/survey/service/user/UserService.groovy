@@ -390,7 +390,8 @@ public class UserService {
 			'userSelfTitle' : userInfo?.userSelfTitle?.name,
 			'deduction' : userInfo?.deduction,
 			'resolution' : userInfo?.resolution,
-			'message' : userMood?.message
+			'message' : userMood?.message,
+			'userSelfTitleId' : userInfo?.userSelfTitle?.id
 			]
 		
 		if (userRewards != null && userRewards.size() > 0) {

@@ -40,7 +40,7 @@ public class SelfQuestion extends AbstractPersistable<Long> {
 	private SelfQuestionType selfQuestionType;
 
 	/**
-	 * 问题类型  单选 SINGLE, 多选 MULTIPLE, 问答 QA, 排序 SORT, 打分 SCORE
+	 * 问题类型  单选 SINGLE, 多选 MULTIPLE, 问答 QA, 排序 SORT, 打分 SCORE, 多选问答 MULQA
 	 */
 	@Enumerated
 	private Type type;

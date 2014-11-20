@@ -385,7 +385,7 @@ public class UserService {
 		)
 		def reslut = [
 			'success' : '1',
-			'moodType' : userMood?.moodType.ordinal(),
+			'moodType' : userMood?.moodType?.ordinal(),
 			'lastTime' : userMood?.lastTime,
 			'userSelfTitle' : userInfo?.userSelfTitle?.name,
 			'deduction' : userInfo?.deduction,

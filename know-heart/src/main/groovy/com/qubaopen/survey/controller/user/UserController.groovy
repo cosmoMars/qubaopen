@@ -9,6 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestBody
@@ -28,8 +29,8 @@ import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserLog
 import com.qubaopen.survey.entity.user.UserLogType
 import com.qubaopen.survey.entity.user.UserUDID
-import com.qubaopen.survey.entity.user.UserThird.ThirdType
-import com.qubaopen.survey.repository.user.ThirdUserRepository
+import com.qubaopen.survey.entity.user.User.ThirdType;
+import com.qubaopen.survey.repository.user.UserThirdRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserLogRepository
@@ -77,7 +78,7 @@ class UserController extends AbstractBaseController<User, Long> {
 	UserUDIDRepository userUDIDRepository
 	
 	@Autowired
-	ThirdUserRepository thirdUserRepository
+	UserThirdRepository userThirdRepository
 
 	@Override
 	protected MyRepository<User, Long> getRepository() {
@@ -167,6 +168,7 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'thirdLogin', method = RequestMethod.POST)
+	@Transactional
 	thirdLogin(@RequestParam String token,
 		@RequestParam(required = false) String nickName,
 		@RequestParam(required = false) String avatarUrl,
@@ -177,19 +179,20 @@ class UserController extends AbstractBaseController<User, Long> {
 		Model model, HttpSession session) {
 		
 		def userThird, user, userInfo
-		userThird = thirdUserRepository.findByToken(token)
-		def register = false
+		if (type == null) {
+			return '{"success" : "0", "message" : "亲，平台出错啦"}'
+		}
+		// 通过token和类型查找用户
+		user = userRepository.findByTokenAndThirdType(token, ThirdType.values()[type])
+		def newUser = false
 		// 第一次登陆
-		if (!userThird) {
-			if (type == null) {
-				return '{"success" : "0", "message" : "亲，平台出错啦"}'
-			}
-			
-			register = true
+		if (!user) {
+			newUser = true
 			
 			user = new User(
-				activated : true,
-				third : true
+				token : token,
+				thirdType : ThirdType.values()[type],
+				activated : true
 			)
 			user = userRepository.save(user)
 
@@ -221,38 +224,33 @@ class UserController extends AbstractBaseController<User, Long> {
 			def userGold = new UserGold(
 				id : user.id
 			)
-			def thirdType
-			if (type != null) {
-				thirdType = ThirdType.values()[type]
-			}
-			
 			userThird = new UserThird(
 				id : user.id,
 				token : token,
 				nickName : nickName,
 				avatarUrl : avatarUrl,
-				thirdType : thirdType
+				thirdType : type
 			)
-			thirdUserRepository.save(userThird)
+			userThirdRepository.save(userThird)
 			userInfoRepository.save(userInfo)
 			userGoldRepository.save(userGold)
 			userUDIDRepository.save(userUdid)
 		} else {
-			if (nickName) {
-				userThird.nickName = nickName
-			}
-			if (avatarUrl) {
-				userThird.avatarUrl = avatarUrl
-			}
 			if (nickName || avatarUrl) {
-				thirdUserRepository.save(userThird)
+				userThird = userThirdRepository.findOne(user.id)
+				if (nickName) {
+					userThird.nickName = nickName
+				}
+				if (avatarUrl) {
+					userThird.avatarUrl = avatarUrl
+				}
+				userThirdRepository.save(userThird)
 			}
-			user = userThird.user
-			userInfo = userThird.user.userInfo
+			userInfo = user.userInfo
 		}
 		model.addAttribute('currentUser', user)
 		userService.saveUserCode(user, udid, idfa, imei)
-		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(userThird.user, true)
+		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
 		return  [
 			'success' : '1',
 			'message' : '登录成功',
@@ -272,7 +270,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			'birthday' : userInfo?.birthday,
 			'avatarPath' : userInfo?.avatarPath,
 			'signature' : userInfo?.signature,
-			'newUser' : register
+			'newUser' : newUser
 		]
 		
 	}

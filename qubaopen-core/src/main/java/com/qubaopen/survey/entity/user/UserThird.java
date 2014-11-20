@@ -1,6 +1,5 @@
 package com.qubaopen.survey.entity.user;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
@@ -25,7 +24,6 @@ public class UserThird extends AbstractBaseEntity2<Long>{
 	/**
 	 * token
 	 */
-	@Column(unique = true)
 	private String token;
 	
 	/**
@@ -41,11 +39,7 @@ public class UserThird extends AbstractBaseEntity2<Long>{
 	/**
 	 * 第三方类型
 	 */
-	private ThirdType thirdType;
-	
-	public enum ThirdType {
-		Sina, WeChat, Qzone
-	}
+	private Integer thirdType;
 
 	public String getToken() {
 		return token;
@@ -71,12 +65,12 @@ public class UserThird extends AbstractBaseEntity2<Long>{
 		this.avatarUrl = avatarUrl;
 	}
 
-	public ThirdType getThirdType() {
+	public Integer getThirdType() {
 		return thirdType;
 	}
 
-	public void setThirdType(ThirdType thirdType) {
+	public void setThirdType(Integer thirdType) {
 		this.thirdType = thirdType;
 	}
-	
+
 }

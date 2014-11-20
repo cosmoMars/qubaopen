@@ -61,9 +61,18 @@ public class User extends AbstractBaseEntity<Long> {
 	private UserIDCardBind userIdCardBind;
 	
 	/**
-	 * 是否第三方
+	 * 第三方token
 	 */
-	private boolean third;
+	private String token;
+	
+	/**
+	 * 第三方类型
+	 */
+	private ThirdType thirdType;
+	
+	public enum ThirdType {
+		Sina, WeChat, Qzone
+	}
 
 	public String getUserName() {
 		return userName;
@@ -121,12 +130,20 @@ public class User extends AbstractBaseEntity<Long> {
 		this.userIdCardBind = userIdCardBind;
 	}
 
-	public boolean isThird() {
-		return third;
+	public String getToken() {
+		return token;
 	}
 
-	public void setThird(boolean third) {
-		this.third = third;
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public ThirdType getThirdType() {
+		return thirdType;
+	}
+
+	public void setThirdType(ThirdType thirdType) {
+		this.thirdType = thirdType;
 	}
 
 }

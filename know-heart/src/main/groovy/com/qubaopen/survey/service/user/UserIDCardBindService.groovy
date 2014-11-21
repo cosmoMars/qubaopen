@@ -82,7 +82,7 @@ public class UserIDCardBindService {
 					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}
 				if ('0' == mapStatus && '1' == result) {
-					return '{"success" : "0", "message" : "库中无此号,请到户籍所在地进行核实!"}'
+					return '{"success" : "0", "message" : "err205"}'
 				}
 				if ('0' == mapStatus && '1' != result) {
 					userIdCard = new UserIDCard(
@@ -149,7 +149,7 @@ public class UserIDCardBindService {
 					return '{"success" : "0", "message" : "err200"}' // 绑定失败
 				}
 				if ('0' == mapStatus && '1' == result) {
-					return '{"success" : "0", "message" : "库中无此号,请到户籍所在地进行核实!"}'
+					return '{"success" : "0", "message" : "err205"}'
 				}
 				if ('0' == mapStatus && '1' != result) {
 					userIdCard = new UserIDCard(

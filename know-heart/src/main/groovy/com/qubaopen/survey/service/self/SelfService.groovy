@@ -488,6 +488,8 @@ public class SelfService {
 			}else if(differHour >=7 ){
 				minusScore+=10;
 			}
+		} else {
+			minusScore = 20
 		}
 		
 		

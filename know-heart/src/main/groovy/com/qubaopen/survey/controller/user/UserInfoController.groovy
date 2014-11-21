@@ -172,6 +172,8 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		@RequestMapping(value = 'submitAgeAndSex', method = RequestMethod.POST)		
 		submitAgeAndSex(@RequestParam(required =false) Integer age, @RequestParam(required = false) Integer sex, @ModelAttribute('currentUser') User user) {
 			
+			def userInfo = userInfoRepository.findOne(user.id)
+			
 			if (age != null) {
 //				if (age < 12 || age > 99) {
 //					return '{"success" : "0", "message" : "err017"}'
@@ -180,23 +182,23 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 				c.setTime new Date()
 				def year = c.get(Calendar.YEAR) - age
 				
-				user.userInfo.birthday = Date.parse('yyyy-MM-dd', "$year-01-01")
+				userInfo.birthday = Date.parse('yyyy-MM-dd', "$year-01-01")
 	
 			}
 			if (sex != null) {
 				switch (sex) {
 					case 0 :
-						user.userInfo.sex = UserInfo.Sex.MALE
+						userInfo.sex = UserInfo.Sex.MALE
 						break
 					case 1 :
-						user.userInfo.sex = UserInfo.Sex.FEMALE
+						userInfo.sex = UserInfo.Sex.FEMALE
 						break
 					case 2 :
-						user.userInfo.sex = UserInfo.Sex.OTHER
+						userInfo.sex = UserInfo.Sex.OTHER
 						break
 				}
 			}
-			userInfoRepository.save(user.userInfo)
+			userInfoRepository.save(userInfo)
 			'{"success" : "1"}'
 		}
 		

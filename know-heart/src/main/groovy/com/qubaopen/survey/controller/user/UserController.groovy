@@ -1,6 +1,7 @@
 package com.qubaopen.survey.controller.user
 
 import static com.qubaopen.survey.utils.ValidateUtil.*
+import groovy.transform.AutoClone;
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
@@ -34,10 +35,10 @@ import com.qubaopen.survey.repository.user.UserThirdRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.repository.user.UserLogRepository
-import com.qubaopen.survey.repository.user.UserMoodRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
 import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.repository.user.UserUDIDRepository
+import com.qubaopen.survey.service.SmsService;
 import com.qubaopen.survey.service.SmsServiceToken
 import com.qubaopen.survey.service.user.UserService
 import com.qubaopen.survey.utils.DateCommons
@@ -60,9 +61,6 @@ class UserController extends AbstractBaseController<User, Long> {
 	UserReceiveAddressRepository userReceiveAddressRepository
 
 	@Autowired
-	UserMoodRepository userMoodRepository
-	
-	@Autowired
 	UserLogRepository userLogRepository
 	
 	@Autowired
@@ -79,6 +77,9 @@ class UserController extends AbstractBaseController<User, Long> {
 	
 	@Autowired
 	UserThirdRepository userThirdRepository
+	
+	@Autowired
+	SmsService smsService
 
 	@Override
 	protected MyRepository<User, Long> getRepository() {
@@ -130,8 +131,7 @@ class UserController extends AbstractBaseController<User, Long> {
 
 			def userInfo = loginUser.userInfo,
 			userIdCardBind = loginUser.userIdCardBind,
-			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true),
-			userMood = userMoodRepository.getLastUserMood(loginUser.id)
+			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
 
 			return  [
 				'success' : '1',
@@ -183,7 +183,8 @@ class UserController extends AbstractBaseController<User, Long> {
 			return '{"success" : "0", "message" : "亲，平台出错啦"}'
 		}
 		// 通过token和类型查找用户
-		user = userRepository.findByTokenAndThirdType(token, ThirdType.values()[type])
+//		user = userRepository.findByTokenAndThirdType(token, ThirdType.values()[type])
+		user = userRepository.thirdLogin(token, ThirdType.values()[type])
 		def newUser = false
 		// 第一次登陆
 		if (!user) {
@@ -249,8 +250,11 @@ class UserController extends AbstractBaseController<User, Long> {
 			userInfo = user.userInfo
 		}
 		model.addAttribute('currentUser', user)
+		
+		def userIdCardBind = user.userIdCardBind,
+			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
 		userService.saveUserCode(user, udid, idfa, imei)
-		def userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
+		
 		return  [
 			'success' : '1',
 			'message' : '登录成功',
@@ -395,6 +399,11 @@ class UserController extends AbstractBaseController<User, Long> {
 		user.password = DigestUtils.md5Hex(newPwd)
 		userRepository.save(user)
 		'{"success" : "1"}'
+	}
+	@RequestMapping(value = 'refreshToken', method = RequestMethod.GET)
+	refreshToken() {
+		smsService.refreshToken()
+		
 	}
 
 }

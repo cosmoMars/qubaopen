@@ -21,6 +21,11 @@ public interface UserRepository extends MyRepository<User, Long> {
 	List<User> findAllUsers(Pageable pageable);
 	
 	User findByTokenAndThirdType(String token, ThirdType thirdType);
+	
+	@Query("from User u join fetch u.userInfo left join fetch u.userIdCardBind where u.token = :token and u.thirdType = :thirdType")
+	User thirdLogin(@Param("token") String token, @Param("thirdType") ThirdType thirdType);
 
+	@Query("from User u join fetch u.userInfo left join fetch u.userIdCardBind where u.id = :userId")
+	User thirdLogin(@Param("userId") long userId);
 }
 

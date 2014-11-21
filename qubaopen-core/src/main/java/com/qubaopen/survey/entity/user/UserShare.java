@@ -45,7 +45,7 @@ public class UserShare extends AbstractBaseEntity<Long> {
 	 * 分享来源 0分享软件 1奖品 2自测 3兴趣 4调研 5心理地图 6自测解析度称号
 	 */
 	public enum ShareOrigin {
-		SOFTWARE, REWARD, SELF, INTEREST, SURVEY, MINDMAP,USERSELFTITLE
+		SOFTWARE, REWARD, SELF, INTEREST, SURVEY, MINDMAP, USERSELFTITLE
 	}
 
 	/**

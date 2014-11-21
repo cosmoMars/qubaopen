@@ -383,6 +383,7 @@ public class UserService {
 				'rewardActivity.rewardType.rewardLevel.id_equal' : 100
 			]	
 		)
+		userInfo = userInfoRepository.findOne(user.id)
 		def reslut = [
 			'success' : '1',
 			'moodType' : userMood?.moodType?.ordinal(),

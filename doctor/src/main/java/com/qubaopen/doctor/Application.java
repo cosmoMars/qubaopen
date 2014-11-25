@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
@@ -65,15 +66,15 @@ public final class Application {
 		return new RestTemplate();
 	}
 	
-	@Bean
-	public DataSource dataSource() {
-		DriverManagerDataSource datasource = new DriverManagerDataSource();
-        datasource.setDriverClassName("com.mysql.jdbc.Driver");
-        datasource.setUrl("jdbc:mysql://10.0.0.88:3306/survey");
-        datasource.setUsername("root");
-        datasource.setPassword("qbp20130607");
-        return datasource;
-	}
+//	@Bean
+//	public DataSource dataSource() {
+//		DriverManagerDataSource datasource = new DriverManagerDataSource();
+//        datasource.setDriverClassName("com.mysql.jdbc.Driver");
+//        datasource.setUrl("jdbc:mysql://10.0.0.88:3306/survey");
+//        datasource.setUsername("root");
+//        datasource.setPassword("qbp20130607");
+//        return datasource;
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

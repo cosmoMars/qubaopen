@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -36,6 +38,7 @@ public class DoctorBooking extends AbstractBaseEntity<Long> {
 	 */
 	private String refusalReason;
 
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
 
 	private String quick;

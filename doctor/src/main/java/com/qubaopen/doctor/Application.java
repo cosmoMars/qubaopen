@@ -7,7 +7,7 @@ import javax.servlet.Filter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,7 +28,8 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 @EnableAutoConfiguration
 @EnableTransactionManagement(proxyTargetClass = true)
 @EntityScan("com.qubaopen.survey.entity")
-@ConditionalOnMissingBean(value=javax.sql.DataSource.class)
+//@ConditionalOnMissingBean(value=javax.sql.DataSource.class)
+@ConfigurationProperties(prefix="spring.datasource")
 public final class Application {
 
 	@Bean

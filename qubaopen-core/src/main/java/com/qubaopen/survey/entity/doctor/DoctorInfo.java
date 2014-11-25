@@ -88,6 +88,7 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	/**
 	 * 时间
 	 */
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
 
 	/**

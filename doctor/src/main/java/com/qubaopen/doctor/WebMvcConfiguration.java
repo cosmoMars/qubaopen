@@ -11,9 +11,11 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qubaopen.doctor.interceptor.LoginInterceptor;
 
 @Configuration
 public class WebMvcConfiguration {
@@ -44,6 +46,11 @@ public class WebMvcConfiguration {
 					List<HandlerMethodArgumentResolver> argumentResolvers) {
 
 				argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
+			}
+
+			@Override
+			public void addInterceptors(InterceptorRegistry registry) {
+				registry.addInterceptor(new LoginInterceptor());
 			}
 
 		};

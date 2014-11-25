@@ -11,18 +11,30 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.user.User;
 
 @Entity
 @Table(name = "doctor_booking")
 @Audited
-public class DotorBooking extends AbstractBaseEntity<Long> {
+public class DoctorBooking extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 6872015169540197635L;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User user;
 
-	private String reason;
+	/**
+	 * 求助原因
+	 */
+	private String helpReason;
+
+	/**
+	 * 拒绝原因
+	 */
+	private String refusalReason;
 
 	private Date time;
 
@@ -52,12 +64,28 @@ public class DotorBooking extends AbstractBaseEntity<Long> {
 		this.doctor = doctor;
 	}
 
-	public String getReason() {
-		return reason;
+	public User getUser() {
+		return user;
 	}
 
-	public void setReason(String reason) {
-		this.reason = reason;
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getHelpReason() {
+		return helpReason;
+	}
+
+	public void setHelpReason(String helpReason) {
+		this.helpReason = helpReason;
+	}
+
+	public String getRefusalReason() {
+		return refusalReason;
+	}
+
+	public void setRefusalReason(String refusalReason) {
+		this.refusalReason = refusalReason;
 	}
 
 	public Date getTime() {

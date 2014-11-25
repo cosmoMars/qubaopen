@@ -173,7 +173,7 @@ public class UserService {
 		// 判断用户是否存在
 		def user = userRepository.findByPhone(phone)
 		if (!activated && user) {
-			return '{"success" : "0", "message" : "err020"}'
+			return '{"success" : "0", "message" : "err006"}'
 		}
 		if (activated && !user) {
 			return '{"success" : "0", "message" : "err001"}'

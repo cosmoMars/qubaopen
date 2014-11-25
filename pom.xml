@@ -12,6 +12,9 @@
     <module>know-heart</module>
     <module>customer-system</module>
     <module>backend</module>
+   <!-- <module>know-heart2</module> 
+    <module>doctor1</module> -->
+    <module>doctor</module>
   </modules>
 
 </project>

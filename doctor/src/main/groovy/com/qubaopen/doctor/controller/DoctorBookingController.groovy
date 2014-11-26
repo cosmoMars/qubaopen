@@ -133,6 +133,7 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		if (booking) {
 			[
 				'success' : '1',
+				'userId' : booking?.user?.id,
 				'userName' : booking?.name,
 				'userSex' : booking?.sex?.ordinal(),
 				'birthday' : booking?.birthday,

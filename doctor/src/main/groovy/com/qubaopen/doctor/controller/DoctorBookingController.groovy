@@ -1,12 +1,17 @@
 package com.qubaopen.doctor.controller;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.SessionAttributes
 
@@ -15,6 +20,7 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.DoctorBookingRepository
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorBooking
+import com.qubaopen.survey.entity.user.User
 
 @RestController
 @RequestMapping('doctorBooking')
@@ -31,20 +37,67 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		return doctorBookingRepository;
 	}
 
-	@RequestMapping(value = 'retrieveBookingInfo', method = RequestMethod.GET)
-	retrieveBookingInfo(@ModelAttribute('currentDoctor') Doctor doctor) {
+	/**
+	 * @param doctor
+	 * @return
+	 * 获取预约信息
+	 */
+	@RequestMapping(value = 'retrieveBookingInfo', method = RequestMethod.POST)
+	retrieveBookingInfo(@RequestParam(required = false) Integer index,
+		@RequestParam(required = false) String idsStr,
+		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
+		Pageable pageable,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
-		def bookingList = doctorBookingRepository.findAll(
-			[
-				doctor_equal : doctor	
-			]
-		)
+		logger.trace('-- 获取预约信息 --')
+		
+		def ids = []
+		if (idsStr) {
+			def tempIds = idsStr.split(',')
+			tempIds.each {
+				ids << Long.valueOf(it.trim())
+			}
+		}
+		def bookingList, nowDate = new Date(), age
+		def c = Calendar.getInstance()
+		c.setTime(nowDate)
+		c.add(Calendar.DATE, -7)
+		age = c.getTime() as Date
+		
+		if (index != null) {
+			def status = DoctorBooking.Status.values()[index]
+			if (idsStr) {
+				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, status, age, ids, pageable)
+			} else {
+				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, status, age, pageable)
+			}
+//			bookingList = doctorBookingRepository.findAll(
+//				[
+//					doctor_equal : doctor,
+//					status_equal : status,
+//					time_greaterThanOrEqualTo : age
+//				], pageable
+//			)
+		} else {
+			if (idsStr) {
+				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, age, ids, pageable)
+			} else {
+				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, age, pageable)
+			}
+//			bookingList = doctorBookingRepository.findAll(
+//				[
+//					doctor_equal : doctor,
+//					time_greaterThanOrEqualTo : age
+//				], pageable
+//			
+//			)
+		}
 		
 		def data = []
 		bookingList.each {
 			data << [
 				'userId' : it.user?.id,
-				'userName' : it.user?.userInfo?.name,
+				'userName' : it?.name,
 				'helpReason' : it.refusalReason,
 				'refusalReason' : it.refusalReason,
 				'time' : it.time,
@@ -54,12 +107,22 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 				'money' : it.money
 			]
 		}
+		def more = true
+		if (bookingList.size() < pageable.pageSize) {
+			more = false
+		}
 		[
 			'success' : '1',
-			'data' : data	
+			'data' : data,
+			'more' : more
 		]
 	}
 	
+	/**
+	 * @param id
+	 * @return
+	 * 获取详细信息
+	 */
 	@RequestMapping(value = 'retrieveDetailInfo/{id}', method = RequestMethod.GET)
 	retrieveDetailInfo(@PathVariable('id') Long id) {
 		
@@ -70,14 +133,98 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		if (booking) {
 			[
 				'success' : '1',
-				'userName' : booking.user?.userInfo?.name,
-				'userSex' : booking.user?.userInfo?.sex?.ordinal(),
-				'birthday' : booking.user?.userInfo?.birthday,
-				'helpReason' : booking.helpReason
+				'userName' : booking?.name,
+				'userSex' : booking?.sex?.ordinal(),
+				'birthday' : booking?.birthday,
+				'profession' : booking?.profession,
+				'city' : booking?.city,
+				'married' : booking?.married,
+				'haveChildren' : booking?.haveChildren,
+				'helpReason' : booking?.helpReason,
+				'otherProblem' : booking?.otherProblem,
+				'treatmented' : booking?.treatmented,
+				'haveConsulted' : booking?.haveConsulted
 			]
 		} else {
 			'{"success" : "0"}'
 		}
 	}
 	
+	@RequestMapping(value = 'retrieveHistory', method = RequestMethod.POST)
+	retrieveHistory(@RequestParam(required = false) Long userId,
+		@RequestParam(required = false) String idsStr,
+		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.ASC)
+		Pageable pageable,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
+		
+		logger.trace('-- 查询历史 --')
+		
+		def ids = [], bookingList
+		if (idsStr) {
+			def tempIds = idsStr.split(',')
+			tempIds.each {
+				ids << Long.valueOf(it.trim())
+			}
+		}
+		if (idsStr) {
+			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), DoctorBooking.Status.Consulted, ids, pageable)
+		} else {
+			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), DoctorBooking.Status.Consulted, pageable)
+		}
+		
+//		bookingList = doctorBookingRepository.findAll(
+//			[
+//				doctor_equal : doctor,
+//				user_equal : new User(id : userId),
+//				status_equal : DoctorBooking.Status.Consulted
+//			], pageable
+//		)
+		def data = []
+		bookingList.each {
+			data << [
+				'userId' : it.user?.id,
+				'userName' : it?.name,
+				'helpReason' : it.refusalReason,
+				'refusalReason' : it.refusalReason,
+				'time' : it.time,
+				'quick' : it.quick,
+				'consultType' : it.consultType?.ordinal(),
+				'status' : it.status?.ordinal(),
+				'money' : it.money
+			]
+		}
+		def more = true
+		if (bookingList.size() < pageable.pageSize) {
+			more = false
+		}
+		[
+			'success' : '1',
+			'data' : data,
+			'more' : more
+		]
+	}
+	
+		
+	@RequestMapping(value = 'retrieveBookingList', method = RequestMethod.GET)
+	retrieveBookingList(@RequestParam(required = false) Integer month, @ModelAttribute('currentDoctor') Doctor doctor) {
+
+		logger.trace('-- 订单日历 --')
+		
+		if (month == null) {
+			month = new Date().getMonth() + 1
+		}
+		def bookingList = doctorBookingRepository.retrieveBookingByMonth(doctor, month)		
+		
+		def data = []
+		bookingList.each {
+			data << [
+				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+				'consultType' : it?.consultType?.ordinal()
+			]
+		}
+		[
+			'success' : '1',
+			'data' : data
+		]
+	}
 }

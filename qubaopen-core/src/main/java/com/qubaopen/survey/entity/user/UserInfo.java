@@ -77,10 +77,10 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 		A, B, O, AB, OTHER
 	}
 
-//	@Lob
-//	@Basic(fetch = FetchType.LAZY)
-//	@JsonIgnore
-//	private byte[] avatar;
+	// @Lob
+	// @Basic(fetch = FetchType.LAZY)
+	// @JsonIgnore
+	// private byte[] avatar;
 	/**
 	 * 头像
 	 */
@@ -141,22 +141,37 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	 * 向好友公开测试答案
 	 */
 	private boolean publicAnswersToFriend;
-	
+
 	/**
 	 * 解析度
 	 */
 	private String resolution;
-	
+
 	/**
 	 * 用户
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private UserSelfTitle userSelfTitle;
-	
+
 	/**
-	 * 心情指数  扣分
+	 * 心情指数 扣分
 	 */
 	private String deduction;
+
+	/**
+	 * 结婚
+	 */
+	private boolean married;
+
+	/**
+	 * 有孩纸
+	 */
+	private boolean haveChildren;
+
+	/**
+	 * 职业
+	 */
+	private String profession;
 
 	public User getUser() {
 		return user;
@@ -325,5 +340,29 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	public void setDeduction(String deduction) {
 		this.deduction = deduction;
 	}
-	
+
+	public boolean isMarried() {
+		return married;
+	}
+
+	public void setMarried(boolean married) {
+		this.married = married;
+	}
+
+	public boolean isHaveChildren() {
+		return haveChildren;
+	}
+
+	public void setHaveChildren(boolean haveChildren) {
+		this.haveChildren = haveChildren;
+	}
+
+	public String getProfession() {
+		return profession;
+	}
+
+	public void setProfession(String profession) {
+		this.profession = profession;
+	}
+
 }

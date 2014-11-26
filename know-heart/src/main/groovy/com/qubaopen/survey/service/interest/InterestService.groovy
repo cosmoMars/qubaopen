@@ -121,7 +121,7 @@ public class InterestService {
 		def user = new User(id : userId),
 			interestList = []
 		def filter = [ user : user, typeId : typeId, pageable : pageable, ids : ids],
-			result = interestRepository.findByFilters(filter) as Map
+			result = interestRepository.findByNewFilters(filter) as Map
 		interestList = result.get('interests') as List
 		def lastPage = false
 		if (interestList.size() < pageable.getPageSize()) {

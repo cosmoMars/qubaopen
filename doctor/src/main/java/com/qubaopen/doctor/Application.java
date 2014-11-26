@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.Filter;
-import javax.sql.DataSource;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -30,8 +27,6 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 @EnableAutoConfiguration
 @EnableTransactionManagement(proxyTargetClass = true)
 @EntityScan("com.qubaopen.survey.entity")
-//@ConditionalOnMissingBean(value=javax.sql.DataSource.class)
-//@ConfigurationProperties(prefix="spring.datasource")
 public final class Application {
 
 	@Bean

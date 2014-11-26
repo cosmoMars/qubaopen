@@ -49,6 +49,18 @@
       <version>2.3.3</version>
     </dependency>
     
+    <!-- cors-filter -->
+    <dependency>
+      <groupId>org.ebaysf.web</groupId>
+      <artifactId>cors-filter</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+   <!--  <dependency>
+      <groupId>com.thetransactioncompany</groupId>
+      <artifactId>java-property-utils</artifactId>
+      <version>1.9.1</version>
+    </dependency> -->
+    
     <!-- log -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

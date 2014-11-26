@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qubaopen.survey.entity.user.User;
+import com.qubaopen.survey.entity.doctor.Doctor;
 
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -29,8 +29,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 		}
 
 		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("currentDoctor");
-		if (null == user) {
+		Doctor doctor = (Doctor) session.getAttribute("currentDoctor");
+		if (null == doctor) {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter writer = response.getWriter();

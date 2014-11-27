@@ -476,6 +476,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			
 			request.setAttribute('map', result)
 			request.getRequestDispatcher("http://10.0.0.8/doctor/web/index.html")
+			return result
 		}
 
 		'{"success" : "0", "message": "亲，您输入的帐号或密码有误哟！"}'

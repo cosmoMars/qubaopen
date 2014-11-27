@@ -28,6 +28,12 @@ public class UserHelpCommentGoodController extends AbstractBaseController<UserHe
 		return userHelpCommentGoodRepository;
 	}
 
+	/**
+	 * @param commentId
+	 * @param user
+	 * @return
+	 * 点赞
+	 */
 	@RequestMapping(value = 'commentGood', method = RequestMethod.POST)
 	commentGood(@RequestParam(required = false) Long commentId, @ModelAttribute('currentUser') User user) {
 		
@@ -36,7 +42,8 @@ public class UserHelpCommentGoodController extends AbstractBaseController<UserHe
 				good = userHelpCommentGoodRepository.findByUserAndUserHelpComment(user, userHelpComment)
 			
 			if (good) {
-				return '{"success" : "0", "message" : "已评价"}'
+				userHelpCommentGoodRepository.delete(good)
+				return '{"success" : "1"}'
 			}
 			def userHelpCommentGood = new UserHelpCommentGood(
 				user : user,

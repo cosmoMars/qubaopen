@@ -46,6 +46,11 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 	}
 	
 	
+	/**
+	 * @param doctor
+	 * @return
+	 * 获取医师信息
+	 */
 	@RequestMapping(value = 'retrieveDoctorInfo', method = RequestMethod.GET)
 	retrieveDoctorInfo(@ModelAttribute('currentDoctor') Doctor doctor) {
 		
@@ -79,6 +84,26 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		]
 	}
 	
+	/**
+	 * @param name
+	 * @param sex
+	 * @param birthday
+	 * @param experience
+	 * @param field
+	 * @param qq
+	 * @param consultType
+	 * @param targetUser
+	 * @param genre
+	 * @param time
+	 * @param quick
+	 * @param introduce
+	 * @param avatar
+	 * @param record
+	 * @param doctor
+	 * @param request
+	 * @return
+	 * 修改医师信息
+	 */
 	@Transactional
 	@RequestMapping(value = 'modifyDoctorInfo', method = RequestMethod.POST, consumes = 'multipart/form-data')
 	modifyDoctorInfo(@RequestParam(required = false) String name,

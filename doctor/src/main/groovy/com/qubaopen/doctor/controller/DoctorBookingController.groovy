@@ -151,6 +151,15 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		}
 	}
 	
+	/**
+	 * @param userId
+	 * @param idsStr
+	 * @param pageable
+	 * @param doctor
+	 * @return
+	 * 
+	 * 获取历史
+	 */
 	@RequestMapping(value = 'retrieveHistory', method = RequestMethod.POST)
 	retrieveHistory(@RequestParam(required = false) Long userId,
 		@RequestParam(required = false) String idsStr,
@@ -206,6 +215,12 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 	}
 	
 		
+	/**
+	 * @param month
+	 * @param doctor
+	 * @return
+	 * 日历列表
+	 */
 	@RequestMapping(value = 'retrieveBookingList', method = RequestMethod.GET)
 	retrieveBookingList(@RequestParam(required = false) Integer month, @ModelAttribute('currentDoctor') Doctor doctor) {
 
@@ -219,7 +234,7 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		def data = []
 		bookingList.each {
 			data << [
-				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd HH:mm'),
 				'consultType' : it?.consultType?.ordinal()
 			]
 		}

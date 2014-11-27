@@ -55,11 +55,11 @@
       <artifactId>cors-filter</artifactId>
       <version>1.0.1</version>
     </dependency>
-    <dependency>
+  <!--   <dependency>
       <groupId>com.thetransactioncompany</groupId>
       <artifactId>java-property-utils</artifactId>
       <version>1.9.1</version>
-    </dependency>
+    </dependency> -->
     
     <!-- log -->
     <dependency>

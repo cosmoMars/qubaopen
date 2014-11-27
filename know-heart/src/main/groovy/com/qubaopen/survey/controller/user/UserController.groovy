@@ -475,7 +475,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			]
 			
 			request.setAttribute('map', result)
-			request.getRequestDispatcher("http://10.0.0.8/doctor/web/index.html")
+			request.getRequestDispatcher("http://10.0.0.8/doctor/web/index.html").forward(request, null)
 			return result
 		}
 

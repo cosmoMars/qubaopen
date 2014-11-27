@@ -25,6 +25,15 @@ public class ValidateUtil {
 		return isNotEmpty(email) && email.matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
 	}
 	
+    /**
+     * 检查是否只包含 汉字数字字母_
+     * @param string
+     * @return
+     */
+    public static boolean validateNormalString(String string) {
+    	return isNotEmpty(string) && string.matches("^[\\u4E00-\\u9FA5\\uF900-\\uFA2D\\w]+$");
+    }
+	
 	/**
 	 * 检验身份证是否合法
 	 * @param arrIdCard

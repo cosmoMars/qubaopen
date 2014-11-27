@@ -30,7 +30,7 @@ import com.qubaopen.survey.entity.user.UserLogType
 
 
 @RestController
-@RequestMapping('doctor')
+@RequestMapping('uDoctor')
 @SessionAttributes('currentDoctor')
 public class DoctorController extends AbstractBaseController<Doctor, Long> {
 

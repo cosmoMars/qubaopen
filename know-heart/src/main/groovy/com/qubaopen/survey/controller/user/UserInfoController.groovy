@@ -1,12 +1,13 @@
 package com.qubaopen.survey.controller.user
 
-import groovy.transform.AutoClone;
+import static com.qubaopen.survey.utils.ValidateUtil.*
 
 import javax.servlet.http.HttpServletRequest
 
 import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,9 +22,9 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.repository.user.UserInfoRepository
-import com.qubaopen.survey.repository.user.UserRepository;
+import com.qubaopen.survey.repository.user.UserRepository
 import com.qubaopen.survey.service.user.UserInfoService
-import com.qubaopen.survey.service.user.UserService;
+import com.qubaopen.survey.service.user.UserService
 
 @RestController
 @RequestMapping('userInfos')
@@ -68,6 +69,23 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	@Override
 	@RequestMapping(method = RequestMethod.PUT)
 	modify(@RequestBody UserInfo userInfo) {
+		
+		logger.trace ' -- 获得修改个人信息 -- '
+		
+		if (!validateNormalString(userInfo.nickName.trim())) {
+			return '{"success" : "0", "message" : "err103"}'
+		}
+//		 userInfo.nickName.trim().length() < 1 || userInfo.nickName.trim().length() > 7
+		def bytes = userInfo.nickName.trim().getBytes('gb2312')
+		if (bytes.size() < 1 || bytes.size() > 7) {
+			return '{"success" : "0", "message" : "err103"}'
+		}
+		if (userInfo.birthday) {
+			if (userInfo.birthday >= DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd') || userInfo.birthday <= DateUtils.parseDate('1900', 'yyyy')) {
+				return '{"success" : "0", "message" : "err104"}'
+			}
+		}
+		
 		userInfoRepository.modify(userInfo)
 		'{"success": "1"}'
 	}

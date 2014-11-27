@@ -162,26 +162,28 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			doctorInfo.introduce = introduce
 		}
 		if (avatar) {
-			def file = new File("${request.getServletContext().getRealPath('/')}doctor");
+			def doctorDir = 'doctorDir'
+			def file = new File("${request.getServletContext().getRealPath('/')}$doctorDir");
 			if (!file.exists() && !file.isDirectory()) {
 				file.mkdir()
 			}
 			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
-				avatarPath = "${request.getServletContext().getRealPath('/')}doctor/$fileName"
+				avatarPath = "${request.getServletContext().getRealPath('/')}$doctorDir/$fileName"
 			
 			saveFile(avatar.bytes, avatarPath)
-			doctorInfo.avatarPath = "/doctor/$fileName"
+			doctorInfo.avatarPath = "/$doctorDir/$fileName"
 		}
 		if (record) {
-			def file = new File("${request.getServletContext().getRealPath('/')}record");
+			def recordDir = 'recordDir'
+			def file = new File("${request.getServletContext().getRealPath('/')}$recordDir");
 			if (!file.exists() && !file.isDirectory()) {
 				file.mkdir()
 			}
 			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
-				recordPath = "${request.getServletContext().getRealPath('/')}record/$fileName"
+				recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
 			
 			saveFile(record.bytes, recordPath)
-			doctorInfo.recordPath = "/record/$fileName"
+			doctorInfo.recordPath = "/$recordDir/$fileName"
 		}
 		doctorInfoRepository.save(doctorInfo)
 		'{"success": "1"}'

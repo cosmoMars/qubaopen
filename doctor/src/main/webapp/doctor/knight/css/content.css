@@ -1,0 +1,10 @@
+/*两端对齐 导航 去掉min width*/
+@media  {
+    .nav-justified > li {
+        display: table-cell;
+        width: 1%;
+    }
+    .nav-justified > li > a {
+        margin-bottom: 0;
+    }
+}

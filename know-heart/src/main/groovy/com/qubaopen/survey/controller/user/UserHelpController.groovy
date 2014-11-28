@@ -43,33 +43,54 @@ public class UserHelpController extends AbstractBaseController<UserHelp, Long> {
 	}
 	
 	
+	/**
+	 * @param content
+	 * @param user
+	 * @return
+	 * 添加求助言论
+	 */
 	@RequestMapping(value = 'addHelp', method = RequestMethod.POST)
 	addHelp(@RequestParam(required = false) String content, @ModelAttribute('currentUser') User user) {
 		
-		if (content) {
-			def userHelp = new UserHelp (
-				user : user,
-				time : new Date(),
-				content : content
-			)
-			userHelpRepository.save(userHelp)
-			'{"success" : "1"}'
-		} else {
-			'{"success" : "0", "message" : "没有内容"}'
+		logger.trace('-- 添加求助 --')
+		
+		if (!content) {
+			return '{"success" : "0", "message" : "没有内容"}'
 		}
+		def userHelp = new UserHelp (
+			user : user,
+			time : new Date(),
+			content : content.trim()
+		)
+		userHelpRepository.save(userHelp)
+		'{"success" : "1"}'
 	}
 	
+	/**
+	 * @param user
+	 * @param self
+	 * @param pageable
+	 * @return
+	 * 获取求助信息
+	 */
 	@RequestMapping(value = 'retrieveHelpComment', method = RequestMethod.GET)
 	retrieveHelpComment(@ModelAttribute('currentUser') User user,
+		@RequestParam(required = false) Boolean self,
 		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable) {
-
-		def helps = userHelpRepository.findAll(
-			[
-				user_equal : user	
-			], pageable
-		)
 		
+		logger.trace('-- 获取求助信息 --')
+		
+		def helps
+		if (self) {
+			helps = userHelpRepository.findAll(
+				[
+					user_equal : user
+				], pageable
+			)
+		} else {
+			helps = userHelpRepository.findAll(pageable)
+		}
 		def data = []
 		helps.each {
 			def comments = userHelpCommentRepository.findByUserHelp(it)

@@ -24,7 +24,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		
 		System.out.println(request.getSession().getId() + "-------------------------------");
 
-		if (request.getRequestURI().contains("uDoctor")) {
+		if (request.getRequestURI().contains("uDoctor") || request.getRequestURI().contains("web")) {
 			return true;
 		}
 

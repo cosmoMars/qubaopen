@@ -1,0 +1,87 @@
+body {
+    font-family: "微软雅黑",serif;
+}
+
+
+/*首页 内容*/
+.marketing{
+    margin-top: 100px;
+    min-height: 780px;
+}
+
+::selection{
+    background-color : #f3542d
+}
+
+/* navbar 自定义导航栏 */
+
+
+.navbar-zhixin{
+    background-color: #f3542d;
+}
+
+.navbar-zhixin .navbar-toggle:hover,
+.navbar-zhixin .navbar-toggle:focus {
+    background-color: #ddd;
+}
+.navbar-zhixin .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+
+.navbar-zhixin a{
+    color: #fff;
+    text-decoration: none;
+}
+
+.navbar-zhixin a:hover,
+.navbar-zhixin a:focus {
+    color: #aaa;
+    text-decoration: underline;
+}
+
+/*button 自定义按钮*/
+.btn-zhixin {
+    color: #fff;
+    background-color: #f3542d;
+    border-color: #e7502b;
+}
+.btn-zhixin:hover,
+.btn-zhixin:focus,
+.btn-zhixin.focus,
+.btn-zhixin:active,
+.btn-zhixin.active,
+.open > .dropdown-toggle.btn-zhixin {
+    color: #fff;
+    background-color: #e24e2a;
+    border-color: #c94525;
+}
+.btn-zhixin:active,
+.btn-zhixin.active,
+.open > .dropdown-toggle.btn-zhixin {
+    background-image: none;
+}
+.btn-zhixin.disabled,
+.btn-zhixin[disabled],
+fieldset[disabled] .btn-zhixin,
+.btn-zhixin.disabled:hover,
+.btn-zhixin[disabled]:hover,
+fieldset[disabled] .btn-zhixin:hover,
+.btn-zhixin.disabled:focus,
+.btn-zhixin[disabled]:focus,
+fieldset[disabled] .btn-zhixin:focus,
+.btn-zhixin.disabled.focus,
+.btn-zhixin[disabled].focus,
+fieldset[disabled] .btn-zhixin.focus,
+.btn-zhixin.disabled:active,
+.btn-zhixin[disabled]:active,
+fieldset[disabled] .btn-zhixin:active,
+.btn-zhixin.disabled.active,
+.btn-zhixin[disabled].active,
+fieldset[disabled] .btn-zhixin.active {
+    background-color: #f3542d;
+    border-color: #e7502b;
+}
+.btn-zhixin .badge {
+    color: #f3542d;
+    background-color: #fff;
+}

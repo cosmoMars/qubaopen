@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-import com.qubaopen.doctor.repository.DoctorCaptchaLogRepository
-import com.qubaopen.doctor.repository.DoctorCaptchaRepository
-import com.qubaopen.doctor.repository.DoctorInfoRepository
-import com.qubaopen.doctor.repository.DoctorRepository
-import com.qubaopen.doctor.repository.DoctorUdidRepository
+import com.qubaopen.doctor.repository.doctor.DoctorCaptchaLogRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorCaptchaRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorUdidRepository;
 import com.qubaopen.doctor.utils.DateCommons
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorCaptcha

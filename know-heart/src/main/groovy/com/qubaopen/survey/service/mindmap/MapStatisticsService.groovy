@@ -635,6 +635,7 @@ public class MapStatisticsService {
 				'lock' : false
 			]
 		} else if (specialMap && specialMapRecords.size() < 7) {
+			def tip = '亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！X天后就有惊喜~ '
 			data << [
 				'groupId' : specialMap?.self?.selfGroup?.id,
 				'mapTitle' : specialMap?.self?.title,
@@ -648,7 +649,8 @@ public class MapStatisticsService {
 				'graphicsType' : specialMap?.self?.graphicsType?.id,
 				'special' : true,
 				'lock' : true,
-				'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
+//				'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
+				'tips' : tip
 			]
 		}
 		[

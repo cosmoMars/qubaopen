@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-import com.qubaopen.doctor.repository.DoctorIdCardBindRepository;
-import com.qubaopen.doctor.repository.DoctorIdCardLogRepository;
-import com.qubaopen.doctor.repository.UserIdCardRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorIdCardLogRepository;
+import com.qubaopen.doctor.repository.user.UserIdCardRepository;
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorIdCardBind;
 import com.qubaopen.survey.entity.doctor.DoctorIdCardLog;

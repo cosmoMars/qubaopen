@@ -654,7 +654,7 @@ public class MapStatisticsService {
 		[
 			'success' : '1',
 			'message' : '成功',
-			'special' : specialSelf.id,
+			'specialId' : specialSelf.id,
 			'userId' : user.id,
 			'data' : data
 		]

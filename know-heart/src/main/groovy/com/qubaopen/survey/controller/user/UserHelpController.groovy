@@ -74,8 +74,8 @@ public class UserHelpController extends AbstractBaseController<UserHelp, Long> {
 	 * 获取求助信息
 	 */
 	@RequestMapping(value = 'retrieveHelpComment', method = RequestMethod.GET)
-	retrieveHelpComment(@ModelAttribute('currentUser') User user,
-		@RequestParam(required = false) Boolean self,
+	retrieveHelpComment(@RequestParam(required = false) Boolean self,
+		@ModelAttribute('currentUser') User user,
 		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable) {
 		

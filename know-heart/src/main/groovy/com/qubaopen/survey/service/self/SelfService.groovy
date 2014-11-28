@@ -478,7 +478,7 @@ public class SelfService {
 			minusScore+=score
 		}
 		
-		def lastSuo=selfUserQuestionnaireRepository.findLastByTime(new User(id : userInfo.id))
+		def lastSuo=selfUserQuestionnaireRepository.findLastByTimeAndSelfManagementType(new User(id : userInfo.id))
 		
 		if(lastSuo!=null){
 			def differHour=DateCommons.getDifferHour(lastSuo.time,new Date()) / 24;

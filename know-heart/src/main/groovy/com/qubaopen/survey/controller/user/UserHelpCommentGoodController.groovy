@@ -1,12 +1,14 @@
 package com.qubaopen.survey.controller.user;
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -20,6 +22,8 @@ import com.qubaopen.survey.repository.user.UserHelpCommentGoodRepository
 @SessionAttributes('currentUser')
 public class UserHelpCommentGoodController extends AbstractBaseController<UserHelpCommentGood, Long> {
 
+	private static Logger logger = LoggerFactory.getLogger(UserHelpCommentGoodController.class)
+	
 	@Autowired
 	UserHelpCommentGoodRepository userHelpCommentGoodRepository
 	
@@ -36,6 +40,8 @@ public class UserHelpCommentGoodController extends AbstractBaseController<UserHe
 	 */
 	@RequestMapping(value = 'commentGood', method = RequestMethod.POST)
 	commentGood(@RequestParam(required = false) Long commentId, @ModelAttribute('currentUser') User user) {
+		
+		logger.trace('-- 点赞 --')
 		
 		if (commentId) {
 			def userHelpComment = new UserHelpComment(id : commentId),

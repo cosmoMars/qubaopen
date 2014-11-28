@@ -654,6 +654,7 @@ public class MapStatisticsService {
 		[
 			'success' : '1',
 			'message' : '成功',
+			'special' : specialSelf.id,
 			'userId' : user.id,
 			'data' : data
 		]
@@ -667,12 +668,12 @@ public class MapStatisticsService {
 			return m1.createdDate.compareTo(m2.createdDate)
 		}
 	}
+	
 	@Transactional
 	retrieveMapStatistics(User user, long typeId) {
 
 		def data = [], existMaps = []
 			
-		def om = new ObjectMapper()
 		def specialSelf = selfRepository.findSpecialSelf()
 		if (typeId == 4l) {
 			

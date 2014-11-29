@@ -27,4 +27,7 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.used = true  and suq.id = (select max(s.id) from SelfUserQuestionnaire s where s.user = :user and s.used = true) ")
 	SelfUserQuestionnaire findLastByTime(@Param("user") User user);
 	
+	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.used = true  and suq.id = (select max(s.id) from SelfUserQuestionnaire s where s.user = :user and s.used = true) and suq.self.selfManagementType.id = 2l")
+	SelfUserQuestionnaire findLastByTimeAndSelfManagementType(@Param("user") User user);
+	
 }

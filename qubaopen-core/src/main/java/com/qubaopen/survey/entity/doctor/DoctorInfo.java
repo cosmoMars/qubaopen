@@ -25,15 +25,19 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 2535242382334786060L;
 
-	
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@PrimaryKeyJoinColumn
 	private Doctor doctor;
-	
+
 	/**
 	 * 名称
 	 */
 	private String name;
+
+	/**
+	 * 手机
+	 */
+	private String phone;
 
 	/**
 	 * 性别
@@ -92,6 +96,16 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	private Date time;
 
 	/**
+	 * 文字咨询
+	 */
+	private boolean commentConsult;
+
+	/**
+	 * 电话咨询
+	 */
+	private boolean phoneConsult;
+
+	/**
 	 * 是否加急
 	 */
 	private boolean quick;
@@ -117,6 +131,14 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public Sex getSex() {
@@ -191,6 +213,22 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 		this.time = time;
 	}
 
+	public boolean isCommentConsult() {
+		return commentConsult;
+	}
+
+	public void setCommentConsult(boolean commentConsult) {
+		this.commentConsult = commentConsult;
+	}
+
+	public boolean isPhoneConsult() {
+		return phoneConsult;
+	}
+
+	public void setPhoneConsult(boolean phoneConsult) {
+		this.phoneConsult = phoneConsult;
+	}
+
 	public boolean isQuick() {
 		return quick;
 	}
@@ -206,7 +244,6 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	public void setIntroduce(String introduce) {
 		this.introduce = introduce;
 	}
-
 
 	public String getAvatarPath() {
 		return avatarPath;

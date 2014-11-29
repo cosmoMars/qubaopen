@@ -69,16 +69,16 @@
                     <li data-type="monthly" class="is-visible">
                         <form id="sign-form" class="form-signin" role="form">
                             <h2 class="form-signin-heading"></h2>
-                            <input type="text" id="phone" class="form-control account" placeholder="手机号" required autofocus>
+                            <input type="text" id="phone" class="form-control account" placeholder="手机号" autocomplete="off" required autofocus>
                             <input type="password" id="password" class="form-control" placeholder="密码" required>
 
                             <div class="input-group">
-                                <input type="text" class="form-control"  placeholder="验证码" required>
+                                <input type="text" id="captcha" class="form-control"  placeholder="验证码" required>
                                  <span class="input-group-btn">
-                                    <button class="btn btn-zhixin btn-get" type="button">获取验证码</button>
+                                    <button id="btn-captcha" class="btn btn-zhixin btn-get" type="button">获取验证码</button>
                                   </span>
                             </div>
-                            <button id="btn-signin" class="btn btn-lg btn-zhixin btn-block mt-10" type="button">注册</button>
+                            <button id="btn-signup-doctor" class="btn btn-lg btn-zhixin btn-block mt-10" type="button">注册</button>
                         </form>
 
                     </li>
@@ -88,7 +88,7 @@
                             <h2 class="form-signin-heading"></h2>
                             <input type="text" id="phone1" class="form-control account" placeholder="邮箱" required>
                             <input type="password" id="password1" class="form-control" placeholder="密码" required>
-                            <button id="btn-signin1" class="btn btn-lg btn-zhixin btn-block" type="button">注册</button>
+                            <button id="btn-signup-clinic" class="btn btn-lg btn-zhixin btn-block" type="button">注册</button>
                         </form>
 
                     </li>
@@ -99,26 +99,36 @@
 
 
 
-
-    <!--<form id="sign-form" class="form-signin" role="form">-->
-        <!--<h2 class="form-signin-heading"></h2>-->
-        <!--<input type="text" id="phone" class="form-control account" placeholder="账号" required autofocus>-->
-        <!--<input type="password" id="password" class="form-control" placeholder="密码" required>-->
-        <!--<div class="checkbox">-->
-            <!--<label>-->
-                <!--<input type="checkbox" value="remember-me"> 记住我-->
-            <!--</label>-->
-        <!--</div>-->
-        <!--<button id="btn-signin" class="btn btn-lg btn-zhixin btn-block" type="button">登录</button>-->
-    <!--</form>-->
-
-    <div id="target"></div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        错误
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    手机号码错误
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
 </div> <!-- /container -->
 
 
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="../jquery/jquery-1.11.1.min.js"></script>
-<script src="../bootstrap/js/bootstrap.min.js"></script>
+<script src="../bootstrap/js/bootstrap.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
 

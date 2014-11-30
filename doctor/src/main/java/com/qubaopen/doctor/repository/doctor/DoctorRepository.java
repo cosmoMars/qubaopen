@@ -10,7 +10,7 @@ public interface DoctorRepository extends MyRepository<Doctor, Long> {
 
 	Doctor findByPhone(String phone);
 
-	@Query("from Doctor d join fetch d.doctorInfo left join fetch d.doctorIdCardBind where phone = :phone and password = :password and activated = true")
+	@Query("from Doctor d join fetch d.doctorInfo left join fetch d.doctorIdCardBind where d.phone = :phone and d.password = :password and d.activated = true")
 	Doctor login(@Param("phone") String phone, @Param("password") String password);
 
 }

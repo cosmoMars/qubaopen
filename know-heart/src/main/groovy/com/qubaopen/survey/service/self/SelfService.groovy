@@ -405,29 +405,33 @@ public class SelfService {
 	calcUserAnalysisRadio(UserInfo userInfo) {
 		
 		//用户已经做了的必做 选做的数量
-		int userDoMust= selfUserQuestionnaireRepository.findByAnalysis(new User(id : userInfo.id), true).size();
-		int userDoOther= selfUserQuestionnaireRepository.findByAnalysis(new User(id : userInfo.id), false).size();
+		def user = new User(id : userInfo.id),
+			userDoMust = selfUserQuestionnaireRepository.findByAnalysis(user, true).size(),
+			userDoOther = selfUserQuestionnaireRepository.findByAnalysis(user, false).size()
 		
-		int userDone=userDoMust+userDoOther;
+		def userDone 
+		if (userDoOther <= 8) {
+			userDone = userDoMust + userDoOther
+		} else {
+			userDone = userDoMust + 8
+		}
 		
 		//必做题总数
-		int allMust= selfRepository.findAll(
+		def allMust= selfRepository.findAll(
 			['analysis_equal' : true]
-		).size();
+		).size()
 	
 		
-		int all=allMust+8
-		
-		int f=userDone/all*100
-		
-		UserSelfTitle userSelfTitle=userSelfTitleRepository.findOneByFilters(
-			[
-				minScore_lessThanOrEqualTo : f,
-				maxScore_greaterThan : f
-			]			
-		)
+		def all= allMust + 8,
+			f = userDone / all * 100,
+			userSelfTitle=userSelfTitleRepository.findOneByFilters(
+				[
+					minScore_lessThanOrEqualTo : f,
+					maxScore_greaterThan : f
+				]			
+			)
 		userInfo.resolution=f;
-		userInfo.userSelfTitle=userSelfTitle;
+		userInfo.userSelfTitle = userSelfTitle;
 		
 		userInfoRepository.save(userInfo);
 
@@ -440,7 +444,7 @@ public class SelfService {
 
 	
 	/**
-	 * 计算 更新 用户心理指数
+	 * 计算 更新 用户心理健康指数
 	 * @param user
 	 */
 	@Transactional

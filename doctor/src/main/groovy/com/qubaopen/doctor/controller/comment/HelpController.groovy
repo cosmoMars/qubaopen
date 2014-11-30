@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -17,6 +19,9 @@ import com.qubaopen.doctor.repository.comment.HelpRepository
 import com.qubaopen.survey.entity.comment.Help
 import com.qubaopen.survey.entity.doctor.Doctor
 
+@RestController
+@RequestMapping('help')
+@SessionAttributes('currentDoctor')
 public class HelpController extends AbstractBaseController<Help, Long> {
 
 	@Autowired

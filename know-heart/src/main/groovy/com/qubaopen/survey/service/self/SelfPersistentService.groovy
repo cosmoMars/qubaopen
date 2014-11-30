@@ -68,7 +68,7 @@ public class SelfPersistentService {
 	 * @param resultOption
 	 */
 	@Transactional
-	void saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption, boolean refresh) {
+	def saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption, boolean refresh) {
 		def selfUserQuestionnaire, questionnaire 
 		if (refresh) { // 重做
 			questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self)
@@ -189,6 +189,7 @@ public class SelfPersistentService {
 		selfUserAnswerRepository.save(userAnswers)
 //		self.totalRespondentsCount ++
 //		selfRepository.save(self)
+		selfUserQuestionnaire
 	}
 
 	/**
@@ -198,28 +199,28 @@ public class SelfPersistentService {
 	 * @param result
 	 */
 	@Transactional
-	void saveMapStatistics(User user, Self self, List<MapRecord> result, SelfResultOption selfResultOption, Integer score) {
+	void saveMapStatistics(User user, SelfUserQuestionnaire selfUserQuestionnaire, List<MapRecord> result, SelfResultOption selfResultOption, Integer score) {
 
 		def special = false
 		def specialSelf = selfRepository.findSpecialSelf()
 		
-		def questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self),
-			now = new Date()
-		if (questionnaire) {
-			def intervalTime = questionnaire.self.intervalTime as Long
-			if (now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
-				if (questionnaire.self.id == specialSelf.id) {
-					def record = mapRecordRepository.findMaxRecordBySpecialSelf(self, user)
+//		def questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self),
+		def	now = new Date()
+		if (selfUserQuestionnaire) {
+			def intervalTime = selfUserQuestionnaire.self.intervalTime as Long
+			if (now.getTime() - selfUserQuestionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
+				if (selfUserQuestionnaire.self.id == specialSelf.id) {
+					def record = mapRecordRepository.findMaxRecordBySpecialSelf(selfUserQuestionnaire.self, user)
 					mapRecordRepository.delete(record)
 				}
 			}
 		}
-		
-		if (self.id == specialSelf.id) {
+		def nowSelf = selfUserQuestionnaire.self
+		if (nowSelf.id == specialSelf.id) {
 			special = true
 		}
 		
-		def mapStatistics = mapStatisticsRepository.findByUserAndSelf(user, self)
+		def mapStatistics = mapStatisticsRepository.findByUserAndSelf(user, nowSelf)
 		
 		if (mapStatistics) {
 			result.each {
@@ -229,21 +230,21 @@ public class SelfPersistentService {
 			if (score != null) {
 				mapStatistics.score = score
 			}
-			mapStatistics.mapMax = self.mapMax
-			mapStatistics.selfManagementType = self.selfManagementType
-			mapStatistics.recommendedValue = self.recommendedValue
+			mapStatistics.mapMax = nowSelf.mapMax
+			mapStatistics.selfManagementType = nowSelf.selfManagementType
+			mapStatistics.recommendedValue = nowSelf.recommendedValue
 			if (!special) {
 				mapRecordRepository.deleteByMapStatistics(mapStatistics)
 			}
 		} else {
 			mapStatistics = new MapStatistics(
 				user : user,
-				self : self,
+				self : nowSelf,
 				selfResultOption : selfResultOption,
 				score : score,
-				mapMax : self.mapMax,
-				selfManagementType : self.selfManagementType,
-				recommendedValue : self.recommendedValue
+				mapMax : nowSelf.mapMax,
+				selfManagementType : nowSelf.selfManagementType,
+				recommendedValue : nowSelf.recommendedValue
 			)
 			result.each {
 				it.mapStatistics = mapStatistics

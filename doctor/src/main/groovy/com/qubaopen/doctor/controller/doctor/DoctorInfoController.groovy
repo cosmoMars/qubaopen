@@ -72,6 +72,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			'doctorId' : doctor.id,
 			'name' : doctorIdCardBind?.userIDCard?.name,
 			'infoName' : doctorInfo?.name,
+			'contactPhone' : doctorInfo?.phone,
 			'sex' : doctorInfo?.sex?.ordinal(),
 			'birthday' : doctorInfo?.birthday,
 			'experience' : doctorInfo?.experience,

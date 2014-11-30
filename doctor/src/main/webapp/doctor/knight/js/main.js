@@ -3,7 +3,8 @@
  */
 
 
-ContextUrl="http://10.0.0.88:8080/know-heart";
+ContextUrl="http://localhost:8080"
+//ContextUrl="http://10.0.0.88:8080/know-heart";
 //ContextUrl="http://115.28.176.74:8080/know-heart";
 //
 //if(!(location.hostname).match("www.qubaopen.com.cn")){

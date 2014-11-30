@@ -50,10 +50,10 @@
 
 
 
-    <form id="sign-form" class="form-signin" role="form" action="http://10.0.0.88:8080/know-heart/users/login" method="post">
+    <form  class="form-signin" role="form">
         <h2 class="form-signin-heading"></h2>
-        <input type="text"  name="phone" id="phone" class="form-control account" placeholder="账号" required autofocus>
-        <input type="password" name="password" id="password" class="form-control" placeholder="密码" required>
+        <input type="text"  id="phone" class="form-control account" placeholder="账号" autocomplete="off" required autofocus>
+        <input type="password" id="password" class="form-control" placeholder="密码" required>
         <div class="checkbox">
             <label>
                 <input type="checkbox" value="remember-me"> 记住我
@@ -62,10 +62,6 @@
         <button id="btn-signin" class="btn btn-lg btn-zhixin btn-block" type="button">登录</button>
     </form>
 
-    <form id="sign-form2" class="form-signin" role="form" action="http://10.0.0.88:8080/know-heart/userInfos/getIndexInfo" method="get">
-
-        <button id="btn-info" class="btn btn-lg btn-zhixin btn-block" type="button">信息</button>
-    </form>
 
 
     <div id="target"></div>

@@ -13,6 +13,8 @@ import com.qubaopen.survey.entity.user.User.ThirdType;
 public interface UserRepository extends MyRepository<User, Long> {
 
 	User findByPhone(String phone);
+	
+	User findByPhoneAndActivated(String phone, boolean activated);
 
 	@Query("from User u join fetch u.userInfo left join fetch u.userIdCardBind where phone = :phone and password = :password and activated = true")
 	User login(@Param("phone") String phone, @Param("password") String password);

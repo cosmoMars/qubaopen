@@ -101,14 +101,16 @@ public class DoctorService {
 	@Transactional
 	sendCaptcha(String phone, boolean activated) {
 		
-		// 判断用户是否存在
-		def doctor = doctorRepository.findByPhone(phone)
-		if (!activated && doctor) {
-			return '{"success" : "0", "message" : "err006"}'
+		def doctor
+		if (!activated) { //新用户
+			doctor = doctorRepository.findByPhone(phone)
+		} else { // 忘记密码发送短信
+			doctor = doctorRepository.findByPhoneAndActivated(phone, activated)
+			if (!doctor) {
+				return '{"success" : "0", "message" : "err001"}'
+			}
 		}
-		if (activated && !doctor) {
-			return '{"success" : "0", "message" : "err001"}'
-		}
+		
 		if (!doctor) {
 			doctor = new Doctor(
 				phone : phone

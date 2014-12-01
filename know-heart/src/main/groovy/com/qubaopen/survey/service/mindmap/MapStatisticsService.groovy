@@ -525,8 +525,9 @@ public class MapStatisticsService {
 		if (specialMap) {
 			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
 		}
-		
-		if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
+		if (!specialMap) {
+			tip = "亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！7天后就有惊喜~ " as String
+		} else if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
 			def chart, c = []
 			def resultContent = "err"
 			if (specialMap?.self?.graphicsType) {

@@ -513,7 +513,7 @@ public class MapStatisticsService {
 	
 	@Transactional
 	retrieveSpecialMap(User user) {
-		def data = []
+		def data = [], tip
 		def specialSelf = selfRepository.findSpecialSelf()
 		def specialMap = mapStatisticsRepository.findOneByFilters(
 			[
@@ -527,8 +527,7 @@ public class MapStatisticsService {
 		}
 		
 		if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
-			def chart
-			def c = []
+			def chart, c = []
 			def resultContent = "err"
 			if (specialMap?.self?.graphicsType) {
 				def timeChart = [], paChart = [], naChart = [], midChart = []
@@ -592,9 +591,9 @@ public class MapStatisticsService {
 				}
 				
 				//计算 正负情感趋势 上升 下降
-				def time=System.currentTimeMillis()
-				def timeBefore = time - 60 * 60 * 24 * 1000 * 2
-				def timeAfter = time + 60 * 60 * 24 * 1000 * 2
+				def time=System.currentTimeMillis(),
+					timeBefore = time - 60 * 60 * 24 * 1000 * 2,
+					timeAfter = time + 60 * 60 * 24 * 1000 * 2
 				
 				def resultToday = coefficient.mid1 + coefficient.mid2 * Math.cos(time * coefficient.mid4) + coefficient.mid3 * Math.sin(time * coefficient.mid4)
 				def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
@@ -636,7 +635,7 @@ public class MapStatisticsService {
 			]
 		} else if (specialMap && specialMapRecords.size() < 7) {
 			def days = 7 - specialMapRecords.size()
-			def tip = "亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！${days}天后就有惊喜~ " as String
+			tip = "亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！${days}天后就有惊喜~ " as String
 			data << [
 				'groupId' : specialMap?.self?.selfGroup?.id,
 				'mapTitle' : specialMap?.self?.title,
@@ -649,19 +648,21 @@ public class MapStatisticsService {
 				'recommendedValue' : specialMap?.recommendedValue,
 				'graphicsType' : specialMap?.self?.graphicsType?.id,
 				'special' : true,
-				'lock' : true,
+				'lock' : true
 //				'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
-				'tips' : tip
 			]
 		}
-		[
+		def result = [
 			'success' : '1',
 			'message' : '成功',
 			'specialId' : specialSelf.id,
 			'userId' : user.id,
 			'data' : data
 		]
-		
+		if (tip) {
+			result << ['tips' : tip]
+		}
+		result
 	}
 	
 	class MapRecordComparator implements Comparator {

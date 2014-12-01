@@ -326,7 +326,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		
 		// true 忘记密码判断， false 新用户注册判断
 		if (activated == null) {
-			activated == false
+			activated = false
 		}
 
 		userService.sendCaptcha(phone, activated)

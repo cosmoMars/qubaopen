@@ -81,7 +81,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			'consultType' : doctorInfo?.consultType?.ordinal(),
 			'targetUser' : doctorInfo?.targetUser,
 			'genre' : doctorInfo?.genre,
-			'time' : doctorInfo?.time,
+			'time' : doctorInfo?.bookingTime,
 			'introduce' : doctorInfo?.introduce,
 			'quick' : doctorInfo.quick,
 			'email' : doctorInfo?.doctor?.email,
@@ -125,7 +125,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) Integer consultType,
 		@RequestParam(required = false) String targetUser,
 		@RequestParam(required = false) String genre,
-		@RequestParam(required = false) String time,
+		@RequestParam(required = false) String bookingTime,
 		@RequestParam(required = false) Boolean quick,
 		@RequestParam(required = false) String introduce,
 		@RequestParam(required = false) Boolean commentConsult,
@@ -178,8 +178,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		if (genre) {
 			doctorInfo.genre = genre
 		}
-		if (time) {
-			doctorInfo.time = DateUtils.parseDate(time, 'yyyy-MM-dd HH:mm')
+		if (bookingTime) {
+			doctorInfo.bookingTime = bookingTime
 		}
 		if (quick) {
 			doctorInfo.quick = quick

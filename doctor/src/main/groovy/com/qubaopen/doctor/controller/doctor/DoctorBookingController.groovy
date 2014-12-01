@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.SessionAttributes
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.doctor.DoctorBookingRepository;
+import com.qubaopen.survey.entity.booking.Booking;
 import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.doctor.DoctorBooking
 import com.qubaopen.survey.entity.user.User
 
 @RestController
 @RequestMapping('doctorBooking')
 @SessionAttributes('currentDoctor')
-public class DoctorBookingController extends AbstractBaseController<DoctorBooking, Long> {
+public class DoctorBookingController extends AbstractBaseController<Booking, Long> {
 
 	private static Logger logger = LoggerFactory.getLogger(DoctorBookingController.class)
 	
@@ -33,7 +33,7 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 	DoctorBookingRepository doctorBookingRepository
 	
 	@Override
-	protected MyRepository<DoctorBooking, Long> getRepository() {
+	protected MyRepository<Booking, Long> getRepository() {
 		return doctorBookingRepository;
 	}
 
@@ -65,7 +65,7 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		age = c.getTime() as Date
 		
 		if (index != null) {
-			def status = DoctorBooking.Status.values()[index]
+			def status = Booking.Status.values()[index]
 			if (idsStr) {
 				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, status, age, ids, pageable)
 			} else {
@@ -178,9 +178,9 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 			}
 		}
 		if (idsStr) {
-			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), DoctorBooking.Status.Consulted, ids, pageable)
+			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), Booking.Status.Consulted, ids, pageable)
 		} else {
-			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), DoctorBooking.Status.Consulted, pageable)
+			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), Booking.Status.Consulted, pageable)
 		}
 		
 //		bookingList = doctorBookingRepository.findAll(
@@ -259,11 +259,11 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		logger.trace('-- 修改订单状态 --')
 		
 		def booking = doctorBookingRepository.findOne(id),
-			bookingStatus = DoctorBooking.Status.values()[index]
+			bookingStatus = Booking.Status.values()[index]
 		
 		booking.status = bookingStatus
 		
-		if (bookingStatus && bookingStatus == DoctorBooking.Status.Next) {
+		if (bookingStatus && bookingStatus == Booking.Status.Next) {
 			Calendar cal = Calendar.getInstance()
 			cal.setTime(booking.time)
 			

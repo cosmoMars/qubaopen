@@ -211,7 +211,8 @@ public class SelfPersistentService {
 			if (now.getTime() - selfUserQuestionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
 				if (selfUserQuestionnaire.self.id == specialSelf.id) {
 					def record = mapRecordRepository.findMaxRecordBySpecialSelf(selfUserQuestionnaire.self, user)
-					mapRecordRepository.delete(record)
+					if (record)
+						mapRecordRepository.delete(record)
 				}
 			}
 		}

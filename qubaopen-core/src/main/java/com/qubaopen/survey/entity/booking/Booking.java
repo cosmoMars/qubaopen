@@ -1,4 +1,4 @@
-package com.qubaopen.survey.entity.doctor;
+package com.qubaopen.survey.entity.booking;
 
 import java.util.Date;
 
@@ -13,12 +13,13 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.User;
 
 @Entity
-@Table(name = "doctor_booking")
+@Table(name = "booking")
 @Audited
-public class DoctorBooking extends AbstractBaseEntity<Long> {
+public class Booking extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 6872015169540197635L;
 

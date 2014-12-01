@@ -90,10 +90,9 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	private String genre;
 
 	/**
-	 * 时间
+	 * 预约时间
 	 */
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date time;
+	private String bookingTime;
 
 	/**
 	 * 文字咨询
@@ -205,12 +204,12 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 		this.genre = genre;
 	}
 
-	public Date getTime() {
-		return time;
+	public String getBookingTime() {
+		return bookingTime;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setBookingTime(String bookingTime) {
+		this.bookingTime = bookingTime;
 	}
 
 	public boolean isCommentConsult() {

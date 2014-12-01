@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.booking.Booking;
 import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.doctor.DoctorBooking
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.doctor.DoctorBookingRepository
 
 @RestController
 @RequestMapping('doctorBooking')
 @SessionAttributes('currentUser')
-public class DcotorBookingController extends AbstractBaseController<DoctorBooking, Long> {
+public class DcotorBookingController extends AbstractBaseController<Booking, Long> {
 
 	@Autowired
 	DoctorBookingRepository doctorBookingRepository
 	
 	@Override
-	protected MyRepository<DoctorBooking, Long> getRepository() {
+	protected MyRepository<Booking, Long> getRepository() {
 		return doctorBookingRepository;
 	}
 
@@ -51,7 +51,7 @@ public class DcotorBookingController extends AbstractBaseController<DoctorBookin
 		) {
 		
 		def sex, consultType, birthday
-		def doctorBooking = new DoctorBooking(
+		def doctorBooking = new Booking(
 			doctor : new Doctor(id : doctorId),
 			user : user,
 			name : name,

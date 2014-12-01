@@ -635,7 +635,8 @@ public class MapStatisticsService {
 				'lock' : false
 			]
 		} else if (specialMap && specialMapRecords.size() < 7) {
-			def tip = '亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！X天后就有惊喜~ '
+			def days = 7 - specialMapRecords.size()
+			def tip = "亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！${days}天后就有惊喜~ " as String
 			data << [
 				'groupId' : specialMap?.self?.selfGroup?.id,
 				'mapTitle' : specialMap?.self?.title,

@@ -30,7 +30,7 @@ public class UserMood extends AbstractPersistable<Long> {
 	private User user;
 
 	@Enumerated
-	private MoodType moodType = MoodType.NONE;
+	private MoodType moodType;
 
 	/**
 	 * 最后修改日期
@@ -44,10 +44,11 @@ public class UserMood extends AbstractPersistable<Long> {
 	private String message;
 
 	/**
-	 * 签到心情类型 0无心情 1郁闷 2无聊 3得瑟 4丢人 5求安慰 6纠结
+	 * 签到心情类型 得瑟 开心 偷笑 无聊 纠结 怕怕 伤心 滚粗
+	 * 
 	 */
 	public enum MoodType {
-		NONE, YUMEN, WULIAO, DESE, DIUREN, QIUANWEI, JIUJIE
+		Flaunt, Happy, Giggle, Bored, Kink, Afraid, Sad, Getout
 	}
 
 	public User getUser() {

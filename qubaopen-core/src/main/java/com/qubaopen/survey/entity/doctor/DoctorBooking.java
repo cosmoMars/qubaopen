@@ -106,6 +106,10 @@ public class DoctorBooking extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private Status status;
 
+	/**
+	 * @author mars
+	 * 预约，接受，拒绝，已咨询，未咨询，已约下次
+	 */
 	public enum Status {
 		Booking, Accept, Refusal, Consulted, Consulting, Next
 	}

@@ -243,4 +243,35 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 			'data' : data
 		]
 	}
+	
+	
+	/**
+	 * @param id
+	 * @param index
+	 * @param doctor
+	 * @return
+	 * 修改订单状态
+	 */
+	@RequestMapping(value = 'modifyBookingStatus', method = RequestMethod.POST)
+	modifyBookingStatus(@RequestParam(required = false) Long id, @RequestParam(required = false) Integer index, @ModelAttribute('currentDoctor') Doctor doctor) {
+		
+		logger.trace('-- 修改订单状态 --')
+		
+		def booking = doctorBookingRepository.findOne(id),
+			bookingStatus = DoctorBooking.Status.values()[index]
+		
+		booking.status = bookingStatus
+		
+		if (bookingStatus && bookingStatus == DoctorBooking.Status.Next) {
+			Calendar cal = Calendar.getInstance()
+			cal.setTime(booking.time)
+			
+			cal.add(Calendar.DATE, 7)
+			def newTime = cal.getTime()
+			booking.time = newTime
+		}
+		doctorBookingRepository.save(booking)
+		'{"success" : "1"}'
+	}
+	
 }

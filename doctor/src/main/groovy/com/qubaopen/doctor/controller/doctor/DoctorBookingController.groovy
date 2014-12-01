@@ -234,7 +234,7 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		def data = []
 		bookingList.each {
 			data << [
-				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd HH:mm'),
+				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd HH'),
 				'consultType' : it?.consultType?.ordinal()
 			]
 		}

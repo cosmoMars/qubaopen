@@ -175,7 +175,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		
 		// true 忘记密码判断， false 新用户注册判断
 		if (activated == null) {
-			activated == false
+			activated = false
 		}
 
 		doctorService.sendCaptcha(phone, activated)

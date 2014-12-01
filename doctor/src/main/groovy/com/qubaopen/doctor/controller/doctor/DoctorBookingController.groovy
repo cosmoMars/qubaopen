@@ -96,6 +96,7 @@ public class DoctorBookingController extends AbstractBaseController<DoctorBookin
 		def data = []
 		bookingList.each {
 			data << [
+				'bookingId' : it.id,
 				'userId' : it.user?.id,
 				'userName' : it?.name,
 				'helpReason' : it.refusalReason,

@@ -1,4 +1,4 @@
-package com.qubaopen.survey.entity.doctor;
+package com.qubaopen.survey.entity.booking;
 
 import java.util.Date;
 
@@ -12,19 +12,27 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.doctor.Doctor;
+import com.qubaopen.survey.entity.user.User;
 
 /**
  * @author mars 医师详细预约时间
  */
 @Entity
-@Table(name = "doctor_booking_time")
+@Table(name = "booking_time")
 @Audited
-public class DoctorBookingTime extends AbstractBaseEntity<Long> {
+public class BookingTime extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 8567417095250318753L;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User user;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Booking booking;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startTime;
@@ -52,6 +60,22 @@ public class DoctorBookingTime extends AbstractBaseEntity<Long> {
 
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Booking getBooking() {
+		return booking;
+	}
+
+	public void setBooking(Booking booking) {
+		this.booking = booking;
 	}
 
 	public Date getStartTime() {

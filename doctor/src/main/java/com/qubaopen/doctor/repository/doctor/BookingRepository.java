@@ -12,7 +12,7 @@ import com.qubaopen.survey.entity.booking.Booking;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.User;
 
-public interface DoctorBookingRepository extends MyRepository<Booking, Long> {
+public interface BookingRepository extends MyRepository<Booking, Long> {
 
 	@Query("from Booking b where b.doctor = :doctor and b.status = :status and b.time >= :time and b.id not in (:ids)")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("status") Booking.Status status, @Param("time") Date time, @Param("ids") List<Long> ids, Pageable pageable);

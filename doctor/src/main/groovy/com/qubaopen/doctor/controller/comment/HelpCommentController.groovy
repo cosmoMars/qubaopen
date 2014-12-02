@@ -3,6 +3,7 @@ package com.qubaopen.doctor.controller.comment;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -41,22 +42,25 @@ public class HelpCommentController extends AbstractBaseController<HelpComment, L
 	@RequestMapping(value = 'commentHelp', method = RequestMethod.POST)
 	commentHelp(@RequestParam(required = false) Long helpId,
 		@RequestParam(required = false) String content,
-		@RequestParam(required = false) Long doctorId
+		@ModelAttribute('currentDoctor') Doctor doctor
 		) {
 		
 		logger.trace('-- 医师评论 --')
 		
-		if (!helpId || !doctorId) {
+		if (!helpId) {
 			return '{"success" : "0", "message" : "信息不完整"}'
 		}
 		
 		def helpComment = new HelpComment(
 			help : new Help(id : helpId),
 			content : content,
-			doctor : new Doctor(id : doctorId),
+			doctor : doctor,
 			time : new Date()
 		)
-		helpCommentRepository.save(helpComment)
-		'{"success" : "1"}'
+		helpComment = helpCommentRepository.save(helpComment)
+		[
+			'success' : '1',
+			'commentId' : helpComment?.id
+		]
 	}
 }

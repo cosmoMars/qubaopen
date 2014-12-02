@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.doctor.DoctorBookingRepository;
+import com.qubaopen.doctor.repository.doctor.BookingRepository;
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorShare
 
@@ -24,7 +24,7 @@ public class DoctorShareController extends AbstractBaseController<DoctorShare, L
 	private static Logger logger = LoggerFactory.getLogger(DoctorShareController.class)
 	
 	@Autowired
-	DoctorBookingRepository doctorBookingRepository
+	BookingRepository doctorBookingRepository
 	
 	@Override
 	protected MyRepository<DoctorShare, Long> getRepository() {

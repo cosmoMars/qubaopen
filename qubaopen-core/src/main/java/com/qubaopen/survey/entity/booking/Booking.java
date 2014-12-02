@@ -16,6 +16,10 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.User;
 
+/**
+ * @author mars
+ * 订单详情
+ */
 @Entity
 @Table(name = "booking")
 @Audited
@@ -24,10 +28,10 @@ public class Booking extends AbstractBaseEntity<Long> {
 	private static final long serialVersionUID = 6872015169540197635L;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Doctor doctor;
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Doctor doctor;
 
 	/**
 	 * 姓名
@@ -117,20 +121,20 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	private int money;
 
-	public Doctor getDoctor() {
-		return doctor;
-	}
-
-	public void setDoctor(Doctor doctor) {
-		this.doctor = doctor;
-	}
-
 	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Doctor getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(Doctor doctor) {
+		this.doctor = doctor;
 	}
 
 	public String getName() {

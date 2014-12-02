@@ -16,7 +16,7 @@ import com.qubaopen.survey.entity.booking.Booking
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.booking.BookingRepository
-import com.qubaopen.survey.repository.doctor.DoctorBookingTimeRepository;
+import com.qubaopen.survey.repository.booking.BookingTimeRepository;
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository;
 
 @RestController
@@ -31,7 +31,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	DoctorInfoRepository doctorInfoRepository
 	
 	@Autowired
-	DoctorBookingTimeRepository doctorBookingTimeRepository
+	BookingTimeRepository bookingTimeRepository
 	
 	@Override
 	MyRepository<Booking, Long> getRepository() {
@@ -71,7 +71,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@RequestParam(required = false) String otherProblem,
 		@RequestParam(required = false) boolean treatmented,
 		@RequestParam(required = false) boolean haveConsulted,
-		@RequestParam(required = false) String refusalReason,
+//		@RequestParam(required = false) String refusalReason,
 		@RequestParam(required = false) boolean quick,
 		@RequestParam(required = false) Integer consultTypeIndex,
 		@RequestParam(required = false) Integer money,
@@ -91,7 +91,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			otherProblem : otherProblem,
 			treatmented : treatmented,
 			haveConsulted : haveConsulted,
-			refusalReason : refusalReason,
+//			refusalReason : refusalReason,
 			quick : quick,
 			time : new Date()
 		)
@@ -109,13 +109,27 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			consultType = Booking.ConsultType.values()[consultTypeIndex]
 			booking.consultType = consultType
 		}
-		bookingRepository.save(booking)
-		'{"success" : "1"}'
+		booking = bookingRepository.save(booking)
+		[
+			'success' : '1',
+			'bookingId' : booking?.id
+		]
 	}
 		
+	/**
+	 * @param month
+	 * @param doctorId
+	 * @param user
+	 * @return
+	 * 用户获取医师每月列表
+	 */
 	@RequestMapping(value = 'retrieveMonthBooking', method = RequestMethod.GET)
-	retrieveMonthBooking(@RequestParam int month, @RequestParam long doctorId, @ModelAttribute('currentUser') User user) {
+	retrieveMonthBooking(@RequestParam Integer month, @RequestParam long doctorId, @ModelAttribute('currentUser') User user) {
 
+		if (month == null) {
+			month = new Date().month + 1
+		}
+		
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
 			bookingTime, data = []
 		if (doctorInfo)
@@ -141,7 +155,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def day = DateUtils.parseDate("$strYear-$month-$i", 'yyyy-MM-dd'),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
-				timeList = doctorBookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
+				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
 			timeList.each {
 				def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
 					end
@@ -160,11 +174,14 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				}
 			}
 			data << [
-				'time' : day,
+				'time' : DateFormatUtils.format(day, 'yyyy-MM-dd'),
 				'timeModel' : timeModel
 			]
 		}
-		data
+		[
+			'success' : '1',
+			'data' : data
+		]
 	}
 	
 	def dayForWeek(Date date) {

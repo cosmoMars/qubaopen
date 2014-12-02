@@ -1,6 +1,9 @@
-package com.qubaopen.doctor.controller.doctor;
+package com.qubaopen.doctor.controller.booking;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
+import java.awt.event.ItemEvent;
+
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,24 +20,32 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.doctor.DoctorBookingRepository;
-import com.qubaopen.survey.entity.booking.Booking;
+import com.qubaopen.doctor.repository.booking.BookingTimeRepository;
+import com.qubaopen.doctor.repository.doctor.BookingRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.survey.entity.booking.Booking
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
 
 @RestController
-@RequestMapping('doctorBooking')
+@RequestMapping('booking')
 @SessionAttributes('currentDoctor')
-public class DoctorBookingController extends AbstractBaseController<Booking, Long> {
+public class BookingController extends AbstractBaseController<Booking, Long> {
 
-	private static Logger logger = LoggerFactory.getLogger(DoctorBookingController.class)
+	private static Logger logger = LoggerFactory.getLogger(BookingController.class)
 	
 	@Autowired
-	DoctorBookingRepository doctorBookingRepository
+	BookingRepository bookingRepository
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
+	
+	@Autowired
+	BookingTimeRepository doctorBookingTimeRepository
 	
 	@Override
 	protected MyRepository<Booking, Long> getRepository() {
-		return doctorBookingRepository;
+		return bookingRepository;
 	}
 
 	/**
@@ -67,9 +78,9 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 		if (index != null) {
 			def status = Booking.Status.values()[index]
 			if (idsStr) {
-				bookingList = doctorBookingRepository.findBookingList(doctor, status, age, ids, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, status, age, ids, pageable)
 			} else {
-				bookingList = doctorBookingRepository.findBookingList(doctor, status, age, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, status, age, pageable)
 			}
 //			bookingList = doctorBookingRepository.findAll(
 //				[
@@ -80,9 +91,9 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 //			)
 		} else {
 			if (idsStr) {
-				bookingList = doctorBookingRepository.findBookingList(doctor, age, ids, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, age, ids, pageable)
 			} else {
-				bookingList = doctorBookingRepository.findBookingList(doctor, age, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, age, pageable)
 			}
 //			bookingList = doctorBookingRepository.findAll(
 //				[
@@ -129,7 +140,7 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 		
 		logger.trace('-- 查看单个信息 --')
 		
-		def booking = doctorBookingRepository.findOne(id)
+		def booking = bookingRepository.findOne(id)
 		
 		if (booking) {
 			[
@@ -147,8 +158,6 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 				'treatmented' : booking?.treatmented,
 				'haveConsulted' : booking?.haveConsulted
 			]
-		} else {
-			'{"success" : "0"}'
 		}
 	}
 	
@@ -178,9 +187,9 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 			}
 		}
 		if (idsStr) {
-			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), Booking.Status.Consulted, ids, pageable)
+			bookingList = bookingRepository.findByUserAndStatus(doctor, new User(id : userId), Booking.Status.Consulted, ids, pageable)
 		} else {
-			bookingList = doctorBookingRepository.findByUserAndStatus(doctor, new User(id : userId), Booking.Status.Consulted, pageable)
+			bookingList = bookingRepository.findByUserAndStatus(doctor, new User(id : userId), Booking.Status.Consulted, pageable)
 		}
 		
 //		bookingList = doctorBookingRepository.findAll(
@@ -230,19 +239,75 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 		if (month == null) {
 			month = new Date().getMonth() + 1
 		}
-		def bookingList = doctorBookingRepository.retrieveBookingByMonth(doctor, month)		
+//		def bookingList = doctorBookingRepository.retrieveBookingByMonth(doctor, month)		
+//		
+//		def data = []
+//		bookingList.each {
+//			data << [
+//				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd HH'),
+//				'consultType' : it?.consultType?.ordinal()
+//			]
+//		}
+//		[
+//			'success' : '1',
+//			'data' : data
+//		]
+		def doctorInfo = doctorInfoRepository.findOne(doctor.id),
+			bookingTime = doctorInfo.bookingTime,
+			data = []
+		def times = bookingTime.split(',')
 		
-		def data = []
-		bookingList.each {
+		def strYear = DateFormatUtils.format(new Date(), 'yyyy'),
+			year = DateUtils.parseDate("$strYear-$month", 'yyyy-MM')
+		def c = Calendar.getInstance()
+		c.setTime year
+		def maxDay = c.getMaximum(Calendar.DAY_OF_MONTH)
+		
+		for (i in 1..maxDay) {
+			def day = DateUtils.parseDate("$strYear-$month-$i", 'yyyy-MM-dd'),
+				idx = dayForWeek(day),
+				timeModel = times[idx - 1],
+				timeList = doctorBookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
+				todayData = []
+			timeList.each {
+				todayData << [
+					'timeId' : it?.id,
+					'startTime' : it?.startTime,
+					'endTime' : it?.endTime,
+					'userId' : it?.user?.id,
+					'userName' : it?.booking?.name,
+					'location' : it?.location,
+					'content' : it?.content,
+					'remindTime' : it?.remindTime
+				]
+				
+				def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
+					end
+				if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+					end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
+				} else {
+					end = 24
+				}
+					
+				for (j in start .. end - 1) {
+					def occupy = timeModel.substring(j, j + 1)
+					// 1 占用， 0 未占用
+					if ("1" != occupy || !"1".equals(occupy)) {
+						timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
+					}
+				}
+			}
 			data << [
-				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd HH'),
-				'consultType' : it?.consultType?.ordinal()
+				'time' : DateFormatUtils.format(day, 'yyyy-MM-dd'),
+				'timeModel' : timeModel,
+				'todayData' : todayData
 			]
 		}
 		[
 			'success' : '1',
 			'data' : data
 		]
+	
 	}
 	
 	
@@ -258,7 +323,7 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 		
 		logger.trace('-- 修改订单状态 --')
 		
-		def booking = doctorBookingRepository.findOne(id),
+		def booking = bookingRepository.findOne(id),
 			bookingStatus = Booking.Status.values()[index]
 		
 		booking.status = bookingStatus
@@ -271,13 +336,19 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 			def newTime = cal.getTime()
 			booking.time = newTime
 		}
-		doctorBookingRepository.save(booking)
+		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}
 	
-//	@RequestMapping
-//	getList() {
-//		
-//		
-//	}
+	def dayForWeek(Date date) {
+		def c = Calendar.getInstance()
+		c.setTime date
+		def idx
+		if (c.get(Calendar.DAY_OF_WEEK) == 1) {
+			idx = 7
+		} else {
+			idx = c.get(Calendar.DAY_OF_WEEK) - 1
+		}
+		idx
+	}
 }

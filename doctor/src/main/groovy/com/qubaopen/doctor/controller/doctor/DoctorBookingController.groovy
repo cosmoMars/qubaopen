@@ -67,9 +67,9 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 		if (index != null) {
 			def status = Booking.Status.values()[index]
 			if (idsStr) {
-				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, status, age, ids, pageable)
+				bookingList = doctorBookingRepository.findBookingList(doctor, status, age, ids, pageable)
 			} else {
-				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, status, age, pageable)
+				bookingList = doctorBookingRepository.findBookingList(doctor, status, age, pageable)
 			}
 //			bookingList = doctorBookingRepository.findAll(
 //				[
@@ -80,9 +80,9 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 //			)
 		} else {
 			if (idsStr) {
-				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, age, ids, pageable)
+				bookingList = doctorBookingRepository.findBookingList(doctor, age, ids, pageable)
 			} else {
-				bookingList = doctorBookingRepository.findDoctorBookingList(doctor, age, pageable)
+				bookingList = doctorBookingRepository.findBookingList(doctor, age, pageable)
 			}
 //			bookingList = doctorBookingRepository.findAll(
 //				[
@@ -275,4 +275,9 @@ public class DoctorBookingController extends AbstractBaseController<Booking, Lon
 		'{"success" : "1"}'
 	}
 	
+//	@RequestMapping
+//	getList() {
+//		
+//		
+//	}
 }

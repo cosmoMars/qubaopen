@@ -116,7 +116,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'consultType' : doctorInfo?.consultType?.ordinal(),
 				'targetUser' : doctorInfo?.targetUser,
 				'genre' : doctorInfo?.genre,
-				'time' : doctorInfo?.time,
+//				'time' : doctorInfo?.time,
 				'quick' : doctorInfo?.quick,
 				'introduce' : doctorInfo?.introduce,
 				'recordPath' : doctorInfo?.recordPath,

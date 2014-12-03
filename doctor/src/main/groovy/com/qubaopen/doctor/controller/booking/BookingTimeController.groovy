@@ -131,6 +131,7 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		@RequestParam(required = false) String endTime,
 		@RequestParam(required = false) String location,
 		@RequestParam(required = false) String remindTime,
+		@RequestParam(required = false) String repeatModel,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
 		def bookingTime = bookingTimeRepository.findOne(timeId)
@@ -149,6 +150,9 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		}
 		if (remindTime) {
 			bookingTime.remindTime = remindTime
+		}
+		if (repeatModel) {
+			bookingTime.repeatModel = repeatModel
 		}
 		bookingTimeRepository.save(bookingTime)
 		'{"success" : "1"}'

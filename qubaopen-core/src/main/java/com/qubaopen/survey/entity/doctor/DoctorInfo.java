@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -14,6 +15,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.hospital.Hospital;
 
 /**
  * @author mars 医师信息
@@ -28,6 +30,9 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@PrimaryKeyJoinColumn
 	private Doctor doctor;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Hospital hospital;
 
 	/**
 	 * 名称
@@ -266,6 +271,14 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
+	}
+
+	public Hospital getHospital() {
+		return hospital;
+	}
+
+	public void setHospital(Hospital hospital) {
+		this.hospital = hospital;
 	}
 
 }

@@ -1,21 +1,28 @@
-package com.qubaopen.survey.entity.enterprise;
+package com.qubaopen.survey.entity.hospital;
 
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+
+import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
-public class EnterpriseInfo extends AbstractBaseEntity<Long> {
+@Entity
+@Table(name = "hospital_info")
+@Audited
+public class HospitalInfo extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = -4979217651297221804L;
 
 	/**
-	 * 企业
+	 * 医院
 	 */
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@PrimaryKeyJoinColumn
-	private Enterprise enterprise;
+	private Hospital hospital;
 
 	/**
 	 * 企业名
@@ -32,12 +39,12 @@ public class EnterpriseInfo extends AbstractBaseEntity<Long> {
 	 */
 	private String recordPath;
 
-	public Enterprise getEnterprise() {
-		return enterprise;
+	public Hospital getHospital() {
+		return hospital;
 	}
 
-	public void setEnterprise(Enterprise enterprise) {
-		this.enterprise = enterprise;
+	public void setHospital(Hospital hospital) {
+		this.hospital = hospital;
 	}
 
 	public String getName() {

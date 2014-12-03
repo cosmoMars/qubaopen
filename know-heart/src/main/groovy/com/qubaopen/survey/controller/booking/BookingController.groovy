@@ -1,23 +1,24 @@
 package com.qubaopen.survey.controller.booking;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.booking.Booking
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.booking.BookingRepository
-import com.qubaopen.survey.repository.booking.BookingTimeRepository;
-import com.qubaopen.survey.repository.doctor.DoctorInfoRepository;
+import com.qubaopen.survey.repository.booking.BookingTimeRepository
+import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
 
 @RestController
 @RequestMapping('booking')
@@ -60,6 +61,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 */
 	@RequestMapping(value = 'createBooking', method = RequestMethod.POST)
 	createBooking(@RequestParam(required = false) Long doctorId,
+		@RequestParam(required = false) Long hospitalId,
 		@RequestParam(required = false) String name,
 		@RequestParam(required = false) Integer sexIndex,
 		@RequestParam(required = false) String birthdayStr,
@@ -80,7 +82,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		def sex, consultType, birthday
 		def booking = new Booking(
-			doctor : new Doctor(id : doctorId),
 			user : user,
 			name : name,
 			profession : profession,
@@ -95,6 +96,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			quick : quick,
 			time : new Date()
 		)
+		if (doctorId != null) {
+			booking.doctor = new Doctor(id : doctorId)
+		}
+		if (hospitalId != null) {
+			booking.hospital = new Hospital(id : hospitalId)
+		}
 		if (birthdayStr) {
 			booking.birthday = DateUtils.parseDate(birthdayStr, 'yyyy-MM-dd')
 		}
@@ -155,7 +162,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def day = DateUtils.parseDate("$strYear-$month-$i", 'yyyy-MM-dd'),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
-				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
+				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
+				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
+			
 			timeList.each {
 				def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
 					end
@@ -171,6 +180,14 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					if ("1" != occupy || !"1".equals(occupy)) {
 						timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
 					}
+				}
+			}
+			
+			bookingList.each {
+				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
+					occupy = timeModel.substring(index, index + 1)
+				if ("1" != occupy || !"1".equals(occupy)) {
+					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
 				}
 			}
 			data << [

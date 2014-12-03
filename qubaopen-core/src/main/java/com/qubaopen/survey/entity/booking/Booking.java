@@ -14,6 +14,7 @@ import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
+import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.user.User;
 
 /**
@@ -32,6 +33,9 @@ public class Booking extends AbstractBaseEntity<Long> {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Hospital hospital;
 
 	/**
 	 * 姓名
@@ -135,6 +139,14 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
+	}
+
+	public Hospital getHospital() {
+		return hospital;
+	}
+
+	public void setHospital(Hospital hospital) {
+		this.hospital = hospital;
 	}
 
 	public String getName() {

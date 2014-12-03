@@ -32,32 +32,32 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		return bookingTimeRepository
 	}
 
-	/**
-	 * @param bookingId
-	 * @param timeId
-	 * @param user
-	 * @return
-	 * 添加占用时间绑定
-	 */
-	@RequestMapping(value = 'bindingBookingTime', method = RequestMethod.POST)
-	bindingBookingTime(@RequestParam Long bookingId, @RequestParam String startTime, @ModelAttribute('currentUser') User user) {
-		
-		def booking = bookingRepository.findOne(bookingId),
-			start = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH')
-		def c = Calendar.getInstance()
-		c.setTime start
-		c.add(Calendar.HOUR, 1)
-		def end = c.getTime()
-		
-		def bookingTime = new BookingTime(
-			booking : booking,
-			user : user,
-			doctor : booking?.doctor,
-			startTime : start,
-			endTime : end
-		)
-		bookingTimeRepository.save(bookingTime)
-		'{"success" : "1"}'
-	}
+//	/**
+//	 * @param bookingId
+//	 * @param timeId
+//	 * @param user
+//	 * @return
+//	 * 添加占用时间绑定
+//	 */
+//	@RequestMapping(value = 'bindingBookingTime', method = RequestMethod.POST)
+//	bindingBookingTime(@RequestParam Long bookingId, @RequestParam String startTime, @ModelAttribute('currentUser') User user) {
+//		
+//		def booking = bookingRepository.findOne(bookingId),
+//			start = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH')
+//		def c = Calendar.getInstance()
+//		c.setTime start
+//		c.add(Calendar.HOUR, 1)
+//		def end = c.getTime()
+//		
+//		def bookingTime = new BookingTime(
+//			booking : booking,
+//			user : user,
+//			doctor : booking?.doctor,
+//			startTime : start,
+//			endTime : end
+//		)
+//		bookingTimeRepository.save(bookingTime)
+//		'{"success" : "1"}'
+//	}
 	
 }

@@ -41,7 +41,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	DoctorInfoRepository doctorInfoRepository
 	
 	@Autowired
-	BookingTimeRepository doctorBookingTimeRepository
+	BookingTimeRepository bookingTimeRepository
 	
 	@Override
 	protected MyRepository<Booking, Long> getRepository() {
@@ -267,15 +267,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def day = DateUtils.parseDate("$strYear-$month-$i", 'yyyy-MM-dd'),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
-				timeList = doctorBookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
+				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
+				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 				todayData = []
 			timeList.each {
 				todayData << [
+					'type' : 'doctor',
 					'timeId' : it?.id,
 					'startTime' : it?.startTime,
 					'endTime' : it?.endTime,
 					'userId' : it?.user?.id,
-					'userName' : it?.booking?.name,
 					'location' : it?.location,
 					'content' : it?.content,
 					'remindTime' : it?.remindTime
@@ -296,7 +297,23 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 						timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
 					}
 				}
+				
+				bookingList.each {
+					def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
+						occupy = timeModel.substring(index, index + 1)
+					if ("1" != occupy || !"1".equals(occupy)) {
+						timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
+					}
+					todayData << [
+						'type' : 'user',
+						'bookingId' : it?.id,
+						'startTime' : it?.time,
+						'userId' : it?.user?.id,
+						'helpReason' : it?.helpReason
+					]
+				}
 			}
+			
 			data << [
 				'time' : DateFormatUtils.format(day, 'yyyy-MM-dd'),
 				'timeModel' : timeModel,

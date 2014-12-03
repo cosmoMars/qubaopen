@@ -1,8 +1,15 @@
-package com.qubaopen.survey.entity.enterprise;
+package com.qubaopen.survey.entity.hospital;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
-
-public class Enterprise extends AbstractBaseEntity<Long> {
+@Entity
+@Table(name = "hospital")
+@Audited
+public class Hospital extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 1709142018172486242L;
 

@@ -31,9 +31,6 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Booking booking;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startTime;
 
@@ -68,14 +65,6 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public Booking getBooking() {
-		return booking;
-	}
-
-	public void setBooking(Booking booking) {
-		this.booking = booking;
 	}
 
 	public Date getStartTime() {

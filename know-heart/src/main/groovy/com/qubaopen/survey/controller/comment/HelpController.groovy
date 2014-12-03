@@ -71,7 +71,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	 * @param self
 	 * @param pageable
 	 * @return
-	 * 获取求助信息
+	 * 获取求助信息列表
 	 */
 	@RequestMapping(value = 'retrieveHelpComment', method = RequestMethod.GET)
 	retrieveHelpComment(@RequestParam(required = false) Boolean self,

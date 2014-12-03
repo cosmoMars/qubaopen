@@ -44,7 +44,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	 * @param self
 	 * @param pageable
 	 * @return
-	 * 获取求助信息
+	 * 获取求助信息列表
 	 */
 	@RequestMapping(value = 'retrieveHelpComment', method = RequestMethod.GET)
 	retrieveHelpComment(@RequestParam(required = false) Boolean self,
@@ -56,11 +56,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		
 		def helps
 		if (self) {
-			helps = helpRepository.findAll(
-				[
-					doctor_equal : doctor
-				], pageable
-			)
+			helps = helpRepository.findByDoctor(doctor, pageable)
 		} else {
 			helps = helpRepository.findAll(pageable)
 		}

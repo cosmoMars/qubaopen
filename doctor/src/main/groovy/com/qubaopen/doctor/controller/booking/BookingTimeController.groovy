@@ -50,12 +50,10 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			'bookingTimeId' : bookingTime?.id,
 			'startTime' : bookingTime?.startTime,
 			'endTime' : bookingTime?.endTime,
-			'userId' : bookingTime?.user?.id,
-			'userName' : bookingTime?.booking?.name,
 			'location' : bookingTime?.location,
 			'content' : bookingTime?.content,
 			'remindTime' : bookingTime?.remindTime,
-			'bookingId' : bookingTime?.booking?.id
+			'repeatModel' : bookingTime?.repeatModel
 		]
 		
 	}
@@ -77,6 +75,7 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		@RequestParam(required = false) String endTime,
 		@RequestParam(required = false) String location,
 		@RequestParam(required = false) Integer remindTime,
+		@RequestParam(required = false) String repeatModel,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
 		def start = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH'),
@@ -103,6 +102,11 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		}
 		if (remindTime != null) {
 			bookingTime.remindTime = remindTime
+		}
+		if (repeatModel) {
+			bookingTime.repeatModel = repeatModel
+		} else {
+			bookingTime.repeatModel = '0000000'
 		}
 		
 		bookingTimeRepository.save(bookingTime)

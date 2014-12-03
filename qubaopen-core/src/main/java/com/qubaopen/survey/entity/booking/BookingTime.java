@@ -28,9 +28,6 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User user;
-	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date startTime;
 
@@ -47,7 +44,7 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 	private int remindTime;
 
 	/**
-	 * 重复模型 1,2,3,4,5,6,7
+	 * 重复模型 1110000
 	 */
 	private String repeatModel;
 
@@ -57,14 +54,6 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public Date getStartTime() {

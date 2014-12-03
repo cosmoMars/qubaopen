@@ -12,7 +12,7 @@ import org.hibernate.envers.Audited;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
 @Entity
-@Table(name = "doctro_share")
+@Table(name = "doctor_share")
 @Audited
 public class DoctorShare extends AbstractBaseEntity<Long> {
 

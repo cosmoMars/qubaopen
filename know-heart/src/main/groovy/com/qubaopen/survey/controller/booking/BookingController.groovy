@@ -116,6 +116,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			consultType = Booking.ConsultType.values()[consultTypeIndex]
 			booking.consultType = consultType
 		}
+		booking.status = Booking.Status.values()[0]
 		booking = bookingRepository.save(booking)
 		[
 			'success' : '1',

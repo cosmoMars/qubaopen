@@ -1,5 +1,7 @@
 package com.qubaopen.survey.controller.booking;
 
+import java.net.Authenticator.RequestorType;
+
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -200,6 +202,26 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			'success' : '1',
 			'data' : data
 		]
+	}
+	
+	/**
+	 * @param bookingId
+	 * @param time
+	 * @param user
+	 * @return
+	 * 提交时间
+	 */
+	@RequestMapping(value = 'submitBookingTime', method = RequestMethod.POST)
+	submitBookingTime(@RequestParam Long bookingId, @RequestParam String time, @ModelAttribute('currentUser') User user) {
+		
+		logger.trace '-- 提交预约时间 --'
+		
+		def booking = bookingRepository.findOne(bookingId)
+		if (time)
+			booking.time = DateUtils.parseDate(time, 'yyyy-MM-dd HH')
+		
+		bookingRepository.save(booking)
+		'{"success" : "1"}'
 	}
 	
 	def dayForWeek(Date date) {

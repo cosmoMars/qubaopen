@@ -272,7 +272,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				todayData = []
 			timeList.each {
 				todayData << [
-					'type' : 'doctor',
+					'type' : '1',
 					'timeId' : it?.id,
 					'startTime' : it?.startTime,
 					'endTime' : it?.endTime,
@@ -305,7 +305,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 						timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
 					}
 					todayData << [
-						'type' : 'user',
+						'type' : '2',
 						'bookingId' : it?.id,
 						'startTime' : it?.time,
 						'userId' : it?.user?.id,

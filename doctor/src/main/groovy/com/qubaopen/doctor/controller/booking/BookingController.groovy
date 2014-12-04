@@ -297,35 +297,34 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 						'remindTime' : it?.remindTime
 					]
 				}
+			}
+			bookingList.each {
+				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
+					occupy = timeModel.substring(index, index + 1)
+				if ("1" != occupy || !"1".equals(occupy)) {
+					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
+				}
 				
-				bookingList.each {
-					def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
-						occupy = timeModel.substring(index, index + 1)
-					if ("1" != occupy || !"1".equals(occupy)) {
-						timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
-					}
-					
 					other << [
 						'bookingId' : it.id,
 						'name' : it.name,
 						'helpReason' : it.helpReason
 					]
-				}
-				
-				for (k in 0..timeModel.length() - 1) {
-					if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
-						timeData << [
-							'dayId': i + 1,
-							'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
-							'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
-						]
-					}
+			}
+			
+			for (k in 0..timeModel.length() - 1) {
+				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
+					timeData << [
+						'dayId': i + 1,
+						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
+						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
+					]
 				}
 			}
-//			timeData << [
-//				'self' : self,
-//				'other' : other
-//	        ]
+			timeData << [
+				'self' : self,
+				'other' : other
+	        ]
 		}
 		[
 			'success' : '1',

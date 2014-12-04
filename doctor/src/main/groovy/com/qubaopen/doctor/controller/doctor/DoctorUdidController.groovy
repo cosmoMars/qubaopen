@@ -45,6 +45,7 @@ public class DoctorUdidController extends AbstractBaseController<DoctorUdid, Lon
 			'success' : '1',
 			'message' : '成功',
 			'id' : udid.id,
+			'push' : udid.push,
 			'startTime' : DateCommons.Date2String(udid?.startTime, "HH:mm"),
 			'endTime' : DateCommons.Date2String(udid?.endTime, "HH:mm")
 		]
@@ -59,10 +60,14 @@ public class DoctorUdidController extends AbstractBaseController<DoctorUdid, Lon
 	@RequestMapping(value = 'modifyUdid', method = RequestMethod.PUT)
 	modifyUdid(@RequestParam(required = false) String startTime,
 		@RequestParam(required = false) String endTime,
+		@RequestParam(required = false) Boolean push,
 		@ModelAttribute('currentDoctor') Doctor doctor
 		) {
 
 		def doctorUdid = doctorUdidRepository.findOne(doctor.id)
+		if (push != null) {
+			doctorUdid.push = push
+		}
 		if (startTime) {
 			doctorUdid.startTime = DateCommons.String2Date(startTime, 'HH:mm')
 		}

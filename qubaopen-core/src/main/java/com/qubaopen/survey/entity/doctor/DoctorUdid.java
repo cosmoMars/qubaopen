@@ -57,6 +57,11 @@ public class DoctorUdid extends AbstractBaseEntity2<Long> {
 	 */
 	@Temporal(TemporalType.TIME)
 	private Date endTime;
+	
+	/**
+	 * 推送
+	 */
+	private boolean push;
 
 	public Doctor getDoctor() {
 		return doctor;
@@ -104,6 +109,14 @@ public class DoctorUdid extends AbstractBaseEntity2<Long> {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public boolean isPush() {
+		return push;
+	}
+
+	public void setPush(boolean push) {
+		this.push = push;
 	}
 
 }

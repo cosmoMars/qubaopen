@@ -172,7 +172,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			ids.each {
 				types << new ConsultType(id : Long.valueOf(it.trim()))
 			}
-			doctorInfo.consultType = types
+			doctorInfo.consultTypes = types
 		}
 		if (targetUser) {
 			doctorInfo.targetUser = targetUser

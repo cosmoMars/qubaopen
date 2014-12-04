@@ -82,7 +82,7 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	 */
 	@ManyToMany
 	@JoinTable(name = "doctor_type_relation", joinColumns = @JoinColumn(name = "doctor_id"), inverseJoinColumns = @JoinColumn(name = "type_id"))
-	private Set<ConsultType> consultType;
+	private Set<ConsultType> consultTypes;
 
 	/**
 	 * 对象
@@ -185,12 +185,12 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 		this.qq = qq;
 	}
 
-	public Set<ConsultType> getConsultType() {
-		return consultType;
+	public Set<ConsultType> getConsultTypes() {
+		return consultTypes;
 	}
 
-	public void setConsultType(Set<ConsultType> consultType) {
-		this.consultType = consultType;
+	public void setConsultTypes(Set<ConsultType> consultTypes) {
+		this.consultTypes = consultTypes;
 	}
 
 	public String getTargetUser() {

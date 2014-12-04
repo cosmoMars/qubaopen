@@ -1,7 +1,5 @@
 package com.qubaopen.survey.controller.booking;
 
-import java.net.Authenticator.RequestorType;
-
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.booking.Booking
+import com.qubaopen.survey.entity.doctor.ConsultType
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.user.User
@@ -77,7 +76,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@RequestParam(required = false) boolean haveConsulted,
 //		@RequestParam(required = false) String refusalReason,
 		@RequestParam(required = false) boolean quick,
-		@RequestParam(required = false) Integer consultTypeIndex,
+		@RequestParam(required = false) Long consultTypeIndex,
 		@RequestParam(required = false) Integer money,
 		@ModelAttribute('currentUser') User user
 		) {
@@ -115,8 +114,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			booking.sex = sex
 		}
 		if (consultTypeIndex != null) {
-			consultType = Booking.ConsultType.values()[consultTypeIndex]
-			booking.consultType = consultType
+			booking.consultType = new ConsultType(id : consultTypeIndex)
 		}
 		booking.status = Booking.Status.values()[0]
 		booking = bookingRepository.save(booking)
@@ -134,11 +132,19 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 用户获取医师每月列表
 	 */
 	@RequestMapping(value = 'retrieveMonthBooking', method = RequestMethod.GET)
-	retrieveMonthBooking(@RequestParam Integer month, @RequestParam long doctorId, @ModelAttribute('currentUser') User user) {
+	retrieveMonthBooking(@RequestParam(required = false) String time, @RequestParam long doctorId, @ModelAttribute('currentUser') User user) {
 
-		if (month == null) {
-			month = new Date().month + 1
-		}
+		
+		def date
+		if (time == null) {
+			date = new Date()
+		} else {
+			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
+			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
+			if (date < today) {
+				return '{"success" : "0", "message" : "err900"}'
+			}
+ 		}
 		
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
 			bookingTime, data = []
@@ -146,10 +152,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			bookingTime = doctorInfo.bookingTime
 		def times = bookingTime.split(',')
 		
-		def strYear = DateFormatUtils.format(new Date(), 'yyyy'),
-			year = DateUtils.parseDate("$strYear-$month", 'yyyy-MM')
+//		def strYear = DateFormatUtils.format(new Date(), 'yyyy'),
+//			year = DateUtils.parseDate("$strYear-$month", 'yyyy-MM')
 		
-//		def time = 
 //		def bookingTimeList = doctorBookingTimeRepository.findAll(
 //			doctor_equal : new Doctor(id : doctorId),
 //			startTime_greaterThanOrEqualTo : year,
@@ -158,30 +163,40 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //		def bookingTimeList = doctorBookingTimeRepository.findAllByTime(year, new Doctor(id : doctorId))
 		
 		def c = Calendar.getInstance()
-		c.setTime year
-		def maxDay = c.getMaximum(Calendar.DAY_OF_MONTH)
+		c.setTime date
+//		def maxDay = c.getMaximum(Calendar.DAY_OF_MONTH)
 		
-		for (i in 1..maxDay) {
-			def day = DateUtils.parseDate("$strYear-$month-$i", 'yyyy-MM-dd'),
+		def dayDate = [], timeDate = []
+		for (i in 0..6) {
+			c.add(Calendar.DATE, 1)
+			dayDate << [
+				'dayId' : i + 1,
+				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
+			]
+			
+			def day = c.getTime(),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
 				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
 			
-			timeList.each {
-				def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
-					end
-				if (DateUtils.isSameDay(it.startTime, it.endTime)) {
-					end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
-				} else {
-					end = 24
-				}
-					
-				for (j in start .. end - 1) {
-					def occupy = timeModel.substring(j, j + 1)
-					// 1 占用， 0 未占用
-					if ("1" != occupy || !"1".equals(occupy)) {
-						timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
+			if (timeList && timeList.size() > 0) {
+				timeModel = '000000000000000000000000'
+				timeList.each {
+					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
+						end
+					if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+						end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
+					} else {
+						end = 24
+					}
+						
+					for (j in start .. end - 1) {
+						def occupy = timeModel.substring(j, j + 1)
+						// 1 占用， 0 未占用
+						if ("1" != occupy || !"1".equals(occupy)) {
+							timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
+						}
 					}
 				}
 			}
@@ -193,14 +208,20 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
 				}
 			}
-			data << [
-				'time' : DateFormatUtils.format(day, 'yyyy-MM-dd'),
-				'timeModel' : timeModel
-			]
+			for (k in 0..timeModel.length() - 1) {
+				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
+					timeDate << [
+						'dayId': i + 1,
+						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
+						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
+					]
+				}
+			}
 		}
 		[
 			'success' : '1',
-			'data' : data
+			'dayList' : dayDate,
+			'timeList' : timeDate
 		]
 	}
 	

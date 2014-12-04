@@ -1,11 +1,11 @@
 package com.qubaopen.doctor.controller.doctor;
 
-import java.net.Authenticator.RequestorType;
+import static com.qubaopen.doctor.utils.ValidateUtil.*
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest
 
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -13,21 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.SessionAttributes
 import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorRepository;
-
-import static com.qubaopen.doctor.utils.ValidateUtil.*;
-
+import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository
+import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.doctor.repository.doctor.DoctorRepository
+import com.qubaopen.survey.entity.doctor.ConsultType
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
-import com.qubaopen.survey.entity.user.UserInfo;
 
 @RestController
 @RequestMapping('doctorInfo')
@@ -122,7 +119,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) String experience,
 		@RequestParam(required = false) String field,
 		@RequestParam(required = false) String qq,
-		@RequestParam(required = false) Integer consultType,
+		@RequestParam(required = false) String consultType,
 		@RequestParam(required = false) String targetUser,
 		@RequestParam(required = false) String genre,
 		@RequestParam(required = false) String bookingTime,
@@ -170,7 +167,12 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			doctorInfo.qq = qq
 		}
 		if (consultType != null) {
-			doctorInfo.consultType = DoctorInfo.ConsultType.values()[consultType]
+			def ids = consultType.split(','),
+				types = []
+			ids.each {
+				types << new ConsultType(id : Long.valueOf(it.trim()))
+			}
+			doctorInfo.consultType = types
 		}
 		if (targetUser) {
 			doctorInfo.targetUser = targetUser

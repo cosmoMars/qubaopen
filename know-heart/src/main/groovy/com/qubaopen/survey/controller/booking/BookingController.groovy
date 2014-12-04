@@ -151,20 +151,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (doctorInfo)
 			bookingTime = doctorInfo.bookingTime
 		def times = bookingTime.split(',')
-		
-//		def strYear = DateFormatUtils.format(new Date(), 'yyyy'),
-//			year = DateUtils.parseDate("$strYear-$month", 'yyyy-MM')
-		
-//		def bookingTimeList = doctorBookingTimeRepository.findAll(
-//			doctor_equal : new Doctor(id : doctorId),
-//			startTime_greaterThanOrEqualTo : year,
-//			endTime_lessThanOrEqualTo : year
-//		)
-//		def bookingTimeList = doctorBookingTimeRepository.findAllByTime(year, new Doctor(id : doctorId))
-		
 		def c = Calendar.getInstance()
 		c.setTime date
-//		def maxDay = c.getMaximum(Calendar.DAY_OF_MONTH)
 		
 		def dayDate = [], timeDate = []
 		for (i in 0..6) {

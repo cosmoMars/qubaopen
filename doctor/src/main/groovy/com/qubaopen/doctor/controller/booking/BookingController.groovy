@@ -247,19 +247,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				return '{"success" : "0", "message" : "err900"}'
 			}
 		}
-//		def bookingList = doctorBookingRepository.retrieveBookingByMonth(doctor, month)		
-//		
-//		def data = []
-//		bookingList.each {
-//			data << [
-//				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd HH'),
-//				'consultType' : it?.consultType?.ordinal()
-//			]
-//		}
-//		[
-//			'success' : '1',
-//			'data' : data
-//		]
 		def doctorInfo = doctorInfoRepository.findOne(doctor.id),
 			bookingTime, data = []
 		if (doctorInfo)

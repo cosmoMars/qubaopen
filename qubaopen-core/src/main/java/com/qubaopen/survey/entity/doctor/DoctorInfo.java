@@ -1,13 +1,9 @@
 package com.qubaopen.survey.entity.doctor;
 
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -78,11 +74,14 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	private String qq;
 
 	/**
-	 * 咨询方式
+	 * 面对面
 	 */
-	@ManyToMany
-	@JoinTable(name = "doctor_type_relation", joinColumns = @JoinColumn(name = "doctor_id"), inverseJoinColumns = @JoinColumn(name = "type_id"))
-	private Set<ConsultType> consultTypes;
+	private boolean faceToFace;
+
+	/**
+	 * 视频
+	 */
+	private boolean video;
 
 	/**
 	 * 对象
@@ -185,12 +184,20 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 		this.qq = qq;
 	}
 
-	public Set<ConsultType> getConsultTypes() {
-		return consultTypes;
+	public boolean isFaceToFace() {
+		return faceToFace;
 	}
 
-	public void setConsultTypes(Set<ConsultType> consultTypes) {
-		this.consultTypes = consultTypes;
+	public void setFaceToFace(boolean faceToFace) {
+		this.faceToFace = faceToFace;
+	}
+
+	public boolean isVideo() {
+		return video;
+	}
+
+	public void setVideo(boolean video) {
+		this.video = video;
 	}
 
 	public String getTargetUser() {

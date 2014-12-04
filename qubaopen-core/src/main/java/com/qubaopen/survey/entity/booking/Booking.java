@@ -13,7 +13,6 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
-import com.qubaopen.survey.entity.doctor.ConsultType;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.user.User;
@@ -105,8 +104,12 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	private boolean quick;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@Enumerated
 	private ConsultType consultType;
+	
+	private enum ConsultType {
+		Facetoface, Video
+	}
 
 	@Enumerated
 	private Status status;

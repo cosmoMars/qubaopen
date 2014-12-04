@@ -119,7 +119,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) String experience,
 		@RequestParam(required = false) String field,
 		@RequestParam(required = false) String qq,
-		@RequestParam(required = false) String consultType,
+		@RequestParam(required = false) Boolean faceToFace,
+		@RequestParam(required = false) Boolean video,
 		@RequestParam(required = false) String targetUser,
 		@RequestParam(required = false) String genre,
 		@RequestParam(required = false) String bookingTime,
@@ -166,13 +167,11 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		if (qq) {
 			doctorInfo.qq = qq
 		}
-		if (consultType != null) {
-			def ids = consultType.split(','),
-				types = []
-			ids.each {
-				types << new ConsultType(id : Long.valueOf(it.trim()))
-			}
-			doctorInfo.consultTypes = types
+		if (faceToFace != null) {
+			doctorInfo.faceToFace = faceToFace
+		}
+		if (video != null) {
+			doctorInfo.video = video
 		}
 		if (targetUser) {
 			doctorInfo.targetUser = targetUser

@@ -95,16 +95,6 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			doctorIdCardBind = loginDoctor.doctorIdCardBind,
 			doctorAddress = doctorAddressRepository.findByDoctorAndUsed(loginDoctor, true)
 
-			def types = doctorInfo.consultTypes, consultTypes = []
-			if (types) {
-				types.each {
-					consultTypes << [
-						'typeId' : it.id,
-						'typeName' : it.name
-					]
-				}
-			}
-			
 			return  [
 				'success' : '1',
 				'message' : '登录成功',
@@ -123,7 +113,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'experience' : doctorInfo?.experience,
 				'field' : doctorInfo?.field,
 				'qq' : doctorInfo?.qq,
-				'consultType' : consultTypes,
+				'faceToFace' : doctorInfo?.faceToFace,
+				'video' : doctorInfo?.video,
 				'targetUser' : doctorInfo?.targetUser,
 				'genre' : doctorInfo?.genre,
 //				'time' : doctorInfo?.time,

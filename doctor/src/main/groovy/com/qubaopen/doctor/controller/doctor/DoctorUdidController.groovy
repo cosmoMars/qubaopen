@@ -57,7 +57,7 @@ public class DoctorUdidController extends AbstractBaseController<DoctorUdid, Lon
 	 * @param endTime
 	 * @return
 	 */
-	@RequestMapping(value = 'modifyUdid', method = RequestMethod.PUT)
+	@RequestMapping(value = 'modifyUdid', method = RequestMethod.POST)
 	modifyUdid(@RequestParam(required = false) String startTime,
 		@RequestParam(required = false) String endTime,
 		@RequestParam(required = false) Boolean push,

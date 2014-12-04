@@ -232,12 +232,20 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 日历列表
 	 */
 	@RequestMapping(value = 'retrieveBookingList', method = RequestMethod.GET)
-	retrieveBookingList(@RequestParam(required = false) Integer month, @ModelAttribute('currentDoctor') Doctor doctor) {
+	retrieveBookingList(@RequestParam(required = false) String time, @ModelAttribute('currentDoctor') Doctor doctor) {
 
 		logger.trace('-- 订单日历 --')
 		
-		if (month == null) {
-			month = new Date().getMonth() + 1
+		def date
+		
+		if (time == null) {
+			date = new Date()
+		} else {
+			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
+			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
+			if (date < today) {
+				return '{"success" : "0", "message" : "err900"}'
+			}
 		}
 //		def bookingList = doctorBookingRepository.retrieveBookingByMonth(doctor, month)		
 //		
@@ -253,49 +261,54 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //			'data' : data
 //		]
 		def doctorInfo = doctorInfoRepository.findOne(doctor.id),
-			bookingTime = doctorInfo.bookingTime,
-			data = []
+			bookingTime, data = []
+		if (doctorInfo)
+			bookingTime = doctorInfo.bookingTime
 		def times = bookingTime.split(',')
-		
-		def strYear = DateFormatUtils.format(new Date(), 'yyyy'),
-			year = DateUtils.parseDate("$strYear-$month", 'yyyy-MM')
 		def c = Calendar.getInstance()
-		c.setTime year
-		def maxDay = c.getMaximum(Calendar.DAY_OF_MONTH)
+		c.setTime date
 		
-		for (i in 1..maxDay) {
-			def day = DateUtils.parseDate("$strYear-$month-$i", 'yyyy-MM-dd'),
+		def dayData = [], timeData = []
+		
+		for (i in 0..6) {
+			c.add(Calendar.DATE, 1)
+			dayData << [
+				'dayId' : i + 1,
+				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
+			]
+			def day = c.getTime(),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
 				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
-				todayData = []
-			timeList.each {
-				todayData << [
-					'type' : '1',
-					'timeId' : it?.id,
-					'startTime' : it?.startTime,
-					'endTime' : it?.endTime,
-					'userId' : it?.user?.id,
-					'location' : it?.location,
-					'content' : it?.content,
-					'remindTime' : it?.remindTime
-				]
+				self = [], other = []
 				
-				def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
+			if (timeList && timeList.size() > 0) {
+				timeModel = '000000000000000000000000'
+				timeList.each {
+					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
 					end
-				if (DateUtils.isSameDay(it.startTime, it.endTime)) {
-					end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
-				} else {
-					end = 24
-				}
-					
-				for (j in start .. end - 1) {
-					def occupy = timeModel.substring(j, j + 1)
-					// 1 占用， 0 未占用
-					if ("1" != occupy || !"1".equals(occupy)) {
-						timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
+					if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+						end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
+					} else {
+						end = 24
 					}
+						
+					for (j in start .. end - 1) {
+						def occupy = timeModel.substring(j, j + 1)
+						// 1 占用， 0 未占用
+						if ("1" != occupy || !"1".equals(occupy)) {
+							timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
+						}
+					}
+					self << [
+						'timeId' : it.id,
+						'startTime' : it?.startTime,
+						'endTime' : it?.endTime,
+						'location' : it?.location,
+						'content' : it?.content,
+						'remindTime' : it?.remindTime
+					]
 				}
 				
 				bookingList.each {
@@ -304,25 +317,34 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					if ("1" != occupy || !"1".equals(occupy)) {
 						timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
 					}
-					todayData << [
-						'type' : '2',
-						'bookingId' : it?.id,
-						'startTime' : it?.time,
-						'userId' : it?.user?.id,
-						'helpReason' : it?.helpReason
+					
+					other << [
+						'bookingId' : it.id,
+						'name' : it.name,
+						'helpReason' : it.helpReason
 					]
 				}
+				
+				for (k in 0..timeModel.length() - 1) {
+					if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
+						timeData << [
+							'dayId': i + 1,
+							'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
+							'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
+						]
+					}
+				}
 			}
-			
-			data << [
-				'time' : DateFormatUtils.format(day, 'yyyy-MM-dd'),
-				'timeModel' : timeModel,
-				'todayData' : todayData
-			]
+//			timeData << [
+//				'self' : self,
+//				'other' : other
+//	        ]
 		}
 		[
 			'success' : '1',
-			'data' : data
+			'dayData' : dayData,
+			'timeData' : timeData
+			
 		]
 	
 	}

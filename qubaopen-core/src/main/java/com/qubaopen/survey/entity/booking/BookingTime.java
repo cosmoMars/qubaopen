@@ -13,7 +13,6 @@ import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
-import com.qubaopen.survey.entity.user.User;
 
 /**
  * @author mars 医师详细预约时间

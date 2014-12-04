@@ -1,10 +1,13 @@
 package com.qubaopen.survey.entity.doctor;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -77,12 +80,9 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 	/**
 	 * 咨询方式
 	 */
-	@Enumerated
-	private ConsultType consultType;
-
-	private enum ConsultType {
-		Facetoface, Video
-	}
+	@ManyToMany
+	@JoinTable(name = "doctor_type_relation", joinColumns = @JoinColumn(name = "doctor_id"), inverseJoinColumns = @JoinColumn(name = "type_id"))
+	private Set<ConsultType> consultType;
 
 	/**
 	 * 对象
@@ -185,11 +185,11 @@ public class DoctorInfo extends AbstractBaseEntity<Long> {
 		this.qq = qq;
 	}
 
-	public ConsultType getConsultType() {
+	public Set<ConsultType> getConsultType() {
 		return consultType;
 	}
 
-	public void setConsultType(ConsultType consultType) {
+	public void setConsultType(Set<ConsultType> consultType) {
 		this.consultType = consultType;
 	}
 

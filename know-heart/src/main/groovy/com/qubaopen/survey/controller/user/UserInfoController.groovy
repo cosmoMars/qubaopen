@@ -72,14 +72,16 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		
 		logger.trace ' -- 获得修改个人信息 -- '
 		
-		if (!validateNormalString(userInfo.nickName.trim())) {
-			return '{"success" : "0", "message" : "err103"}'
+		if (userInfo.nickName) {
+			if (!validateNormalString(userInfo.nickName.trim())) {
+				return '{"success" : "0", "message" : "err103"}'
+			}
+			def bytes = userInfo.nickName.trim().getBytes('gb2312')
+			if (bytes.size() < 1 || bytes.size() > 7) {
+				return '{"success" : "0", "message" : "err103"}'
+			}
 		}
-//		 userInfo.nickName.trim().length() < 1 || userInfo.nickName.trim().length() > 7
-		def bytes = userInfo.nickName.trim().getBytes('gb2312')
-		if (bytes.size() < 1 || bytes.size() > 7) {
-			return '{"success" : "0", "message" : "err103"}'
-		}
+		
 		if (userInfo.birthday) {
 			if (userInfo.birthday >= DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd') || userInfo.birthday <= DateUtils.parseDate('1900', 'yyyy')) {
 				return '{"success" : "0", "message" : "err104"}'

@@ -13,13 +13,13 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.doctor.ConsultType;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.user.User;
 
 /**
- * @author mars
- * 订单详情
+ * @author mars 订单详情
  */
 @Entity
 @Table(name = "booking")
@@ -30,10 +30,10 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Hospital hospital;
 
@@ -54,7 +54,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	@Temporal(TemporalType.DATE)
 	private Date birthday;
-	
+
 	/**
 	 * 职业
 	 */
@@ -105,19 +105,14 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	private boolean quick;
 
-	@Enumerated
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ConsultType consultType;
-
-	private enum ConsultType {
-		Facetoface, Video
-	}
 
 	@Enumerated
 	private Status status;
 
 	/**
-	 * @author mars
-	 * 预约，接受，拒绝，已咨询，未咨询，已约下次
+	 * @author mars 预约，接受，拒绝，已咨询，未咨询，已约下次
 	 */
 	public enum Status {
 		Booking, Accept, Refusal, Consulted, Consulting, Next

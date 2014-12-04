@@ -1,11 +1,14 @@
 package com.qubaopen.survey.entity.hospital;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+
 @Entity
 @Table(name = "hospital")
 @Audited
@@ -27,6 +30,9 @@ public class Hospital extends AbstractBaseEntity<Long> {
 	 * 启用
 	 */
 	private boolean activated;
+
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "hospital")
+	private HospitalInfo hospitalInfo;
 
 	public String getEmail() {
 		return email;

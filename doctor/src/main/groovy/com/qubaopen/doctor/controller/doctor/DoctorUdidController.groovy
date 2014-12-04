@@ -35,7 +35,7 @@ public class DoctorUdidController extends AbstractBaseController<DoctorUdid, Lon
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveDoctorUdid', method = RequestMethod.GET)
-	retrieveDoctorUdid(@ModelAttribute('currentUser') Doctor doctor) {
+	retrieveDoctorUdid(@ModelAttribute('currentDoctor') Doctor doctor) {
 
 		logger.trace(" -- 获取用户UDID信息 -- ")
 

@@ -129,11 +129,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 						isGood = true
 					}
 					commentData << [
+						'commentId' : cit?.id,
 						'doctorId' : cit?.doctor?.id,
 						'doctorName' : cit?.doctor?.doctorInfo?.name,
 						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
 						'doctorContent' : cit?.content,
-						'doctorTime' : DateFormatUtils.format(cit.time, 'yyyy-MM-dd'),
+						'doctorTime' : DateFormatUtils.format(cit?.time, 'yyyy-MM-dd'),
 						'goods' : gSize,
 						'isGood' : isGood
 					]

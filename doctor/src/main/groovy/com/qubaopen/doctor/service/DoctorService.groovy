@@ -2,6 +2,7 @@ package com.qubaopen.doctor.service;
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -75,8 +76,10 @@ public class DoctorService {
 			
 			d = doctorRepository.save(d)
 			
+			def randomNum = RandomStringUtils.randomNumeric(6)
 			def doctorInfo = new DoctorInfo(
 				id : d.id,
+				name : "医师$randomNum",
 				bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
 			)
 			def doctorUdid = new DoctorUdid(

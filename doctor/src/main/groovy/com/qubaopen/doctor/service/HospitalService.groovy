@@ -115,7 +115,7 @@ public class HospitalService {
 			hospitalUdidRepository.save(hospitalUdid)
 			return [
 				'success': '1',
-				'doctorId' : h.id
+				'hospitalId' : h.id
 			]
 		}
 

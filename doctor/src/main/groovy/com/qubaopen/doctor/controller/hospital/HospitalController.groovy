@@ -90,7 +90,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 			return  [
 				'success' : '1',
 				'message' : '登录成功',
-				'doctorId' : loginHospital?.id,
+				'hospitalId' : loginHospital?.id,
 				'email' : loginHospital?.email,
 				'address' : hospitalInfo?.address,
 				'establishTime' : hospitalInfo?.establishTime,
@@ -101,6 +101,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 				'introduce' : hospitalInfo?.introduce,
 				'wordsConsult' : hospitalInfo?.wordsConsult,
 				'minCharge' : hospitalInfo?.minCharge,
+				'maxCharge' : hospitalInfo?.maxCharge,
 				'recordPaths' : recordPaths.join(',')
 			]
 		}
@@ -221,12 +222,17 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		'{"success" : "1"}'
 	}
 	
+	/**
+	 * @param doctor
+	 * @param request
+	 * @return
+	 * 退出
+	 */
 	@RequestMapping(value = 'logout', method = RequestMethod.GET)
-	logout(@ModelAttribute('currentDoctor') Doctor doctor, HttpServletRequest request) {
+	logout(@ModelAttribute('currentHospital') Hospital hospital, HttpServletRequest request) {
 		
 		def session = request.getSession()
-		
-		session.removeAttribute('currentDoctor')
+		session.invalidate()
 		
 		'{"success" : "1"}'
 	}

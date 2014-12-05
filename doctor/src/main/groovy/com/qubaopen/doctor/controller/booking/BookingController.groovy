@@ -107,7 +107,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def data = []
 		bookingList.each {
 			data << [
-				'bookingId' : it.id,
+				'bookingId' : it?.id,
 				'userId' : it.user?.id,
 				'userName' : it?.name,
 				'helpReason' : it.refusalReason,
@@ -202,6 +202,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def data = []
 		bookingList.each {
 			data << [
+				'bookingId' : it?.id,
 				'userId' : it.user?.id,
 				'userName' : it?.name,
 				'helpReason' : it.refusalReason,

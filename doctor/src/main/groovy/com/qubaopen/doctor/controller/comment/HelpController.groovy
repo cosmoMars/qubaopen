@@ -173,8 +173,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				'doctorContent' : it?.content,
 				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
 				'doctorTime' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-				'goods' : goods,
-				'more' : more
+				'goods' : goods
 			]
 		}
 		if (pageable.pageNumber > 0) {
@@ -185,6 +184,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				'helpTime' : '',
 				'userName' : '',
 				'userAvatar' : '',
+				'more' : more,
 				'data' : commentData
 			]
 		}
@@ -195,6 +195,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			'helpTime' : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
 			'userName' : help?.user?.userInfo?.nickName,
 			'userAvatar' : help?.user?.userInfo?.avatarPath,
+			'more' : more,
 			'data' : commentData
 		]
 	}

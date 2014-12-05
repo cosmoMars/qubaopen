@@ -105,13 +105,13 @@ public class HospitalService {
 			def hospitalInfo = new HospitalInfo(
 				id : h.id
 			)
+			hospitalInfoRepository.save(hospitalInfo)
 			def hospitalUdid = new HospitalUdid(
 				id : h.id,
 				startTime : DateCommons.String2Date('09:00','HH:mm'),
 				endTime : DateCommons.String2Date('22:00','HH:mm'),
 				push : true
 			)
-			hospitalInfoRepository.save(hospitalInfo)
 			hospitalUdidRepository.save(hospitalUdid)
 			return [
 				'success': '1',

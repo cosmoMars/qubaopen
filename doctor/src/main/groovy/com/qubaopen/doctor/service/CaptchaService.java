@@ -20,11 +20,11 @@ public class CaptchaService {
 			appender.setFrom("mars.liu@qudiaoyan.com");
 			appender.setSMTPHost("smtp.mxhichina.com");
 			appender.setLocationInfo(true);
-			appender.setSubject("验证码");
+			appender.setSubject("知心团队 验证码");
 			appender.setLayout(new PatternLayout());
 			appender.activateOptions();
 			logger.addAppender(appender);
-			logger.error(captcha);
+			logger.error("验证码：" + captcha);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

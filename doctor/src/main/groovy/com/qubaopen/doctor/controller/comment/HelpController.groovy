@@ -76,11 +76,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				comments.each { cit ->
 					def goods = helpCommentGoodRepository.countByHelpComment(cit)
 					commentData << [
-						'doctorId' : cit.doctor?.id,
-						'doctorName' : cit.doctor?.doctorInfo?.name,
+						'commentId' : cit?.id,
+						'doctorId' : cit?.doctor?.id,
+						'doctorName' : cit?.doctor?.doctorInfo?.name,
 						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-						'doctorContent' : cit.content,
-						'doctorTime' : cit.time,
+						'doctorContent' : cit?.content,
+						'doctorTime' : cit?.time,
 						'goods' : goods
 					]
 						
@@ -106,11 +107,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				comments.each { cit ->
 					def goods = helpCommentGoodRepository.countByHelpComment(cit)
 					commentData << [
-						'doctorId' : cit.doctor?.id,
+						'commentId' : cit?.id,
+						'doctorId' : cit?.doctor?.id,
 						'doctorName' : cit.doctor?.doctorInfo?.name,
 						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-						'doctorContent' : cit.content,
-						'doctorTime' : cit.time,
+						'doctorContent' : cit?.content,
+						'doctorTime' : cit?.time,
 						'goods' : goods
 					]
 						

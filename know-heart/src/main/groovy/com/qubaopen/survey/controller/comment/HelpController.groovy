@@ -117,12 +117,25 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				def comments = helpCommentRepository.findLimitComment(it)
 				def commentData = []
 				comments.each { cit ->
+					def goods = helpCommentGoodRepository.findByHelpComment(cit),
+						isGood = false, gSize = 0
+					if (goods) {
+						gSize = goods.size()
+					}
+					def goodComment = goods.find{ g ->
+						g.user == user
+					}
+					if (goodComment) {
+						isGood = true
+					}
 					commentData << [
 						'doctorId' : cit?.doctor?.id,
 						'doctorName' : cit?.doctor?.doctorInfo?.name,
 						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
 						'doctorContent' : cit?.content,
-						'doctorTime' : DateFormatUtils.format(cit.time, 'yyyy-MM-dd')
+						'doctorTime' : DateFormatUtils.format(cit.time, 'yyyy-MM-dd'),
+						'goods' : gSize,
+						'isGood' : isGood
 					]
 						
 				}
@@ -176,14 +189,25 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		}
 			
 		comments.each {
-			def goods = helpCommentGoodRepository.countByHelpComment(it)
+			def goods = helpCommentGoodRepository.findByHelpComment(it),
+				isGood = false, gSize = 0
+			if (goods) {
+				gSize = goods.size()
+			}
+			def goodComment = goods.find{ g ->
+				g.user == user
+			}
+			if (goodComment) {
+				isGood = true
+			}
 			commentData << [
 				'doctorId' : it?.doctor?.id,
 				'doctorName' : it?.doctor?.doctorInfo?.name,
 				'doctorContent' : it?.content,
 				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
 				'doctorTime' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-				'goods' : goods
+				'goods' : gSize,
+				'isGood' : isGood
 			]
 		}
 		if (pageable.pageNumber > 0) {

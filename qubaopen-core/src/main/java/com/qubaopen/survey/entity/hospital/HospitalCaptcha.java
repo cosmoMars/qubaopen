@@ -12,17 +12,17 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 @Entity
 @Table(name = "hospital_captcha")
 @Audited
-public class HospitalCaptcha extends AbstractBaseEntity<Long> {
+public class HospitalCaptcha extends AbstractBaseEntity2<Long> {
 
 	private static final long serialVersionUID = -5838944093506526570L;
 
 	/**
-	 * 医师
+	 *  诊所
 	 */
 	@OneToOne(fetch = FetchType.LAZY, optional = false)
 	@PrimaryKeyJoinColumn

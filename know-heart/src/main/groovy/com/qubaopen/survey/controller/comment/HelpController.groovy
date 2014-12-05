@@ -171,8 +171,6 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			comments = helpCommentRepository.findByHelp(help, pageable)
 		}
 		def more = true
-		println comments.size()
-		println pageable.pageSize
 		if (comments.size() < pageable.pageSize) {
 			more = false
 		}
@@ -209,8 +207,6 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			'userAvatar' : help?.user?.userInfo?.avatarPath,
 			'data' : commentData
 		]
-		
-		
 	}
 
 }

@@ -9,27 +9,26 @@ import org.springframework.stereotype.Service;
 public class CaptchaService {
 
 	@SuppressWarnings("unused")
-	private String sandCaptcha(String captcha) {
+	private String sandCaptcha(String email, String captcha) {
 		Logger logger = Logger.getLogger(CaptchaService.class);
 
 		SMTPAppender appender = new SMTPAppender();
 		try {
-			appender.setSMTPUsername("username");
-			appender.setSMTPPassword("password");
-			appender.setTo("xxx@xxx.com");
-			appender.setFrom("yyy@yyy.com");
-			appender.setSMTPHost("smtp.163.com");
+			appender.setSMTPUsername("mars.liu@qudiaoyan.com");
+			appender.setSMTPPassword("asdfqwer12");
+			appender.setTo(email);
+			appender.setFrom("mars.liu@qudiaoyan.com");
+			appender.setSMTPHost("smtp.mxhichina.com");
 			appender.setLocationInfo(true);
-			appender.setSubject("captcha");
+			appender.setSubject("验证码");
 			appender.setLayout(new PatternLayout());
 			appender.activateOptions();
 			logger.addAppender(appender);
 			logger.error(captcha);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Printing ERROR Statements", e);
 		}
-		return captcha;
+		return "1";
 	}
 
 }

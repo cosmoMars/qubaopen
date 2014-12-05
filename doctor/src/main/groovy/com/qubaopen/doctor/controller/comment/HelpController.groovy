@@ -19,6 +19,7 @@ import com.qubaopen.doctor.repository.comment.HelpCommentRepository
 import com.qubaopen.doctor.repository.comment.HelpRepository
 import com.qubaopen.survey.entity.comment.Help
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.user.User;
 
 @RestController
 @RequestMapping('help')
@@ -128,6 +129,73 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		[
 			'success' : '1',
 			'data' : data
+		]
+	}
+		
+	/**
+	 * @param id
+	 * @param user
+	 * @return
+	 * 详细评论
+	 */
+	@RequestMapping(value = 'retrieveDetailHelp', method = RequestMethod.POST)
+	retrieveDetailHelp(@RequestParam long helpId,
+		@RequestParam(required = false) String ids,
+		@PageableDefault(page = 0, size = 20,  sort = 'createdDate', direction = Direction.ASC)
+		Pageable pageable,
+		@ModelAttribute('currentUser') User user) {
+	
+		logger.trace '-- 获取详细评论 --'
+		
+		
+		def help = helpRepository.findOne(helpId),
+			commentData = [], comments
+		if (ids) {
+			def list = [],
+				strIds = ids.split(',')
+			strIds.each {
+				list << Long.valueOf(it.trim())
+			}
+			comments = helpCommentRepository.findByHelp(help, list, pageable)
+		} else {
+			comments = helpCommentRepository.findByHelp(help, pageable)
+		}
+		def more = true
+		if (comments.size() < pageable.pageSize) {
+			more = false
+		}
+			
+		comments.each {
+			def goods = helpCommentGoodRepository.countByHelpComment(it)
+			commentData << [
+				'doctorId' : it?.doctor?.id,
+				'doctorName' : it?.doctor?.doctorInfo?.name,
+				'doctorContent' : it?.content,
+				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
+				'doctorTime' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+				'goods' : goods,
+				'more' : more
+			]
+		}
+		if (pageable.pageNumber > 0) {
+			return [
+				'success' : '1',
+				'helpId' : '',
+				'helpContent' : '',
+				'helpTime' : '',
+				'userName' : '',
+				'userAvatar' : '',
+				'data' : commentData
+			]
+		}
+		[
+			'success' : '1',
+			'helpId' : help?.id,
+			'helpContent' : help?.content,
+			'helpTime' : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
+			'userName' : help?.user?.userInfo?.nickName,
+			'userAvatar' : help?.user?.userInfo?.avatarPath,
+			'data' : commentData
 		]
 	}
 

@@ -142,6 +142,7 @@ public class UserService {
 				captcha : captcha,
 				action : '1'
 			)
+			userCaptchaLogRepository.save(userCaptchaLog)
 			def userCaptcha = userCaptchaRepository.findOne(u.id)
 			if (userCaptcha?.captcha != captcha) {
 				return '{"success": "0", "message": "err007"}'

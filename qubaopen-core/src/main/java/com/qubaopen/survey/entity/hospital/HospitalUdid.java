@@ -12,12 +12,12 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.core.entity.AbstractBaseEntity2;
 
 @Entity
 @Table(name = "hospital_udid")
 @Audited
-public class HospitalUdid extends AbstractBaseEntity<Long> {
+public class HospitalUdid extends AbstractBaseEntity2<Long> {
 
 	private static final long serialVersionUID = -5435728234108010206L;
 

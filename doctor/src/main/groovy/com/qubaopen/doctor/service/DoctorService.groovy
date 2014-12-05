@@ -61,6 +61,8 @@ public class DoctorService {
 				captcha : captcha,
 				action : '1'
 			)
+			doctorCaptchaLogRepository.save(doctorCaptchaLog)
+			
 			def doctorCaptcha = doctorCaptchaRepository.findOne(d.id)
 			if (doctorCaptcha?.captcha != captcha) {
 				return '{"success": "0", "message": "err007"}'

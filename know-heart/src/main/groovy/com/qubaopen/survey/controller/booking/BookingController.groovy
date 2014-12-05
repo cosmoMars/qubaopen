@@ -142,7 +142,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
 			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
 			if (date < today) {
-				return '{"success" : "0", "message" : "err900"}'
+				return '{"success" : "0", "message" : "err801"}'
 			}
  		}
 		
@@ -154,10 +154,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def c = Calendar.getInstance()
 		c.setTime date
 		
-		def dayDate = [], timeDate = []
+		def dayData = [], timeData = []
 		for (i in 0..6) {
-			c.add(Calendar.DATE, 1)
-			dayDate << [
+			if (i > 0)
+				c.add(Calendar.DATE, 1)
+			dayData << [
 				'dayId' : i + 1,
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
 			]
@@ -198,7 +199,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			}
 			for (k in 0..timeModel.length() - 1) {
 				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
-					timeDate << [
+					timeData << [
 						'dayId': i + 1,
 						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
 						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
@@ -208,8 +209,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		[
 			'success' : '1',
-			'dayList' : dayDate,
-			'timeList' : timeDate
+			'dayData' : dayData,
+			'timeData' : timeData
 		]
 	}
 	
@@ -259,6 +260,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'treatmented' : booking?.treatmented,
 				'haveConsulted' : booking?.haveConsulted
 			]
+		} else {
+			'{"success" : "0", "message" : "err"}'
 		}
 	}
 	

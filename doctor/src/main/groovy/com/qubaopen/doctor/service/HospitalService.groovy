@@ -1,5 +1,7 @@
 package com.qubaopen.doctor.service;
 
+import groovy.transform.AutoClone;
+
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.time.DateUtils
@@ -37,6 +39,9 @@ public class HospitalService {
 	
 	@Autowired
 	HospitalUdidRepository hospitalUdidRepository
+	
+	@Autowired
+	CaptchaService captchaService
 	
 	/**
 	 * @param user
@@ -138,7 +143,7 @@ public class HospitalService {
 		
 		if (!hospital) {
 			hospital = new Hospital(
-				phone : email
+				email : email
 			)
 			hospitalRepository.save(hospital)
 		}
@@ -166,18 +171,19 @@ public class HospitalService {
 		
 		// 给指定的用户手机号发送6位随机数的验证码
 //		def result = smsService.sendCaptcha(email, captcha)
+		def result = captchaService.sandCaptcha(email, captcha)
 		
 		def hospitalCaptchaLog = new HospitalCaptchaLog(
 			hospital : hospital,
 			captcha : captcha,
-			status : result.get('resCode'),
+			status : result,
 			action : '0'
 		)
 		hospitalCaptchaLogRepository.save(hospitalCaptchaLog)
 		
-		if (!result.get('isSuccess')) {
-			return '{"success": "0", "message": "err011"}'
-		}
+//		if (!result.get('isSuccess')) {
+//			return '{"success": "0", "message": "err011"}'
+//		}
 
 		if (hospitalCaptcha) {
 			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate)) {

@@ -243,12 +243,17 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		'{"success" : "1"}'
 	}
 	
+	/**
+	 * @param doctor
+	 * @param request
+	 * @return
+	 * 退出
+	 */
 	@RequestMapping(value = 'logout', method = RequestMethod.GET)
 	logout(@ModelAttribute('currentDoctor') Doctor doctor, HttpServletRequest request) {
 		
 		def session = request.getSession()
-		
-		session.removeAttribute('currentDoctor')
+		session.invalidate()
 		
 		'{"success" : "1"}'
 	}

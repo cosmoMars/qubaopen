@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.core.entity.AbstractBaseEntity2;
 import com.qubaopen.survey.entity.hospital.Hospital;
 
 /**
@@ -22,7 +22,7 @@ import com.qubaopen.survey.entity.hospital.Hospital;
 @Entity
 @Table(name = "doctor_info")
 @Audited
-public class DoctorInfo extends AbstractBaseEntity<Long> {
+public class DoctorInfo extends AbstractBaseEntity2<Long> {
 
 	private static final long serialVersionUID = 2535242382334786060L;
 

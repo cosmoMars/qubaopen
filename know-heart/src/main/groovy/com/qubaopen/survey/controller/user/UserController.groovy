@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.UserThird
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserGold
@@ -405,4 +406,19 @@ class UserController extends AbstractBaseController<User, Long> {
 		smsService.refreshToken()
 		
 	}
+	/**
+	 * @param doctor
+	 * @param request
+	 * @return
+	 * 退出
+	 */
+	@RequestMapping(value = 'logout', method = RequestMethod.GET)
+	logout(@ModelAttribute('currentDoctor') Doctor doctor, HttpServletRequest request) {
+		
+		def session = request.getSession()
+		session.invalidate()
+		
+		'{"success" : "1"}'
+	}
+	
 }

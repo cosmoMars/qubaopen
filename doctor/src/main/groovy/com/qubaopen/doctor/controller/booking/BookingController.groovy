@@ -258,7 +258,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def dayData = [], timeData = []
 		
 		for (i in 0..6) {
-			c.add(Calendar.DATE, 1)
+			if (i > 0)
+				c.add(Calendar.DATE, 1)
 			dayData << [
 				'dayId' : i + 1,
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
@@ -311,10 +312,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 						'helpReason' : it.helpReason
 					]
 			}
-			
+			def timeAll = []
 			for (k in 0..timeModel.length() - 1) {
 				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
-					timeData << [
+					timeAll << [
 						'dayId': i + 1,
 						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
 						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
@@ -322,6 +323,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				}
 			}
 			timeData << [
+				'time' : timeAll,
 				'self' : self,
 				'other' : other
 	        ]
@@ -344,14 +346,21 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 修改订单状态
 	 */
 	@RequestMapping(value = 'modifyBookingStatus', method = RequestMethod.POST)
-	modifyBookingStatus(@RequestParam(required = false) Long id, @RequestParam(required = false) Integer index, @ModelAttribute('currentDoctor') Doctor doctor) {
+	modifyBookingStatus(@RequestParam(required = false) Long id,
+		@RequestParam(required = false) String content,
+		@RequestParam(required = false) Integer index,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
 		logger.trace('-- 修改订单状态 --')
 		
 		def booking = bookingRepository.findOne(id),
 			bookingStatus = Booking.Status.values()[index]
-		
+			
 		booking.status = bookingStatus
+		
+		if (bookingStatus && bookingStatus == Booking.Status.Refusal) {
+			booking.refusalReason = content
+		}
 		
 		if (bookingStatus && bookingStatus == Booking.Status.Next) {
 			Calendar cal = Calendar.getInstance()
@@ -376,4 +385,5 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		idx
 	}
+	
 }

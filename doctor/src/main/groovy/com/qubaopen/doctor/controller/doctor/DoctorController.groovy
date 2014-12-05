@@ -2,6 +2,7 @@ package com.qubaopen.doctor.controller.doctor;
 
 import static com.qubaopen.doctor.utils.ValidateUtil.*
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -239,6 +240,16 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		}
 		doctor.password = DigestUtils.md5Hex(newPwd)
 		doctorRepository.save(doctor)
+		'{"success" : "1"}'
+	}
+	
+	@RequestMapping(value = 'logout', method = RequestMethod.GET)
+	logout(@ModelAttribute('currentDoctor') Doctor doctor, HttpServletRequest request) {
+		
+		def session = request.getSession()
+		
+		session.removeAttribute('currentDoctor')
+		
 		'{"success" : "1"}'
 	}
 

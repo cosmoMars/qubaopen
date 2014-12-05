@@ -15,4 +15,10 @@ public interface HelpRepository extends MyRepository<Help, Long> {
 	
 	@Query("from Help h where h.id in (select hc.help.id from HelpComment hc where hc.doctor = :doctor)")
 	List<Help> findByDoctor(@Param("doctor") Doctor doctor, Pageable pageable);
+	
+	@Query("from Help h where h.id in (select hc.help.id from HelpComment hc where hc.doctor = :doctor and hc.help.id not in (:ids))")
+	List<Help> findByDoctor(@Param("doctor") Doctor doctor, @Param("ids") List<Long> ids, Pageable pageable);
+
+	@Query("from Help h where h.id not in (:ids)")
+	List<Help> findAllHelp(@Param("ids") List<Long> ids, Pageable pageable);
 }

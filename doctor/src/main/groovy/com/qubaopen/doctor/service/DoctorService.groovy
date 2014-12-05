@@ -74,12 +74,14 @@ public class DoctorService {
 			d = doctorRepository.save(d)
 			
 			def doctorInfo = new DoctorInfo(
-				id : d.id
+				id : d.id,
+				bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
 			)
 			def doctorUdid = new DoctorUdid(
 				id : d.id,
 				startTime : DateCommons.String2Date('09:00','HH:mm'),
-				endTime : DateCommons.String2Date('22:00','HH:mm')
+				endTime : DateCommons.String2Date('22:00','HH:mm'),
+				push : true
 			)
 			doctorInfoRepository.save(doctorInfo)
 			doctorUdidRepository.save(doctorUdid)

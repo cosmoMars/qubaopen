@@ -105,9 +105,10 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			helps.each {
 				data << [
 					'helpId' : it?.id,
-					'userName' : it.user.userInfo.nickName,
-					'helpContent' : it.content,
-					'helpTime' : DateFormatUtils.format(it.time, 'yyyy-MM-dd')
+					'userName' : it?.user?.userInfo?.nickName,
+					'helpContent' : it?.content,
+					'userAvatar' : it?.user?.userInfo?.avatarPath,
+					'helpTime' : DateFormatUtils.format(it?.time, 'yyyy-MM-dd')
 				]
 			}
 		} else {
@@ -119,6 +120,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 					commentData << [
 						'doctorId' : cit?.doctor?.id,
 						'doctorName' : cit?.doctor?.doctorInfo?.name,
+						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
 						'doctorContent' : cit?.content,
 						'doctorTime' : DateFormatUtils.format(cit.time, 'yyyy-MM-dd')
 					]

@@ -87,7 +87,7 @@ public class HospitalInfo extends AbstractBaseEntity<Long> {
 	 */
 	private int maxCharge;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "hospital", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "hospitalInfo", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
 	private Set<HospitalDoctorRecord> hospitalDoctorRecords;
 
 	public Hospital getHospital() {

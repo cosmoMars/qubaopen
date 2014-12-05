@@ -21,20 +21,20 @@ public class HospitalDoctorRecord extends AbstractBaseEntity<Long> {
 	 * 医院
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "hospital_id")
-	private Hospital hospital;
+	@JoinColumn(name = "hospital_info_id")
+	private HospitalInfo hospitalInfo;
 
 	/**
 	 * 医师证明
 	 */
 	private String doctorRecordPath;
 
-	public Hospital getHospital() {
-		return hospital;
+	public HospitalInfo getHospitalInfo() {
+		return hospitalInfo;
 	}
 
-	public void setHospital(Hospital hospital) {
-		this.hospital = hospital;
+	public void setHospitalInfo(HospitalInfo hospitalInfo) {
+		this.hospitalInfo = hospitalInfo;
 	}
 
 	public String getDoctorRecordPath() {

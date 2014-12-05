@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.booking.Booking;
-import com.qubaopen.survey.entity.booking.BookingTime;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.User;
 

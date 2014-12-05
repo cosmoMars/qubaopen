@@ -233,6 +233,35 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		'{"success" : "1"}'
 	}
 	
+	/**
+	 * @param user
+	 * @return
+	 * 获取最后订单
+	 */
+	@RequestMapping(value = 'retrieveLastBooking', method = RequestMethod.GET)
+	retrieveLastBooking(@ModelAttribute('currentUser') User user) {
+		
+		def booking = bookingRepository.findMaxBooking(user)
+		
+		if (booking) {
+			[
+				'success' : '1',
+				'userId' : booking?.user?.id,
+				'userName' : booking?.name,
+				'userSex' : booking?.sex?.ordinal(),
+				'birthday' : booking?.birthday,
+				'profession' : booking?.profession,
+				'city' : booking?.city,
+				'married' : booking?.married,
+				'haveChildren' : booking?.haveChildren,
+				'helpReason' : booking?.helpReason,
+				'otherProblem' : booking?.otherProblem,
+				'treatmented' : booking?.treatmented,
+				'haveConsulted' : booking?.haveConsulted
+			]
+		}
+	}
+	
 	def dayForWeek(Date date) {
 		def c = Calendar.getInstance()
 		c.setTime date

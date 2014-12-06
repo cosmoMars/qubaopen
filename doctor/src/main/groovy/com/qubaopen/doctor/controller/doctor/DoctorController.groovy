@@ -93,8 +93,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			model.addAttribute('currentDoctor', loginDoctor)
 
 			def doctorInfo = loginDoctor.doctorInfo,
-			doctorIdCardBind = loginDoctor.doctorIdCardBind,
-			doctorAddress = doctorAddressRepository.findByDoctorAndUsed(loginDoctor, true)
+			doctorIdCardBind = loginDoctor.doctorIdCardBind
+//			doctorAddress = doctorAddressRepository.findByDoctorAndUsed(loginDoctor, true)
 
 			return  [
 				'success' : '1',
@@ -105,8 +105,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'name' : doctorIdCardBind?.userIDCard?.name,
 				'sex' : doctorInfo?.sex?.ordinal(),
 				'email' : loginDoctor?.email,
-				'address' : doctorAddress?.address,
-				'addressId' : doctorAddress?.id,
+				'address' : doctorInfo?.address,
+//				'addressId' : doctorAddress?.id,
 //				'consignee' : doctorAddress?.consignee,
 //				'defaultAddressPhone' : doctorAddress?.phone,
 				'idCard' : doctorIdCardBind?.userIDCard?.IDCard,

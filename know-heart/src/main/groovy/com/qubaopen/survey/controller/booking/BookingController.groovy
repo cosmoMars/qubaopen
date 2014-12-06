@@ -86,10 +86,15 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@ModelAttribute('currentUser') User user
 		) {
 		
+		if (!validatePhone(phone)) {
+			return '{"success" : "0", "message": "err003"}'
+		}
+		
 		def sex, consultType, birthday
 		def booking = new Booking(
 			user : user,
 			name : name,
+			phone : phone,
 			profession : profession,
 			city : city,
 			married : married,
@@ -107,12 +112,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		if (hospitalId != null) {
 			booking.hospital = new Hospital(id : hospitalId)
-		}
-		if (phone) {
-			if (!validatePhone(phone)) {
-				return '{"success" : "0", "message": "err003"}'
-			}
-			booking.phone = phone
 		}
 		if (birthdayStr) {
 			booking.birthday = DateUtils.parseDate(birthdayStr, 'yyyy-MM-dd')

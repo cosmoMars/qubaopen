@@ -127,6 +127,11 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 * 资质证书
 	 */
 	private String recordPath;
+	
+	/**
+	 * 地址
+	 */
+	private String address;
 
 	public String getName() {
 		return name;
@@ -262,6 +267,14 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 
 	public void setAvatarPath(String avatarPath) {
 		this.avatarPath = avatarPath;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getRecordPath() {

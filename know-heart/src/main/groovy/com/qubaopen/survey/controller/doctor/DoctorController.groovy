@@ -60,12 +60,12 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			doctors = doctorRepository.findAll(pageable)
 		}
 		doctors.each {
-			def address = doctorAddressRepository.findByDoctorAndUsed(it, true)
+//			def address = doctorAddressRepository.findByDoctorAndUsed(it, true)
 			data << [
 				'doctorId' : it?.id,
 				'doctorName' : it?.doctorInfo?.name,
 				'doctorAvatar' : it?.doctorInfo?.avatarPath,
-				'doctorAddress' : address?.address
+				'doctorAddress' : it?.doctorInfo?.address
 			]
 		}
 		def more = true

@@ -129,6 +129,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) String introduce,
 		@RequestParam(required = false) Boolean commentConsult,
 		@RequestParam(required = false) Boolean phoneConsult,
+		@RequestParam(required = false) String address,
 		@RequestParam(required = false) MultipartFile avatar,
 		@RequestParam(required = false) MultipartFile record,
 		@ModelAttribute('currentDoctor') Doctor doctor,
@@ -194,6 +195,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		}
 		if (phoneConsult != null) {
 			doctorInfo.phoneConsult = phoneConsult
+		}
+		if (address != null) {
+			doctorInfo.address = address
 		}
 		if (avatar) {
 			def doctorDir = 'doctorDir'

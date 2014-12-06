@@ -40,6 +40,11 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 * 姓名
 	 */
 	private String name;
+	
+	/**
+	 * 手机
+	 */
+	private String phone;
 
 	/**
 	 * 性别
@@ -115,7 +120,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 	private Status status;
 
 	/**
-	 * @author mars 预约，接受，拒绝，已咨询，未咨询，已约下次
+	 * @author mars 1 预约，2 接受，拒绝，3 已咨询，未咨询，4 已约下次, 5 已付款
 	 */
 	public enum Status {
 		Booking, Accept, Refusal, Consulted, Consulting, Next
@@ -153,6 +158,14 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public Sex getSex() {

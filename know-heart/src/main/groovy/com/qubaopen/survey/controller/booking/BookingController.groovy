@@ -3,6 +3,9 @@ package com.qubaopen.survey.controller.booking;
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -21,6 +24,7 @@ import com.qubaopen.survey.repository.booking.BookingRepository
 import com.qubaopen.survey.repository.booking.BookingTimeRepository
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
 
+import static com.qubaopen.survey.utils.ValidateUtil.*
 @RestController
 @RequestMapping('booking')
 @SessionAttributes('currentUser')
@@ -64,6 +68,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	createBooking(@RequestParam(required = false) Long doctorId,
 		@RequestParam(required = false) Long hospitalId,
 		@RequestParam(required = false) String name,
+		@RequestParam(required = false) String phone,
 		@RequestParam(required = false) Integer sexIndex,
 		@RequestParam(required = false) String birthdayStr,
 		@RequestParam(required = false) String profession,
@@ -102,6 +107,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		if (hospitalId != null) {
 			booking.hospital = new Hospital(id : hospitalId)
+		}
+		if (phone) {
+			if (!validatePhone(phone)) {
+				return '{"success" : "0", "message": "err003"}'
+			}
+			booking.phone = phone
 		}
 		if (birthdayStr) {
 			booking.birthday = DateUtils.parseDate(birthdayStr, 'yyyy-MM-dd')
@@ -222,13 +233,20 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 提交时间
 	 */
 	@RequestMapping(value = 'submitBookingTime', method = RequestMethod.POST)
-	submitBookingTime(@RequestParam Long bookingId, @RequestParam String time, @ModelAttribute('currentUser') User user) {
+	submitBookingTime(@RequestParam Long bookingId, @RequestParam String time,
+		@RequestParam(required = false) Boolean quick,
+		@RequestParam(required = false) Integer money,
+		@ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 提交预约时间 --'
 		
 		def booking = bookingRepository.findOne(bookingId)
 		if (time)
 			booking.time = DateUtils.parseDate(time, 'yyyy-MM-dd HH')
+		if (quick != null)
+			booking.quick = quick
+		if (money != null)
+			booking.money = money
 		
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
@@ -263,6 +281,64 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		} else {
 			'{"success" : "0", "message" : "err"}'
 		}
+	}
+	
+	/**
+	 * @param user
+	 * @return
+	 * 获取订单列表
+	 */
+	@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
+	retrieveSelfBooking(@RequestParam(required = false) String ids,
+		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.ASC)
+		Pageable pageable,
+		@ModelAttribute('currentUser') User user) {
+		
+		def bookings = bookingRepository.findAll(
+			[
+				user_equal : user
+			], pageable
+			
+		)
+		def data = [], more = true
+		println bookings.content
+//		println bookings.numberOfElements
+//		println pageable.pageSize
+		if (bookings && bookings.size < pageable.pageSize) {
+			more = false
+		}
+		bookings.each {
+			data << [
+				'doctorId' : it?.doctor?.id,
+				'doctorName' : it?.doctor?.doctorInfo?.name,
+				'hospitalId' :	it?.hospital?.id,
+				'hospitalName' : it?.hospital?.hospitalInfo?.name,
+				'name' : it?.name,
+				'sex' : it?.sex?.ordinal(),
+				'birthday' : it?.birthday,
+				'profession' : it?.profession,
+				'city' : it?.city,
+				'married' : it?.married,
+				'haveChildren' : it?.haveChildren,
+				'helpReason' : it?.helpReason,
+				'otherProblem' : it?.otherProblem,
+				'treatmented' : it?.treatmented,
+				'haveConsulted' : it?.haveConsulted,
+				'refusalReason' : it?.refusalReason,
+				'time' : it?.time,
+				'quick' : it?.quick,
+				'consultType' : it?.consultType?.ordinal(),
+				'status' : it?.status?.ordinal(),
+				'money' : it?.money
+			]
+		}
+		
+		[
+			'success' : '1',
+			'more' : more,
+			'data' : data	
+		]
+		
 	}
 	
 	def dayForWeek(Date date) {

@@ -307,11 +307,14 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
 				}
 				
-					other << [
-						'bookingId' : it.id,
-						'name' : it.name,
-						'helpReason' : it.helpReason
-					]
+				def endTime = "${DateFormatUtils.format(it.time, 'yyyy-MM-dd')} ${index + 1}:00:00" as String
+				other << [
+					'bookingId' : it.id,
+					'name' : it.name,
+					'helpReason' : it.helpReason,
+					'startTime' : it.time,
+					'endTime' : endTime
+				]
 			}
 			def timeAll = []
 			for (k in 0..timeModel.length() - 1) {

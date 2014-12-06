@@ -2,6 +2,7 @@ package com.qubaopen.survey.controller.doctor;
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -17,6 +18,7 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.repository.doctor.DoctorAddressRepository;
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.survey.repository.doctor.DoctorRepository
 
@@ -32,6 +34,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	
 	@Autowired
 	DoctorInfoRepository doctorInfoRepository
+	
+	@Autowired
+	DoctorAddressRepository doctorAddressRepository
 	
 	@Override
 	MyRepository<Doctor, Long> getRepository() {
@@ -55,13 +60,21 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			doctors = doctorRepository.findAll(pageable)
 		}
 		doctors.each {
+			def address = doctorAddressRepository.findByDoctorAndUsed(it, true)
 			data << [
-				'doctorId' : it.id,
-				'doctorAvatar' : it.doctorInfo.avatarPath 
+				'doctorId' : it?.id,
+				'doctorName' : it?.doctorInfo?.name,
+				'doctorAvatar' : it?.doctorInfo?.avatarPath,
+				'doctorAddress' : address?.address
 			]
+		}
+		def more = true
+		if (doctors && doctors.size() < pageable.pageSize) {
+			more = false
 		}
 		[
 			'success' : '1',
+			'more' : more,
 			'data' : data	
 		]
 	}
@@ -85,7 +98,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			'field' : doctorInfo?.field,
 			'targetUser' : doctorInfo?.targetUser,
 			'genre' : doctorInfo?.genre,
-			'consultType' : doctorInfo?.consultType.ordinal(),
+			'faceToFace' : doctorInfo?.faceToFace,
+			'video' : doctorInfo?.video,
 			'time' : doctorInfo?.bookingTime,
 			'avatar' : doctorInfo?.avatarPath
 		]

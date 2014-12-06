@@ -118,15 +118,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				def commentData = []
 				comments.each { cit ->
 					def goods = helpCommentGoodRepository.findByHelpComment(cit),
-						isGood = false, gSize = 0
+						gSize = 0
 					if (goods) {
 						gSize = goods.size()
 					}
-					def goodComment = goods.find{ g ->
+					def isGood = goods.any { g ->
 						g.user == user
-					}
-					if (goodComment) {
-						isGood = true
 					}
 					commentData << [
 						'commentId' : cit?.id,
@@ -191,15 +188,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			
 		comments.each {
 			def goods = helpCommentGoodRepository.findByHelpComment(it),
-				isGood = false, gSize = 0
+				gSize = 0
 			if (goods) {
 				gSize = goods.size()
 			}
-			def goodComment = goods.find{ g ->
+			def isGood = goods.any { g ->
 				g.user == user
-			}
-			if (goodComment) {
-				isGood = true
 			}
 			commentData << [
 				'doctorId' : it?.doctor?.id,

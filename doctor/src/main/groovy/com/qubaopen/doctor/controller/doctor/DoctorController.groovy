@@ -99,6 +99,15 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			def doctorInfo = loginDoctor.doctorInfo,
 			doctorIdCardBind = loginDoctor.doctorIdCardBind
 //			doctorAddress = doctorAddressRepository.findByDoctorAndUsed(loginDoctor, true)
+			
+			def infoTime = doctorInfo.bookingTime,
+				times = infoTime.split(','), timeData = []
+			times.each {
+				for (i in 0..it.length() - 1) {
+//					if ()
+				}
+			}
+			
 
 			return  [
 				'success' : '1',

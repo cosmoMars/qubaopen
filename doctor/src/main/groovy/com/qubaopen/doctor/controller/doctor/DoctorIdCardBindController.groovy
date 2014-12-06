@@ -59,11 +59,11 @@ public class DoctorIdCardBindController extends AbstractBaseController<DoctorIdC
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveIdCard', method = RequestMethod.GET)
-	retrieveIdCard(@ModelAttribute('currentDoctor') User user) {
+	retrieveIdCard(@ModelAttribute('currentDoctor') Doctor doctor) {
 		
 		logger.trace('-- 获取用户身份证信息 --')
 		
-		def idCardBind = doctorIdCardBindRepository.findOne(user.id)
+		def idCardBind = doctorIdCardBindRepository.findOne(doctor.doctor)
 		
 		if (idCardBind) {
 			return [

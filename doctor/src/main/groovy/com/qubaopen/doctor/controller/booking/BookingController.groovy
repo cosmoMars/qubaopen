@@ -205,7 +205,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'bookingId' : it?.id,
 				'userId' : it.user?.id,
 				'userName' : it?.name,
-				'helpReason' : it.refusalReason,
+				'helpReason' : it.helpReason,
 				'refusalReason' : it.refusalReason,
 				'time' : it.time,
 				'quick' : it.quick,

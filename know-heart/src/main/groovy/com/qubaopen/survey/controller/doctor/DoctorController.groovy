@@ -68,13 +68,13 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'doctorAddress' : it?.doctorInfo?.address
 			]
 		}
-		def more = true
-		if (doctors && doctors.size() < pageable.pageSize) {
-			more = false
-		}
+//		def more = true
+//		if (doctors && doctors.size() < pageable.pageSize) {
+//			more = false
+//		}
 		[
 			'success' : '1',
-			'more' : more,
+//			'more' : more,
 			'data' : data	
 		]
 	}

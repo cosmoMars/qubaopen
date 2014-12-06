@@ -22,7 +22,6 @@ import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.doctor.DoctorRepository
-import com.qubaopen.survey.entity.doctor.ConsultType
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
 
@@ -67,6 +66,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		[
 			'success' : '1',
 			'doctorId' : doctor.id,
+			'phone' : doctorInfo?.phone,
 			'name' : doctorIdCardBind?.userIDCard?.name,
 			'infoName' : doctorInfo?.name,
 			'contactPhone' : doctorInfo?.phone,
@@ -79,14 +79,18 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			'video' : doctorInfo?.video,
 			'targetUser' : doctorInfo?.targetUser,
 			'genre' : doctorInfo?.genre,
-			'time' : doctorInfo?.bookingTime,
+//			'time' : doctorInfo?.bookingTime,
 			'introduce' : doctorInfo?.introduce,
 			'quick' : doctorInfo.quick,
 			'email' : doctorInfo?.doctor?.email,
 			'address' : address?.address,
-			'IdCard' : doctorIdCardBind?.userIDCard?.IDCard,
+			'idCard' : doctorIdCardBind?.userIDCard?.IDCard,
 			'recordPath' : doctorInfo?.recordPath, 
-			'avatarPath' : doctorInfo?.avatarPath
+			'avatarPath' : doctorInfo?.avatarPath,
+			'loginStatus' : doctorInfo?.loginStatus?.ordinal(),
+			'refauslReason' : doctorInfo?.refusalReason,
+			'commentConsult' : doctorInfo?.commentConsult,
+			'phoneConsult' : doctorInfo?.phoneConsult
 		]
 	}
 	
@@ -227,6 +231,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		doctorInfoRepository.save(doctorInfo)
 		'{"success": "1"}'
 	}
+		
 	
 	def saveFile(byte[] bytes, String fileName) {
 		def fos = new FileOutputStream(fileName)

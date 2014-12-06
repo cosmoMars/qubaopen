@@ -3,6 +3,7 @@ package com.qubaopen.survey.entity.doctor;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -127,11 +128,42 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 * 资质证书
 	 */
 	private String recordPath;
-	
+
 	/**
 	 * 地址
 	 */
 	private String address;
+
+	/**
+	 * 审计状态
+	 */
+	@Enumerated
+	private LoginStatus loginStatus;
+
+	private enum LoginStatus {
+		Unaudited, Auditing, Refusal, Audited
+	}
+
+	/**
+	 * 拒绝理由
+	 */
+	private String refusalReason;
+
+	public Doctor getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(Doctor doctor) {
+		this.doctor = doctor;
+	}
+
+	public Hospital getHospital() {
+		return hospital;
+	}
+
+	public void setHospital(Hospital hospital) {
+		this.hospital = hospital;
+	}
 
 	public String getName() {
 		return name;
@@ -269,14 +301,6 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 		this.avatarPath = avatarPath;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
 	public String getRecordPath() {
 		return recordPath;
 	}
@@ -285,20 +309,28 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 		this.recordPath = recordPath;
 	}
 
-	public Doctor getDoctor() {
-		return doctor;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setDoctor(Doctor doctor) {
-		this.doctor = doctor;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
-	public Hospital getHospital() {
-		return hospital;
+	public LoginStatus getLoginStatus() {
+		return loginStatus;
 	}
 
-	public void setHospital(Hospital hospital) {
-		this.hospital = hospital;
+	public void setLoginStatus(LoginStatus loginStatus) {
+		this.loginStatus = loginStatus;
+	}
+
+	public String getRefusalReason() {
+		return refusalReason;
+	}
+
+	public void setRefusalReason(String refusalReason) {
+		this.refusalReason = refusalReason;
 	}
 
 }

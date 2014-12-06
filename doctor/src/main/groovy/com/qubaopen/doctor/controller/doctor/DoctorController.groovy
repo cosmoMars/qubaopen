@@ -2,7 +2,7 @@ package com.qubaopen.doctor.controller.doctor;
 
 import static com.qubaopen.doctor.utils.ValidateUtil.*
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpSession
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorLogRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.doctor.repository.doctor.DoctorLogRepository
+import com.qubaopen.doctor.repository.doctor.DoctorRepository
 import com.qubaopen.doctor.service.DoctorService
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.doctor.DoctorLog
-import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserLogType
 
 
@@ -48,6 +49,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	
 	@Autowired
 	DoctorAddressRepository doctorAddressRepository
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
 	
 
 	@Override
@@ -101,15 +105,10 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'message' : '登录成功',
 				'doctorId' : loginDoctor?.id,
 				'phone' : loginDoctor?.phone,
-				'email' : loginDoctor?.email,
 				'name' : doctorIdCardBind?.userIDCard?.name,
+				'infoName' : doctorInfo?.name,
+				'contactPhone' : doctorInfo?.phone,
 				'sex' : doctorInfo?.sex?.ordinal(),
-				'email' : loginDoctor?.email,
-				'address' : doctorInfo?.address,
-//				'addressId' : doctorAddress?.id,
-//				'consignee' : doctorAddress?.consignee,
-//				'defaultAddressPhone' : doctorAddress?.phone,
-				'idCard' : doctorIdCardBind?.userIDCard?.IDCard,
 				'birthday' : doctorInfo?.birthday,
 				'experience' : doctorInfo?.experience,
 				'field' : doctorInfo?.field,
@@ -118,11 +117,18 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'video' : doctorInfo?.video,
 				'targetUser' : doctorInfo?.targetUser,
 				'genre' : doctorInfo?.genre,
-//				'time' : doctorInfo?.time,
-				'quick' : doctorInfo?.quick,
+				//			'time' : doctorInfo?.bookingTime,
 				'introduce' : doctorInfo?.introduce,
+				'quick' : doctorInfo?.quick,
+				'email' : loginDoctor?.email,
+				'address' : doctorInfo?.address,
+				'idCard' : doctorIdCardBind?.userIDCard?.IDCard,
 				'recordPath' : doctorInfo?.recordPath,
-				'avatarPath' : doctorInfo?.avatarPath
+				'avatarPath' : doctorInfo?.avatarPath,
+				'loginStatus' : doctorInfo?.loginStatus?.ordinal(),
+				'refauslReason' : doctorInfo?.refusalReason,
+				'commentConsult' : doctorInfo?.commentConsult,
+				'phoneConsult' : doctorInfo?.phoneConsult
 			]
 		}
 
@@ -257,5 +263,25 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		
 		'{"success" : "1"}'
 	}
-
+	/**
+	 * @param index
+	 * @param content
+	 * @param doctor
+	 * @return
+	 * 修改状态
+	 */
+	@RequestMapping(value = 'modifyLoginStatus', method = RequestMethod.POST)
+	modifyLoginStatus(@RequestParam Long id, @RequestParam Integer index, @RequestParam(required = false) String content) {
+		
+		def doctorInfo = doctorInfoRepository.findOne(id),
+			loginStatus = DoctorInfo.LoginStatus.values()[index]
+		
+		if (loginStatus == DoctorInfo.LoginStatus.Refusal) {
+			doctorInfo.refusalReason = content
+		}
+		doctorInfo.loginStatus = loginStatus
+		doctorInfoRepository.save(doctorInfo)
+		'{"success" : "1"}'
+		
+	}
 }

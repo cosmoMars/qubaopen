@@ -80,6 +80,7 @@ public class DoctorService {
 			def doctorInfo = new DoctorInfo(
 				id : d.id,
 				name : "医师$randomNum",
+				loginStatus : DoctorInfo.LoginStatus.Unaudited,
 				bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
 			)
 			def doctorUdid = new DoctorUdid(

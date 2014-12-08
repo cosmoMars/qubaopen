@@ -128,7 +128,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) Boolean video,
 		@RequestParam(required = false) String targetUser,
 		@RequestParam(required = false) String genre,
-		@RequestParam(required = false) String bookingTime,
+//		@RequestParam(required = false) String bookingTime,
 		@RequestParam(required = false) Boolean quick,
 		@RequestParam(required = false) String introduce,
 		@RequestParam(required = false) Boolean commentConsult,
@@ -136,6 +136,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) String address,
 		@RequestParam(required = false) MultipartFile avatar,
 		@RequestParam(required = false) MultipartFile record,
+		@RequestParam(required = false) String times,
 		@ModelAttribute('currentDoctor') Doctor doctor,
 		HttpServletRequest request
 		) {
@@ -185,9 +186,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		if (genre) {
 			doctorInfo.genre = genre
 		}
-		if (bookingTime) {
-			doctorInfo.bookingTime = bookingTime
-		}
+//		if (bookingTime) {
+//			doctorInfo.bookingTime = bookingTime
+//		}
 		if (quick) {
 			doctorInfo.quick = quick
 		}
@@ -203,6 +204,28 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		if (address != null) {
 			doctorInfo.address = address
 		}
+		
+		if (times != null) {
+			println doctorInfo.bookingTime
+			def resultTime = doctorInfo.bookingTime.split(','),
+				tempTimes = times.split('&')
+			tempTimes.each { t ->
+				def singleTime = t.split('#'),
+					day = singleTime[0] as int,
+					type = singleTime[1],
+					dayTime = singleTime[2].split(',')
+				dayTime.each {
+					def index = it as int
+					if ('0' == type || '0'.equals(type)) {
+						resultTime[day - 1] = resultTime[day - 1].substring(0, index) + '0' + resultTime[day - 1].substring(index + 1)
+					} else if ('1' == type || '1'.equals(type)) {
+						resultTime[day - 1] = resultTime[day - 1].substring(0, index) + '1' + resultTime[day - 1].substring(index + 1)
+					}
+				}
+			}
+			doctorInfo.bookingTime = resultTime.join(',')
+		}
+		
 		if (avatar) {
 			def doctorDir = 'doctorDir'
 			def file = new File("${request.getServletContext().getRealPath('/')}$doctorDir");

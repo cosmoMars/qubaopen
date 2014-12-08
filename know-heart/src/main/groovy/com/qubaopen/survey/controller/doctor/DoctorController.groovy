@@ -1,13 +1,14 @@
 package com.qubaopen.survey.controller.doctor;
 
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -18,8 +19,8 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.repository.doctor.DoctorAddressRepository;
-import com.qubaopen.survey.repository.doctor.DoctorInfoRepository;
+import com.qubaopen.survey.repository.doctor.DoctorAddressRepository
+import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
 import com.qubaopen.survey.repository.doctor.DoctorRepository
 
 @RestController
@@ -90,18 +91,32 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		
 		logger.trace '-- 获取医师详细 --'
 		
-		def doctorInfo = doctorInfoRepository.findOne(id)
-		
+		def doctorInfo = doctorInfoRepository.findOne(id),
+			infoTime = doctorInfo.bookingTime,
+			times = infoTime.split(','), timeData = []
+		times.eachWithIndex { value, index ->
+			for (i in 0..value.length() - 1) {
+				if ('1' == value[i] || '1'.equals(value)) {
+					timeData << [
+						'dayId': index + 1,
+						'startTime' : "$i:00" as String,
+						'endTime' : "${i+1}:00" as String
+					]
+				}
+			}
+		}
 		[
 			'success' : '1',
+			'name' : doctorInfo?.name,
+			'address' : doctorInfo?.address,
 			'introduce' : doctorInfo?.introduce,
 			'field' : doctorInfo?.field,
 			'targetUser' : doctorInfo?.targetUser,
 			'genre' : doctorInfo?.genre,
 			'faceToFace' : doctorInfo?.faceToFace,
 			'video' : doctorInfo?.video,
-			'time' : doctorInfo?.bookingTime,
-			'avatar' : doctorInfo?.avatarPath
+			'avatar' : doctorInfo?.avatarPath,
+			'timeData' : timeData
 		]
 		
 	}

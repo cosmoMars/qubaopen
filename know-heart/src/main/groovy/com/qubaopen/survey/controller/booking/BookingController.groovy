@@ -168,10 +168,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		for (i in 0..6) {
 			if (i > 0)
 				c.add(Calendar.DATE, 1)
-			dayData << [
-				'dayId' : i + 1,
-				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
-			]
 			
 			def day = c.getTime(),
 				idx = dayForWeek(day),
@@ -179,6 +175,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
 			
+			dayData << [
+				'dayId' : i + 1,
+				'dayOfWeek' : idx,
+				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
+			]
 			if (timeList && timeList.size() > 0) {
 				timeModel = '000000000000000000000000'
 				timeList.each {

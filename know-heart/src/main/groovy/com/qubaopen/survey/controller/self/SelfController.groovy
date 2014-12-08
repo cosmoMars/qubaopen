@@ -120,7 +120,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			return '{"success" : "0", "message" : "err600"}'
 		}
 
-		if (!refresh) {
+		if (refresh == null) {
 			refresh = true
 		}
 

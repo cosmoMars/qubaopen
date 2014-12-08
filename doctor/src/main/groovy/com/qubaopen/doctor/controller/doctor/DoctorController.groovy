@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -102,9 +104,15 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			
 			def infoTime = doctorInfo.bookingTime,
 				times = infoTime.split(','), timeData = []
-			times.each {
-				for (i in 0..it.length() - 1) {
-//					if ()
+			times.eachWithIndex { value, index ->
+				for (i in 0..value.length() - 1) {
+					if ('1' == value[i] || '1'.equals(value)) {
+						timeData << [
+							'dayId': index + 1,
+							'startTime' : "$i:00" as String,
+							'endTime' : "${i+1}:00" as String
+						]
+					}
 				}
 			}
 			
@@ -137,7 +145,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'loginStatus' : doctorInfo?.loginStatus?.ordinal(),
 				'refauslReason' : doctorInfo?.refusalReason,
 				'commentConsult' : doctorInfo?.commentConsult,
-				'phoneConsult' : doctorInfo?.phoneConsult
+				'phoneConsult' : doctorInfo?.phoneConsult,
+				'timeData' : timeData
 			]
 		}
 
@@ -292,5 +301,16 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		doctorInfoRepository.save(doctorInfo)
 		'{"success" : "1"}'
 		
+	}
+	def dayForWeek(Date date) {
+		def c = Calendar.getInstance()
+		c.setTime date
+		def idx
+		if (c.get(Calendar.DAY_OF_WEEK) == 1) {
+			idx = 7
+		} else {
+			idx = c.get(Calendar.DAY_OF_WEEK) - 1
+		}
+		idx
 	}
 }

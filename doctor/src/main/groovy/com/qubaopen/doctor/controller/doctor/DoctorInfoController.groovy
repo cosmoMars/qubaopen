@@ -116,8 +116,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 	 */
 	@Transactional
 	@RequestMapping(value = 'modifyDoctorInfo', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	modifyDoctorInfo(@RequestParam(required = false) String name,
-		@RequestParam(required = false) String phone,
+	modifyDoctorInfo(@RequestParam(required = false) String infoName,
+		@RequestParam(required = false) String contactPhone,
 		@RequestParam(required = false) String email,
 		@RequestParam(required = false) Integer sex,
 		@RequestParam(required = false) String birthday,
@@ -149,15 +149,15 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			doctor.email = email
 		}
 		
-		if (phone) {
-			if (!validatePhone(phone)) {
+		if (contactPhone) {
+			if (!validatePhone(contactPhone)) {
 				return '{"success" : "0", "message": "err003"}'
 			}
-			doctorInfo.phone = phone
+			doctorInfo.phone = contactPhone
 		}
 		
-		if (name) {
-			doctorInfo.name = name
+		if (infoName) {
+			doctorInfo.name = infoName
 		}
 		if (sex != null) {
 			doctorInfo.sex = DoctorInfo.Sex.values()[sex]

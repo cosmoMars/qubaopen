@@ -25,6 +25,7 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.doctor.DoctorLogRepository
+import com.qubaopen.doctor.repository.doctor.DoctorRecordRepository;
 import com.qubaopen.doctor.repository.doctor.DoctorRepository
 import com.qubaopen.doctor.service.DoctorService
 import com.qubaopen.survey.entity.doctor.Doctor
@@ -54,6 +55,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	
 	@Autowired
 	DoctorInfoRepository doctorInfoRepository
+	
+	@Autowired
+	DoctorRecordRepository doctorRecordRepository
 	
 
 	@Override
@@ -102,6 +106,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			doctorIdCardBind = loginDoctor.doctorIdCardBind
 //			doctorAddress = doctorAddressRepository.findByDoctorAndUsed(loginDoctor, true)
 			
+			def dr = doctorRecordRepository.findOne(loginDoctor.id)
+			
 			def infoTime = doctorInfo.bookingTime, timeData = []
 			if (infoTime) {
 				def times = infoTime.split(',')
@@ -141,7 +147,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'email' : loginDoctor?.email,
 				'address' : doctorInfo?.address,
 				'idCard' : doctorIdCardBind?.userIDCard?.IDCard,
-				'recordPath' : doctorInfo?.recordPath,
+				'recordPath' : dr?.recordPath,
 				'avatarPath' : doctorInfo?.avatarPath,
 				'loginStatus' : doctorInfo?.loginStatus?.ordinal(),
 				'refauslReason' : doctorInfo?.refusalReason,

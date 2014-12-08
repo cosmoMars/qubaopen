@@ -63,7 +63,7 @@ public class DoctorIdCardBindController extends AbstractBaseController<DoctorIdC
 		
 		logger.trace('-- 获取用户身份证信息 --')
 		
-		def idCardBind = doctorIdCardBindRepository.findOne(doctor.doctor)
+		def idCardBind = doctorIdCardBindRepository.findOne(doctor.id)
 		
 		if (idCardBind) {
 			return [

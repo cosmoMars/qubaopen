@@ -102,20 +102,21 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			doctorIdCardBind = loginDoctor.doctorIdCardBind
 //			doctorAddress = doctorAddressRepository.findByDoctorAndUsed(loginDoctor, true)
 			
-			def infoTime = doctorInfo.bookingTime,
-				times = infoTime.split(','), timeData = []
-			times.eachWithIndex { value, index ->
-				for (i in 0..value.length() - 1) {
-					if ('1' == value[i] || '1'.equals(value)) {
-						timeData << [
-							'dayId': index + 1,
-							'startTime' : "$i:00" as String,
-							'endTime' : "${i+1}:00" as String
-						]
+			def infoTime = doctorInfo.bookingTime, timeData = []
+			if (infoTime) {
+				def times = infoTime.split(',')
+				times.eachWithIndex { value, index ->
+					for (i in 0..value.length() - 1) {
+						if ('1' == value[i] || '1'.equals(value)) {
+							timeData << [
+								'dayId': index + 1,
+								'startTime' : "$i:00" as String,
+								'endTime' : "${i+1}:00" as String
+							]
+						}
 					}
 				}
 			}
-			
 
 			return  [
 				'success' : '1',

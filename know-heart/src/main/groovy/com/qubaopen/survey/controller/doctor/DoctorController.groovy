@@ -66,7 +66,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'doctorId' : it?.id,
 				'doctorName' : it?.doctorInfo?.name,
 				'doctorAvatar' : it?.doctorInfo?.avatarPath,
-				'doctorAddress' : it?.doctorInfo?.address
+				'doctorAddress' : it?.doctorInfo?.address,
+				'doctorIntroduce' : it?.doctorInfo?.introduce
 			]
 		}
 //		def more = true
@@ -75,7 +76,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 //		}
 		[
 			'success' : '1',
-//			'more' : more,
+			'more' : true,
 			'data' : data	
 		]
 	}

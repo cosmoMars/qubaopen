@@ -67,7 +67,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'doctorName' : it?.doctorInfo?.name,
 				'doctorAvatar' : it?.doctorInfo?.avatarPath,
 				'doctorAddress' : it?.doctorInfo?.address,
-				'doctorIntroduce' : it?.doctorInfo?.introduce
+				'doctorIntroduce' : it?.doctorInfo?.introduce,
+				'faceToFace' : it?.doctorInfo?.faceToFace,
+				'video' : it?.doctorInfo?.video
 			]
 		}
 //		def more = true

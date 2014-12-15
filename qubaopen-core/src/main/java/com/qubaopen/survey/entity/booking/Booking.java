@@ -123,7 +123,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 * @author mars 1 预约，2 接受，拒绝，3 已咨询，未咨询，4 已约下次, 5 已付款
 	 */
 	public enum Status {
-		Booking, Accept, Refusal, Consulted, Consulting, Next
+		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid
 	}
 
 	private int money;

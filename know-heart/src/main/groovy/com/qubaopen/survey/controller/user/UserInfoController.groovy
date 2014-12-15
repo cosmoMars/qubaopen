@@ -77,7 +77,7 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 				return '{"success" : "0", "message" : "err103"}'
 			}
 			def bytes = userInfo.nickName.trim().getBytes('gb2312')
-			if (bytes.size() < 1 || bytes.size() > 7) {
+			if (bytes.size() < 2 || bytes.size() > 14) {
 				return '{"success" : "0", "message" : "err103"}'
 			}
 		}

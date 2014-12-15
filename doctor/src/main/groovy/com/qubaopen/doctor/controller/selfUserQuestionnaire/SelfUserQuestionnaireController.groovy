@@ -38,11 +38,19 @@ public class SelfUserQuestionnaireController extends AbstractBaseController<Self
 	 * @return
 	 * 查询用户问卷结果
 	 */
-	@RequestMapping(value = 'retrieveSelfResult', method = RequestMethod.GET)
-	retrieveSelfResult(@RequestParam Long userId, @ModelAttribute('currentDoctor') Doctor doctor) {
+	@RequestMapping(value = 'retrieveSelfResult', method = RequestMethod.POST)
+	retrieveSelfResult(@RequestParam Long userId, 
+		@RequestParam(required = false) Long typeId,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
-		def questionnaire = selfUserQuestionnaireRepository.findByMaxTime(new User(id : userId)),
+		
+		def questionnaire,
 			data = []
+		if (typeId != null) {
+			questionnaire = selfUserQuestionnaireRepository.findByMaxTime(new User(id : userId), typeId)
+		} else {
+			questionnaire = selfUserQuestionnaireRepository.findByMaxTime(new User(id : userId))
+		}
 		questionnaire.each {
 			def selfResult = it.selfResultOption
 			if (selfResult) {

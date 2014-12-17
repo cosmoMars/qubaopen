@@ -312,6 +312,15 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		[
 			'success' : '1',
+			'name' : doctorInfo?.name,
+			'address' : doctorInfo?.address,
+			'introduce' : doctorInfo?.introduce,
+			'field' : doctorInfo?.field,
+			'targetUser' : doctorInfo?.targetUser,
+			'genre' : doctorInfo?.genre,
+			'faceToFace' : doctorInfo?.faceToFace,
+			'video' : doctorInfo?.video,
+			'avatar' : doctorInfo?.avatarPath,
 			'result' : result
 		]
 	}

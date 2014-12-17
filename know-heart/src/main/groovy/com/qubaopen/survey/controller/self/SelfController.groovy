@@ -94,7 +94,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		[
 			'success' : '1',
 			'message' : '成功',
-			'guidanceSentence' :self?.guidanceSentence,
+			'title' : self?.title,
+			'guidanceSentence' : self?.guidanceSentence,
 			'tips' : self?.tips,
 			'remark' : self?.remark
 		]

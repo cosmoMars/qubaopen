@@ -9,16 +9,18 @@ import org.springframework.transaction.annotation.Transactional
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.qubaopen.survey.entity.mindmap.MapCoefficient
 import com.qubaopen.survey.entity.mindmap.MapRecord
+import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.EPQBasicRepository
-import com.qubaopen.survey.repository.mindmap.MapCoefficientRepository;
+import com.qubaopen.survey.repository.mindmap.MapCoefficientRepository
 import com.qubaopen.survey.repository.mindmap.MapRecordRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
 import com.qubaopen.survey.repository.mindmap.MapStatisticsTypeRepository
 import com.qubaopen.survey.repository.self.SelfGroupRepository
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfResultOptionRepository
+import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
 import com.qubaopen.survey.service.user.UserIDCardBindService
 
 @Service
@@ -59,6 +61,9 @@ public class MapStatisticsService {
 	
 	@Autowired
 	MapCoefficientRepository mapCoefficientRepository
+	
+	@Autowired
+	SelfUserQuestionnaireRepository selfUserQuestionnaireRepository
 	
 	/**
 	 * 获取心理地图
@@ -513,6 +518,8 @@ public class MapStatisticsService {
 	
 	@Transactional
 	retrieveSpecialMap(User user) {
+		
+		
 		def data = [], tip
 		def specialSelf = selfRepository.findSpecialSelf()
 		def specialMap = mapStatisticsRepository.findOneByFilters(
@@ -526,7 +533,7 @@ public class MapStatisticsService {
 			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
 		}
 		if (!specialMap) {
-			tip = "亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！7天后就有惊喜~ " as String
+			tip = "亲，为准确推断您的情绪周期\n    至少需要记录七天数据哦~\n       加油！7天后就有惊喜~ " as String
 		} else if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
 			def chart, c = []
 			def resultContent = "err"
@@ -599,15 +606,25 @@ public class MapStatisticsService {
 				def resultToday = coefficient.mid1 + coefficient.mid2 * Math.cos(time * coefficient.mid4) + coefficient.mid3 * Math.sin(time * coefficient.mid4)
 				def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
 				def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
-								
-				if( resultBefore <= resultToday  && resultToday<resultAfter){
-					resultContent = "up"
-				}else if( resultBefore > resultToday  && resultToday >=resultAfter){
-					resultContent = "down"
-				}else if( resultBefore <= resultToday  && resultToday >=resultAfter){
-					resultContent = "top"
-				}else if( resultBefore > resultToday  && resultToday < resultAfter){
-					resultContent = "bottom"
+				
+				def selfUserQuestionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : 17), true),
+					moodContent = ''
+				if (selfUserQuestionnaire) {
+					if (137l == selfUserQuestionnaire.selfResultOption.id || '137'.equals(selfUserQuestionnaire.selfResultOption.id)) {
+						moodContent = MapMoodContent.outbound
+					}else if (138l == selfUserQuestionnaire.selfResultOption.id || '138'.equals(selfUserQuestionnaire.selfResultOption.id)) {
+						moodContent = MapMoodContent.within
+					}
+				}	
+			
+				if( resultBefore <= resultToday  && resultToday<resultAfter){ // 上升
+					resultContent = MapMoodContent.lowToHighTitle + MapMoodContent.lowToHighContent + moodContent + MapMoodContent.lowToHighMethod
+				}else if( resultBefore > resultToday  && resultToday >=resultAfter){ // 下降
+					resultContent = MapMoodContent.highToLowTitle + MapMoodContent.highToLowContent + moodContent + MapMoodContent.highToLowMethod
+				}else if( resultBefore <= resultToday  && resultToday >=resultAfter){ // 最高处
+					resultContent = MapMoodContent.highTideTitle + MapMoodContent.highTideContent + moodContent
+				}else if( resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
+					resultContent = MapMoodContent.lowTideTitle + MapMoodContent.lowTideContent + moodContent + MapMoodContent.lowTideMethod
 				}
 				
 				chart = [
@@ -622,7 +639,6 @@ public class MapStatisticsService {
 			}
 			data << [
 				'groupId' : specialMap?.self?.selfGroup?.id,
-				'mapTitle' : specialMap?.self?.title,
 				'chart' : c,
 				'mapMax' : specialMap?.mapMax,
 				'resultName' : specialMap?.selfResultOption?.name,
@@ -636,10 +652,9 @@ public class MapStatisticsService {
 			]
 		} else if (specialMap && specialMapRecords.size() < 7) {
 			def days = 7 - specialMapRecords.size()
-			tip = "亲，为了准确推断您的情绪周期\n  至少需要记录七天数据哦~\n     加油！${days}天后就有惊喜~ " as String
+			tip = "亲，为准确推断您的情绪周期\n    至少需要记录七天数据哦~\n       加油！${days}天后就有惊喜~ " as String
 			data << [
 				'groupId' : specialMap?.self?.selfGroup?.id,
-				'mapTitle' : specialMap?.self?.title,
 				'chart' : '',
 				'mapMax' : '',
 				'resultName' : '',
@@ -657,6 +672,7 @@ public class MapStatisticsService {
 			'success' : '1',
 			'message' : '成功',
 			'specialId' : specialSelf.id,
+			'mapTitle' : specialMap?.self?.title,
 			'userId' : user.id,
 			'data' : data
 		]

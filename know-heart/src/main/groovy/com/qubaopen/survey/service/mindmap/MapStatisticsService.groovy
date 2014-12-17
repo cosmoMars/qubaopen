@@ -607,7 +607,7 @@ public class MapStatisticsService {
 				def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
 				def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
 				
-				def selfUserQuestionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : 17), true),
+				def selfUserQuestionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : 17l), true),
 					moodContent = ''
 				if (selfUserQuestionnaire) {
 					if (137l == selfUserQuestionnaire.selfResultOption.id || '137'.equals(selfUserQuestionnaire.selfResultOption.id)) {

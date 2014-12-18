@@ -274,7 +274,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
 			]
 			if (timeList && timeList.size() > 0) {
-				timeModel = '000000000000000000000000'
+				if (!timeModel) {
+					timeModel = '000000000000000000000000'
+				}
 				timeList.each {
 					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
 					end
@@ -384,14 +386,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				timeModel = times[idx - 1],
 				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
-				self = [], other = []
-				
+//				self = [], other = []
+				timeAll = []
 			
 			if (timeList && timeList.size() > 0) {
-				timeModel = '000000000000000000000000'
+				if (!timeModel) {
+					timeModel = '000000000000000000000000'
+				}
 				timeList.each {
 					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
-					end
+						end
 					if (DateUtils.isSameDay(it.startTime, it.endTime)) {
 						end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
 					} else {
@@ -405,7 +409,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 							timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
 						}
 					}
-					self << [
+					timeAll << [
+						'type' : 1,
 						'timeId' : it.id,
 						'startTime' : it?.startTime,
 						'endTime' : it?.endTime,
@@ -426,7 +431,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				if (it.time) {
 					endTime = "${DateFormatUtils.format(it.time, 'yyyy-MM-dd')} ${index + 1}:00:00" as String
 				}
-				other << [
+				timeAll << [
+					'type' : 2,
 					'bookingId' : it?.id,
 					'name' : it?.name,
 					'helpReason' : it?.helpReason,
@@ -435,24 +441,23 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					'endTime' : endTime
 				]
 			}
-			def timeAll = []
+			
 			for (k in 0..timeModel.length() - 1) {
 				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
 					timeAll << [
+						'type' : 0,
 						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
 						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
 					]
 				}
 			}
-			timeData << [
-				'time' : timeAll,
-				'self' : self,
-				'other' : other
-			]
+//			timeData << [
+//				'time' : timeAll
+//			]
 			result << [
 				'dayOfWeek' : idx,
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd'),
-				'timeData' : timeData
+				'timeData' : timeAll
 			]
 			
 		}

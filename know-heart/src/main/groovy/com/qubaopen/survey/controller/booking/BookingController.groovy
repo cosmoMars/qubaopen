@@ -181,7 +181,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
 			]
 			if (timeList && timeList.size() > 0) {
-				timeModel = '000000000000000000000000'
+				if (!timeModel) {
+					timeModel = '000000000000000000000000'
+				}
 				timeList.each {
 					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
 						end
@@ -269,7 +271,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			
 			
 			if (timeList && timeList.size() > 0) {
-				timeModel = '000000000000000000000000'
+				if (!timeModel) {
+					timeModel = '000000000000000000000000'
+				}
 				timeList.each {
 					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
 						end

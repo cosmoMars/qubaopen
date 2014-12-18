@@ -361,10 +361,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			date = new Date()
 		} else {
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
-			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
-			if (date < today) {
-				return '{"success" : "0", "message" : "err801"}'
-			}
+//			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
+//			if (date < today) {
+//				return '{"success" : "0", "message" : "err801"}'
+//			}
 		}
 		def doctorInfo = doctorInfoRepository.findOne(doctor.id),
 			bookingTime, data = []

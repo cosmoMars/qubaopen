@@ -181,8 +181,11 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	@RequestMapping(value = 'retrieveSelfByType/{typeId}', method = RequestMethod.GET)
 	retrieveSelfByType(@PathVariable Long typeId) {
 		def selfs = selfRepository.findAll(
-				['selfManagementType.id_equal' : typeId]
-				)
+			[
+				'selfManagementType.id_equal' : typeId,
+				'status_equal' : Self.Status.ONLINE
+			]
+		)
 		def data = []
 		selfs.each {
 			def self = [

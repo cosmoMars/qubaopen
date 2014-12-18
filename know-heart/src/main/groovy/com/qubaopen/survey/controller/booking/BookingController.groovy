@@ -150,10 +150,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			date = new Date()
 		} else {
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
-			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
-			if (date < today) {
-				return '{"success" : "0", "message" : "err801"}'
-			}
+//			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
+//			if (date < today) {
+//				return '{"success" : "0", "message" : "err801"}'
+//			}
  		}
 		
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
@@ -241,10 +241,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			date = new Date()
 		} else {
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
-			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
-			if (date < today) {
-				return '{"success" : "0", "message" : "err801"}'
-			}
+//			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
+//			if (date < today) {
+//				return '{"success" : "0", "message" : "err801"}'
+//			}
 		 }
 		
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
@@ -342,6 +342,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		def booking = bookingRepository.findOne(bookingId)
 		if (time)
+			def date = DateUtils.parseDate(time, 'yyyy-MM-dd HH')
+			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd HH'), 'yyyy-MM-dd HH')
+			if (date < today) {
+				return '{"success" : "0", "message" : "err801"}'
+			}
 			booking.time = DateUtils.parseDate(time, 'yyyy-MM-dd HH')
 		if (quick != null)
 			booking.quick = quick
@@ -401,7 +406,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			
 		)
 		def data = [], more = true
-		println bookings.content
+//		println bookings.content
 //		println bookings.numberOfElements
 //		println pageable.pageSize
 		if (bookings && bookings.size < pageable.pageSize) {

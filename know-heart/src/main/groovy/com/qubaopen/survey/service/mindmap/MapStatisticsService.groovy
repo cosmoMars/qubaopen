@@ -199,9 +199,23 @@ public class MapStatisticsService {
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
-						def resultStr = "根据您对EPQ量表的测试，经过量表的标准分数换算得到你的性格偏向，如上图"
-						if (recordMaps.get('L') > 60) {
-							resultStr = '由于量表中测谎题总分过高，故此次结果具有不针对性' as String
+						def resultStr = MapContent.epqTitle
+						
+						if (recordMaps['E'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['N']) {
+							resultStr += MapContent.EGreaterThanPN
+						} else if (recordMaps['E'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['P']) {
+							resultStr += MapContent.EGreaterThanNP
+						} else if (recordMaps['P'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['N']) {
+							resultStr += MapContent.PGreaterThanEN
+						} else if (recordMaps['P'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['E']) {
+							resultStr += MapContent.PGreaterThanNE
+						} else if (recordMaps['N'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['E']) {
+							resultStr += MapContent.NGreaterThanPE
+						} else if (recordMaps['N'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['P']) {
+							resultStr += MapContent.NGreaterThanEP
+						}
+						if (recordMaps['L'] > 60) {
+							resultStr += MapContent.lieL
 						}
 						data << [
 							'groupId' : k?.id,
@@ -221,14 +235,55 @@ public class MapStatisticsService {
 						]
 					} else {
 						chart = []
-						
+						def resultStr = '', contentMap = [:] as Map
 						if (k?.graphicsType) {
 							v.each { s ->
 								s.mapRecords.each {
 									chart << [name : it.name, value : it.value]
+									contentMap.put(it.name, it.value)
 								}
 							}
 						}
+						if ('ABCD' == k?.name || 'ABCD'.equals(k?.name)) {
+							resultStr = MapContent.abcdTitle
+							
+							// AB
+							if (contentMap['AB'] >= 120 && contentMap['AB'] <= 200) {
+								resultStr += MapContent.extremeA
+							} else if (contentMap['AB'] >= 106 && contentMap['AB'] <= 119) {
+								resultStr += MapContent.obviousA
+							} else if (contentMap['AB'] >= 100 && contentMap['AB'] <= 105) {
+								resultStr += MapContent.tendencyA
+							} else if (contentMap['AB'] >= 90 && contentMap['AB'] <= 99) {
+								resultStr += MapContent.extremeB
+							} else if (contentMap['AB'] >= 0 && contentMap['AB'] <= 89) {
+								resultStr += MapContent.tendencyB
+							}
+							// C
+							if (contentMap['C'] >= 14 && contentMap['C'] <= 100) {
+								resultStr += MapContent.typicalC
+							} else if (contentMap['C'] >= 7 && contentMap['C'] <= 13) {
+								resultStr += MapContent.tendencyC
+							} else if (contentMap['C'] >= 0 && contentMap['C'] <= 6) {
+								resultStr += MapContent.notC
+							}
+							
+							// D
+							if (contentMap['D'] >= 0 && contentMap['D'] <= 9) {
+								resultStr += MapContent.D1
+							} else if (contentMap['D'] >= 10 && contentMap['D'] <= 15) {
+								resultStr += MapContent.D2
+							} else if (contentMap['D'] >= 16 && contentMap['D'] <= 18) {
+								resultStr += MapContent.D3
+							} else if (contentMap['D'] >= 19 && contentMap['D'] <= 27) {
+								resultStr += MapContent.D4
+							} else if (contentMap['D'] >= 28 && contentMap['D'] <= 36) {
+								resultStr += MapContent.D5
+							} else if (contentMap['D'] >= 37 && contentMap['D'] <= 100) {
+								resultStr += MapContent.D6
+							}
+						}
+						
 						data << [
 							'groupId' : k?.id,
 							'mapTitle' : k?.title,
@@ -236,7 +291,7 @@ public class MapStatisticsService {
 							'mapMax' : k?.mapMax,
 							'resultName' : k?.content,
 							'resultScore' : '',
-							'resultContent' : '',
+							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
 							'graphicsType' : k?.graphicsType?.id,
@@ -249,13 +304,97 @@ public class MapStatisticsService {
 			}
 			def selfResultCount = 0
 			singleMaps.each { // 单个题目出答案
-				def chart = []
-				if (it?.self?.graphicsType) {
+				def chart = [], resultMaps = []
+//				if (it?.self?.graphicsType) {
+//					it.mapRecords.each {
+//						chart << [name : it.name, value : it.value]
+//					}
+//				}
+				if (it?.self?.id && (10l == it?.self?.id || 13l == it?.self?.id || 14l == it?.self?.id)) {
+					println it?.self?.id
+					resultMaps = selfUserQuestionnaireRepository.findBySelfAndUserOrderByTimeAsc(it?.self, user)
+					if (resultMaps.size() > 1) {
+						resultMaps.each {
+							chart << [name : it.time.getTime(), value : it.score]
+						}
+					}
+				} else if (it?.self?.id && (8l == it?.self?.id || 16l == it?.self?.id)) {
+					def resultMapRecords = mapRecordRepository.findBySelfAndUser(it?.self, user),
+						moodMaps = [:]
+					resultMapRecords.each {
+						moodMaps.put(it.name, it.value)
+					}
+					if ('ADULT' == it.self.abbreviation) {
+						if (moodMaps['Tenacity']) {
+							chart << [name : '坚韧性', value : moodMaps['Tenacity']]
+						} else {
+							chart << [name : '坚韧性', value : 0]
+						}
+						if (moodMaps['Optimism']) {
+							chart << [name : '乐观性', value : moodMaps['Optimism']]
+						} else {
+							chart << [name : '乐观性', value : 0]
+						}
+						if (moodMaps['Poisedness']) {
+							chart << [name : '自若性', value : moodMaps['Poisedness']]
+						} else {
+							chart << [name : '自若性', value : 0]
+						}
+						if (moodMaps['Persistence']) {
+							chart << [name : '执着性', value : moodMaps['Persistence']]
+						} else {
+							chart << [name : '执着性', value : 0]
+						}
+						
+					}
+					if ('MBTI' == it.self.abbreviation) {
+						if (moodMaps['J']) {
+							chart << [name : '判断（J）', value : moodMaps['J']]
+						} else {
+							chart << [name : '判断（J）', value : 0]
+						}
+						if (moodMaps['T']) {
+							chart << [name : '思考（T）', value : moodMaps['T']]
+						} else {
+							chart << [name : '思考（T）', value : 0]
+						}
+						if (moodMaps['S']) {
+							chart << [name : '实感（S）', value : moodMaps['S']]
+						} else {
+							chart << [name : '实感（S）', value : 0]
+						}
+						if (moodMaps['E']) {
+							chart << [name : '外向（E）', value : moodMaps['E']]
+						} else {
+							chart << [name : '外向（E）', value : 0]
+						}
+						if (moodMaps['P']) {
+							chart << [name : '（P）感觉', value : moodMaps['P']]
+						} else {
+							chart << [name : '（P）感觉', value : 0]
+						}
+						if (moodMaps['F']) {
+							chart << [name : '（F）情感', value : moodMaps['F']]
+						} else {
+							chart << [name : '（F）情感', value : 0]
+						}
+						if (moodMaps['N']) {
+							chart << [name : '（N）直觉', value : moodMaps['N']]
+						} else {
+							chart << [name : '（N）直觉', value : 0]
+						}
+						if (moodMaps['I']) {
+							chart << [name : '（I）内向', value : moodMaps['I']]
+						} else {
+							chart << [name : '（I）内向', value : 0]
+						}
+					}
+					
+				} else if (it?.self?.selfGroup?.graphicsType){
 					it.mapRecords.each {
 						chart << [name : it.name, value : it.value]
 					}
 				}
-				
 				
 				if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
 					selfResultCount ++
@@ -281,13 +420,13 @@ public class MapStatisticsService {
 					'groupId' : it?.self?.selfGroup?.id,
 					'mapTitle' : it?.self?.title,
 					'chart' : chart,
-					'mapMax' : it?.mapMax,
+					'mapMax' : it?.self?.selfGroup?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
 					'resultScore' : '',
 					'resultContent' : it?.selfResultOption?.content,
 					'managementType' : it?.selfManagementType?.id,
 					'recommendedValue' : it?.recommendedValue,
-					'graphicsType' : it?.self?.graphicsType?.id,
+					'graphicsType' : it?.self?.selfGroup?.graphicsType?.id,
 					'special' : false,
 					'lock' : false,
 					'picPath' : it?.selfResultOption?.picPath
@@ -414,11 +553,26 @@ public class MapStatisticsService {
 							recordMaps.put(rk, tScore)
 							
 						}
-						def resultStr = "根据您对EPQ量表的测试，经过量表的标准分数换算得到你的性格偏向，如上图"
-						if (recordMaps.get('L') > 60) {
-							resultStr = '由于量表中测谎题总分过高，故此次结果具有不针对性' as String
-						}
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
+						def resultStr = MapContent.epqTitle
+						
+						if (recordMaps['E'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['N']) {
+							resultStr += MapContent.EGreaterThanPN
+						} else if (recordMaps['E'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['P']) {
+							resultStr += MapContent.EGreaterThanNP
+						} else if (recordMaps['P'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['N']) {
+							resultStr += MapContent.PGreaterThanEN
+						} else if (recordMaps['P'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['E']) {
+							resultStr += MapContent.PGreaterThanNE
+						} else if (recordMaps['N'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['E']) {
+							resultStr += MapContent.NGreaterThanPE
+						} else if (recordMaps['N'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['P']) {
+							resultStr += MapContent.NGreaterThanEP
+						}
+						if (recordMaps['L'] > 60) {
+							resultStr += MapContent.lieL
+						}
+						
 						data << [
 							'groupId' : k?.id,
 							'mapTitle' : k?.title,
@@ -437,11 +591,52 @@ public class MapStatisticsService {
 						]
 					} else {
 						chart = []
+						def resultStr = '', contentMap = [:] as Map
 						if (k?.graphicsType) {
 							v.each { s ->
 								s.mapRecords.each {
 									chart << [name : it.name, value : it.value]
+									contentMap.put(it.name, it.value)
 								}
+							}
+						}
+						if ('ABCD' == k?.name || 'ABCD'.equals(k?.name)) {
+							resultStr = MapContent.abcdTitle
+							
+							// AB
+							if (contentMap['AB'] >= 120 && contentMap['AB'] <= 200) {
+								resultStr += MapContent.extremeA
+							} else if (contentMap['AB'] >= 106 && contentMap['AB'] <= 119) {
+								resultStr += MapContent.obviousA
+							} else if (contentMap['AB'] >= 100 && contentMap['AB'] <= 105) {
+								resultStr += MapContent.tendencyA
+							} else if (contentMap['AB'] >= 90 && contentMap['AB'] <= 99) {
+								resultStr += MapContent.extremeB
+							} else if (contentMap['AB'] >= 0 && contentMap['AB'] <= 89) {
+								resultStr += MapContent.tendencyB
+							}
+							// C
+							if (contentMap['C'] >= 14 && contentMap['C'] <= 100) {
+								resultStr += MapContent.typicalC
+							} else if (contentMap['C'] >= 7 && contentMap['C'] <= 13) {
+								resultStr += MapContent.tendencyC
+							} else if (contentMap['C'] >= 0 && contentMap['C'] <= 6) {
+								resultStr += MapContent.notC
+							}
+							
+							// D
+							if (contentMap['D'] >= 0 && contentMap['D'] <= 9) {
+								resultStr += MapContent.D1
+							} else if (contentMap['D'] >= 10 && contentMap['D'] <= 15) {
+								resultStr += MapContent.D2
+							} else if (contentMap['D'] >= 16 && contentMap['D'] <= 18) {
+								resultStr += MapContent.D3
+							} else if (contentMap['D'] >= 19 && contentMap['D'] <= 27) {
+								resultStr += MapContent.D4
+							} else if (contentMap['D'] >= 28 && contentMap['D'] <= 36) {
+								resultStr += MapContent.D5
+							} else if (contentMap['D'] >= 37 && contentMap['D'] <= 100) {
+								resultStr += MapContent.D6
 							}
 						}
 		
@@ -452,7 +647,7 @@ public class MapStatisticsService {
 							'mapMax' : k?.mapMax,
 							'resultName' : k?.content,
 							'resultScore' : '',
-							'resultContent' : '',
+							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
 							'graphicsType' : k?.graphicsType?.id,
@@ -464,13 +659,97 @@ public class MapStatisticsService {
 			}
 			def selfResultCount = 0
 			singleMaps.each { // 单个题目出答案
-				def chart = []
-				if (it?.self?.graphicsType) {
+				def chart = [], resultMaps = []
+//				if (it?.self?.graphicsType) {
+//					it.mapRecords.each {
+//						chart << [name : it.name, value : it.value]
+//					}
+//				}
+				if (it?.self?.id && (10l == it?.self?.id || 13l == it?.self?.id || 14l == it?.self?.id)) {
+					println it?.self?.id
+					resultMaps = selfUserQuestionnaireRepository.findBySelfAndUserOrderByTimeAsc(it?.self, user)
+					if (resultMaps.size() > 1) {
+						resultMaps.each {
+							chart << [name : it.time.getTime(), value : it.score]
+						}
+					}
+				} else if (it?.self?.id && (8l == it?.self?.id || 16l == it?.self?.id)) {
+					def resultMapRecords = mapRecordRepository.findBySelfAndUser(it?.self, user),
+						moodMaps = [:]
+					resultMapRecords.each {
+						moodMaps.put(it.name, it.value)
+					}
+					if ('ADULT' == it.self.abbreviation) {
+						if (moodMaps['Tenacity']) {
+							chart << [name : '坚韧性', value : moodMaps['Tenacity']]
+						} else {
+							chart << [name : '坚韧性', value : 0]
+						}
+						if (moodMaps['Optimism']) {
+							chart << [name : '乐观性', value : moodMaps['Optimism']]
+						} else {
+							chart << [name : '乐观性', value : 0]
+						}
+						if (moodMaps['Poisedness']) {
+							chart << [name : '自若性', value : moodMaps['Poisedness']]
+						} else {
+							chart << [name : '自若性', value : 0]
+						}
+						if (moodMaps['Persistence']) {
+							chart << [name : '执着性', value : moodMaps['Persistence']]
+						} else {
+							chart << [name : '执着性', value : 0]
+						}
+						
+					}
+					if ('MBTI' == it.self.abbreviation) {
+						if (moodMaps['J']) {
+							chart << [name : '判断（J）', value : moodMaps['J']]
+						} else {
+							chart << [name : '判断（J）', value : 0]
+						}
+						if (moodMaps['T']) {
+							chart << [name : '思考（T）', value : moodMaps['T']]
+						} else {
+							chart << [name : '思考（T）', value : 0]
+						}
+						if (moodMaps['S']) {
+							chart << [name : '实感（S）', value : moodMaps['S']]
+						} else {
+							chart << [name : '实感（S）', value : 0]
+						}
+						if (moodMaps['E']) {
+							chart << [name : '外向（E）', value : moodMaps['E']]
+						} else {
+							chart << [name : '外向（E）', value : 0]
+						}
+						if (moodMaps['P']) {
+							chart << [name : '（P）感觉', value : moodMaps['P']]
+						} else {
+							chart << [name : '（P）感觉', value : 0]
+						}
+						if (moodMaps['F']) {
+							chart << [name : '（F）情感', value : moodMaps['F']]
+						} else {
+							chart << [name : '（F）情感', value : 0]
+						}
+						if (moodMaps['N']) {
+							chart << [name : '（N）直觉', value : moodMaps['N']]
+						} else {
+							chart << [name : '（N）直觉', value : 0]
+						}
+						if (moodMaps['I']) {
+							chart << [name : '（I）内向', value : moodMaps['I']]
+						} else {
+							chart << [name : '（I）内向', value : 0]
+						}
+					}
+					
+				} else if (it?.self?.selfGroup?.graphicsType){
 					it.mapRecords.each {
 						chart << [name : it.name, value : it.value]
 					}
 				}
-				
 				if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
 					selfResultCount ++
 					def selfResult = selfResultOptionRepository.findOne(145l)
@@ -495,13 +774,13 @@ public class MapStatisticsService {
 					'groupId' : it?.self?.selfGroup?.id,
 					'mapTitle' : it?.self?.title,
 					'chart' : chart,
-					'mapMax' : it?.mapMax,
+					'mapMax' : it?.self?.selfGroup?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
 					'resultScore' : '',
 					'resultContent' : it?.selfResultOption?.content,
 					'managementType' : it?.selfManagementType?.id,
 					'recommendedValue' : it?.recommendedValue,
-					'graphicsType' : it?.self?.graphicsType?.id,
+					'graphicsType' : it?.self?.selfGroup?.graphicsType?.id,
 					'special' : false,
 					'lock' : false,
 					'picPath' : it?.selfResultOption?.picPath
@@ -611,20 +890,20 @@ public class MapStatisticsService {
 					moodContent = ''
 				if (selfUserQuestionnaire) {
 					if (137l == selfUserQuestionnaire.selfResultOption.id || '137'.equals(selfUserQuestionnaire.selfResultOption.id)) {
-						moodContent = MapMoodContent.outbound
+						moodContent = MapContent.outbound
 					}else if (138l == selfUserQuestionnaire.selfResultOption.id || '138'.equals(selfUserQuestionnaire.selfResultOption.id)) {
-						moodContent = MapMoodContent.within
+						moodContent = MapContent.within
 					}
 				}	
 			
 				if( resultBefore <= resultToday  && resultToday<resultAfter){ // 上升
-					resultContent = MapMoodContent.lowToHighTitle + MapMoodContent.lowToHighContent + moodContent + MapMoodContent.lowToHighMethod
+					resultContent = MapContent.lowToHighTitle + MapContent.lowToHighContent + moodContent + MapContent.lowToHighMethod
 				}else if( resultBefore > resultToday  && resultToday >=resultAfter){ // 下降
-					resultContent = MapMoodContent.highToLowTitle + MapMoodContent.highToLowContent + moodContent + MapMoodContent.highToLowMethod
+					resultContent = MapContent.highToLowTitle + MapContent.highToLowContent + moodContent + MapContent.highToLowMethod
 				}else if( resultBefore <= resultToday  && resultToday >=resultAfter){ // 最高处
-					resultContent = MapMoodContent.highTideTitle + MapMoodContent.highTideContent + moodContent
+					resultContent = MapContent.highTideTitle + MapContent.highTideContent + moodContent
 				}else if( resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
-					resultContent = MapMoodContent.lowTideTitle + MapMoodContent.lowTideContent + moodContent + MapMoodContent.lowTideMethod
+					resultContent = MapContent.lowTideTitle + MapContent.lowTideContent + moodContent + MapContent.lowTideMethod
 				}
 				
 				chart = [

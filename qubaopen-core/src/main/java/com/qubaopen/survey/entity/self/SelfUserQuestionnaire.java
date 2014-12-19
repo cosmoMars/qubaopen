@@ -65,6 +65,11 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "self_question_type_id")
 	private SelfQuestionType selfQuestionType;
+	
+	/**
+	 * 分数
+	 */
+	private int score;
 
 	/**
 	 * 时间
@@ -159,6 +164,14 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 
 	public void setSelfQuestionType(SelfQuestionType selfQuestionType) {
 		this.selfQuestionType = selfQuestionType;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 	public Date getTime() {

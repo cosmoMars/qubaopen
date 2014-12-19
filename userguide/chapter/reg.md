@@ -10,6 +10,7 @@
 | password | String | true | 密码 |
 | captcha | String | true | 验证码 |
 
+响应结果：
 ```json
 {
     "success" : "1",

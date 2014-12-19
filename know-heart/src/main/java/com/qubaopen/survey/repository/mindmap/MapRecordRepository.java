@@ -21,4 +21,7 @@ public interface MapRecordRepository extends MyRepository<MapRecord, Long> {
 	@Query("from MapRecord m where m.createdDate = (select max(mr.createdDate) from MapRecord mr where mr.mapStatistics.user = :user and mr.mapStatistics.self = :self)")
 	MapRecord findMaxRecordBySpecialSelf(@Param("self") Self self, @Param("user") User user);
 
+	@Query("from MapRecord m where m.mapStatistics.id = (select ms.id from MapStatistics ms where ms.self = :self and ms.user = :user)")
+	List<MapRecord> findBySelfAndUser(@Param("self") Self self, @Param("user") User user);
+	
 }

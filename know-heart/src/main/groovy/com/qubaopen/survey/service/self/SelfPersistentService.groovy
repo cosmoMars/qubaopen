@@ -68,7 +68,7 @@ public class SelfPersistentService {
 	 * @param resultOption
 	 */
 	@Transactional
-	def saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption, boolean refresh) {
+	def saveQuestionnaireAndUserAnswer(User user, Self self, List<QuestionVo> questionVos, List<SelfQuestion> questions, List<SelfQuestionOption> options, SelfResultOption resultOption, boolean refresh, int score) {
 		def selfUserQuestionnaire, questionnaire 
 		if (refresh) { // 重做
 			questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self)
@@ -87,7 +87,8 @@ public class SelfPersistentService {
 				status : SelfUserQuestionnaire.Status.COMPLETED,
 				transmit : SelfUserQuestionnaire.Transmit.NOTRANSMIT,
 				time : new Date(),
-				used : true
+				used : true,
+				score : score
 			)
 		} else {
 			selfUserQuestionnaire = new SelfUserQuestionnaire(
@@ -97,7 +98,8 @@ public class SelfPersistentService {
 				status : SelfUserQuestionnaire.Status.COMPLETED,
 				transmit : SelfUserQuestionnaire.Transmit.NOTRANSMIT,
 				time : new Date(),
-				used : false
+				used : false,
+				score : score
 			)
 		}
 	

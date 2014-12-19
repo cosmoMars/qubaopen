@@ -32,4 +32,7 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	
 	SelfUserQuestionnaire findByUserAndSelfAndUsed(User user, Self self, boolean used);
 	
+	List<SelfUserQuestionnaire> findBySelfAndUserOrderByTimeAsc(Self self, User user);
+	
+	
 }

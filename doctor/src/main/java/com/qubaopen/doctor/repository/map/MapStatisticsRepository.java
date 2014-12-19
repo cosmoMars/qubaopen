@@ -48,5 +48,7 @@ public interface MapStatisticsRepository extends MyRepository<MapStatistics, Lon
 	
 	List<MapStatistics> findBySelfManagementTypeAndUser(SelfManagementType selfManagementType, User user);
 	
+//	List<MapStatistics> findBySelfAndUserOrderByCreatedDateAsc(Self self, User user);
+	
 	
 }

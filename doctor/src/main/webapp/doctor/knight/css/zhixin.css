@@ -9,21 +9,47 @@ body {
     min-height: 780px;
 }
 
-::selection{
-    background-color : #f3542d
-}
+/*修改浏览器内容选中颜色 如果有部分没改变  就把内容方在<p>里 */
+/*::selection{*/
+    /*background-color : #f3542d*/
+/*}*/
 
 /* navbar 自定义导航栏 */
+.navbar-zhixin-title{
+    color:#fff;
+    float:none;
+    margin-right: 20px;
+}
+@media (min-width: 0px) {
+    .navbar-zhixin-header {
+        float: left;
+    }
+}
 
+/*颜色样式*/
 
 .navbar-zhixin{
-    background-color: #f3542d;
+    background-color: #3194f3;
 }
 
 .navbar-zhixin .navbar-toggle:hover,
 .navbar-zhixin .navbar-toggle:focus {
     background-color: #ddd;
 }
+
+.navbar-zhixin li a:hover{
+    color: #3194f3;
+    background-color: #fff;
+}
+
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+    background-color: #fff;
+    color: #3194f3;
+    border-color: #fff;
+}
+
 .navbar-zhixin .navbar-toggle .icon-bar {
     background-color: #fff;
 }
@@ -35,15 +61,15 @@ body {
 
 .navbar-zhixin a:hover,
 .navbar-zhixin a:focus {
-    color: #aaa;
-    text-decoration: underline;
+    color: #eee;
+    text-decoration: none;
 }
 
 /*button 自定义按钮*/
 .btn-zhixin {
     color: #fff;
-    background-color: #f3542d;
-    border-color: #e7502b;
+    background-color: #3194f3;
+    border-color: #2e8be4;
 }
 .btn-zhixin:hover,
 .btn-zhixin:focus,
@@ -52,8 +78,8 @@ body {
 .btn-zhixin.active,
 .open > .dropdown-toggle.btn-zhixin {
     color: #fff;
-    background-color: #e24e2a;
-    border-color: #c94525;
+    background-color: #2d88e0;
+    border-color: #236aae;
 }
 .btn-zhixin:active,
 .btn-zhixin.active,
@@ -78,10 +104,38 @@ fieldset[disabled] .btn-zhixin:active,
 .btn-zhixin.disabled.active,
 .btn-zhixin[disabled].active,
 fieldset[disabled] .btn-zhixin.active {
-    background-color: #f3542d;
-    border-color: #e7502b;
+    background-color: #3194f3;
+    border-color: #2e8be4;
 }
 .btn-zhixin .badge {
-    color: #f3542d;
+    color: #3194f3;
     background-color: #fff;
+}
+
+.list-group-item.active,
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+    z-index: 2;
+    color: #fff;
+    background-color: #3194f3;
+    border-color: #2e8be4;
+}
+
+
+
+
+
+/*橙色系*/
+/*background-color: #f3542d;*/
+/*border-color: #e7502b;*/
+
+/*hover*/
+/*background-color: #e24e2a;*/
+/*border-color: #c94525;*/
+
+
+
+/* 求助中心 */
+.help-list{
+    max-width: 800px;
 }

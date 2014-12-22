@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <link rel="icon" href="../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>知心-预约时间</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="../knight/css/zhixin.css" rel="stylesheet">
+    <link href="../jquery/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="../jquery/css/jquery-ui.theme.min.css" rel="stylesheet">
+    <style>
+        .selectable .ui-selecting { background: #f6f6f6; }
+        .selectable .ui-selected { background: #fff; color: white; }
+        .selectable { list-style-type: none; margin: 0; padding: 0; width: 350px;  float:left;}
+        .selectable li { margin-left: 5px; padding: 0px; float: left; width: 45px; height: 20px; font-size: 1em; text-align: center; }
+        .selectable li:nth-child(7n+1) { margin-left: 0px; padding: 0px; float: left; width: 45px; height: 20px; font-size: 1em; text-align: center; }
+
+
+        .ui-state-default{
+               background-color: #efefef;
+        }
+
+        .left-bar {clear:left; list-style-type: none; margin: 0; padding: 0; width: 100px;  float:left;}
+        .left-bar li { background-color: #fff; margin: 0px; padding: 0px; float: left; width: 90px; height: 20px; font-size: 1em; text-align: center; }
+
+        .title-bar { width:450px;}
+        .title-bar div{ float:left; width:50px; padding: 5px;}
+        .title-bar div:nth-child(1){ float:left; width:100px;}
+
+        .ui-line1{
+            width: 47px;
+            height: 0px;
+            border-top: 1px solid #ccc;
+            -webkit-transform:
+            translateY(9px)
+            translateX(-2px)
+            rotate(23deg);
+        }
+
+        .gone{
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+
+
+<div class="container">
+
+    <button type="submit" id="custom1" class="btn btn-zhixin">选中所有</button>
+    <button type="submit" id="custom3" class="btn btn-zhixin">删除所有</button>
+    <button type="submit" id="custom4" class="btn btn-zhixin">计算</button>
+    <button type="submit" id="custom2" class="btn btn-zhixin">仅显示工作时间</button>
+
+    <div class="title-bar">
+
+        <div>日程表</div>
+        <div>周一</div>
+        <div>周二</div>
+        <div>周三</div>
+        <div>周四</div>
+        <div>周五</div>
+        <div>周六</div>
+        <div>周日</div>
+    </div>
+
+    <ol class="left-bar">
+
+        <li >00:00 - 01:00</li>
+        <li >01:00 - 02:00</li>
+        <li >02:00 - 03:00</li>
+        <li >03:00 - 04:00</li>
+        <li >04:00 - 05:00</li>
+        <li >05:00 - 06:00</li>
+        <li >06:00 - 07:00</li>
+
+        <li >07:00 - 08:00</li>
+        <li >08:00 - 09:00</li>
+        <li >09:00 - 10:00</li>
+        <li >10:00 - 11:00</li>
+        <li >11:00 - 12:00</li>
+        <li >12:00 - 13:00</li>
+        <li >13:00 - 14:00</li>
+        <li >14:00 - 15:00</li>
+        <li >15:00 - 16:00</li>
+        <li >16:00 - 17:00</li>
+        <li >17:00 - 18:00</li>
+
+        <li >18:00 - 19:00</li>
+        <li >19:00 - 20:00</li>
+        <li >20:00 - 21:00</li>
+        <li >21:00 - 22:00</li>
+        <li >22:00 - 23:00</li>
+        <li >23:00 - 00:00</li>
+    </ol>
+
+
+    <ol id="selectable" class="selectable">
+
+    </ol>
+
+</div>
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../jquery/jquery-1.11.1.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+
+
+<script src="../knight/js/main.js"></script>
+<script src="../jquery/jquery-ui.js"></script>
+<script>
+    $(document).ready(function () {
+
+        var bWorkTime=false;
+        var oWeekTable=$( "#selectable" );
+        for(var i=0;i<168;i++){
+            oWeekTable.append('<li class="ui-state-default"></li>');
+        }
+        oWeekTable.selectable({ autoRefresh: false });
+        $( "#selectable" ).selectable( "option", "filter", "li" );
+
+
+        //关闭所有时间段，包括未显示的
+        function deleteAll(){
+            $("#selectable").children().each(function(){
+                var selectee = $.data(this, "selectable-item");
+                $(this).removeClass("ui-selected");
+                if($(this).children().length==0){
+                    $(this).append('<div class="ui-line1"></div>');
+                }
+                selectee.selected = false;
+                selectee.isSelected=false;
+                selectee.startselected = false;
+            });
+        }
+
+         deleteAll();
+
+        $("#custom1").on("click",function(){
+            //全部点亮
+            $("#selectable").children().each(function(i,e){
+                if($(e).hasClass("gone")){
+                    return;
+                }
+                var selectee = $.data(this, "selectable-item");
+                $(this).addClass("ui-selected");
+                $(this).children().remove();
+                selectee.selected = true;
+                selectee.isSelected=true;
+                selectee.startselected = true;
+
+            });
+        });
+
+        $("#custom2").on("click",function(){
+            toggleWorkTime();
+        });
+
+
+        $("#custom3").on("click",function(){
+            deleteAll();
+        });
+
+
+        $("#custom4").on("click",function(){
+            calcAll();
+        });
+
+
+
+        //开关是否显示所有日期, 切换到工作日期时，隐藏的日期会设置关闭
+        function toggleWorkTime(){
+            if(bWorkTime){
+                $(".left-bar").children().each(function(){
+                    $(this).removeClass("gone");
+                });
+                $("#selectable").children().each(function(){
+                    $(this).removeClass("gone");
+                });
+                $("#custom2").empty().append("仅显示工作时间")
+            }else{
+                var iCount=0;
+                var aTable=$("#selectable").children();
+                $(".left-bar").children().each(function(){
+                    if(iCount<7 || iCount>17){
+                        $(this).addClass("gone");
+
+                        for(var j=0;j<7;j++){
+                            var oItem=aTable[(iCount)*7+j];
+                            $(oItem).addClass("gone");
+                            var selectee = $.data(oItem, "selectable-item");
+                            $(oItem).removeClass("ui-selected");
+                            if($(oItem).children().length==0){
+                                $(oItem).append('<div class="ui-line1"></div>');
+                            }
+                            selectee.selected = false;
+                            selectee.isSelected=false;
+                            selectee.startselected = false;
+                        }
+
+                    }
+                    iCount++;
+                });
+
+                $("#custom2").empty().append("显示全部时间")
+
+            }
+            $( "#selectable" ).selectable( "refresh" );
+            bWorkTime=!bWorkTime;
+        }
+
+
+        //计算日期选择情况， 按照天来来分组
+        function calcAll(){
+
+            var aData=[];
+            $("#selectable").children().each(function(i,e){
+
+                var iArray=i%7;
+                if(aData[iArray]==null){
+                    aData.push("");
+                }
+
+                aData[iArray]+=$(e).hasClass("ui-selected")?"1":"0";
+
+            });
+
+            console.log(aData);
+        }
+
+    });
+</script>
+
+</body>
+</html>

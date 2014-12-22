@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>知心-登录</title>
     <!-- Bootstrap core CSS -->
     <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
@@ -37,7 +39,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">知心-医师端</a>
+                <a class="navbar-brand" href="#">知心-医师端</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -52,17 +54,15 @@
 
     <form  class="form-signin" role="form">
         <h2 class="form-signin-heading"></h2>
-        <input type="text"  id="phone" class="form-control account" placeholder="账号" autocomplete="off" required autofocus>
-        <input type="password" id="password" class="form-control" placeholder="密码" required>
+        <input type="text"  id="phone" class="form-control account" placeholder="账号" autocomplete="off" value="13621673989" required autofocus>
+        <input type="password" id="password" class="form-control" placeholder="密码" value="11111111" required>
         <div class="checkbox">
             <label>
-                <input type="checkbox" value="remember-me"> 记住我
+                <!--<input type="checkbox" value="remember-me"> 记住我-->
             </label>
         </div>
         <button id="btn-signin" class="btn btn-lg btn-zhixin btn-block" type="button">登录</button>
     </form>
-
-
 
     <div id="target"></div>
 </div> <!-- /container -->
@@ -76,6 +76,30 @@
 
 <script src="../knight/js/main.js"></script>
 <script src="../knight/js/sign.js"></script>
+<script>
+
+    $(document).ready(function () {
+
+        $(window).resize(function () {
+            resizeMenu();
+        });
+
+        resizeMenu();
+    });
+
+        /*动态更新 菜单界面*/
+    function resizeMenu(){
+        var windowHeight=$(window).height();
+
+        //console.log(windowHeight);
+        if(windowHeight>=500){
+            $(".container").css("margin-top",windowHeight/2-200);
+        }else{
+            $(".container").attr("style","");
+        }
+    }
+</script>
+
 
 </body>
 </html>

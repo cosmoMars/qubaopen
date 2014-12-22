@@ -3,7 +3,7 @@
  */
 
 
-ContextUrl="http://localhost:8080"
+ContextUrl="http://10.0.0.3:8080"
 //ContextUrl="http://10.0.0.88:8080/know-heart";
 //ContextUrl="http://115.28.176.74:8080/know-heart";
 //
@@ -47,4 +47,23 @@ function checkCookie()
             setCookie('username',username,365)
         }
     }
+}
+
+
+/*获取 get方式的参数*/
+function getParam(param){
+    var SearchString = window.location.search.substring(1);
+    var VariableArray = SearchString.split('&');
+    for(var i = 0; i < VariableArray.length; i++){
+        var KeyValuePair = VariableArray[i].split('=');
+        if(KeyValuePair[0] == param){
+            return KeyValuePair[1];
+        }
+    }
+}
+
+
+/**/
+function backToSignIn(){
+    self.location = "signin.html";
 }

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <link rel="icon" href="../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>知心-日程表</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="../knight/css/zhixin.css" rel="stylesheet">
+
+
+
+    <link href="../plugin/kendo/content/shared/styles/examples-offline.css" rel="stylesheet">
+    <link href="../plugin/kendo/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="../plugin/kendo/styles/kendo.rtl.min.css" rel="stylesheet">
+    <link href="../plugin/kendo/styles/kendo.default.min.css" rel="stylesheet">
+    <link href="../plugin/kendo/styles/kendo.dataviz.min.css" rel="stylesheet">
+    <link href="../plugin/kendo/styles/kendo.dataviz.default.min.css" rel="stylesheet">
+    <script src="../plugin/kendo/js/jquery.min.js"></script>
+    <script src="../plugin/kendo/js/angular.min.js"></script>
+    <script src="../plugin/kendo/js/kendo.all.min.js"></script>
+    <script src="../plugin/kendo/content/shared/js/console.js"></script>
+
+    <script src="../plugin/kendo/js/cultures/kendo.culture.zh-CN.min.js"></script>
+    <script src="../plugin/kendo/js/messages/kendo.messages.zh-CN.min.js"></script>
+</head>
+<body>
+
+
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">知心-医师端</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">首页</a></li>
+                    <li><a href="#">专栏</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">咨询师<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">预约列表</a></li>
+                            <li><a href="#">日程表</a></li>
+                            <li class="divider"></li>
+                            <!--<li class="dropdown-header">Nav header</li>-->
+                            <li><a href="#">账户</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="contact.html">联系我们</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="profile.html">个人资料</a></li>
+                    <li><a href="signin.html">登录</a></li>
+                    <li><a href="signup_old.html">注册</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+
+
+
+    <div class="marketing">
+
+        <div id="scheduler"></div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p class="pull-right"><a href="#">回到顶部</a></p>
+        <p>© 2014 Company, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+    </footer>
+</div>
+
+
+
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+
+<script>
+    $(function() {
+        kendo.culture("zh-CN");
+        $("#scheduler").kendoScheduler({
+            date: new Date("2013/6/13"),
+            startTime: new Date("2013/6/13 07:00 AM"),
+            height: 600,
+            views: [
+                "day",
+                { type: "workWeek", selected: true },
+                "week",
+                "month",
+                "agenda",
+                { type: "timeline", eventHeight: 50}
+            ],
+            timezone: "Etc/UTC",
+            dataSource: {
+                batch: true,
+                transport: {
+                    read: {
+                        url: "http://demos.telerik.com/kendo-ui/service/tasks",
+                        dataType: "jsonp"
+                    },
+                    update: {
+                        url: "http://demos.telerik.com/kendo-ui/service/tasks/update",
+                        dataType: "jsonp"
+                    },
+                    create: {
+                        url: "http://demos.telerik.com/kendo-ui/service/tasks/create",
+                        dataType: "jsonp"
+                    },
+                    destroy: {
+                        url: "http://demos.telerik.com/kendo-ui/service/tasks/destroy",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                schema: {
+                    model: {
+                        id: "taskId",
+                        fields: {
+                            taskId: { from: "TaskID", type: "number" },
+                            title: { from: "Title", defaultValue: "No title", validation: { required: true } },
+                            start: { type: "date", from: "Start" },
+                            end: { type: "date", from: "End" },
+                            startTimezone: { from: "StartTimezone" },
+                            endTimezone: { from: "EndTimezone" },
+                            description: { from: "Description" },
+                            recurrenceId: { from: "RecurrenceID" },
+                            recurrenceRule: { from: "RecurrenceRule" },
+                            recurrenceException: { from: "RecurrenceException" },
+                            ownerId: { from: "OwnerID", defaultValue: 1 },
+                            isAllDay: { type: "boolean", from: "IsAllDay" }
+                        }
+                    }
+                },
+                filter: {
+                    logic: "or",
+                    filters: [
+                        { field: "ownerId", operator: "eq", value: 1 },
+                        { field: "ownerId", operator: "eq", value: 2 }
+                    ]
+                }
+            },
+            resources: [
+                {
+                    field: "ownerId",
+                    title: "Owner",
+                    dataSource: [
+                        { text: "Alex", value: 1, color: "#f8a398" },
+                        { text: "Bob", value: 2, color: "#51a0ed" },
+                        { text: "Charlie", value: 3, color: "#56ca85" }
+                    ]
+                }
+            ]
+        });
+
+    });
+</script>
+<style scoped>
+
+    .k-nav-current > .k-link span + span {
+        max-width: 200px;
+        display: inline-block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        vertical-align: top;
+    }
+
+    #team-schedule {
+        background: url('../plugin/kendo/content/web/scheduler/team-schedule.png') transparent no-repeat;
+        height: 115px;
+        position: relative;
+    }
+
+    #people {
+        background: url('../plugin/kendo/content/web/scheduler/scheduler-people.png') no-repeat;
+        width: 345px;
+        height: 115px;
+        position: absolute;
+        right: 0;
+    }
+    #alex {
+        position: absolute;
+        left: 4px;
+        top: 81px;
+    }
+    #bob {
+        position: absolute;
+        left: 119px;
+        top: 81px;
+    }
+    #charlie {
+        position: absolute;
+        left: 234px;
+        top: 81px;
+    }
+</style>
+
+</body>
+</html>

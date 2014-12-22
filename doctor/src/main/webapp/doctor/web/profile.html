@@ -32,25 +32,19 @@
     <!-- Static navbar -->
     <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
         <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">知心-医师端</a>
+            <div class="navbar-header navbar-zhixin-header">
+                <a class="navbar-brand" href="menu.html"><p class="glyphicon glyphicon-chevron-left"></p></a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="active"><a href="#">登录</a></li>
-                    <li><a href="signup_old.html">注册</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
+            <div class="navbar-text navbar-zhixin-title text-center">
+                个人资料
+            </div>
+        </div>
     </nav>
 
-    <form class="form-horizontal form-profile" role="form">
+
+
+
+    <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
         <div class="form-group">
             <label for="realname" class="col-sm-2 control-label">姓名</label>
             <div class="col-sm-10">
@@ -59,9 +53,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="phone" class="col-sm-2 control-label">联系手机</label>
+            <label for="contactPhone" class="col-sm-2 control-label">联系手机</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="phone" autocomplete="off"
+                <input type="text" class="form-control" id="contactPhone" autocomplete="off"
                        placeholder="请输入手机号">
             </div>
         </div>
@@ -95,7 +89,7 @@
         <div class="form-group ">
             <label for="birthday" class="col-sm-2 control-label">出生年月</label>
             <div class="col-sm-10" >
-                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd"  id="birthday" readonly>
+                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:ii:00"  id="birthday" readonly>
 
             </div>
         </div>
@@ -116,7 +110,7 @@
         <div class="form-group">
             <label for="certificate" class="col-sm-2 control-label">资质证明</label>
             <div class="col-sm-10">
-                <input type="file" class="form-control" id="certificate"
+                <input type="file" class="form-control" id="certificate" name="record"
                        placeholder="请上传">
             </div>
         </div>
@@ -149,16 +143,16 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="textConsult" class="col-sm-8 control-label">是否接受免费在线文字咨询</label>
+            <label for="commentConsult" class="col-sm-8 control-label">是否接受免费在线文字咨询</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="textConsult"
+                <input type="text" class="form-control" id="commentConsult"
                        placeholder="请说明">
             </div>
         </div>
         <div class="form-group">
-            <label for="callConsult" class="col-sm-8 control-label">是否接受免费20分钟电话咨询</label>
+            <label for="phoneConsult" class="col-sm-8 control-label">是否接受免费20分钟电话咨询</label>
             <div class="col-sm-4">
-                <input type="text" class="form-control" id="callConsult"
+                <input type="text" class="form-control" id="phoneConsult"
                        placeholder="请说明">
             </div>
         </div>
@@ -181,7 +175,7 @@
 
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="button" id="btn-saveInfo" class="btn btn-zhixin btn-block">提交</button>
+                <button type="submit" id="btn-saveInfo" class="btn btn-zhixin btn-block">提交</button>
             </div>
         </div>
     </form>
@@ -200,19 +194,23 @@
 
 
 
+<script src="../jquery/jquery.form.js"></script>
 <script src="../knight/js/main.js"></script>
-<script src="../knight/js/sign.js"></script>
+<script src="../knight/js/profile.js"></script>
 <script>
     $(document).ready(function () {
 
+        getInfo();
+
+        //选择日期控件 生日
         $('.form_datetime').datetimepicker({
             language: 'zh-CN',
             weekStart: 1,
-            todayBtn: 1,
+            todayBtn: 0,
             autoclose: 1,
             todayHighlight: 1,
             startView: 2,
-            minView: 2,
+            minView: 0,
             forceParse: 0
         });
     });

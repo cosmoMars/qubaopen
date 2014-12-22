@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <link rel="icon" href="../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知心-首页</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="../knight/css/zhixin.css" rel="stylesheet">
+    <style>
+
+        body{
+            background-color: #efefef;
+        }
+
+        .menu-item{
+            float: left;
+            margin: 0 auto;
+            max-width: 200px;
+            max-height: 200px;
+            background-color: #3194f3;
+            color:#efefef;
+            border: 1px solid #efefef;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .menu-bottom{
+            max-width: 400px;
+            max-height: 200px;
+        }
+
+        .menu-item:hover,.menu-item:active{
+            background-color: #efefef;
+            color:#3194f3;
+            border: 1px solid #3194f3;
+        }
+
+        .marketing{
+            margin-top: 100px;
+            min-height: 0;
+        }
+        .navbar-brand{
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="navbar-brand">知心</div>
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="javascript:logout();">退出登录</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+
+
+
+
+
+
+    <div class="container marketing">
+        <div class="row">
+            <div class="col-md-offset-3 col-md-6 col-xs-12 col-xs-offset-0 menu-parent invisible">
+                <div id="help" class="menu-item"><p>求助中心</p></div>
+                <div id="order" class="menu-item"><p>预约列表</p></div>
+                <div id="schedule" class="menu-item"><p>日程表</p></div>
+                <div id="cash" class="menu-item"><p>现金账户</p></div>
+                <div id="profile" class="menu-item menu-bottom"><p>个人资料</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../jquery/jquery-1.11.1.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="../knight/js/main.js"></script>
+<script src="../knight/js/menu.js"></script>
+
+
+</body>
+</html>

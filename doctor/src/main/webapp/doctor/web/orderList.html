@@ -20,6 +20,13 @@
     <![endif]-->
 
     <link href="../knight/css/zhixin.css" rel="stylesheet">
+    <style>
+
+       #main-view button{
+           margin-left: 5px;
+       }
+
+    </style>
 </head>
 <body>
 
@@ -27,42 +34,17 @@
 
 <div class="container">
 
+
     <!-- Static navbar -->
     <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
         <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">知心-医师端</a>
+            <div class="navbar-header navbar-zhixin-header">
+                <a class="navbar-brand" href="menu.html"><p class="glyphicon glyphicon-chevron-left"></p></a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.html">首页</a></li>
-                    <li><a href="#">专栏</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">咨询师<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">预约列表</a></li>
-                            <li><a href="#">日程表</a></li>
-                            <li class="divider"></li>
-                            <!--<li class="dropdown-header">Nav header</li>-->
-                            <li><a href="#">账户</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#">关于</a></li>
-                    <li><a href="#">联系</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="profile.html">个人资料</a></li>
-                    <li><a href="signin.html">登录</a></li>
-                    <li><a href="signup_old.html">注册</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
+            <div class="navbar-text navbar-zhixin-title text-center">
+                预约列表
+            </div>
+        </div>
     </nav>
 
 
@@ -83,40 +65,48 @@
                     <th>预约状态</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>2014-11-20</td>
-                    <td><a href="orderDetail.html">
-                    赵小姐</a></td>
-                    <td>急面</td>
-                    <td>800</td>
-                    <td>非常想死</td>
-                    <td>咨询成功</td>
-                </tr>
-                <tr>
-                    <td>2014-11-30</td>
-                    <td>李女士</td>
-                    <td>面</td>
-                    <td>400</td>
-                    <td>觉得老公外遇</td>
-                    <td>待确认</td>
-                </tr>
-                <tr>
-                    <td>2014-12-01</td>
-                    <td>张先生</td>
-                    <td>视</td>
-                    <td>400</td>
-                    <td>成绩不好压力大</td>
-                    <td>预约成功</td>
-                </tr>
-                <tr>
-                    <td>2014-12-03</td>
-                    <td>徐老师</td>
-                    <td>面</td>
-                    <td>400</td>
-                    <td>找你聊聊</td>
-                    <td>已拒绝</td>
-                </tr>
+                <tbody id="main-view">
+                <!--<tr>-->
+                    <!--<td>2014-11-20</td>-->
+                    <!--<td><a href="orderDetail.html">-->
+                    <!--赵小姐</a></td>-->
+                    <!--<td>急面</td>-->
+                    <!--<td>800</td>-->
+                    <!--<td>非常想死</td>-->
+                    <!--<td>咨询成功</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td>2014-11-30</td>-->
+                    <!--<td>李女士</td>-->
+                    <!--<td>面</td>-->
+                    <!--<td>400</td>-->
+                    <!--<td>觉得老公外遇</td>-->
+                    <!--<td>-->
+                        <!--已预约-->
+                        <!--<button type="button" class="btn btn-default btn-xs btn-zhixin help-status-1">接受</button>-->
+                        <!--<button type="button" class="btn btn-default btn-xs btn-zhixin help-status-2">婉拒</button>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td>2014-12-01</td>-->
+                    <!--<td>张先生</td>-->
+                    <!--<td>视</td>-->
+                    <!--<td>400</td>-->
+                    <!--<td>成绩不好压力大</td>-->
+                    <!--<td>-->
+                        <!--已接受-->
+                        <!--<button type="button" class="btn btn-default btn-xs btn-zhixin help-status-3">已咨询</button>-->
+                        <!--<button type="button" class="btn btn-default btn-xs btn-zhixin help-status-4">未咨询</button>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                    <!--<td>2014-12-03</td>-->
+                    <!--<td>徐老师</td>-->
+                    <!--<td>面</td>-->
+                    <!--<td>400</td>-->
+                    <!--<td>找你聊聊</td>-->
+                    <!--<td>已拒绝</td>-->
+                <!--</tr>-->
                 </tbody>
             </table>
 
@@ -128,6 +118,33 @@
             </ul>
         </nav>
     </div>
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        确定接受订单？
+                    </h4>
+                </div>
+                <div id="refuseBody" class="hide modal-body">
+                    <label for="refuseContent" class="col-sm-2 control-label">拒绝理由</label>
+                    <input type="text" class="form-control" id="refuseContent"
+                           placeholder="">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-zhixin" id="modal-ok">确定
+                    </button>
+                    <button type="button" class="btn btn-default" id="modal-cancel"
+                            data-dismiss="modal">关闭
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
 </div>
 
 
@@ -139,6 +156,10 @@
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+
+<script src="../knight/js/main.js"></script>
+<script src="../knight/js/orderList.js"></script>
 
 </body>
 </html>

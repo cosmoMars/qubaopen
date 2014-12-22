@@ -95,7 +95,7 @@ Main Components
   line-height: 40px;
   cursor: pointer;
   font-size: 1.4rem;
-  color: #f3542d;
+  color: #3194f3;
 }
 .cd-pricing-switcher .cd-switch {
   /* floating background */
@@ -204,8 +204,9 @@ Main Components
   height: 100%;
   width: 50px;
   pointer-events: none;
-  background: -webkit-linear-gradient( right , #FFFFFF, rgba(255, 255, 255, 0));
-  background: linear-gradient(to left, #FFFFFF, rgba(255, 255, 255, 0));
+  /* by knight 2014-12-08 */
+  /*background: -webkit-linear-gradient( right , #FFFFFF, rgba(255, 255, 255, 0));*/
+  /*background: linear-gradient(to left, #FFFFFF, rgba(255, 255, 255, 0));*/
 }
 .cd-pricing-wrapper > li.is-ended::after {
   /* class added in jQuery - remove the gradient layer when it's no longer possible to scroll */

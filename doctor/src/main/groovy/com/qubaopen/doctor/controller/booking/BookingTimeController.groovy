@@ -1,23 +1,20 @@
 package com.qubaopen.doctor.controller.booking;
 
-import java.net.Authenticator.RequestorType;
-
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 
+import com.fasterxml.jackson.databind.node.ArrayNode
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.booking.BookingTimeRepository;
-import com.qubaopen.survey.entity.booking.BookingTime;
+import com.qubaopen.doctor.repository.booking.BookingTimeRepository
+import com.qubaopen.survey.entity.booking.BookingTime
 import com.qubaopen.survey.entity.doctor.Doctor
 
 
@@ -111,6 +108,46 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		
 		bookingTimeRepository.save(bookingTime)
 		'{"success" : "1"}'
+	}
+		
+	@RequestMapping(value = 'addBookingTimeByJson', method = RequestMethod.POST)
+	addBookingTimeByJson(@RequestParam(required = false) String json, @ModelAttribute('currentDoctor') Doctor doctor) {
+	
+		logger.debug(" =============== json = {}", json)
+		
+		def jsonNodes = objectMapper.readTree(json),
+			bookingModels = []
+		jsonNodes.each {
+			def strTime = '000000000000000000000000',
+				hours = (ArrayNode)it.path('times')
+			hours.each { h ->
+				def idx = h.asInt()
+				strTime = strTime.substring(0, idx) + '1' + strTime.substring(idx + 1)
+			}
+			def location, content
+			if (it.get('location')) {
+				location = it.get('location').asText()
+			}
+			if (it.get('content')) {
+				content = it.get('content').asText()
+			}
+			if (!it.get('type')) {
+				return '{"success" : "0", "message" : "err905"}'// 没有预约时间类型
+			}
+			def bookingTime = new BookingTime(
+				doctor : doctor,
+				location : location,
+				content : content,
+				time : DateUtils.parseDate(it.get('date').asText(), 'yyyy-MM-dd'),
+				bookingModel : strTime,
+				type : BookingTime.Type.values()[it.get('type').asInt()]
+			)
+			bookingModels << bookingTime
+		}
+		
+		bookingTimeRepository.save(bookingModels)
+		'{"success" : "1"}'
+		
 	}
 	
 	/**

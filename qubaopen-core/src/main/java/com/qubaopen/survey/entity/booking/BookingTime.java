@@ -41,6 +41,23 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 	private String content;
 
 	private int remindTime;
+	
+	/**
+	 * 日期
+	 */
+	@Temporal(TemporalType.DATE)
+	private Date time;
+	
+	/**
+	 * 时间模型
+	 */
+	private String bookingModel;
+	
+	private Type type;
+	
+	private enum Type {
+		Self, Default
+	}
 
 	/**
 	 * 重复模型 1110000
@@ -95,6 +112,30 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 		this.remindTime = remindTime;
 	}
 
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
+
+	public String getBookingModel() {
+		return bookingModel;
+	}
+
+	public void setBookingModel(String bookingModel) {
+		this.bookingModel = bookingModel;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
 	public String getRepeatModel() {
 		return repeatModel;
 	}
@@ -102,5 +143,5 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 	public void setRepeatModel(String repeatModel) {
 		this.repeatModel = repeatModel;
 	}
-
+	
 }

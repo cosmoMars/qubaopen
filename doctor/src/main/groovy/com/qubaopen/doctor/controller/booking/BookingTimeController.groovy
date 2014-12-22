@@ -118,8 +118,15 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		def jsonNodes = objectMapper.readTree(json),
 			bookingModels = []
 		jsonNodes.each {
-			def strTime = '000000000000000000000000',
-				hours = (ArrayNode)it.path('times')
+			
+			def dateTime = DateUtils.parseDate(it.get('date').asText(), 'yyyy-MM-dd'),
+				dbTime = bookingTimeRepository.findByTime(dateTime)
+			def strTime
+			if (dbTime) {
+				strTime = dbTime.bookingModel
+			}
+				strTime = '000000000000000000000000'
+			def hours = (ArrayNode)it.path('times')
 			hours.each { h ->
 				def idx = h.asInt()
 				strTime = strTime.substring(0, idx) + '1' + strTime.substring(idx + 1)

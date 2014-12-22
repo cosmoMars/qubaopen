@@ -1,5 +1,6 @@
 package com.qubaopen.doctor.repository.booking;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,6 @@ public interface BookingTimeRepository extends MyRepository<BookingTime, Long> {
 
 	@Query("from BookingTime bt where bt.doctor = :doctor and DATE_FORMAT(bt.startTime,'%Y-%m-%d') = :time")
 	List<BookingTime> findAllByTime(@Param("time") String time, @Param("doctor") Doctor doctor);
+	
+	BookingTime findByTime(Date time);
 }

@@ -252,8 +252,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			bookingTime, data = []
 		if (doctorInfo)
 			bookingTime = doctorInfo.bookingTime
-		def times = bookingTime.split(',')
-		def c = Calendar.getInstance()
+		def times = bookingTime.split(','),
+			c = Calendar.getInstance()
 		c.setTime date
 		
 		def dayData = [], timeData = []

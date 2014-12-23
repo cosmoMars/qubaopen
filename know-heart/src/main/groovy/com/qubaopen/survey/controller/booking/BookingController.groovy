@@ -1,5 +1,6 @@
 package com.qubaopen.survey.controller.booking;
 
+import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +22,7 @@ import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.booking.BookingRepository
+import com.qubaopen.survey.repository.booking.BookingSelfTimeRepository;
 import com.qubaopen.survey.repository.booking.BookingTimeRepository
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
 
@@ -38,6 +40,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	
 	@Autowired
 	BookingTimeRepository bookingTimeRepository
+	
+	@Autowired
+	BookingSelfTimeRepository bookingSelfTimeRepository
 	
 	@Override
 	MyRepository<Booking, Long> getRepository() {
@@ -171,29 +176,40 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			
 			def day = c.getTime(),
 				idx = dayForWeek(day),
-				timeModel = times[idx - 1],
-				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
-				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
+				timeModel = times[idx - 1], // 医师计划 1
+				dateBookingTime = bookingTimeRepository.findByDoctorAndTime(new Doctor(id : doctorId), day), // default 3
+//				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
+				
+				selfBookingTimes = bookingSelfTimeRepository.findByDoctorAndTime(new Doctor(id : doctorId), day),
+				
+				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)) // 订单占用 2
 			
 			dayData << [
 				'dayId' : i + 1,
 				'dayOfWeek' : idx,
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
 			]
-			if (timeList && timeList.size() > 0) {
-				if (!timeModel) {
-					timeModel = '000000000000000000000000'
-				}
-				timeList.each {
-					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
-						end
-					if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+			
+			if (dateBookingTime) {
+				timeModel = dateBookingTime.bookingModel // default
+			} 
+			
+			if (selfBookingTimes && selfBookingTimes.size() > 0) {
+				selfBookingTimes.each {
+					def start, end
+					if (DateUtils.isSameDay(day, it.startTime)) {
+						start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH'))
+						if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+							end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
+						} else {
+							end = 23
+						}
+					} else if (!DateUtils.isSameDay(day, it.startTime) && it.startTime.before(day)) {
+						start = 0
 						end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
-					} else {
-						end = 24
 					}
-						
-					for (j in start .. end - 1) {
+					
+					for (j in start .. end) {
 						def occupy = timeModel.substring(j, j + 1)
 						// 1 占用， 0 未占用
 						if ("1" != occupy || !"1".equals(occupy)) {
@@ -202,7 +218,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					}
 				}
 			}
-			
 			bookingList.each {
 				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
 					occupy = timeModel.substring(index, index + 1)

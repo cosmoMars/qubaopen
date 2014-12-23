@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository;
+import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository
 import com.qubaopen.doctor.repository.booking.BookingTimeRepository
 import com.qubaopen.survey.entity.booking.BookingSelfTime
 import com.qubaopen.survey.entity.booking.BookingTime
@@ -131,7 +131,7 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		jsonNodes.each {
 			
 			def dateTime = DateUtils.parseDate(it.get('date').asText(), 'yyyy-MM-dd'),
-				dbTime = bookingTimeRepository.findByTime(dateTime)
+				dbTime = bookingTimeRepository.findByTime(doctor, dateTime)
 			def strTime
 			if (dbTime) {
 				strTime = dbTime.bookingModel
@@ -145,24 +145,24 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			}
 			def type = it.get('type').asInt()
 				
-			if (type == 0) {
+			if (type == 0) { // default 修改有空
 				hours.each { h ->
 					def idx = h.asInt()
 					strTime = strTime.substring(0, idx) + '0' + strTime.substring(idx + 1)
 				}
-			} else if (type == 1) {
+			} else if (type == 1) { // default 修改没空
 				hours.each { h ->
 					def idx = h.asInt()
 					strTime = strTime.substring(0, idx) + '1' + strTime.substring(idx + 1)
 				}
 			}
-			def location, content
-			if (it.get('location') != null) {
-				location = it.get('location').asText()
-			}
-			if (it.get('content') != null) {
-				content = it.get('content').asText()
-			}
+//			def location, content
+//			if (it.get('location') != null) {
+//				location = it.get('location').asText()
+//			}
+//			if (it.get('content') != null) {
+//				content = it.get('content').asText()
+//			}
 			if (dbTime) {
 				dbTime.bookingModel = strTime
 			} else {
@@ -234,10 +234,9 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	@RequestMapping(value = 'deleteSelfTime/{id}', method = RequestMethod.POST)
 	deleteSelfTime(@PathVariable long id, @ModelAttribute('currentDoctor') Doctor doctor) {
 		
-		bookingSelfTimeRepository.delete(id)
+		
 		'{"success" : "1"}'
 	}
-	
 	
 	/**
 	 * @param strDate
@@ -250,16 +249,16 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	 * 添加自我时间
 	 */
 	@RequestMapping(value = 'addSelfTime', method = RequestMethod.POST)
-	addSelfTime(@RequestParam(required = false) String strDate,
+	addSelfTime(//@RequestParam(required = false) String strDate,
 		@RequestParam(required = false) String content,
 		@RequestParam(required = false) String startTime,
 		@RequestParam(required = false) String endTime,
 		@RequestParam(required = false) String location,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
-		def date = DateUtils.parseDate(startTime, 'yyyy-MM-dd')
+//		def date = DateUtils.parseDate(strDate, 'yyyy-MM-dd')
 		
-		def start = DateUtils.parseDate(startTime, 'HH:mm'),
+		def start = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH:mm'),
 			end
 		if (!endTime) {
 			def c = Calendar.getInstance()
@@ -267,12 +266,12 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			c.add(Calendar.HOUR, 1)
 			end = c.getTime()
 		} else {
-			end = DateUtils.parseDate(endTime, 'HH:mm')
+			end = DateUtils.parseDate(endTime, 'yyyy-MM-dd HH:mm')
 		}
 		
 		def selfTime = new BookingSelfTime(
 			doctor : doctor,
-			date : date,
+//			date : date,
 			startTime : start,
 			endTime : end
 		)
@@ -289,76 +288,79 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			"selfTimeId" : selfTime?.id	
 		]
 	}
-		/**
-		 * @param strDate
-		 * @param content
-		 * @param startTime
-		 * @param endTime
-		 * @param location
-		 * @param doctor
-		 * @return
-		 * 修改自我时间
-		 */
-		@RequestMapping(value = 'modifySelfTime', method = RequestMethod.POST)
-		modifySelfTime(@RequestParam(required = false) Long id,
-			@RequestParam(required = false) String strDate,
-			@RequestParam(required = false) String content,
-			@RequestParam(required = false) String startTime,
-			@RequestParam(required = false) String endTime,
-			@RequestParam(required = false) String location,
-			@ModelAttribute('currentDoctor') Doctor doctor) {
-			
-			def selfTime =  bookingSelfTimeRepository.findOne(id)
-			
-			if (strDate) {
-				def date = DateUtils.parseDate(strDate, 'yyyy-MM-dd')
-				selfTime.date = date
+	/**
+	 * @param strDate
+	 * @param content
+	 * @param startTime
+	 * @param endTime
+	 * @param location
+	 * @param doctor
+	 * @return
+	 * 修改自我时间
+	 */
+	@RequestMapping(value = 'modifySelfTime', method = RequestMethod.POST)
+	modifySelfTime(@RequestParam(required = false) Long id,
+//		@RequestParam(required = false) String strDate,
+		@RequestParam(required = false) String content,
+		@RequestParam(required = false) String startTime,
+		@RequestParam(required = false) String endTime,
+		@RequestParam(required = false) String location,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
+		
+		def selfTime =  bookingSelfTimeRepository.findOne(id)
+		
+//		if (strDate) {
+//			def date = DateUtils.parseDate(strDate, 'yyyy-MM-dd')
+//			selfTime.date = date
+//		}
+		
+		if (startTime) {
+			def start = DateUtils.parseDate(startTime, 'HH:mm'),
+				end
+				
+			selfTime.startTime = start
+			if (!endTime) {
+				def c = Calendar.getInstance()
+				c.setTime start
+				c.add(Calendar.HOUR, 1)
+				end = c.getTime()
+			} else {
+				end = DateUtils.parseDate(endTime, 'HH:mm')
 			}
-			
-			if (startTime) {
-				def start = DateUtils.parseDate(startTime, 'HH:mm'),
-					end
-					
-				selfTime.startTime = start
-				if (!endTime) {
-					def c = Calendar.getInstance()
-					c.setTime start
-					c.add(Calendar.HOUR, 1)
-					end = c.getTime()
-				} else {
-					end = DateUtils.parseDate(endTime, 'HH:mm')
-				}
-				selfTime.endTime = end
+			if (end.before(start)) {
+				return '{"success" : "0", "message" : "err906"}' //开始时间必须小于结束
 			}
-			
-			if (content) {
-				selfTime.content = content
-			}
-			if (location) {
-				selfTime.location = location
-			}
-			
-			bookingSelfTimeRepository.save(selfTime)
-			'{"success" : "1"}'
+			selfTime.endTime = end
 		}
-			
-		/**
-		 * @param id
-		 * @param doctor
-		 * @return
-		 * 获取相信医师自定义事件
-		 */
-		@RequestMapping(value = 'retrieveSelfTime/{id}')
-		retrieveSelfTime(@PathVariable long id, @ModelAttribute('currentDoctor') Doctor doctor) {
-			
-			def selfTime = bookingSelfTimeRepository.findOne(id)
-			[
-				'success' : '1',
-				'selfTimeId' : selfTime?.id,
-				'startTime' : selfTime?.startTime,
-				'endTime' : selfTime?.endTime,
-				'location' : selfTime?.location,
-				'content' : selfTime?.content
-			]
-		} 
+		
+		if (content) {
+			selfTime.content = content
+		}
+		if (location) {
+			selfTime.location = location
+		}
+		
+		bookingSelfTimeRepository.save(selfTime)
+		'{"success" : "1"}'
+	}
+		
+	/**
+	 * @param id
+	 * @param doctor
+	 * @return
+	 * 获取相信医师自定义事件
+	 */
+	@RequestMapping(value = 'retrieveSelfTime/{id}')
+	retrieveSelfTime(@PathVariable long id, @ModelAttribute('currentDoctor') Doctor doctor) {
+		
+		def selfTime = bookingSelfTimeRepository.findOne(id)
+		[
+			'success' : '1',
+			'selfTimeId' : selfTime?.id,
+			'startTime' : selfTime?.startTime,
+			'endTime' : selfTime?.endTime,
+			'location' : selfTime?.location,
+			'content' : selfTime?.content
+		]
+	} 
 }

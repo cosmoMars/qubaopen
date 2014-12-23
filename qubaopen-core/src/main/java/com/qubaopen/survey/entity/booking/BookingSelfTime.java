@@ -15,8 +15,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
 
 /**
- * @author mars
- * 医师自定义事件
+ * @author mars 医师自定义事件
  *
  */
 @Entity
@@ -28,30 +27,24 @@ public class BookingSelfTime extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
-	
-	/**
-	 * 日期
-	 */
-	@Temporal(TemporalType.DATE)
-	private Date date;
-	
+
 	/**
 	 * 开始时间
 	 */
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startTime;
-	
+
 	/**
 	 * 结束时间
 	 */
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endTime;
-	
+
 	/**
 	 * 地点
 	 */
 	private String location;
-	
+
 	/**
 	 * 事情
 	 */
@@ -63,14 +56,6 @@ public class BookingSelfTime extends AbstractBaseEntity<Long> {
 
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public Date getStartTime() {
@@ -104,5 +89,5 @@ public class BookingSelfTime extends AbstractBaseEntity<Long> {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
+
 }

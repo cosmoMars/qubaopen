@@ -41,7 +41,7 @@ function getOrderListByMonth(time,iPage){
         },
         error: function(xhr,status,error){
            if(xhr.status=="500"){
-               self.location = "signin.html";
+               //self.location = "signin.html";
            }
         }
     });

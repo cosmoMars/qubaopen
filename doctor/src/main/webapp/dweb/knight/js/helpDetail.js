@@ -28,7 +28,7 @@ $(document).ready(function () {
 function getHelpDetail(help){
     var jsonSent={};
     jsonSent.helpId=help;
-    jsonSent.page=2;
+    jsonSent.page=0;
 
     $.ajax({
         url: ContextUrl+"/help/retrieveDetailHelp",
@@ -44,7 +44,7 @@ function getHelpDetail(help){
             if (result == 1) {
                 //setCookie("cookie1",JSON.stringify(data),new Date() );
                 //self.location = location;
-                updateHelpDetailView(data.data);
+                updateHelpDetailView(data);
             }else if (result == 0) {
                 if(data.message=="err000"){
                     backToSignIn();
@@ -59,8 +59,23 @@ function getHelpDetail(help){
  * 更新页面
  * */
 
-function updateHelpDetailView(aData){
+function updateHelpDetailView(data){
 
+    var oMainView=$("#main-view");
+
+    var appendHTML='<div class="panel panel-default "><div class="panel-body"><p>'+data.helpContent+'</p></div></div>';
+
+    oMainView.empty().append(appendHTML);
+
+    var aData=data.data;
+    for(var i=0;i<aData.length;i++){
+        appendHTML='<div class="panel panel-default "><div class="panel-body"><p><img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 40px; height: 40px;">' +
+        ' '+aData[i].doctorName +
+        ' 心理咨询师' +
+        '</p><p>'+aData[i].doctorContent+'</p>' +
+        '<p>回答于'+aData[i].doctorTime+'</p></div></div>';
+        oMainView.append(appendHTML);
+    }
 
 }
 

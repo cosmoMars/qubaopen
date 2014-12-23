@@ -57,7 +57,7 @@ function modifyInfo(){
         var jsonSent={};
         jsonSent.name=$("#realname").val();
         jsonSent.contactPhone=$("#contactPhone").val();
-        jsonSent.sex=$("#sex").val();
+        jsonSent.sex=$("#sex label:eq(0)").hasClass("active")?"0":"1";
         jsonSent.birthday=$("#birthday").val();
         jsonSent.address=$("#address").val();
         jsonSent.experience=$("#quality").val();
@@ -66,9 +66,9 @@ function modifyInfo(){
         jsonSent.targetUser=$("#goodObject").val();
         jsonSent.genre=$("#cureMethod").val();
         //jsonSent.time=$("#freeTime").val();
-        jsonSent.quick=$("#urgentConsult").val();
-        jsonSent.commentConsult=$("#commentConsult").val();
-        jsonSent.phoneConsult=$("#phoneConsult").val();
+        jsonSent.quick=$("#urgentConsult label:eq(0)").hasClass("active");
+        jsonSent.commentConsult=$("#commentConsult label:eq(0)").hasClass("active");
+        jsonSent.phoneConsult=$("#phoneConsult label:eq(0)").hasClass("active");
         jsonSent.introduce=$("#introduction").val();
         //jsonSent.record=$("#certificate").val();
         //jsonSent.avatar=$("#avatar").val();
@@ -132,9 +132,7 @@ function updateProfileView(obj){
         "quick" : true,
         "email" : "",
         "address" : "",
-        "IdCard" : "",
-        "recordPath" : "/record/1_20141124-223402.png",
-        "avatarPath" : "/doctor/1_20141124-223402.png"
+        "IdCard" : ""
     };
 
 
@@ -152,8 +150,27 @@ function updateProfileView(obj){
     $("#cureMethod").val(data.genre);
     //jsonSent.time=$("#freeTime").val();
     $("#urgentConsult").val(data.quick);
-    $("#commentConsult").val(data.commentConsult);
-    $("#phoneConsult").val(data.phoneConsult);
+
+    if(data.quick){
+        $("#urgentConsult label").eq(0).click();
+    }else{
+        $("#urgentConsult label").eq(1).click();
+    }
+
+
+    if(data.commentConsult){
+        $("#commentConsult label").eq(0).click();
+    }else{
+        $("#commentConsult label").eq(1).click();
+    }
+
+
+    if(data.phoneConsult){
+        $("#phoneConsult label").eq(0).click();
+    }else{
+        $("#phoneConsult label").eq(1).click();
+    }
+
     $("#introduction").val(data.introduce);
     //jsonSent.record=$("#certificate").val();
     //jsonSent.avatar=$("#avatar").val();

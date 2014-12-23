@@ -36,7 +36,8 @@ $(document).ready(function () {
                 self.location="knightScheduler.html";
                 break;
             case "cash":
-                self.location="cashAccount.html";
+                //self.location="cashAccount.html";
+                alert("即将开放!");
                 break;
             case "profile":
                 self.location="profile.html";

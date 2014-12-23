@@ -37,5 +37,8 @@ public interface BookingRepository extends MyRepository<Booking, Long> {
 	
 	@Query("from Booking b where b.doctor = :doctor and DATE_FORMAT(b.time,'%Y-%m-%d') = :time")
 	List<Booking> findAllByTime(@Param("time") String time, @Param("doctor") Doctor doctor);
+	
+//	@Query("from Booking b")
+//	List<Booking> findByDoctorAndTime(@Param("doctor") Doctor doctor, @Param("time") Date time);
 
 }

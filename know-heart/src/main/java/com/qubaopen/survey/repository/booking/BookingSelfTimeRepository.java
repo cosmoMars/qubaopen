@@ -12,6 +12,6 @@ import com.qubaopen.survey.entity.doctor.Doctor;
 
 public interface BookingSelfTimeRepository extends MyRepository<BookingSelfTime, Long> {
 
-	@Query("from BookingSelfTime bst where bst.doctor = :doctor and bst.startTime <= :time and bst.endTime >= :time")
+	@Query("from BookingSelfTime bst where bst.doctor = :doctor and date(bst.startTime) <= date(:time) and date(bst.endTime) >= date(:time)")
 	List<BookingSelfTime> findByDoctorAndTime(@Param("doctor") Doctor doctor, @Param("time") Date time);
 }

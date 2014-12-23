@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository;
 import com.qubaopen.doctor.repository.booking.BookingTimeRepository;
 import com.qubaopen.doctor.repository.doctor.BookingRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
@@ -42,6 +43,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	
 	@Autowired
 	BookingTimeRepository bookingTimeRepository
+	
+	@Autowired
+	BookingSelfTimeRepository bookingSelfTimeRepository
 	
 	@Override
 	protected MyRepository<Booking, Long> getRepository() {
@@ -264,7 +268,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def day = c.getTime(),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
-				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
+				bTime = bookingTimeRepository.findByFormatTime(doctor, DateFormatUtils.format(day, 'yyyy-MM-dd')),
+				bookingSelfTimes = bookingSelfTimeRepository.findByDoctorAndTime(doctor, day),
+//				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 				self = [], other = []
 				
@@ -273,20 +279,25 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'dayOfWeek' : idx,
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
 			]
-			if (timeList && timeList.size() > 0) {
-				if (!timeModel) {
-					timeModel = '000000000000000000000000'
-				}
-				timeList.each {
-					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
-					end
-					if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+			
+			if (bTime) {
+				timeModel = bTime.bookingModel // default 3
+			}
+			if (bookingSelfTimes && bookingSelfTimes.size() > 0) { 
+				bookingSelfTimes.each {
+					def start, end
+					if (DateUtils.isSameDay(it.startTime, day)) {
+						start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH'))
+						if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+							end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
+						} else {
+							end = 23
+						}
+					} else if (!DateUtils.isSameDay(it.startTime, day) && it.startTime.before(day)) {
+						start = 0
 						end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
-					} else {
-						end = 24
 					}
-						
-					for (j in start .. end - 1) {
+					for (j in start .. end) {
 						def occupy = timeModel.substring(j, j + 1)
 						// 1 占用， 0 未占用
 						if ("1" != occupy || !"1".equals(occupy)) {
@@ -298,8 +309,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 						'startTime' : it?.startTime,
 						'endTime' : it?.endTime,
 						'location' : it?.location,
-						'content' : it?.content,
-						'remindTime' : it?.remindTime
+						'content' : it?.content
 					]
 				}
 			}
@@ -352,8 +362,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @return
 	 * 日历列表
 	 */
-	@RequestMapping(value = 'retrieveSelfFreeTime', method = RequestMethod.GET)
-	retrieveSelfFreeTime(@RequestParam(required = false) String time, @ModelAttribute('currentDoctor') Doctor doctor) {
+	@RequestMapping(value = 'retrieveWeeklySchedule', method = RequestMethod.GET)
+	retrieveWeeklySchedule(@RequestParam(required = false) String time, @ModelAttribute('currentDoctor') Doctor doctor) {
 
 		logger.trace('-- 订单日历 --')
 		
@@ -384,76 +394,107 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def day = c.getTime(),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
-				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
+				bTime = bookingTimeRepository.findByFormatTime(doctor, DateFormatUtils.format(day, 'yyyy-MM-dd')),
+				bookingSelfTimes = bookingSelfTimeRepository.findByDoctorAndTime(doctor, day),
+//				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 //				self = [], other = []
 				timeAll = []
+				
+			if (bTime) {
+				timeModel = bTime.bookingModel // default 3
+			}
 			
-			if (timeList && timeList.size() > 0) {
-				if (!timeModel) {
-					timeModel = '000000000000000000000000'
-				}
-				timeList.each {
-					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
-						end
-					if (DateUtils.isSameDay(it.startTime, it.endTime)) {
-						end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
-					} else {
-						end = 24
-					}
-						
-					for (j in start .. end - 1) {
-						def occupy = timeModel.substring(j, j + 1)
-						// 1 占用， 0 未占用
-						if ("1" != occupy || !"1".equals(occupy)) {
-							timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
-						}
-					}
+			for (j in 0..timeModel.length() - 1) {
+				if ('1' == timeModel[j] || '1'.equals(timeModel[j])) {
 					timeAll << [
-						'type' : 1,
-						'timeId' : it.id,
-						'startTime' : it?.startTime,
-						'endTime' : it?.endTime,
-						'location' : it?.location,
-						'content' : it?.content,
-						'remindTime' : it?.remindTime
+						'type' : 3,
+						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$j:00", 'HH:mm'), 'HH:mm'),
+						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${j+1}:00", 'HH:mm'), 'HH:mm')
 					]
 				}
 			}
+			
+			if (bookingSelfTimes && bookingSelfTimes.size() > 0) {
+				bookingSelfTimes.each {
+					
+					if (DateUtils.isSameDay(it.startTime, day)) {
+						if (DateUtils.isSameDay(it.startTime, it.endTime)) {
+							timeAll << [
+								'type' : 1,
+								'timeId' : it.id,
+								'startTime' : DateFormatUtils.format(it?.startTime, 'HH:mm'),
+								'endTime' : DateFormatUtils.format(it?.endTime, 'HH:mm'),
+								'location' : it?.location,
+								'content' : it?.content
+							]
+						} else {
+							timeAll << [
+								'type' : 1,
+								'timeId' : it.id,
+								'startTime' : DateFormatUtils.format(it?.startTime, 'HH:mm'),
+								'endTime' : '00:00',
+								'location' : it?.location,
+								'content' : it?.content
+							]
+						}
+					} else if (!DateUtils.isSameDay(it.startTime, day) && it.startTime.before(day)) {
+						timeAll << [
+							'type' : 1,
+							'timeId' : it.id,
+							'startTime' : '00:00',
+							'endTime' : DateFormatUtils.format(it?.endTime, 'HH:mm'),
+							'location' : it?.location,
+							'content' : it?.content
+						]
+					}
+				}
+			}
 			bookingList.each {
-				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
-					occupy = timeModel.substring(index, index + 1)
-				if ("1" != occupy || !"1".equals(occupy)) {
-					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
-				}
-				
-				def endTime = ''
-				if (it.time) {
-					endTime = "${DateFormatUtils.format(it.time, 'yyyy-MM-dd')} ${index + 1}:00:00" as String
-				}
+				def cal = Calendar.getInstance()
+				cal.setTime it?.time
+				cal.add(Calendar.HOUR, 1)
+				def endTime = cal.getTime()
 				timeAll << [
 					'type' : 2,
 					'bookingId' : it?.id,
 					'name' : it?.name,
 					'helpReason' : it?.helpReason,
 					'consultType' : it?.consultType?.ordinal(),
-					'startTime' : it?.time,
-					'endTime' : endTime
+					'startTime' : DateFormatUtils.format(it?.time, 'HH:mm'),
+					'endTime' : DateFormatUtils.format(endTime, 'HH:mm')
 				]
+//				
+//				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
+//					occupy = timeModel.substring(index, index + 1)
+//				if ("1" != occupy || !"1".equals(occupy)) {
+//					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
+//				}
+//				
+//				def endTime = ''
+//				if (it.time) {
+//					endTime = "${DateFormatUtils.format(it.time, 'yyyy-MM-dd')} ${index + 1}:00:00" as String
+//				}
+//				timeAll << [
+//					'type' : 2,
+//					'bookingId' : it?.id,
+//					'name' : it?.name,
+//					'helpReason' : it?.helpReason,
+//					'consultType' : it?.consultType?.ordinal(),
+//					'startTime' : it?.time,
+//					'endTime' : endTime
+//				]
 			}
 			
-			for (k in 0..timeModel.length() - 1) {
-				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
-					timeAll << [
-						'type' : 0,
-						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
-						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
-					]
-				}
-			}
-//			timeData << [
-//				'time' : timeAll
-//			]
+//			for (k in 0..timeModel.length() - 1) {
+//				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
+//					timeAll << [
+//						'type' : 0,
+//						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
+//						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
+//					]
+//				}
+//			}
 			result << [
 				'dayOfWeek' : idx,
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd'),

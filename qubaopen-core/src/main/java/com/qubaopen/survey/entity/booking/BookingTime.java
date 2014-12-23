@@ -26,38 +26,22 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date startTime;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date endTime;
 
 	/**
-	 * 地点
+	 * 提醒时间
 	 */
-	private String location;
-
-	private String content;
-
 	private int remindTime;
-	
+
 	/**
 	 * 日期
 	 */
 	@Temporal(TemporalType.DATE)
 	private Date time;
-	
+
 	/**
 	 * 时间模型
 	 */
 	private String bookingModel;
-	
-	private Type type;
-	
-	private enum Type {
-		Self, Default
-	}
 
 	/**
 	 * 重复模型 1110000
@@ -70,38 +54,6 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
-	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Date getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
 	}
 
 	public int getRemindTime() {
@@ -128,14 +80,6 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 		this.bookingModel = bookingModel;
 	}
 
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
 	public String getRepeatModel() {
 		return repeatModel;
 	}
@@ -143,5 +87,5 @@ public class BookingTime extends AbstractBaseEntity<Long> {
 	public void setRepeatModel(String repeatModel) {
 		this.repeatModel = repeatModel;
 	}
-	
+
 }

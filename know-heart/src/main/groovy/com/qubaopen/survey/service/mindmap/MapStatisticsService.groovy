@@ -304,7 +304,7 @@ public class MapStatisticsService {
 			}
 			def selfResultCount = 0
 			singleMaps.each { // 单个题目出答案
-				def chart = [], resultMaps = []
+				def chart = [], resultMaps = [], strResult = ''
 //				if (it?.self?.graphicsType) {
 //					it.mapRecords.each {
 //						chart << [name : it.name, value : it.value]
@@ -415,7 +415,10 @@ public class MapStatisticsService {
 						'picPath' : ''
 					]
 				}
-				
+				strResult = it?.selfResultOption?.content
+				if ('SDS' == it?.self?.selfGroup?.name) {
+					strResult += ('\n' + MapContent.sds)
+				}
 				data << [
 					'groupId' : it?.self?.selfGroup?.id,
 					'mapTitle' : it?.self?.title,
@@ -423,7 +426,7 @@ public class MapStatisticsService {
 					'mapMax' : it?.self?.selfGroup?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
 					'resultScore' : '',
-					'resultContent' : it?.selfResultOption?.content,
+					'resultContent' : strResult,
 					'managementType' : it?.selfManagementType?.id,
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.selfGroup?.graphicsType?.id,
@@ -659,7 +662,7 @@ public class MapStatisticsService {
 			}
 			def selfResultCount = 0
 			singleMaps.each { // 单个题目出答案
-				def chart = [], resultMaps = []
+				def chart = [], resultMaps = [], strResult = ''
 //				if (it?.self?.graphicsType) {
 //					it.mapRecords.each {
 //						chart << [name : it.name, value : it.value]
@@ -769,7 +772,10 @@ public class MapStatisticsService {
 						'picPath' : ''
 					]
 				}
-				
+				strResult = it?.selfResultOption?.content
+				if ('SDS' == it?.self?.selfGroup?.name) {
+					strResult += ('\n' + MapContent.sds)
+				}
 				data << [
 					'groupId' : it?.self?.selfGroup?.id,
 					'mapTitle' : it?.self?.title,
@@ -777,7 +783,7 @@ public class MapStatisticsService {
 					'mapMax' : it?.self?.selfGroup?.mapMax,
 					'resultName' : it?.selfResultOption?.name,
 					'resultScore' : '',
-					'resultContent' : it?.selfResultOption?.content,
+					'resultContent' : strResult,
 					'managementType' : it?.selfManagementType?.id,
 					'recommendedValue' : it?.recommendedValue,
 					'graphicsType' : it?.self?.selfGroup?.graphicsType?.id,

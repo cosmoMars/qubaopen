@@ -61,7 +61,12 @@ function signin(){
 
             if (result == 1) {
                 //setCookie("cookie1",JSON.stringify(data),new Date() );
-                self.location = "menu.html";
+
+                if(data.loginStatus==3){
+                    self.location = "menu.html";
+                }else{
+                    self.location = "profile.html";
+                }
             }
             if (result == 0) {
                 //msg = data.message;

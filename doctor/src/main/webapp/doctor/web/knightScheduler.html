@@ -18,6 +18,7 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <link href="../knight/css/zhixin.css" rel="stylesheet">
     <style>
         body{
             background-color: #efefef;
@@ -33,7 +34,7 @@
         }
 
         .title-view{
-            margin: 10px auto 0 auto;
+            margin: 80px auto 0 auto;
             background-color: #efefef;
             width: 400px;
         }
@@ -171,252 +172,271 @@
 <body>
 
 
-<div class="title-view">
-    <table class="title-month">
-        <tr>
-           <td id="prev-week"><span class="glyphicon glyphicon-chevron-left"></span></td><td id="title-month">日程管理</td><td id="next-week"><span class="glyphicon glyphicon-chevron-right"></span></td>
-        </tr>
-    </table>
-    <table class="title-week">
-        <tr>
-            <td class="time"></td><td class="color-weekend">周日</td><td>周一</td><td>周二</td><td>周三</td><td>周四</td><td>周五</td><td class="color-weekend">周六</td>
-        </tr>
-    </table>
-    <div class="carousel slide" data-ride="carousel">
-        <div id="title-week-day" class="carousel-inner" role="listbox">
+<div class="container">
 
-            <table class="title-week title-week-day item" data-page="-1">
-                <tr>
-                    <td class="time"></td><td class="color-weekend">07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
-                </tr>
-            </table>
+    <!-- Static navbar -->
+    <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-zhixin-header">
+                <a class="navbar-brand" href="menu.html"><p class="glyphicon glyphicon-chevron-left"></p></a>
+            </div>
+            <div class="navbar-text navbar-zhixin-title text-center">
+                日程表
+            </div>
+        </div>
+    </nav>
 
 
-            <table class="title-week title-week-day item active" data-page="0">
-                <tr>
-                    <td class="time"></td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
-                </tr>
-            </table>
+    <div class="title-view">
+        <table class="title-month">
+            <tr>
+                <td id="prev-week"><span class="glyphicon glyphicon-chevron-left"></span></td><td id="title-month">日程管理</td><td id="next-week"><span class="glyphicon glyphicon-chevron-right"></span></td>
+            </tr>
+        </table>
+        <table class="title-week">
+            <tr>
+                <td class="time"></td><td class="color-weekend">周日</td><td>周一</td><td>周二</td><td>周三</td><td>周四</td><td>周五</td><td class="color-weekend">周六</td>
+            </tr>
+        </table>
+        <div class="carousel slide" data-ride="carousel">
+            <div id="title-week-day" class="carousel-inner" role="listbox">
+
+                <table class="title-week title-week-day item" data-page="-1">
+                    <tr>
+                        <td class="time"></td><td class="color-weekend">07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
+                    </tr>
+                </table>
 
 
-            <table class="title-week title-week-day item" data-page="1">
-                <tr>
-                    <td class="time"></td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
-                </tr>
-            </table>
+                <table class="title-week title-week-day item active" data-page="0">
+                    <tr>
+                        <td class="time"></td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
+                    </tr>
+                </table>
+
+
+                <table class="title-week title-week-day item" data-page="1">
+                    <tr>
+                        <td class="time"></td><td>07</td><td>08</td><td>09</td><td>10</td><td>11</td><td>12</td><td>13</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="main-view carousel slide" data-ride="carousel">
+        <div id="main-view" class="carousel-inner" role="listbox">
+
+
+            <!--<table class="item main-table" data-page="-1">-->
+            <!--<tr class="">-->
+            <!--<td class="time">7</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="time">8</td><td class="color-over"></td><td></td><td class="color-work">订单1</td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">9</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">10</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">11</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">12</td><td class="color-over">有事1</td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">13</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+            <!--</table>-->
+
+            <!--<table class="item main-table active" data-page="0">-->
+            <!--<tr class="">-->
+            <!--<td class="time">7</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="time">8</td><td class="color-over"></td><td></td><td class="color-work">订单1</td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">9</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">10</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">11</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">12</td><td class="color-over">有事2</td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">13</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+            <!--</table>-->
+
+            <!--<table class="item main-table" data-page="1">-->
+            <!--<tr class="">-->
+            <!--<td class="time">7</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+            <!--<td class="time">8</td><td class="color-over"></td><td></td><td class="color-work">订单1</td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">9</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">10</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">11</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">12</td><td class="color-over">有事3</td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">13</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+
+            <!--<tr>-->
+            <!--<td class="time">16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
+            <!--</tr>-->
+            <!--</table>-->
 
         </div>
     </div>
-</div>
-
-<div class="main-view carousel slide" data-ride="carousel">
-    <div id="main-view" class="carousel-inner" role="listbox">
 
 
-    <!--<table class="item main-table" data-page="-1">-->
-        <!--<tr class="">-->
-            <!--<td class="time">7</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td class="time">8</td><td class="color-over"></td><td></td><td class="color-work">订单1</td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
 
-        <!--<tr>-->
-            <!--<td class="time">9</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
+    <!-- 模态框（Modal） -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-        <!--<tr>-->
-            <!--<td class="time">10</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        添加安排
+                    </h4>
+                </div>
+                <div class="modal-body">
 
-        <!--<tr>-->
-            <!--<td class="time">11</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
+                    <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <input type="text" class="form-control" id="realname" autocomplete="off"
+                                       placeholder="活动内容" required>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="starttime" class=" col-sm-2 control-label">开始时间</label>
+                            <div class="col-sm-10" >
+                                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:ii:00"  id="starttime" readonly>
 
-        <!--<tr>-->
-            <!--<td class="time">12</td><td class="color-over">有事1</td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label for="endtime" class=" col-sm-2 control-label">结束时间</label>
+                            <div class="col-sm-10" >
+                                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:ii:00"  id="endtime" readonly>
+                            </div>
+                        </div>
 
-        <!--<tr>-->
-            <!--<td class="time">13</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
+                        <div class="form-group ">
+                            <label for="repeat" class=" col-sm-2 control-label">重复</label>
+                            <div class="col-sm-10" >
+                                <select id="repeat" class="form-control">
+                                    <option>一次性活动</option>
+                                    <option>每天</option>
+                                    <option>每周</option>
+                                </select>
+                            </div>
+                        </div>
 
-        <!--<tr>-->
-            <!--<td class="time">14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
+                        <div class="form-group ">
+                            <label for="remind" class=" col-sm-2 control-label">提醒</label>
+                            <div class="col-sm-10" >
+                                <select id="remind" class="form-control">
+                                    <option>不提醒</option>
+                                    <option selected>10分钟前</option>
+                                    <option>30分钟前</option>
+                                </select>
+                            </div>
+                        </div>
 
-        <!--<tr>-->
-            <!--<td class="time">15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
 
-        <!--<tr>-->
-            <!--<td class="time">16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-    <!--</table>-->
+                    </form>
 
-    <!--<table class="item main-table active" data-page="0">-->
-        <!--<tr class="">-->
-            <!--<td class="time">7</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td class="time">8</td><td class="color-over"></td><td></td><td class="color-work">订单1</td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
 
-        <!--<tr>-->
-            <!--<td class="time">9</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">10</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">11</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">12</td><td class="color-over">有事2</td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">13</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-    <!--</table>-->
-
-    <!--<table class="item main-table" data-page="1">-->
-        <!--<tr class="">-->
-            <!--<td class="time">7</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-        <!--<tr>-->
-            <!--<td class="time">8</td><td class="color-over"></td><td></td><td class="color-work">订单1</td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">9</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">10</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">11</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">12</td><td class="color-over">有事3</td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">13</td><td class="color-over"></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">14</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">15</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td class="time">16</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>-->
-        <!--</tr>-->
-    <!--</table>-->
-
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        提交更改
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
     </div>
 </div>
 
 
 
-<!-- 模态框（Modal） -->
-<div class="modal" id="myModal" tabindex="-1" role="dialog"
-     aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title" id="myModalLabel">
-                    添加安排
-                </h4>
-            </div>
-            <div class="modal-body">
-
-                <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <input type="text" class="form-control" id="realname" autocomplete="off"
-                                   placeholder="活动内容" required>
-                        </div>
-                    </div>
-                    <div class="form-group ">
-                        <label for="starttime" class=" col-sm-2 control-label">开始时间</label>
-                        <div class="col-sm-10" >
-                            <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:ii:00"  id="starttime" readonly>
-
-                        </div>
-                    </div>
-                    <div class="form-group ">
-                        <label for="endtime" class=" col-sm-2 control-label">结束时间</label>
-                        <div class="col-sm-10" >
-                            <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:ii:00"  id="endtime" readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-group ">
-                        <label for="repeat" class=" col-sm-2 control-label">重复</label>
-                        <div class="col-sm-10" >
-                            <select id="repeat" class="form-control">
-                                <option>一次性活动</option>
-                                <option>每天</option>
-                                <option>每周</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group ">
-                        <label for="remind" class=" col-sm-2 control-label">提醒</label>
-                        <div class="col-sm-10" >
-                            <select id="remind" class="form-control">
-                                <option>不提醒</option>
-                                <option selected>10分钟前</option>
-                                <option>30分钟前</option>
-                            </select>
-                        </div>
-                    </div>
-
-
-                </form>
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default"
-                        data-dismiss="modal">关闭
-                </button>
-                <button type="button" class="btn btn-primary">
-                    提交更改
-                </button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
-</div>
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="../jquery/jquery-1.11.1.min.js"></script>
 <script src="../bootstrap/js/bootstrap.min.js"></script>

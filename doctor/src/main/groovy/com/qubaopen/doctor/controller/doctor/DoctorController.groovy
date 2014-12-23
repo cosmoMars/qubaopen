@@ -116,8 +116,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 						if ('1' == value[i] || '1'.equals(value)) {
 							timeData << [
 								'dayId': index + 1,
-								'startTime' : "$i:00" as String,
-								'endTime' : "${i+1}:00" as String
+								'startTime' : DateFormatUtils.format(DateUtils.parseDate("$i:00", 'HH:mm'), 'HH:mm'),
+								'endTime' : DateFormatUtils.format(DateUtils.parseDate("${i+1}:00", 'HH:mm'), 'HH:mm')
 							]
 						}
 					}

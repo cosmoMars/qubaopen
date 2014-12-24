@@ -121,7 +121,7 @@ public class OrderAlipayNotifyController {
     
     private void recordNotify(Map<String, String> params, String out_trade_no, String trade_status) {
     	RecordEntity recordEntity = new RecordEntity();
-    	recordEntity.setJson(entityManager.toJSONString(params));
+//    	recordEntity.setJson(entityManager.toJSONString(params));
     	recordEntityRepository.save(recordEntity);
     }
 

@@ -231,10 +231,19 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	 * @return
 	 * 删除行程
 	 */
-	@RequestMapping(value = 'deleteSelfTime/{id}', method = RequestMethod.POST)
-	deleteSelfTime(@PathVariable long id, @ModelAttribute('currentDoctor') Doctor doctor) {
+	@RequestMapping(value = 'deleteSelfTime', method = RequestMethod.POST)
+	deleteSelfTime(@RequestParam Long id, @ModelAttribute('currentDoctor') Doctor doctor) {
 		
+		if (id == null) {
+			return '{"success" : "0", "message" : "err906"}'
+		}
+		def selfTime = bookingSelfTimeRepository.findOne(id)
 		
+		if (!selfTime) {
+			return '{"success" : "0", "message" : "err906"}'
+		}
+		
+		bookingSelfTimeRepository.delete(selfTime)
 		'{"success" : "1"}'
 	}
 	

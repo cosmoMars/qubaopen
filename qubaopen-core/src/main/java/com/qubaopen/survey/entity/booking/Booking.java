@@ -2,6 +2,7 @@ package com.qubaopen.survey.entity.booking;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -35,6 +36,12 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Hospital hospital;
+	
+	/**
+	 * 订单号
+	 */
+	@Column(unique = true)
+	private String tradeNo;
 
 	/**
 	 * 姓名
@@ -104,8 +111,17 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 */
 	private String refusalReason;
 
+	/**
+	 * 下单时间
+	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
+	
+	/**
+	 * 支付时间
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date payTime;
 
 	private boolean quick;
 
@@ -120,13 +136,21 @@ public class Booking extends AbstractBaseEntity<Long> {
 	private Status status;
 
 	/**
-	 * @author mars 1 预约，2 接受，拒绝，3 已咨询，未咨询，4 已约下次, 5 已付款
+	 * 1 预约，2 接受，拒绝，3 已咨询，未咨询，4 已约下次, 5 已付款
 	 */
 	public enum Status {
 		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid
 	}
 
-	private int money;
+	private Double money;
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
 
 	public User getUser() {
 		return user;
@@ -256,6 +280,14 @@ public class Booking extends AbstractBaseEntity<Long> {
 		this.time = time;
 	}
 
+	public Date getPayTime() {
+		return payTime;
+	}
+
+	public void setPayTime(Date payTime) {
+		this.payTime = payTime;
+	}
+
 	public boolean isQuick() {
 		return quick;
 	}
@@ -280,12 +312,19 @@ public class Booking extends AbstractBaseEntity<Long> {
 		this.status = status;
 	}
 
-	public int getMoney() {
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public Double getMoney() {
 		return money;
 	}
 
-	public void setMoney(int money) {
+	public void setMoney(Double money) {
 		this.money = money;
 	}
-
 }

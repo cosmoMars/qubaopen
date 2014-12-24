@@ -17,4 +17,6 @@ public interface BookingRepository extends MyRepository<Booking, Long> {
 	
 	@Query("from Booking b where id = (select max(bo.id) from Booking bo where bo.user = :user and bo.status = 4)")
 	Booking findMaxBooking(@Param("user") User user);
+	
+	Booking findByTradeNo(String tradeNo);
 }

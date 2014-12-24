@@ -12,11 +12,10 @@ import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.booking.Booking;
-import com.qubaopen.survey.entity.user.User;
 
-//@Entity
-//@Table(name = "pay_entity")
-//@Audited
+@Entity
+@Table(name = "pay_entity")
+@Audited
 public class PayEntity extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 7174898733629692651L;
@@ -32,9 +31,6 @@ public class PayEntity extends AbstractBaseEntity<Long> {
 	private PayStatus payStatus;
 	/** 支付金额. */
 	private Double payAmount;
-	/** 支付人ID. */
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User user;
 	/** 支付流水号. */
 	private String paySerialNumber;
 	/** 退款时间. */
@@ -66,14 +62,6 @@ public class PayEntity extends AbstractBaseEntity<Long> {
 
 	public void setPayment(String payment) {
 		this.payment = payment;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public PayStatus getPayStatus() {

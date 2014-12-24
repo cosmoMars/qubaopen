@@ -95,8 +95,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			return '{"success" : "0", "message": "err003"}'
 		}
 		
+		def tradeNo = "${user.id}_${doctorId}_${System.currentTimeMillis()}"
+		
 		def sex, consultType, birthday
 		def booking = new Booking(
+			tradeNo : tradeNo,
 			user : user,
 			name : name,
 			phone : phone,

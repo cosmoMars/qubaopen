@@ -130,8 +130,11 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			bookingModels = []
 		jsonNodes.each {
 			
-			def dateTime = DateUtils.parseDate(it.get('date').asText(), 'yyyy-MM-dd'),
-				dbTime = bookingTimeRepository.findByTime(doctor, dateTime)
+			def dateTime = it.get('date').asText()
+			if (dateTime == null) {
+				'{"success" : "0", "message" : "err907"}' // 时间不正确
+			}
+			def dbTime = bookingTimeRepository.findByFormatTime(doctor, dateTime)
 			def strTime
 			if (dbTime) {
 				strTime = dbTime.bookingModel
@@ -168,7 +171,7 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			} else {
 				dbTime = new BookingTime(
 					doctor : doctor,
-					time : dateTime,
+					time : DateUtils.parseDate(dateTime, 'yyyy-MM-dd'),
 					bookingModel : strTime
 				)
 			}

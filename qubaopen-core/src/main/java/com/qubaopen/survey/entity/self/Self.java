@@ -62,6 +62,7 @@ public class Self extends AbstractBaseEntity<Long> {
 	/**
 	 * 问卷缩写
 	 */
+	@Column(unique = true)
 	private String abbreviation;
 
 	/**

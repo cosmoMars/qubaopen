@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.SessionAttributes
 import org.springframework.web.multipart.MultipartFile
 
+import com.fasterxml.jackson.databind.node.ArrayNode
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository
@@ -137,6 +138,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) MultipartFile avatar,
 		@RequestParam(required = false) MultipartFile record,
 		@RequestParam(required = false) String times,
+		@RequestParam(required = false) String json,
 		@ModelAttribute('currentDoctor') Doctor doctor,
 		HttpServletRequest request
 		) {
@@ -224,6 +226,39 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 				}
 			}
 			doctorInfo.bookingTime = resultTime.join(',')
+		}
+		
+		if (json != null) {
+			def resultModel = doctorInfo.bookingTime.split(',')
+			def jsons = json.split('=')
+			
+			def jsonNodes = objectMapper.readTree(jsons[1]),
+				bookingModels = []
+				
+			jsonNodes.each {
+				if (it.get('type') == null) {
+					return '{"success" : "0", "message" : "err905"}'// 没有预约时间类型
+				}
+				if (it.get('day') == null) {
+					return '{"success" : "0", "message" : "err910"}'// 没有指定时间
+				}
+				def index = it.get('day').asInt(),
+					type = it.get('type').asInt(),
+					hours = (ArrayNode)it.path('times')
+					
+				if (type == 0) {
+					hours.each { h ->
+						def idx = h.asInt()
+						resultModel[index - 1] = resultModel[index - 1].substring(0, idx) + '0' + resultModel[index - 1].substring(idx + 1) 
+					}
+				} else if (type == 1) {
+					hours.each { h ->
+						def idx = h.asInt()
+						resultModel[index - 1] = resultModel[index - 1].substring(0, idx) + '1' + resultModel[index - 1].substring(idx + 1)
+					}
+				}
+			}
+			doctorInfo.bookingTime = resultModel.join(',')
 		}
 		
 		if (avatar) {

@@ -124,9 +124,14 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	@RequestMapping(value = 'modifyBookingTimeByJson', method = RequestMethod.POST)
 	modifyBookingTimeByJson(@RequestParam(required = false) String json, @ModelAttribute('currentDoctor') Doctor doctor) {
 	
-		logger.debug(" =============== json = {}", json)
+		if (json == null) {
+			return '{"success" : "0", "message" : "err909" }' //没有json
+		}
+		logger.debug(" =============== {}", json)
 		
-		def jsonNodes = objectMapper.readTree(json),
+		def jsons = json.split("=")
+		
+		def jsonNodes = objectMapper.readTree(jsons[1]),
 			bookingModels = []
 		jsonNodes.each {
 			

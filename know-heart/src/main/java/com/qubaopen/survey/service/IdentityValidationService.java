@@ -29,8 +29,6 @@ public class IdentityValidationService {
 		
 		String datasource = Des2.encode(key, "1A020201".getBytes());
 		
-//		id = "31011019820728511X";
-//		name = "王强";
 		String param = name + "," + id;
 		
 		String resultXML = service.querySingle(userName, password, datasource,

@@ -12,6 +12,7 @@
        * [医师注册](doctor-item/doctor-register.md)
        * [医师登陆](doctor-item/doctor-login.md)
        * [忘记密码](doctor-item/forget-pwd.md)
-* [User](user/README.md)
-* [Error-Message](error-message/README.md)
+       * [修改密码](doctor-item/modify-pwd.md)
+* [用户端](user/README.md)
+* [错误代码信息](error-message/README.md)
 

@@ -5,6 +5,7 @@ import groovy.json.JsonSlurper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -16,8 +17,11 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.cash.CashLogRepository
 import com.qubaopen.doctor.repository.cash.CashRepository
+import com.qubaopen.doctor.repository.cash.TakeCashRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorCaptchaRepository
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
 import com.qubaopen.doctor.service.DoctorIdCardBindService
+import com.qubaopen.survey.entity.cash.Bank
 import com.qubaopen.survey.entity.cash.Cash
 import com.qubaopen.survey.entity.cash.CashLog
 import com.qubaopen.survey.entity.cash.TakeCash
@@ -37,16 +41,21 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 	CashLogRepository cashLogRepository
 	
 	@Autowired
+	DoctorCaptchaRepository doctorCaptchaRepository
+	
+	@Autowired
 	DoctorIdCardBindService doctorIdCardBindService
 	
 	@Autowired
 	DoctorIdCardBindRepository  doctorIdCardBindRepository
+	
+	@Autowired
+	TakeCashRepository takeCashRepository
 
 	@Override
 	MyRepository<Cash, Long> getRepository() {
 		cashRepository
 	}
-	
 	
 	/**
 	 * 获取医师现金信息
@@ -91,6 +100,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 	 * @param doctor
 	 * @return
 	 */
+	@Transactional
 	@RequestMapping(value = 'alipayCash', method = RequestMethod.POST)
 	alipayCash(@RequestParam(required = false) Double curCash,
 		@RequestParam(required = false) Integer type,
@@ -104,10 +114,19 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		
 		logger.trace '-- 提现请求 --'
 		
+		// 验证码对比
+		def dCaptcha = doctorCaptchaRepository.findOne(doctor.id)
+		
+		if (captcha != dCaptcha.captcha) {
+			return '{"success" : "0", "message" : "err007"}'
+		}
+		dCaptcha.captcha = null
+		doctorCaptchaRepository.save(dCaptcha)
+		
+		// 身份证绑定
 		def idCardBind = doctorIdCardBindRepository.findByDoctor(doctor),
 			result
-			
-		def cash = cashRepository.findOne(doctor.id)
+		
 		if (!idCardBind) {
 			result = doctorIdCardBindService.submitUserIdCard(idCard, name, doctor)
 		}
@@ -120,16 +139,69 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			return '{"success" : "0", "message" : "err900"}' // 该医师还未认证
 		}
 		
-		if (!type) {
+		def cash = cashRepository.findOne(doctor.id)
+		if (type == null) {
 			return '{"success" : "0", "message" : "err901"}' // 支付方式不正确
 		}
+		if (curCash != null && curCash > cash.currentCash) {
+			return '{"success" : "0", "message" : "err911"}' // 取关金额超过当前余额
+		}
+		
+		cash.currentCash -= curCash
+		cash.outCash += curCash
+		
+		def takeCash = new TakeCash(
+			doctor : doctor,
+			cash : curCash,
+			status : TakeCash.Status.Auditing
+		)
 		if (TakeCash.Type.Alipay == TakeCash.Type.values[type]) {
+			takeCash.type = TakeCash.Type.Alipay
 			if (!alipayNum) {
 				return '{"success" : "0", "message" : "err902"}' // 支付宝帐号为空
 			}
-//			if (curCash != null && curCash > )
+			takeCash.alipayNum = alipayNum
 			
+		} else if (TakeCash.Type.BackCard == TakeCash.Type.values[type]) {
+			takeCash.type = TakeCash.Type.BackCard
+			
+			if (bankId == null) {
+				return '{"success" : "0", "message" : "err912"}' // 没有选择银行
+			}
+			if (bankCard == null) {
+				return '{"success" : "0", "message" : "err913"}' // 没有银行卡号
+			}
+			takeCash.bank = new Bank(id : bankId)
+			takeCash.bankCard = bankCard
 		}
+		cashRepository.save(cash)
+		takeCashRepository.save(takeCash)
+		'{"success" : "1"}'
+	}
+	
+	@RequestMapping(value = 'modifyTakeCashStatus', method = RequestMethod.POST)
+	modifyTakeCashStatus(@RequestParam(required = false) Long cashId,
+		@RequestParam(required = false) Integer status,
+		@RequestParam(required = false) String failureReason) {
+		
+		def takeCash = takeCashRepository.findOne(cashId)
+		
+		if (status == null) {
+			return '{"success" : "0", "message" : "err914"}' //状态位不正确
+		}
+		
+		if (TakeCash.Status.Success == TakeCash.Status.values()[status]) {
+			takeCash.status = TakeCash.Status.Success
+		}
+		if (TakeCash.Status.Failure == TakeCash.Status.values()[status]) {
+			if (failureReason == null) {
+				return '{"success" : "0", "message" : "err915"}' // 失败理由
+			}
+			takeCash.status = TakeCash.Status.Failure
+			takeCash.failureReason = failureReason
+		}
+		takeCashRepository.save(takeCash)
+		'{"success" : "1"}'
 	}
 	
 }

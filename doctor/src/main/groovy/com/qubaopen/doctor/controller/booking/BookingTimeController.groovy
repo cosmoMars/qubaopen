@@ -330,24 +330,20 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 //			def date = DateUtils.parseDate(strDate, 'yyyy-MM-dd')
 //			selfTime.date = date
 //		}
-		
 		if (startTime) {
-			def start = DateUtils.parseDate(startTime, 'HH:mm'),
-				end
-				
-			selfTime.startTime = start
-			if (!endTime) {
-				def c = Calendar.getInstance()
-				c.setTime start
-				c.add(Calendar.HOUR, 1)
-				end = c.getTime()
-			} else {
-				end = DateUtils.parseDate(endTime, 'HH:mm')
-			}
-			if (end.before(start)) {
-				return '{"success" : "0", "message" : "err906"}' //开始时间必须小于结束
-			}
-			selfTime.endTime = end
+			selfTime.startTime = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH:mm')
+		}
+		if (endTime) {
+			selfTime.endTime = DateUtils.parseDate(endTime, 'yyyy-MM-dd HH:mm')
+		}
+		if (selfTime.startTime && !selfTime.endTime) {
+			def c = Calendar.getInstance()
+			c.setTime selfTime.startTime
+			c.add(Calendar.HOUR, 1)
+			selfTime.endTime = c.getTime()
+		}
+		if (selfTime.endTime.before(selfTime.startTime)) {
+			return '{"success" : "0", "message" : "err906"}' //开始时间必须小于结束
 		}
 		
 		if (content) {

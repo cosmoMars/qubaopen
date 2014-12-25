@@ -1,8 +1,12 @@
 package com.qubaopen.survey.entity.cash;
 
+import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
@@ -11,6 +15,9 @@ import com.qubaopen.survey.entity.doctor.Doctor;
  * @author mars 提现
  *
  */
+@Entity
+@Table(name = "take_cash")
+@Audited
 public class TakeCash extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 789546814569745499L;

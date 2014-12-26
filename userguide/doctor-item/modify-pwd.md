@@ -6,11 +6,11 @@
 
 | 请求参数 | 类型 | 是否必选 | 参数说明 |
 | -- | -- | -- | -- |
-| phone | String | true | 用户手机 |
-| password | String | true | 密码 |
-| captcha | String | true | 验证码 |
+| oldPwd | String | true | 旧密码 |
+| newPwd | String | true | 新密码 |
 
-响应结果：
+>响应结果：
+
 ```json
 {
     "success" : "1"

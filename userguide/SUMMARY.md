@@ -13,6 +13,11 @@
        * [医师登陆](doctor-item/doctor-login.md)
        * [忘记密码](doctor-item/forget-pwd.md)
        * [修改密码](doctor-item/modify-pwd.md)
+       * [登出](doctor-item/logout.md)
+       * [修改医师注册状态](doctor-item/modify-doctor-status.md)
+   * [医师信息](doctor-item/doctor-info.md)
+       * [获取医师信息](doctor-item/retrieve-doctor-info.md)
+       * [修改医师信息](doctor-item/modify-doctor-info.md)
 * [用户端](user/README.md)
 * [错误代码信息](error-message/README.md)
 

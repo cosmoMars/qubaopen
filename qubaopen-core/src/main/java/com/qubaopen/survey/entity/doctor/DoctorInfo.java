@@ -1,6 +1,7 @@
 package com.qubaopen.survey.entity.doctor;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -148,6 +149,16 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 * 拒绝理由
 	 */
 	private String refusalReason;
+	
+	/**
+	 * 擅长人群
+	 */
+//	private Set<TargetUser> targetUsers;
+
+	/**
+	 * 流派
+	 */
+//	private Set<Genre> genres;
 
 	public Doctor getDoctor() {
 		return doctor;

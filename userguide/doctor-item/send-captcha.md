@@ -9,7 +9,8 @@
 | phone | String | true | 手机号码 |
 | activated | Boolean | false | 忘记密码true |
 
-响应结果：
+>响应结果：
+
 ```json
 {
     "success": "1"

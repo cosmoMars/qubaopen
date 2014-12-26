@@ -12,7 +12,8 @@
 | udid | String | false | udid |
 | imei | String | false | imei |
 
-响应结果：
+>响应结果：
+
 ```json
 {
     "success" : "1",

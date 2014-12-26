@@ -188,7 +188,7 @@ public class SelfResultService {
 
 		def resultName = (resultMap.sort().values().sum() as List).reverse()
 
-		if (resultName.size() < 3) {
+		if (resultName.size() <= 3) {
 			return '{"success": 0, "error": "err601"}'
 		}
 

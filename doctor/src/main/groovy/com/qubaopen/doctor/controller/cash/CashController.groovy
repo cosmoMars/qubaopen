@@ -144,7 +144,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			return '{"success" : "0", "message" : "err901"}' // 支付方式不正确
 		}
 		if (curCash != null && curCash > cash.currentCash) {
-			return '{"success" : "0", "message" : "err911"}' // 取关金额超过当前余额
+			return '{"success" : "0", "message" : "err911"}' // 取款金额超过当前余额
 		}
 		
 		cash.currentCash -= curCash
@@ -179,6 +179,13 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		'{"success" : "1"}'
 	}
 	
+	/**
+	 * @param cashId
+	 * @param status
+	 * @param failureReason
+	 * @return
+	 * 修改提款状态
+	 */
 	@RequestMapping(value = 'modifyTakeCashStatus', method = RequestMethod.POST)
 	modifyTakeCashStatus(@RequestParam(required = false) Long cashId,
 		@RequestParam(required = false) Integer status,
@@ -187,7 +194,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		def takeCash = takeCashRepository.findOne(cashId)
 		
 		if (status == null) {
-			return '{"success" : "0", "message" : "err914"}' //状态位不正确
+			return '{"success" : "0", "message" : "err914"}' // 状态位不正确
 		}
 		
 		if (TakeCash.Status.Success == TakeCash.Status.values()[status]) {
@@ -195,7 +202,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		}
 		if (TakeCash.Status.Failure == TakeCash.Status.values()[status]) {
 			if (failureReason == null) {
-				return '{"success" : "0", "message" : "err915"}' // 失败理由
+				return '{"success" : "0", "message" : "err915"}' // 没有失败理由
 			}
 			takeCash.status = TakeCash.Status.Failure
 			takeCash.failureReason = failureReason

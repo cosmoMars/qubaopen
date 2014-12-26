@@ -35,85 +35,6 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	MyRepository<BookingTime, Long> getRepository() {
 		return bookingTimeRepository
 	}
-
-	/**
-	 * @param id
-	 * @param doctor
-	 * @return
-	 * 查看详情
-	 *//*
-	@RequestMapping(value = 'retrieveBookingTime/{id}', method = RequestMethod.GET)
-	retrieveBookingTime(@PathVariable long id, @ModelAttribute('currentDoctor') Doctor doctor) {
-		
-		def bookingTime = bookingTimeRepository.findOne(id)
-		
-		[
-			'success' : '1',
-			'bookingTimeId' : bookingTime?.id,
-			'startTime' : bookingTime?.startTime,
-			'endTime' : bookingTime?.endTime,
-			'location' : bookingTime?.location,
-			'content' : bookingTime?.content,
-			'remindTime' : bookingTime?.remindTime,
-			'repeatModel' : bookingTime?.repeatModel
-		]
-		
-	}
-	
-	*//**
-	 * @param content
-	 * @param startTime
-	 * @param endTime
-	 * @param location
-	 * @param remindTime
-	 * @param repeatModel
-	 * @param doctor
-	 * @return
-	 * 添加行程
-	 *//*
-	@RequestMapping(value = 'addBookingTime', method = RequestMethod.POST)
-	addBookingTime(@RequestParam(required = false) String content,
-		@RequestParam(required = false) String startTime,
-		@RequestParam(required = false) String endTime,
-		@RequestParam(required = false) String location,
-		@RequestParam(required = false) Integer remindTime,
-		@RequestParam(required = false) String repeatModel,
-		@ModelAttribute('currentDoctor') Doctor doctor) {
-		
-		def start = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH'),
-			end
-		if (!endTime) {
-			def c = Calendar.getInstance()
-			c.setTime start
-			c.add(Calendar.HOUR, 1)
-			end = c.getTime()
-		} else {
-			end = DateUtils.parseDate(endTime, 'yyyy-MM-dd HH')
-		}
-		
-		def bookingTime = new BookingTime(
-			doctor : doctor,
-			startTime : start,
-			endTime : end
-		)
-		if (content) {
-			bookingTime.content = content
-		}
-		if (location) {
-			bookingTime.location = location
-		}
-		if (remindTime != null) {
-			bookingTime.remindTime = remindTime
-		}
-		if (repeatModel) {
-			bookingTime.repeatModel = repeatModel
-		} else {
-			bookingTime.repeatModel = '0000000'
-		}
-		
-		bookingTimeRepository.save(bookingTime)
-		'{"success" : "1"}'
-	}*/
 		
 	/**
 	 * @param json
@@ -125,7 +46,7 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	modifyBookingTimeByJson(@RequestParam(required = false) String json, @ModelAttribute('currentDoctor') Doctor doctor) {
 	
 		if (json == null) {
-			return '{"success" : "0", "message" : "err909" }' //没有json
+			return '{"success" : "0", "message" : "err909" }' // 没有json
 		}
 		logger.debug(" =============== {}", json)
 		
@@ -188,50 +109,6 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		
 	}
 	
-	/**
-	 * @param timeId
-	 * @param content
-	 * @param startTime
-	 * @param endTime
-	 * @param location
-	 * @param remindTime
-	 * @param doctor
-	 * @return
-	 * 修改行程
-	 *//*
-	@RequestMapping(value = 'modifyBookingTime', method = RequestMethod.POST)
-	modifyBookingTime(@RequestParam Long timeId,
-		@RequestParam(required = false) String content,
-		@RequestParam(required = false) String startTime,
-		@RequestParam(required = false) String endTime,
-		@RequestParam(required = false) String location,
-		@RequestParam(required = false) String remindTime,
-		@RequestParam(required = false) String repeatModel,
-		@ModelAttribute('currentDoctor') Doctor doctor) {
-		
-		def bookingTime = bookingTimeRepository.findOne(timeId)
-		
-		if (content) {
-			bookingTime.content = content
-		}
-		if (startTime) {
-			bookingTime.startTime = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH')
-		}
-		if (endTime) {
-			bookingTime.endTime = DateUtils.parseDate(endTime, 'yyyy-MM-dd HH')
-		}
-		if (location) {
-			bookingTime.location = location
-		}
-		if (remindTime) {
-			bookingTime.remindTime = remindTime
-		}
-		if (repeatModel) {
-			bookingTime.repeatModel = repeatModel
-		}
-		bookingTimeRepository.save(bookingTime)
-		'{"success" : "1"}'
-	}*/
 
 	/**
 	 * @param id
@@ -292,6 +169,9 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			startTime : start,
 			endTime : end
 		)
+		if (selfTime.endTime.before(selfTime.startTime)) {
+			return '{"success" : "0", "message" : "err906"}' // 开始时间必须小于结束
+		}
 		if (content) {
 			selfTime.content = content
 		}

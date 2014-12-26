@@ -97,7 +97,12 @@ public class SelfResultService {
 			case 'ADULT' :
 				result = calculateAdult(user, self, questionOptions, questionVos, questions, refresh)
 				break
-			
+			case 'HopeSense' :
+				result = calculateHopeSense(user, self, questionOptions, questionVos, questions, refresh)
+			break
+			case 'HopeSense' :
+				result = calculateAMS(user, self, questionOptions, questionVos, questions, refresh)
+			break
 		}
 		result
 	}
@@ -540,14 +545,17 @@ public class SelfResultService {
 	calculateAdult(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
 		def optionMap = [:]
 		questionOptions.each {
-			def questionType = it.selfQuestion.selfQuestionType.name
+		
+			def questionType = it?.selfQuestion?.selfQuestionType?.name
 
-			if (optionMap.get(questionType)) { // key: 种类 , value: 题目
-				optionMap.get(questionType) << it
-			} else {
-				def optionList = []
-				optionList << it
-				optionMap.put(questionType, optionList)
+			if (questionType) {
+				if (optionMap.get(questionType)) { // key: 种类 , value: 题目
+					optionMap.get(questionType) << it
+				} else {
+					def optionList = []
+					optionList << it
+					optionMap.put(questionType, optionList)
+				}
 			}
 		}
 
@@ -588,4 +596,135 @@ public class SelfResultService {
 		resultOption
 	}
 	
+	/**
+	 * 计算幸福指数
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculateHopeSense(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		
+		def optionMap = [:]
+		questionOptions.each {
+			def questionType = it?.selfQuestion?.selfQuestionType?.name
+			
+			if (questionType) {
+				if (optionMap.get(questionType)) { // key: 种类 , value: 题目
+					optionMap.get(questionType) << it
+				} else {
+					def optionList = []
+					optionList << it
+					optionMap.put(questionType, optionList)
+				}
+			}
+		}
+
+		def resultMap = [:]
+
+		def result = []
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def optionScore = 0
+			v.each {
+				optionScore = optionScore + it.score
+			}
+			
+			optionMap.get(k).clear()
+			optionMap.put(k, optionScore)
+		}
+		def allScore = 0
+		questionOptions.each {
+			allScore += it.score
+		}
+		
+		optionMap.each { k, v ->
+			def mapRecord = new MapRecord(
+				name : k,
+				value : optionMap.get(k)
+			)
+			result << mapRecord
+		}
+		
+		def resultOption = selfResultOptionRepository.findOneByFilters(
+			'selfResult.self_equal' : self,
+			'highestScore_greaterThanOrEqualTo' : allScore,
+			'lowestScore_lessThanOrEqualTo' : allScore
+		)
+		
+		def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null, refresh, allScore)
+		if (refresh) {
+			selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, allScore) // 保存心理地图
+		}
+		
+		resultOption
+	}
+	
+	/**
+	 * 对成功的渴望
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculateAMS(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		
+		def optionMap = [:]
+		questionOptions.each {
+			def questionType = it?.selfQuestion?.selfQuestionType?.name
+			
+			if (questionType) {
+				if (optionMap.get(questionType)) { // key: 种类 , value: 题目
+					optionMap.get(questionType) << it
+				} else {
+					def optionList = []
+					optionList << it
+					optionMap.put(questionType, optionList)
+				}
+			}
+		}
+
+		def resultMap = [:]
+
+		def result = []
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def optionScore = 0
+			v.each {
+				optionScore = optionScore + it.score
+			}
+			
+			optionMap.get(k).clear()
+			optionMap.put(k, optionScore)
+		}
+		
+		def resutlScore = optionMap['MS'] - optionMap['MF']
+		
+		optionMap.each { k, v ->
+			def mapRecord = new MapRecord(
+				name : k,
+				value : optionMap.get(k)
+			)
+			result << mapRecord
+		}
+		
+		def resultOption = selfResultOptionRepository.findOneByFilters(
+			'selfResult.self_equal' : self,
+			'highestScore_greaterThanOrEqualTo' : resutlScore,
+			'lowestScore_lessThanOrEqualTo' : resutlScore
+		)
+		
+		def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null, refresh, resutlScore)
+		if (refresh) {
+			selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, resutlScore) // 保存心理地图
+		}
+		
+		resultOption
+	}
 }

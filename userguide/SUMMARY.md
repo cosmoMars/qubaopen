@@ -18,6 +18,9 @@
    * [医师信息](doctor-item/doctor-info.md)
        * [获取医师信息](doctor-item/retrieve-doctor-info.md)
        * [修改医师信息](doctor-item/modify-doctor-info.md)
+   * [医师推送](doctor-item/doctor-push.md)
+       * [获取医师推送](doctor-item/retrieve-doctor-push.md)
+       * [修改医师推送](doctor-item/modify-doctor-push.md)
 * [用户端](user/README.md)
 * [错误代码信息](error-message/README.md)
 

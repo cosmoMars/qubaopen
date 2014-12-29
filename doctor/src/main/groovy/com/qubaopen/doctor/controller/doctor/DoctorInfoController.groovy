@@ -63,21 +63,6 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		def doctorInfo = doctorInfoRepository.findOne(doctor.id),
 			doctorIdCardBind = doctorIdCardBindRepository.findOne(doctor.id),
 			address = doctorAddressRepository.findByDoctorAndUsed(doctor, true)
-		def infoTime = doctorInfo?.bookingTime, timeData = []
-		if (infoTime) {
-			def times = infoTime.split(',')
-			times.eachWithIndex { value, index ->
-				for (i in 0..value.length() - 1) {
-					if ('1' == value[i] || '1'.equals(value)) {
-						timeData << [
-							'dayId': index + 1,
-							'startTime' : DateFormatUtils.format(DateUtils.parseDate("$i:00", 'HH:mm'), 'HH:mm'),
-							'endTime' : DateFormatUtils.format(DateUtils.parseDate("${i+1}:00", 'HH:mm'), 'HH:mm')
-						]
-					}
-				}
-			}
-		}
 
 		[
 			'success' : '1',
@@ -106,8 +91,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			'loginStatus' : doctorInfo?.loginStatus?.ordinal(),
 			'refauslReason' : doctorInfo?.refusalReason,
 			'commentConsult' : doctorInfo?.commentConsult,
-			'phoneConsult' : doctorInfo?.phoneConsult,
-			'timeData' : timeData
+			'phoneConsult' : doctorInfo?.phoneConsult
 		]
 	}
 	

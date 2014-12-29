@@ -23,6 +23,7 @@
   "video" : false,
   "targetUser" : "小学生",
   "genre" : "流派1",
+  "time" : "111111100000000000000000,000000010000111110000000,000000001011000000000000,000101010110010100000000,000000001111100000000000,000000001010111000000000,000011000111000110000000",
   "introduce" : "自我介绍1",
   "quick" : false,
   "email" : "",
@@ -57,6 +58,7 @@
 | video | boolean | 视频 |
 | targetUser | String | 擅长对象 |
 | genre | String | 流派 |
+| time | String | 时间表达式 |
 | introduce | String | 介绍 |
 | quick | boolean | 是否加急 |
 | email | String | 邮箱 |

@@ -29,9 +29,16 @@
 | times | String | false | 时间表达式 |
 | json | String | false | 时间表达式 |
 
+>响应结果：
+
+```json
+{
+    "success" : "1"
+}
+```
 ----
 
-说明：
+注：
 
 **times：**
 
@@ -49,10 +56,4 @@ day 周几
 type 0 有空，1 没空
 time 时间段
 
->响应结果：
 
-```json
-{
-    "success" : "1"
-}
-```

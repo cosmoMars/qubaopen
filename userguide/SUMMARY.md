@@ -6,6 +6,7 @@
    * [Http请求方法说明](general-description/http-request-description.md)
    * [请求路径说明](general-description/request-path-description.md)
    * [通用返回值说明](general-description/return-value-description.md)
+* [用户端](user/README.md)
 * [医师端](doctor-item/README.md)
    * [医师](doctor-item/doctor.md)
        * [发送验证码](doctor-item/send-captcha.md)
@@ -21,6 +22,7 @@
    * [医师推送](doctor-item/doctor-push.md)
        * [获取医师推送](doctor-item/retrieve-doctor-push.md)
        * [修改医师推送](doctor-item/modify-doctor-push.md)
-* [用户端](user/README.md)
+   * [订单](doctor-item/doctor-booking.md)
+       * [获取订单列表](doctor-item/doctor-retrieve-booking.md)
 * [错误代码信息](error-message/README.md)
 

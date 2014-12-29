@@ -145,7 +145,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) Boolean video,
 		@RequestParam(required = false) String targetUser,
 		@RequestParam(required = false) String genre,
-//		@RequestParam(required = false) String bookingTime,
+		@RequestParam(required = false) String bookingTime,
 		@RequestParam(required = false) Boolean quick,
 		@RequestParam(required = false) String introduce,
 		@RequestParam(required = false) Boolean commentConsult,
@@ -204,9 +204,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		if (genre) {
 			doctorInfo.genre = genre
 		}
-//		if (bookingTime) {
-//			doctorInfo.bookingTime = bookingTime
-//		}
+		if (bookingTime) {
+			doctorInfo.bookingTime = bookingTime
+		}
 		if (quick) {
 			doctorInfo.quick = quick
 		}

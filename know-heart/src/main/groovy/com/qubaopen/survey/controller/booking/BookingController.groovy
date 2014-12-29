@@ -87,7 +87,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //		@RequestParam(required = false) String refusalReason,
 		@RequestParam(required = false) boolean quick,
 		@RequestParam(required = false) Integer consultTypeIndex,
-		@RequestParam(required = false) Integer money,
+		@RequestParam(required = false) Double money,
 		@ModelAttribute('currentUser') User user
 		) {
 		
@@ -124,7 +124,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (birthdayStr) {
 			booking.birthday = DateUtils.parseDate(birthdayStr, 'yyyy-MM-dd')
 		}
-		if (money != null) {
+		if (money == null) {
+			return '{"success" : "0", "message" : "err802"}' // 没有填写金额
 			booking.money = money
 		}
 		if (sexIndex != null) {

@@ -1,0 +1,995 @@
+<!DOCTYPE HTML>
+<html lang="en-US" >
+    
+    <head>
+        
+        <meta charset="UTF-8">
+        <title>获取医师订单列表 | 知心后台文档</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 1.0.3">
+        <meta name="HandheldFriendly" content="true"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+        <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+        
+    
+    
+    
+    <link rel="next" href="../doctor-item/doctor-share.html" />
+    
+    
+    <link rel="prev" href="../doctor-item/retrieve-user-self-reslut.html" />
+    
+
+        
+    </head>
+    <body>
+        
+        
+<link rel="stylesheet" href="../gitbook/style.css">
+
+
+        
+    <div class="book"  data-level="3.4.7" data-basepath=".." data-revision="1419853175865">
+    
+
+<div class="book-summary">
+    <div class="book-search">
+        <input type="text" placeholder="Type to search" class="form-control" />
+    </div>
+    <ul class="summary">
+        
+    	
+    	
+    	
+
+        
+
+        
+    
+        
+        <li class="chapter " data-level="0" data-path="index.html">
+            
+                
+                    <a href="../index.html">
+                        <i class="fa fa-check"></i>
+                        
+                         Introduction
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="1" data-path="generail-description/README.html">
+            
+                
+                    <a href="../generail-description/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.</b>
+                        
+                         通用说明
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="1.1" data-path="general-description/general-parameter-description.html">
+            
+                
+                    <a href="../general-description/general-parameter-description.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.1.</b>
+                        
+                         通用参数说明
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="1.2" data-path="general-description/http-request-description.html">
+            
+                
+                    <a href="../general-description/http-request-description.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.2.</b>
+                        
+                         Http请求方法说明
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="1.3" data-path="general-description/request-path-description.html">
+            
+                
+                    <a href="../general-description/request-path-description.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.3.</b>
+                        
+                         请求路径说明
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="1.4" data-path="general-description/return-value-description.html">
+            
+                
+                    <a href="../general-description/return-value-description.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>1.4.</b>
+                        
+                         通用返回值说明
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2" data-path="user-item/README.html">
+            
+                
+                    <a href="../user-item/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.</b>
+                        
+                         用户端
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3" data-path="doctor-item/README.html">
+            
+                
+                    <a href="../doctor-item/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.</b>
+                        
+                         医师端
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="3.1" data-path="doctor-item/doctor.html">
+            
+                
+                    <a href="../doctor-item/doctor.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.</b>
+                        
+                         医师
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="3.1.1" data-path="doctor-item/send-captcha.html">
+            
+                
+                    <a href="../doctor-item/send-captcha.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.1.</b>
+                        
+                         发送验证码
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.1.2" data-path="doctor-item/doctor-register.html">
+            
+                
+                    <a href="../doctor-item/doctor-register.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.2.</b>
+                        
+                         医师注册
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.1.3" data-path="doctor-item/doctor-login.html">
+            
+                
+                    <a href="../doctor-item/doctor-login.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.3.</b>
+                        
+                         医师登陆
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.1.4" data-path="doctor-item/forget-pwd.html">
+            
+                
+                    <a href="../doctor-item/forget-pwd.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.4.</b>
+                        
+                         忘记密码
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.1.5" data-path="doctor-item/modify-pwd.html">
+            
+                
+                    <a href="../doctor-item/modify-pwd.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.5.</b>
+                        
+                         修改密码
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.1.6" data-path="doctor-item/logout.html">
+            
+                
+                    <a href="../doctor-item/logout.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.6.</b>
+                        
+                         登出
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.1.7" data-path="doctor-item/modify-doctor-status.html">
+            
+                
+                    <a href="../doctor-item/modify-doctor-status.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.1.7.</b>
+                        
+                         修改医师注册状态
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.2" data-path="doctor-item/doctor-info.html">
+            
+                
+                    <a href="../doctor-item/doctor-info.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.2.</b>
+                        
+                         医师信息
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="3.2.1" data-path="doctor-item/retrieve-doctor-info.html">
+            
+                
+                    <a href="../doctor-item/retrieve-doctor-info.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.2.1.</b>
+                        
+                         获取医师信息
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.2.2" data-path="doctor-item/modify-doctor-info.html">
+            
+                
+                    <a href="../doctor-item/modify-doctor-info.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.2.2.</b>
+                        
+                         修改医师信息
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.3" data-path="doctor-item/doctor-push.html">
+            
+                
+                    <a href="../doctor-item/doctor-push.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.3.</b>
+                        
+                         医师推送
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="3.3.1" data-path="doctor-item/retrieve-doctor-push.html">
+            
+                
+                    <a href="../doctor-item/retrieve-doctor-push.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.3.1.</b>
+                        
+                         获取医师推送
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.3.2" data-path="doctor-item/modify-doctor-push.html">
+            
+                
+                    <a href="../doctor-item/modify-doctor-push.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.3.2.</b>
+                        
+                         修改医师推送
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.4" data-path="doctor-item/doctor-booking.html">
+            
+                
+                    <a href="../doctor-item/doctor-booking.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.</b>
+                        
+                         订单
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="3.4.1" data-path="doctor-item/doctor-retrieve-booking.html">
+            
+                
+                    <a href="../doctor-item/doctor-retrieve-booking.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.1.</b>
+                        
+                         获取订单列表
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.4.2" data-path="doctor-item/retrieve-booking-detail.html">
+            
+                
+                    <a href="../doctor-item/retrieve-booking-detail.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.2.</b>
+                        
+                         获取订单详情
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.4.3" data-path="doctor-item/retrieve-user-history.html">
+            
+                
+                    <a href="../doctor-item/retrieve-user-history.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.3.</b>
+                        
+                         获取对用户历史订单
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.4.4" data-path="doctor-item/doctor-retrieve-bookinglist.html">
+            
+                
+                    <a href="../doctor-item/doctor-retrieve-bookinglist.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.4.</b>
+                        
+                         获取订单时间列表
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.4.5" data-path="doctor-item/modify-booking-status.html">
+            
+                
+                    <a href="../doctor-item/modify-booking-status.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.5.</b>
+                        
+                         修改订单状态
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.4.6" data-path="doctor-item/retrieve-user-self-reslut.html">
+            
+                
+                    <a href="../doctor-item/retrieve-user-self-reslut.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.6.</b>
+                        
+                         获取用户心理档案
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter active" data-level="3.4.7" data-path="doctor-item/retrieve-weekly-schedule.html">
+            
+                
+                    <a href="../doctor-item/retrieve-weekly-schedule.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.4.7.</b>
+                        
+                         获取医师订单列表
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.5" data-path="doctor-item/doctor-share.html">
+            
+                
+                    <a href="../doctor-item/doctor-share.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.5.</b>
+                        
+                         医师分享
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="3.5.1" data-path="doctor-item/doctor-to-share.html">
+            
+                
+                    <a href="../doctor-item/doctor-to-share.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.5.1.</b>
+                        
+                         医师分享
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.6" data-path="doctor-item/doctor-id-card.html">
+            
+                
+                    <a href="../doctor-item/doctor-id-card.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.6.</b>
+                        
+                         医师身份证绑定
+                    </a>
+                
+            
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="3.6.1" data-path="doctor-item/submit-doctor-card.html">
+            
+                
+                    <a href="../doctor-item/submit-doctor-card.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.6.1.</b>
+                        
+                         医师身份证认证
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.6.2" data-path="doctor-item/retrieve-doctor-card.html">
+            
+                
+                    <a href="../doctor-item/retrieve-doctor-card.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.6.2.</b>
+                        
+                         医师身份证获取
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="3.7" data-path="doctor-item/modify-booking-time-json.html">
+            
+                
+                    <a href="../doctor-item/modify-booking-time-json.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>3.7.</b>
+                        
+                         修改医师日程
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="4" data-path="error-message/README.html">
+            
+                
+                    <a href="../error-message/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>4.</b>
+                        
+                         错误代码信息
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="5" data-path="doctor-booking-time/README.html">
+            
+                
+                    <a href="../doctor-booking-time/README.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>5.</b>
+                        
+                         doctor-booking-time
+                    </a>
+                
+            
+            
+        </li>
+    
+
+
+        
+        <li class="divider"></li>
+        <li>
+            <a href="http://www.gitbook.io/" target="blank" class="gitbook-link">Published using GitBook</a>
+        </li>
+        
+    </ul>
+</div>
+
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+    <!-- Actions Left -->
+    <a href="#" class="btn pull-left toggle-summary" aria-label="Toggle summary"><i class="fa fa-align-justify"></i></a>
+    <a href="#" class="btn pull-left toggle-search" aria-label="Toggle search"><i class="fa fa-search"></i></a>
+    
+    <div id="font-settings-wrapper" class="dropdown pull-left">
+        <a href="#" class="btn toggle-dropdown" aria-label="Toggle font settings"><i class="fa fa-font"></i>
+        </a>
+        <div class="dropdown-menu font-settings">
+    <div class="dropdown-caret">
+        <span class="caret-outer"></span>
+        <span class="caret-inner"></span>
+    </div>
+
+    <div class="buttons">
+        <button type="button" id="reduce-font-size" class="button size-2">A</button>
+        <button type="button" id="enlarge-font-size" class="button size-2">A</button>
+    </div>
+
+    <div class="buttons font-family-list">
+        <button type="button" data-font="0" class="button">Serif</button>
+        <button type="button" data-font="1" class="button">Sans</button>
+    </div>
+
+    <div class="buttons color-theme-list">
+        <button type="button" id="color-theme-preview-0" class="button size-3" data-theme="0">White</button>
+        <button type="button" id="color-theme-preview-1" class="button size-3" data-theme="1">Sepia</button>
+        <button type="button" id="color-theme-preview-2" class="button size-3" data-theme="2">Night</button>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Actions Right -->
+    
+    <div class="dropdown pull-right">
+        <a href="#" class="btn toggle-dropdown" aria-label="Toggle share dropdown"><i class="fa fa-share-alt"></i>
+        </a>
+        <div class="dropdown-menu font-settings dropdown-left">
+            <div class="dropdown-caret">
+                <span class="caret-outer"></span>
+                <span class="caret-inner"></span>
+            </div>
+            <div class="buttons">
+                <button type="button" data-sharing="twitter" class="button">Twitter</button>
+                <button type="button" data-sharing="google-plus" class="button">Google</button>
+                <button type="button" data-sharing="facebook" class="button">Facebook</button>
+                <button type="button" data-sharing="weibo" class="button">Weibo</button>
+                <button type="button" data-sharing="instapaper" class="button">Instapaper</button>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <a href="#" target="_blank" class="btn pull-right google-plus-sharing-link sharing-link" data-sharing="google-plus" aria-label="Share on Google Plus"><i class="fa fa-google-plus"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right facebook-sharing-link sharing-link" data-sharing="facebook" aria-label="Share on Facebook"><i class="fa fa-facebook"></i></a>
+    
+    
+    <a href="#" target="_blank" class="btn pull-right twitter-sharing-link sharing-link" data-sharing="twitter" aria-label="Share on Twitter"><i class="fa fa-twitter"></i></a>
+    
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../" >知心后台文档</a>
+    </h1>
+</div>
+
+            <div class="page-wrapper" tabindex="-1">
+                <div class="page-inner">
+                
+                
+                    <section class="normal" id="section-gitbook_1349">
+                    
+                        <h1 id="">获取医师订单列表</h1>
+<p><strong>请求地址：</strong> booking/retrieveWeeklySchedule</p>
+<p><strong>HTTP请求方式：</strong> GET</p>
+<table>
+<thead>
+<tr>
+<th>请求参数</th>
+<th>类型</th>
+<th>是否必选</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>time</td>
+<td>String</td>
+<td>false</td>
+<td>yyyy-MM-dd</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>响应结果：</p>
+</blockquote>
+<pre><code class="lang-json">{
+  "<span class="hljs-attribute">success</span>" : <span class="hljs-value"><span class="hljs-string">"1"</span></span>,
+  "<span class="hljs-attribute">result</span>" : <span class="hljs-value">[ {
+    "<span class="hljs-attribute">dayOfWeek</span>" : <span class="hljs-value"><span class="hljs-number">6</span></span>,
+    "<span class="hljs-attribute">day</span>" : <span class="hljs-value"><span class="hljs-string">"2014-12-20"</span></span>,
+    "<span class="hljs-attribute">timeData</span>" : <span class="hljs-value">[ {
+      "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-number">3</span></span>,
+      "<span class="hljs-attribute">startTime</span>" : <span class="hljs-value"><span class="hljs-string">"01:00"</span></span>,
+      "<span class="hljs-attribute">endTime</span>" : <span class="hljs-value"><span class="hljs-string">"02:00"</span>
+    </span>}, {
+      "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-number">2</span></span>,
+      "<span class="hljs-attribute">bookingId</span>" : <span class="hljs-value"><span class="hljs-number">3</span></span>,
+      "<span class="hljs-attribute">name</span>" : <span class="hljs-value"><span class="hljs-string">"小明"</span></span>,
+      "<span class="hljs-attribute">helpReason</span>" : <span class="hljs-value"><span class="hljs-string">"有病"</span></span>,
+      "<span class="hljs-attribute">consultType</span>" : <span class="hljs-value"><span class="hljs-number">0</span></span>,
+      "<span class="hljs-attribute">startTime</span>" : <span class="hljs-value"><span class="hljs-string">"14:00"</span></span>,
+      "<span class="hljs-attribute">endTime</span>" : <span class="hljs-value"><span class="hljs-string">"15:00"</span>
+    </span>},{
+      "<span class="hljs-attribute">type</span>" : <span class="hljs-value"><span class="hljs-number">1</span></span>,
+      "<span class="hljs-attribute">timeId</span>" : <span class="hljs-value"><span class="hljs-number">1</span></span>,
+      "<span class="hljs-attribute">startTime</span>" : <span class="hljs-value"><span class="hljs-string">"20:00"</span></span>,
+      "<span class="hljs-attribute">endTime</span>" : <span class="hljs-value"><span class="hljs-string">"00:00"</span></span>,
+      "<span class="hljs-attribute">location</span>" : <span class="hljs-value"><span class="hljs-string">""</span></span>,
+      "<span class="hljs-attribute">content</span>" : <span class="hljs-value"><span class="hljs-string">""</span>
+    </span>}
+    …
+    ]
+    …
+  </span>}]
+
+</span>}
+</code></pre>
+<p><strong>返回字段说明：</strong></p>
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>参数说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>success</td>
+<td>String</td>
+<td>成功标记</td>
+</tr>
+<tr>
+<td>result</td>
+<td>json</td>
+<td></td>
+</tr>
+<tr>
+<td>dayOfWeek</td>
+<td>int</td>
+<td>星期几</td>
+</tr>
+<tr>
+<td>day</td>
+<td>Date</td>
+<td>日期</td>
+</tr>
+<tr>
+<td>timeData</td>
+<td>json</td>
+<td></td>
+</tr>
+<tr>
+<td>startTime</td>
+<td>Date</td>
+<td>开始时间</td>
+</tr>
+<tr>
+<td>endTime</td>
+<td>Date</td>
+<td>结束时间</td>
+</tr>
+<tr>
+<td>self</td>
+<td>json</td>
+<td></td>
+</tr>
+<tr>
+<td>timeId</td>
+<td>long</td>
+<td>bookingTime的id</td>
+</tr>
+<tr>
+<td>location</td>
+<td>String</td>
+<td>地点</td>
+</tr>
+<tr>
+<td>content</td>
+<td>String</td>
+<td>内容</td>
+</tr>
+<tr>
+<td>remindTime</td>
+<td>String</td>
+<td>提醒时间</td>
+</tr>
+<tr>
+<td>other</td>
+<td>json</td>
+<td></td>
+</tr>
+<tr>
+<td>bookingId</td>
+<td>long</td>
+<td>订单id</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>病人名称</td>
+</tr>
+<tr>
+<td>helpReason</td>
+<td>String</td>
+<td>求助原因</td>
+</tr>
+<tr>
+<td>consultType</td>
+<td>int</td>
+<td>咨询方式</td>
+</tr>
+<tr>
+<td>type</td>
+<td>int</td>
+<td>0默认有空，1自己的事件，2订单时间</td>
+</tr>
+</tbody>
+</table>
+
+                    
+                    </section>
+                
+                
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="../doctor-item/retrieve-user-self-reslut.html" class="navigation navigation-prev " aria-label="Previous page: 获取用户心理档案"><i class="fa fa-angle-left"></i></a>
+        
+        
+        <a href="../doctor-item/doctor-share.html" class="navigation navigation-next " aria-label="Next page: 医师分享"><i class="fa fa-angle-right"></i></a>
+        
+    </div>
+</div>
+
+        
+<script src="../gitbook/app.js"></script>
+
+    
+    <script src="https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+    
+    <script src="../gitbook/plugins/gitbook-plugin-mathjax/plugin.js"></script>
+    
+
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"fontSettings":{"theme":null,"family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+
+        
+    </body>
+    
+</html>

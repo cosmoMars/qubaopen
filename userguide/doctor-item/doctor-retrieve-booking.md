@@ -9,11 +9,15 @@
 | index | int | true | 咨询状态下标 |
 | idsStr | String | false | 排除的id |
 
-----
+---
 
 注：
 
 index : 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次, 6 已付款
+
+idsStr :
+
+    eg : 1,2,3
 
 >响应结果：
 
@@ -42,6 +46,7 @@ index : 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下
 | -- | -- | -- |
 | success | String | 成功标识位 |
 | data | json | 返回信息 |
+| bookingId | long | 订单id |
 | userId | long | 用户id |
 | userName | String | 用户姓名 |
 | helpReason | String | 求助原因 |

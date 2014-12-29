@@ -10,7 +10,7 @@
 | index | int | true | 下标 |
 | content | String | false | 拒绝内容 |
 
-----
+---
 
 注：
 

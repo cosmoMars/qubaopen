@@ -50,6 +50,10 @@ public class SelfResultService {
 		}
 
 		score = score * self.coefficient
+		
+		if ('SAS' == self.abbreviation) {
+			score = score * 1.25 as int
+		}
 
 		def resultOption = selfResultOptionRepository.findOneByFilters(
 			'selfResult.self_equal' : self,

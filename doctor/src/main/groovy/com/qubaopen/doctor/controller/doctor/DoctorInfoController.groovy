@@ -95,7 +95,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			'video' : doctorInfo?.video,
 			'targetUser' : doctorInfo?.targetUser,
 			'genre' : doctorInfo?.genre,
-//			'time' : doctorInfo?.bookingTime,
+			'time' : doctorInfo?.bookingTime,
 			'introduce' : doctorInfo?.introduce,
 			'quick' : doctorInfo.quick,
 			'email' : doctorInfo?.doctor?.email,

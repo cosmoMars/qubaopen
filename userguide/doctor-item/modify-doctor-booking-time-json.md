@@ -1,4 +1,4 @@
-# 医师修改日程
+# 医师修改默认日程
 
 **请求地址：** bookingTime/modifyBookingTimeByJson
 
@@ -15,7 +15,7 @@
 
 注：
 
-json=[{"date":"2014-12-20","times":[1,2,3,4,5],"type": 0},{"date":"2014-12-19","times":[2,3,4,5,6],"type":1,"content":"222","location":"3333"}]
+[{"date":"2014-12-20","times":[1,2,3,4,5],"type": 0},{"date":"2014-12-19","times":[2,3,4,5,6],"type":1,"content":"222","location":"3333"}]
 
 >响应结果：
 

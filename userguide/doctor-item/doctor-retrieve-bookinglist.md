@@ -55,7 +55,7 @@
       "bookingId" : 6,
       "name" : "小明4",
       "helpReason" : "有病",
-   "consultType" : 0,
+      "consultType" : 0,
       "startTime" : "2014-12-06 15:35:15",
       "endTime" : "2014-12-06 16:00:00"
     } ]

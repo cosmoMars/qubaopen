@@ -36,7 +36,7 @@
        * [医师身份证认证](doctor-item/submit-doctor-card.md)
        * [医师身份证获取](doctor-item/retrieve-doctor-card.md)
    * [医师日程](doctor-item/doctor-booking-time.md)
-       * [医师修改日程](doctor-item/modify-doctor-booking-time-json.md)
+       * [医师修改默认日程](doctor-item/modify-doctor-booking-time-json.md)
        * [查看日程详情](doctor-item/retrieve-doctor-booking-time.md)
        * [医师添加日程](doctor-item/add-doctor-booking-time.md)
        * [医师修改日程](doctor-item/modify-doctor-booking-time.md)

@@ -19,154 +19,7 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <link href="../knight/css/zhixin.css" rel="stylesheet">
-    <style>
-        body{
-            background-color: #efefef;
-            font-family: "微软雅黑", serif;
-        }
-
-        .main-view{
-            margin: 0 auto;
-            background-color: #fff;
-            height: 455px;
-            width: 400px;
-            overflow-y: scroll;
-        }
-
-        .title-view{
-            margin: 80px auto 0 auto;
-            background-color: #efefef;
-            width: 400px;
-        }
-
-        @media screen and ( max-width: 400px){
-            .main-view , .title-view{
-                width: 100%;
-            }
-        }
-
-
-
-        /*最上标题栏 M月N日~M月N日 */
-        #prev-week{
-            width: 20%;
-            cursor: pointer;
-            padding-left: 10px;
-        }
-
-        #next-week{
-            width: 20%;
-            cursor: pointer;
-            padding-right: 10px;
-            text-align: right;
-        }
-
-        #title-month{
-            width: 60%;
-            text-align: center;
-        }
-
-        /* 第二层标题栏 显示一周标题 周日 周一 周二... */
-        .title-week , .title-month {
-            font-size: 12px;
-            background-color: #efefef;
-            border-spacing: 0;
-            width: 100%;
-        }
-
-        .title-week td:nth-child(n+2){
-            width: 13.3%;
-            border: 1px solid #efefef;
-            text-align: center;
-        }
-
-
-        .main-table{
-            border-spacing: 0;
-            width: 100%;
-            text-align: center;
-        }
-
-        .main-table td:nth-child(n+2){
-            width: 13.3%;
-            border: 1px solid #efefef;
-            height: 75px;
-            cursor: pointer;
-            /*max-width: 64px;*/
-        }
-        .time{
-            border: 1px solid #efefef;
-            width: 6.9%;
-            font-family:   Arial, sans-serif;
-            vertical-align: text-top;
-            text-align: right;
-            padding-top: 3px;
-            padding-right: 3px;
-        }
-
-        .main-table .time{
-            background-color: #e3e3e3;
-        }
-
-        .color-over{
-            background-color: #e3e3e3;
-        }
-
-        .color-work{
-            color: #fff;
-            background-color: #6365CC;
-        }
-
-
-        .color-weekend{
-            color: #888;
-        }
-
-        .color-today{
-            font-weight: 900;
-            color: #9f0707;
-        }
-
-        .color-select{
-            width: 100%;
-            height: 100%;
-            color: #fff;
-            font-size: 16px;
-            background-color: #47BCE7;
-            opacity: 0.8;
-            display: table;
-            text-align: center;
-        }
-        .color-select span{
-            display: table-cell;
-            vertical-align: middle;
-        }
-
-        .main-table td.color-current{
-            border: 0;
-        }
-        .color-current{
-            /*现在通过js计算*/
-            /*-moz-box-shadow: 0 40px 0 0 #e3e3e3 inset;*/
-            /*-webkit-box-shadow: 0 40px 0 0 #e3e3e3 inset;*/
-            /*box-shadow: 0 0 #e3e3e3,*/
-            /*0 40px 0 0 #e3e3e3 inset,*/
-            /*0 0 #e3e3e3,*/
-            /*0 41px 0 0 #f00 inset;*/
-        }
-
-        .carousel-inner .active{
-            display: table;
-        }
-        .carousel-inner .left,.carousel-inner .right{
-            display: table;
-        }
-
-
-
-
-
-    </style>
+    <link href="../knight/css/scheduler.css" rel="stylesheet">
 
 </head>
 <body>
@@ -190,7 +43,7 @@
     <div class="title-view">
         <table class="title-month">
             <tr>
-                <td id="prev-week"><span class="glyphicon glyphicon-chevron-left"></span></td><td id="title-month">日程管理</td><td id="next-week"><span class="glyphicon glyphicon-chevron-right"></span></td>
+                <td id="prev-week"><span class="glyphicon glyphicon-chevron-left"></span></td><td id="title-month"></td><td id="next-week"><span class="glyphicon glyphicon-chevron-right"></span></td>
             </tr>
         </table>
         <table class="title-week">
@@ -369,53 +222,67 @@
                         &times;
                     </button>
                     <h4 class="modal-title" id="myModalLabel">
-                        添加安排
+                        日程安排
                     </h4>
                 </div>
                 <div class="modal-body">
 
-                    <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
-                        <div class="form-group">
+                    <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="eventForm">
+                        <div class="form-group" style="display: none;">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <input type="text" class="form-control" id="realname" autocomplete="off"
-                                       placeholder="活动内容" required>
+                                <input type="text" class="form-control" id="timeId" autocomplete="off"
+                                       placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="location" class="col-sm-2 control-label">活动内容</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="content" autocomplete="off"
+                                       placeholder="输入活动内容" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="location" class="col-sm-2 control-label">活动地点</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="location" autocomplete="off"
+                                       placeholder="输入活动地点" required>
                             </div>
                         </div>
                         <div class="form-group ">
                             <label for="starttime" class=" col-sm-2 control-label">开始时间</label>
                             <div class="col-sm-10" >
-                                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:ii:00"  id="starttime" readonly>
+                                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:00"  id="starttime" readonly>
 
                             </div>
                         </div>
                         <div class="form-group ">
                             <label for="endtime" class=" col-sm-2 control-label">结束时间</label>
                             <div class="col-sm-10" >
-                                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:ii:00"  id="endtime" readonly>
+                                <input class="form-control form_datetime" size="16"  type="text" value="" data-date-format="yyyy-mm-dd hh:00"  id="endtime" readonly>
                             </div>
                         </div>
 
-                        <div class="form-group ">
-                            <label for="repeat" class=" col-sm-2 control-label">重复</label>
-                            <div class="col-sm-10" >
-                                <select id="repeat" class="form-control">
-                                    <option>一次性活动</option>
-                                    <option>每天</option>
-                                    <option>每周</option>
-                                </select>
-                            </div>
-                        </div>
+                        <!--<div class="form-group ">-->
+                            <!--<label for="repeat" class=" col-sm-2 control-label">重复</label>-->
+                            <!--<div class="col-sm-10" >-->
+                                <!--<select id="repeat" class="form-control">-->
+                                    <!--<option>一次性活动</option>-->
+                                    <!--<option>每天</option>-->
+                                    <!--<option>每周</option>-->
+                                <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
 
-                        <div class="form-group ">
-                            <label for="remind" class=" col-sm-2 control-label">提醒</label>
-                            <div class="col-sm-10" >
-                                <select id="remind" class="form-control">
-                                    <option>不提醒</option>
-                                    <option selected>10分钟前</option>
-                                    <option>30分钟前</option>
-                                </select>
-                            </div>
-                        </div>
+                        <!--<div class="form-group ">-->
+                            <!--<label for="remind" class=" col-sm-2 control-label">提醒</label>-->
+                            <!--<div class="col-sm-10" >-->
+                                <!--<select id="remind" class="form-control">-->
+                                    <!--<option>不提醒</option>-->
+                                    <!--<option selected>10分钟前</option>-->
+                                    <!--<option>30分钟前</option>-->
+                                <!--</select>-->
+                            <!--</div>-->
+                        <!--</div>-->
 
 
                     </form>
@@ -423,11 +290,14 @@
 
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left gone" id="btn-delete">
+                        <span class="glyphicon glyphicon-trash"></span> 删除
+                    </button>
                     <button type="button" class="btn btn-default"
                             data-dismiss="modal">关闭
                     </button>
-                    <button type="button" class="btn btn-primary">
-                        提交更改
+                    <button type="button" id="btn-submit" class="btn btn-primary">
+                        提交
                     </button>
                 </div>
             </div><!-- /.modal-content -->
@@ -443,6 +313,9 @@
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
 
+
+<link rel="stylesheet" href="../plugin/artDialog/ui-dialog.css">
+<script src="../plugin/artDialog/dialog-min.js"></script>
 <script src="../knight/js/main.js"></script>
 <script src="../knight/js/scheduler.js"></script>
 
@@ -454,7 +327,6 @@
 <script>
 
     $(document).ready(function () {
-
 
 
         /* 设置表格自动的时间 */
@@ -469,7 +341,7 @@
             autoclose: 1,
             todayHighlight: 1,
             startView: 2,
-            minView: 0,
+            minView: 1,
             forceParse: 0
         });
 
@@ -479,15 +351,31 @@
 
         $("#prev-week").on("click",function(){
             $('.carousel').carousel('prev');
+//            var o=$(".main-table.active");
+//            var o2=$(".title-week-day.active");
+//            o.removeClass("active");
+//            o.prev().addClass("active");
+//            o2.removeClass("active");
+//            o2.prev().addClass("active");
             updateTitleWeekDayTable();
             updateMainTable();
+            synchronousTable();
 
         });
         $("#next-week").on("click",function(){
             $('.carousel').carousel('next');
+//            var o=$(".main-table.active");
+//            var o2=$(".title-week-day.active");
+//            o.removeClass("active");
+//            o.next().addClass("active");
+//            o2.removeClass("active");
+//            o2.next().addClass("active");
             updateTitleWeekDayTable();
             updateMainTable();
+            synchronousTable();
         });
+
+
 
 
 
@@ -495,18 +383,111 @@
         $(document).on("click",".main-table tr td",function(){
 
             if($(this).has(".color-select").size()>0){
-                //do ...
+                //再次点击空闲时间块 弹出表单
+                updateModal();
                 $('#myModal').modal('show');
+                $(".color-select").remove();
                 //$("head").append('<style> .main-table td:nth-child(n+2){width: 13.3%;border: 1px solid #efefef;height: 95px;cursor: pointer;}</style>')
             }else{
-                if(!$(this).hasClass("time") &&  !$(this).hasClass("color-work") && !$(this).hasClass("color-over") ){
-//                    $(".color-select").remove();
-//                    $(this).empty().append('<div class="color-select"><span class="glyphicon glyphicon-plus"></span></div>');
+
+                if($(this).hasClass("color-self")){
+                    updateModal($(this));
+                    $('#myModal').modal('show');
+                }else if(!$(this).hasClass("time") &&  !$(this).hasClass("color-work") && !$(this).hasClass("color-over") ){
+
+//                    首次点击空闲时间块
+                    $(".color-select").remove();
+                    $(this).empty().append('<div class="color-select"><span class="glyphicon glyphicon-plus"></span></div>');
                 }
 
             }
 
         });
+
+
+        /* 主表格 hover 事件*/
+        $(document).on("mouseenter",".main-table tr td.color-self",function(){
+            /*弹出小菜单  可以删除 或者编辑*/
+            var _this=this;
+            $(this).css('position',"relative");
+            if(!$(this).find(".mini-menu").size()>0){
+                $(this).append('<div class="mini-menu"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-pencil"></span></div>');
+            }
+            $(this).find(".mini-menu").animate({
+                height:'20px'},100,function(){
+                /*小菜单点击时间*/
+                $(".glyphicon-pencil").click(function(){
+
+                    updateModal($(_this));
+                    $('#myModal').modal('show');
+                    event.stopPropagation();
+                });
+
+                $(".glyphicon-trash").click(function(){
+                    dialog({
+                        width: '200px',
+                        zIndex:1500,
+                        quickClose:true,
+                        title: '提示',
+                        content: '确定删除此日程？',
+                        okValue: '确定',
+                        ok: function () {
+                            updateModal($(_this));
+                            removeSelfEvent();
+                        },
+                        cancelValue: '取消',
+                        cancel: function () {}
+                    }).show();
+                    event.stopPropagation();
+                });
+
+
+            });
+
+        });
+        $(document).on("mouseleave",".main-table tr td",function(){
+            /*收起小菜单*/
+            $(this).find(".mini-menu").animate({
+                height:'0px'},100,function(){
+                  $(this).remove();
+            });
+        });
+
+
+
+
+
+        /* 日程安排 点击 提交*/
+        $("#btn-submit").on("click",function(){
+
+            //如果有id修改，没有则新增
+
+            if($("#timeId").val()!=""){
+                modifySelfEvent();
+            }else{
+                addSelfEvent();
+            }
+
+        });
+
+
+        /* 日程安排 点击 提交*/
+        $("#btn-delete").on("click",function(){
+            dialog({
+                width: '200px',
+                zIndex:1500,
+                quickClose:true,
+                title: '提示',
+                content: '确定删除此日程？',
+                okValue: '确定',
+                ok: function () {
+                    removeSelfEvent();
+                },
+                cancelValue: '取消',
+                cancel: function () {}
+            }).show();
+        });
+
     });
     Date.prototype.addDays = Date.prototype.addDays || function(days){
         this.setDate(this.getDate() + days);
@@ -552,8 +533,13 @@
      * 构造一周的html
      * aDate：一周时间 数组
      * */
-    function getTitleWeekDayTableHTML(aDate){
-        var appendHTML='<tr><td class="time"></td>';
+    function getTitleWeekDayTableHTML(aDate,iPage){
+        var appendHTML='<table class="title-week title-week-day item" data-page="'+(iPage)+'">';
+        if(iPage==0){
+            /*当前日期页  第0页显示*/
+            appendHTML='<table class="title-week title-week-day item active"  data-page="'+iPage+'">';
+        }
+        appendHTML+='<tr><td class="time"></td>';
         for(var i=0;i<aDate.length;i++){
             if(i==0 || i==6){
                 appendHTML+='<td class="color-weekend">'+(aDate[i].getMonth()+1)+"/"+ aDate[i].getDate() + '</td>';
@@ -561,7 +547,7 @@
                 appendHTML+='<td>'+(aDate[i].getMonth()+1)+"/"+ aDate[i].getDate() + '</td>';
             }
         }
-        appendHTML+="</tr>";
+        appendHTML+="</tr></table>";
         return appendHTML;
     }
 
@@ -580,19 +566,19 @@
             appendHTML='<table class="item main-table active"  data-page="'+iPage+'">';
         }
         var today=new Date();
+        var formattedDate="",hour="";
         //console.log(aDate);
         for(var i=0;i<24;i++){
             appendHTML+='<tr>';
+            /*个位数前面加个0*/
+            hour=i<10?"0"+i:i;
             for(var j=0;j<=7;j++){
                 if(j==0){
                     /*第一列是 时间*/
-                    if(i<10){
-                        /*个位数前面加个0*/
-                        appendHTML+='<td class="time">'+'0'+i+'</td>';
-                    }else{
-                        appendHTML+='<td class="time">'+i+'</td>';
-                    }
+                    appendHTML+='<td class="time">'+hour+'</td>';
                 }else{
+                    //每个td 加上data-time 格式： yyyy-MM-dd hh:00
+                    formattedDate=' data-time="'+aDate[j-1].Format("yyyy-MM-dd "+hour+":00")+'"';
                     if(today.getYear()==aDate[j-1].getYear() && today.getMonth()==aDate[j-1].getMonth() && today.getDate()==aDate[j-1].getDate()){
 
                         if(today.getHours() > i ){
@@ -604,7 +590,7 @@
                             appendHTML+='<td class="color-current" '+styleHTML+'></td>';
                         }
                         else{
-                            appendHTML+='<td class=""></td>';
+                            appendHTML+='<td class=""'+formattedDate+'></td>';
                         }
                         continue;
                     }
@@ -613,7 +599,7 @@
                         appendHTML+='<td class="color-over"></td>';
                     }
                     else{
-                        appendHTML+='<td class=""></td>';
+                        appendHTML+='<td class=""'+formattedDate+'></td>';
                     }
 
                 }
@@ -634,29 +620,23 @@
 
     /* 更新表头元素 */
     function updateTitleWeekDayTable(isFirst){
-        var oTable=$(".title-week-day").filter(".active");
+        var oTable=$("#title-week-day");
         if(isFirst){
             //初始化
-            oTable.empty().append(getTitleWeekDayTableHTML(getDayOfOneWeek(0)));
-            oTable.prev().empty().append(getTitleWeekDayTableHTML(getDayOfOneWeek(-1)));
-            oTable.next().empty().append(getTitleWeekDayTableHTML(getDayOfOneWeek(+1)));
+            oTable.empty();
+            oTable.append(getTitleWeekDayTableHTML(getDayOfOneWeek(0),0));
+            oTable.prepend(getTitleWeekDayTableHTML(getDayOfOneWeek(-1),-1));
+            oTable.append(getTitleWeekDayTableHTML(getDayOfOneWeek(1),1));
             //对当天高亮
-            oTable.find("tr").children().eq(new Date().getDay()+1).addClass("color-today");
+            oTable.find(".active").find("tr").children().eq(new Date().getDay()+1).addClass("color-today");
 
         }else{
-            var appendHTML='';
             var iPage=parseInt(oTable.attr("data-page"));
-
             if(oTable.prevAll().size()<2){
-                appendHTML+='<table class="title-week title-week-day item" data-page="'+(iPage-2)+'">';
-                appendHTML+=getTitleWeekDayTableHTML(getDayOfOneWeek(iPage-2))+"</table>";
-                $("#title-week-day").prepend(appendHTML);
+                oTable.prepend(getTitleWeekDayTableHTML(getDayOfOneWeek(iPage-2),iPage-2));
             }
-            appendHTML='';
             if(oTable.nextAll().size()<2){
-                appendHTML+='<table class="title-week title-week-day item" data-page="'+(iPage+2)+'">';
-                appendHTML+=getTitleWeekDayTableHTML(getDayOfOneWeek(iPage+2))+"</table>";
-                $("#title-week-day").append(appendHTML);
+                oTable.append(getTitleWeekDayTableHTML(getDayOfOneWeek(iPage+2),iPage+2));
             }
 
         }
@@ -676,21 +656,40 @@
             oMainView.append(getOneWeekMainTable(aDate,0));
             getOrderListByMonth(aDate[0].Format("yyyy-MM-dd"),0);
             aDate=getDayOfOneWeek(-1);
-            oMainView.prepend(getOneWeekMainTable(getDayOfOneWeek(-1),1));
-//            getOrderListByMonth(aDate[0].Format("yyyy-MM-dd"),-1);
+            oMainView.prepend(getOneWeekMainTable(getDayOfOneWeek(-1),-1));
+            getOrderListByMonth(aDate[0].Format("yyyy-MM-dd"),-1);
             aDate=getDayOfOneWeek(+1);
             oMainView.append(getOneWeekMainTable(getDayOfOneWeek(1),1));
-//            getOrderListByMonth(aDate[0].Format("yyyy-MM-dd"),1);
+            getOrderListByMonth(aDate[0].Format("yyyy-MM-dd"),1);
         }else{
             if(oTable.prevAll().size()<2){
                 aDate=getDayOfOneWeek(iPage-2);
                 $("#main-view").prepend(getOneWeekMainTable(aDate,iPage-2));
+                getOrderListByMonth(aDate[0].Format("yyyy-MM-dd"),iPage-2);
             }
             if(oTable.nextAll().size()<2){
                 aDate=getDayOfOneWeek(iPage+2);
                 $("#main-view").append(getOneWeekMainTable(aDate,iPage+2));
+                getOrderListByMonth(aDate[0].Format("yyyy-MM-dd"),iPage+2);
             }
         }
+
+    }
+
+    /* 同步两张表 以表头为基准 */
+    function synchronousTable(){
+        var iTitlePage=parseInt($(".title-week-day").filter(".active").attr("data-page"));
+
+        var oMain=$(".main-table").filter(".active");
+        var iMainPage=parseInt(oMain.attr("data-page"));
+        if(iTitlePage!=iMainPage){
+
+            //同步过程.. setinternal
+            console.log("itp:"+iTitlePage);
+            console.log("imp:"+iMainPage);
+
+        }
+
 
     }
 

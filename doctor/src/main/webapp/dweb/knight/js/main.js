@@ -3,8 +3,8 @@
  */
 
 
-ContextUrl="http://10.0.0.3:8080";
-//ContextUrl="http://115.28.176.74:8080/doctor";
+//ContextUrl="http://10.0.0.15:8080";
+ContextUrl="http://115.28.176.74:8080/doctor";
 //ContextUrl="http://10.0.0.88:8080/know-heart";
 //
 //if(!(location.hostname).match("www.qubaopen.com.cn")){
@@ -63,7 +63,30 @@ function getParam(param){
 }
 
 
-/**/
+/*回到登录页*/
 function backToSignIn(){
     self.location = "signin.html";
+}
+
+/* new date IE浏览器不支持NEW DATE()带参数的解决方法
+ * str 格式 yyyy-MM-dd hh-ii-ss */
+function newDate(str){
+    if(str.length==10){
+        str+=" 00:00:00"
+    }else if(str.length==13){
+        str+=":00:00"
+    }else if(str.length==16){
+        str+=":00"
+    }
+
+    if(str.length!=19){
+        alert("date格式有误");
+        console.log("date格式有误");
+        return;
+    }
+    var date = new Date();
+    date.setUTCFullYear(parseInt(str.substring(0,4)), parseInt(str.substring(5,7))-1, parseInt(str.substring(8,10)));
+    //由于是美国时间 所以-8小时
+    date.setUTCHours(parseInt(str.substring(11,13))-8, 0, 0, 0);
+    return date;
 }

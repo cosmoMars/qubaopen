@@ -55,7 +55,7 @@ function modifyInfo(){
     $('#uploadPhotoForm').submit(function () {
 
         var jsonSent={};
-        jsonSent.name=$("#realname").val();
+        jsonSent.infoName=$("#realname").val();
         jsonSent.contactPhone=$("#contactPhone").val();
         jsonSent.sex=$("#sex label:eq(0)").hasClass("active")?"0":"1";
         jsonSent.birthday=$("#birthday").val();
@@ -70,6 +70,9 @@ function modifyInfo(){
         jsonSent.commentConsult=$("#commentConsult label:eq(0)").hasClass("active");
         jsonSent.phoneConsult=$("#phoneConsult label:eq(0)").hasClass("active");
         jsonSent.introduce=$("#introduction").val();
+        jsonSent.bookingTime=$("#btn-pick").attr("data-time");
+
+
         //jsonSent.record=$("#certificate").val();
         //jsonSent.avatar=$("#avatar").val();
 
@@ -150,6 +153,7 @@ function updateProfileView(obj){
     $("#cureMethod").val(data.genre);
     //jsonSent.time=$("#freeTime").val();
     $("#urgentConsult").val(data.quick);
+    $("#btn-pick").attr("data-time",data.time);
 
     if(data.quick){
         $("#urgentConsult label").eq(0).click();

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+
+         .main-view{
+             width: 800px;
+             height: 600px;
+             margin:0 auto;
+             background-color: #fafafa;
+         }
+
+         .pic{
+             float: left;
+             margin: 35px;
+             width: 195px;
+             height: 260px;
+             position:relative;
+         }
+
+
+         .img{
+             position:absolute;
+             width: 100%;
+             height: 100%;
+             top: 0;
+             left: 0;
+         }
+
+
+         .img:before{
+             position:absolute;
+             z-index: 2;
+             width: 100%;
+             height: 50%;
+             content:"";
+             background: url("picShadow3.jpg") no-repeat;
+             background-size:cover;
+             top: 0;
+             left: 0;
+         }
+         .img:after{
+             position:absolute;
+             z-index: 1;
+             width: 100%;
+             height: 100%;
+             content:"";
+             background: url("picShadow3.jpg") no-repeat;
+             background-size:cover;
+             -webkit-filter: blur(2px);
+             -moz-filter: blur(2px);
+             -o-filter: blur(2px);
+             -ms-filter: blur(2px);
+             filter: blur(2px);
+             top: 0;
+             left: 0;
+         }
+
+         .grad1{
+             z-index: 1;
+             position: absolute;
+             width: 100%;
+             height: 100%;
+             top: 0;
+             left: 0;
+             background: -o-linear-gradient(top ,rgba(255,255,255,0) 50%,  rgba(0,0,0,0.2) 100%); /* Opera 11.1 - 12.0 */
+             background: -moz-linear-gradient(top ,rgba(255,255,255,0) 50%,  rgba(0,0,0,0.2) 100%); /* Firefox 3.6 - 15 */
+             background: -webkit-linear-gradient(top ,rgba(255,255,255,0) 50%,  rgba(0,0,0,0.5) 100%); /* Safari 5.1 - 6.0 */
+             background: linear-gradient(top ,rgba(255,255,255,0) 40%,  rgba(0,0,0,0.5) 100%); /* 标准的语法（必须放在最后） */
+
+             color:#fff;
+         }
+        .content{
+            position: relative;
+            z-index: 5;
+            color:#fff;
+            font-size: 16px;
+            font-family: "微软雅黑", serif;
+            top:70%;
+            text-align: center;
+        }
+
+
+         .imgFather{
+             position:absolute;
+             width: 100%;
+             height: 100%;
+             top: 0;
+             left: 0;
+         }
+
+         .imgBefore{
+             position:absolute;
+             z-index: 2;
+             width: 100%;
+             height: 50%;
+             content:"";
+             top: 0;
+             left: 0;
+         }
+         .imgAfter{
+             position:absolute;
+             z-index: 1;
+             width: 100%;
+             height: 100%;
+             content:"";
+             -webkit-filter: blur(2px);
+             -moz-filter: blur(2px);
+             -o-filter: blur(2px);
+             -ms-filter: blur(2px);
+             filter: blur(2px);
+             top: 0;
+             left: 0;
+         }
+
+        .part{
+            height: 250px;
+            width: 185px;
+            overflow: hidden;
+            position: relative;
+        }
+
+
+         .imgArea{
+             position:absolute;
+             height: 260px;
+             width: 195px;
+             margin-left: -6px;
+             margin-top: -4px;
+         }
+
+    </style>
+</head>
+<body>
+
+
+<div class="main-view">
+    <div class="pic">
+        <div class="img" id="div3" data-pic="picShadow3.jpg"></div>
+        <div class="grad1"></div>
+        <div class="content">Masale Bgoi</div>
+    </div>
+    <div class="pic">
+        <div class="imgFather" id="div2" data-pic="picShadow3.jpg">
+            <div class="imgBefore"></div>
+            <div class="imgAfter"></div>
+        </div>
+        <div class="grad1"></div>
+        <div class="content">Lasi Noda</div>
+    </div>
+    <div class="pic">
+        <div class="part">
+            <div class="imgArea">
+                <div class="imgFather" id="div1" data-pic="picShadow3.jpg">
+                    <div class="imgBefore"></div>
+                    <div class="imgAfter"></div>
+                </div>
+                <div class="grad1"></div>
+                <div class="content">Jeci Kero</div>
+            </div>
+        </div>
+    </div>
+    <div class="pic">
+        <img class="img" src="picShadow3.jpg"/>
+        <div class="grad1"></div>
+    </div>
+    <div class="pic">
+        <img class="img" src="picShadow2.jpg"/>
+        <div class="grad1"></div>
+    </div>
+    <div class="pic">
+        <img class="img" src="picShadow1.jpg"/>
+        <div class="grad1"></div>
+    </div>
+</div>
+<script src="../../jquery/jquery-1.11.1.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        var url2=$("#div2").attr("data-pic");
+        var url1=$("#div1").attr("data-pic");
+
+        $("#div2 .imgBefore").css("background",'url("'+url2+'") no-repeat');
+        $("#div2 .imgBefore").css("background-size",'cover');
+        $("#div2 .imgAfter").css("background",'url("'+url2+'") no-repeat');
+        $("#div2 .imgAfter").css("background-size",'cover');
+
+        $("#div1 .imgBefore").css("background",'url("'+url1+'") no-repeat');
+        $("#div1 .imgBefore").css("background-size",'cover');
+        $("#div1 .imgAfter").css("background",'url("'+url1+'") no-repeat');
+        $("#div1 .imgAfter").css("background-size",'cover');
+
+    });
+
+
+</script>
+</body>
+</html>

@@ -437,6 +437,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		bookings.each {
 			data << [
+				'bookingTimeId' : it?.id,
 				'doctorId' : it?.doctor?.id,
 				'doctorName' : it?.doctor?.doctorInfo?.name,
 				'hospitalId' :	it?.hospital?.id,

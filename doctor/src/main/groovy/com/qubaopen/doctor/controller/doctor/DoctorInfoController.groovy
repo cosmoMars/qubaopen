@@ -230,9 +230,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		
 		if (json != null) {
 			def resultModel = doctorInfo.bookingTime.split(',')
-			def jsons = json.split('=')
 			
-			def jsonNodes = objectMapper.readTree(jsons[1]),
+			def jsonNodes = objectMapper.readTree(json),
 				bookingModels = []
 				
 			jsonNodes.each {

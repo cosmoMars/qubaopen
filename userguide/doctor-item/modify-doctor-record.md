@@ -4,15 +4,6 @@
 
 **HTTP请求方式：** POST
 
->响应结果：
-
-```json
-{
-    "success" : "1",
-    "selfTimeId" : 1
-}
-```
-
 | 请求参数 | 类型 | 是否必选 | 参数说明 |
 | -- | -- | -- | -- |
 | educationalStart | String | false | 学习开始时间 yyyy-MM-dd |
@@ -36,7 +27,6 @@
 | totalHour | int |false | 总计小时 |
 | selfIntroduction | String | false | 自我介绍 |
 | record | MultipartFile | false | 资质证明 |
-
 
 >响应结果：
 

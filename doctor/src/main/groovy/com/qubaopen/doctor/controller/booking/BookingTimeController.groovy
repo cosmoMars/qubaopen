@@ -50,9 +50,8 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		}
 		logger.debug(" =============== {}", json)
 		
-		def jsons = json.split("=")
 		
-		def jsonNodes = objectMapper.readTree(jsons[1]),
+		def jsonNodes = objectMapper.readTree(json),
 			bookingModels = []
 		jsonNodes.each {
 			
@@ -103,9 +102,10 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			}
 			bookingModels << dbTime
 		}
-		
-		bookingTimeRepository.save(bookingModels)
-		'{"success" : "1"}'
+		if (bookingModels.size() > 0) {
+			bookingTimeRepository.save(bookingModels)
+			return '{"success" : "1"}'
+		}
 		
 	}
 	

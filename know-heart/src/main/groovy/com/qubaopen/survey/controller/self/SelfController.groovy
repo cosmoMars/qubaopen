@@ -186,14 +186,16 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 				'status_equal' : Self.Status.ONLINE
 			]
 		)
-		def data = []
+		def data = [],
+			specialSelf = selfRepository.findByMaxRecommendedValue()
 		selfs.each {
-			def self = [
-				'selfId' : it?.id,
-				'managementType' : it?.selfManagementType?.id,
-				'title' : it?.title
-			]
-			data <<	self
+			if (it.id != specialSelf.id) {
+				data <<	[
+					'selfId' : it?.id,
+					'managementType' : it?.selfManagementType?.id,
+					'title' : it?.title
+				]
+			}
 		}
 		[
 			'success' : '1',

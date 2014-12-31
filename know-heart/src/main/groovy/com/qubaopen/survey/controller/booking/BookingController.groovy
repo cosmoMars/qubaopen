@@ -285,11 +285,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def day = c.getTime(),
 				idx = dayForWeek(day),
 				timeModel = times[idx - 1],
-				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
+//				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
 			
 			
-			if (timeList && timeList.size() > 0) {
+			/*if (timeList && timeList.size() > 0) {
 				if (!timeModel) {
 					timeModel = '000000000000000000000000'
 				}
@@ -310,7 +310,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 						}
 					}
 				}
-			}
+			}*/
 			
 			bookingList.each {
 				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
@@ -393,6 +393,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (booking) {
 			[
 				'success' : '1',
+				'bookingId' : booking?.id,
 				'userId' : booking?.user?.id,
 				'userName' : booking?.name,
 				'userSex' : booking?.sex?.ordinal(),
@@ -429,15 +430,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			
 		)
 		def data = [], more = true
-//		println bookings.content
-//		println bookings.numberOfElements
-//		println pageable.pageSize
 		if (bookings && bookings.size < pageable.pageSize) {
 			more = false
 		}
 		bookings.each {
 			data << [
-				'bookingTimeId' : it?.id,
+				'bookingId' : it?.id,
 				'doctorId' : it?.doctor?.id,
 				'doctorName' : it?.doctor?.doctorInfo?.name,
 				'hospitalId' :	it?.hospital?.id,

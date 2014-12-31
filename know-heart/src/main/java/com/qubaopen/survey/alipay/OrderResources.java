@@ -1,12 +1,15 @@
 package com.qubaopen.survey.alipay;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,11 +40,30 @@ public class OrderResources {
 	private PayEntityRepository payEntityRepository;
 	
 	
+	@Transactional
 	@RequestMapping(value = "payBookingOrder", method = RequestMethod.POST)
-	public Map<String, Object> payBookingOrder(@RequestParam(required = false) Long bookingId, @ModelAttribute("currentUser") User user) {
+	public Map<String, Object> payBookingOrder(@RequestParam(required = false) Long bookingId, 
+			@RequestParam(required = false) Boolean quick,
+			@RequestParam(required = false) Double money,
+			@RequestParam(required = false) String time,
+			@ModelAttribute("currentUser") User user) {
 		
 		logger.trace("====== {}", bookingId);
 		Booking booking = bookingRepository.findOne(bookingId);
+		if (quick != null) {
+			booking.setQuick(quick);
+		}
+		if (money != null) {
+			booking.setMoney(money);
+		}
+		if (time != null) {
+			try {
+				booking.setTime(DateUtils.parseDate(time, "yyyy-MM-dd HH:mm"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		bookingRepository.save(booking);
 		
 		PayEntity payEntity = new PayEntity();
 		

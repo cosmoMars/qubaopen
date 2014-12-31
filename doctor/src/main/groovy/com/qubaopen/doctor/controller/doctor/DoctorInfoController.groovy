@@ -22,9 +22,11 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.doctor.repository.doctor.DoctorRecordRepository
 import com.qubaopen.doctor.repository.doctor.DoctorRepository
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
+import com.qubaopen.survey.entity.doctor.DoctorRecord
 
 @RestController
 @RequestMapping('doctorInfo')
@@ -43,6 +45,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 	@Autowired
 	DoctorAddressRepository doctorAddressRepository
 	
+	@Autowired
+	DoctorRecordRepository doctorRecordRepository
 	
 	@Override
 	protected MyRepository<DoctorInfo, Long> getRepository() {
@@ -139,6 +143,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) MultipartFile record,
 		@RequestParam(required = false) String times,
 		@RequestParam(required = false) String json,
+		@RequestParam(required = false) String recordJson,
 		@ModelAttribute('currentDoctor') Doctor doctor,
 		HttpServletRequest request
 		) {
@@ -283,6 +288,24 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			
 			saveFile(record.bytes, recordPath)
 			doctorInfo.recordPath = "/$recordDir/$fileName"
+		}
+		
+		if (recordJson != null) {
+			def dr = doctorRecordRepository.findOne(doctor.id)
+			if (!dr) {
+				dr = new DoctorRecord(
+					id : doctor.id
+				)
+			}
+			def jsonNode = objectMapper.readTree(recordJson)
+			
+			if (jsonNode.get('educationalStart') != null) {
+				dr.educationalStart = DateUtils.parseDate(jsonNode.get('educationalStart').asText(), 'yyyy-MM-dd')
+			}
+			if (jsonNode.get('educationalEnd') != null) {
+				dr.educationalStart = DateUtils.parseDate(jsonNode.get('educationalEnd').asText(), 'yyyy-MM-dd')
+			}
+			
 		}
 		doctorRepository.save(doctor)
 		doctorInfoRepository.save(doctorInfo)

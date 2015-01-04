@@ -277,14 +277,15 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			saveFile(avatar.bytes, avatarPath)
 			doctorInfo.avatarPath = "/$doctorDir/$fileName"
 		}
+		def recordDir, fileName
 		if (record) {
-			def recordDir = 'recordDir'
+			recordDir = 'recordDir'
 			def file = new File("${request.getServletContext().getRealPath('/')}$recordDir");
 			if (!file.exists() && !file.isDirectory()) {
 				file.mkdir()
 			}
-			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
-				recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
+			fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png"
+			def	recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
 			
 			saveFile(record.bytes, recordPath)
 			doctorInfo.recordPath = "/$recordDir/$fileName"
@@ -297,15 +298,82 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 					id : doctor.id
 				)
 			}
+			if (record) {
+				dr.recordPath = "/$recordDir/$fileName"
+			}
 			def jsonNode = objectMapper.readTree(recordJson)
 			
+			if (jsonNode.get('school') != null) {
+				dr.school = jsonNode.get('school').asText()
+			}
+			if (jsonNode.get('profession') != null) {
+				dr.profession = jsonNode.get('profession').asText()
+			}
+			if (jsonNode.get('degree') != null) {
+				dr.degree = jsonNode.get('degree').asText()
+			}
+			if (jsonNode.get('educationalIntroduction') != null) {
+				dr.educationalIntroduction = jsonNode.get('educationalIntroduction').asText()
+			}
+			if (jsonNode.get('course') != null) {
+				dr.course = jsonNode.get('course').asText()
+			}
+			if (jsonNode.get('organization') != null) {
+				dr.organization = jsonNode.get('organization').asText()
+			}
+			if (jsonNode.get('trainIntroduction') != null) {
+				dr.trainIntroduction = jsonNode.get('trainIntroduction').asText()
+			}
+			if (jsonNode.get('supervise') != null) {
+				dr.supervise = jsonNode.get('supervise').asText()
+			}
+			if (jsonNode.get('orientation') != null) {
+				dr.orientation = jsonNode.get('orientation').asText()
+			}
+			if (jsonNode.get('superviseHour') != null) {
+				dr.superviseHour = jsonNode.get('superviseHour').asInt()
+			}
+			if (jsonNode.get('contactMethod') != null) {
+				dr.contactMethod = jsonNode.get('contactMethod').asText()
+			}
+			if (jsonNode.get('superviseIntroduction') != null) {
+				dr.superviseIntroduction = jsonNode.get('superviseIntroduction').asText()
+			}
+			if (jsonNode.get('totalHour') != null) {
+				dr.totalHour = jsonNode.get('totalHour').asInt()
+			}
+			if (jsonNode.get('selfIntroduction') != null) {
+				dr.selfIntroduction = jsonNode.get('selfIntroduction').asText()
+			}
 			if (jsonNode.get('educationalStart') != null) {
 				dr.educationalStart = DateUtils.parseDate(jsonNode.get('educationalStart').asText(), 'yyyy-MM-dd')
 			}
 			if (jsonNode.get('educationalEnd') != null) {
-				dr.educationalStart = DateUtils.parseDate(jsonNode.get('educationalEnd').asText(), 'yyyy-MM-dd')
+				dr.educationalEnd = DateUtils.parseDate(jsonNode.get('educationalEnd').asText(), 'yyyy-MM-dd')
+			}
+			if (jsonNode.get('trainStart') != null) {
+				dr.trainStart = DateUtils.parseDate(jsonNode.get('trainStart').asText(), 'yyyy-MM-dd')
+			}
+			if (jsonNode.get('trainEnd') != null) {
+				dr.trainEnd = DateUtils.parseDate(jsonNode.get('trainEnd').asText(), 'yyyy-MM-dd')
+			}
+			if (jsonNode.get('selfStart') != null) {
+				dr.selfStart = DateUtils.parseDate(jsonNode.get('selfStart').asText(), 'yyyy-MM-dd')
+			}
+			if (jsonNode.get('selfEnd') != null) {
+				dr.selfEnd = DateUtils.parseDate(jsonNode.get('selfEnd').asText(), 'yyyy-MM-dd')
 			}
 			
+			if (dr.educationalStart && dr.educationalEnd && dr.educationalEnd.before(dr.educationalStart)) {
+				return '{"success" : "0", "message" : "err920"}' // 学习结束时间不能小于学习开始时间
+			}
+			if (dr.trainStart && dr.trainEnd && dr.trainEnd.before(dr.trainStart)) {
+				return '{"success" : "0", "message" : "err921"}' // 培续结束时间不能小于培训开始时间
+			}
+			if (dr.selfStart && dr.selfEnd && dr.selfEnd.before(dr.selfStart)) {
+				return '{"success" : "0", "message" : "err922"}' // 自我学习结束时间不能小于自我学习开始时间
+			}
+			doctorRecordRepository.save(dr)
 		}
 		doctorRepository.save(doctor)
 		doctorInfoRepository.save(doctorInfo)

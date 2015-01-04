@@ -40,11 +40,11 @@ public interface MapStatisticsRepository extends MyRepository<MapStatistics, Lon
 	@Query("from MapStatistics ms where ms.self.selfGroup is not null and ms.selfManagementType = :type and ms.user = :user")
 	List<MapStatistics> findMapByGroupSelfs(@Param("type") SelfManagementType selfManagementType, @Param("user") User user);
 	
-	@Query("from MapStatistics ms where ms.selfManagementType = :type and ms.user = :user and ms.self.selfGroup != :specialGroup")
-	List<MapStatistics> findMapWithoutSpecialGroup(@Param("type") SelfManagementType selfManagementType, @Param("user") User user, @Param("specialGroup") SelfGroup specialGroup);
+	@Query("from MapStatistics ms where ms.selfManagementType = :type and ms.user = :user and ms.self.selfGroup != :specialGroup and ms.self.selfGroup.status = :status")
+	List<MapStatistics> findMapWithoutSpecialGroup(@Param("type") SelfManagementType selfManagementType, @Param("user") User user, @Param("specialGroup") SelfGroup specialGroup, @Param("status") boolean status);
 	
-	@Query("from MapStatistics ms where ms.user = :user and ms.self.selfGroup != :specialGroup")
-	List<MapStatistics> findMapWithoutSpecialGroup(@Param("user") User user, @Param("specialGroup") SelfGroup specialGroup);
+	@Query("from MapStatistics ms where ms.user = :user and ms.self.selfGroup != :specialGroup and ms.self.selfGroup.status = :status")
+	List<MapStatistics> findMapWithoutSpecialGroup(@Param("user") User user, @Param("specialGroup") SelfGroup specialGroup, @Param("status") boolean status);
 	
 	List<MapStatistics> findBySelfManagementTypeAndUser(SelfManagementType selfManagementType, User user);
 	

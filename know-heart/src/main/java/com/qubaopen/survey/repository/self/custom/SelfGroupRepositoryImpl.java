@@ -21,7 +21,7 @@ public class SelfGroupRepositoryImpl implements SelfGroupRepositoryCustom {
 		 
 		 Root<SelfGroup> root = query.from(SelfGroup.class);
 		 
-		 query.where().orderBy(builder.desc((root.get("recommendedValue"))));
+		 query.where(builder.equal(root.get("status"), true)).orderBy(builder.desc((root.get("recommendedValue"))));
 		 
 		 return entityManager.createQuery(query)
 				 .setMaxResults(1)

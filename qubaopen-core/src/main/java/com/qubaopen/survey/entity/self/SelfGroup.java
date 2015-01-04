@@ -52,22 +52,27 @@ public class SelfGroup extends AbstractPersistable<Long> {
 	 * 推荐优先级
 	 */
 	private int recommendedValue;
-	
+
 	/**
 	 * 标题
 	 */
 	private String title;
-	
+
 	/**
 	 * 内容
 	 */
 	private String content;
-	
+
 	/**
 	 * 自测管理类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	private SelfManagementType selfManagementType;
+
+	/**
+	 * 使用
+	 */
+	private boolean status;
 
 	public String getName() {
 		return name;
@@ -131,6 +136,14 @@ public class SelfGroup extends AbstractPersistable<Long> {
 
 	public void setSelfManagementType(SelfManagementType selfManagementType) {
 		this.selfManagementType = selfManagementType;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
 }

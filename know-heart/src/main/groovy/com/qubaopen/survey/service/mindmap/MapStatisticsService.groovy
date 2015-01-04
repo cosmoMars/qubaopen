@@ -93,7 +93,7 @@ public class MapStatisticsService {
 //			if (specialMaps) {
 //				existMaps += specialMaps
 //			}
-			def groupMaps = mapStatisticsRepository.findMapWithoutSpecialGroup(selfManagementType, user, specialGroup)
+			def groupMaps = mapStatisticsRepository.findMapWithoutSpecialGroup(selfManagementType, user, specialGroup, true)
 //			existMaps += existGroupMaps
 			
 			def singleMaps = []
@@ -447,7 +447,7 @@ public class MapStatisticsService {
 //			if (specialMaps) {
 //				existMaps += specialMaps
 //			}
-			def groupMaps = mapStatisticsRepository.findMapWithoutSpecialGroup(user, specialGroup)
+			def groupMaps = mapStatisticsRepository.findMapWithoutSpecialGroup(user, specialGroup, true)
 			
 //			existMaps += groupMaps
 			def singleMaps = []

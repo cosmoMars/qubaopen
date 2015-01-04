@@ -42,7 +42,7 @@ public class OrderResources {
 	
 	@Transactional
 	@RequestMapping(value = "payBookingOrder", method = RequestMethod.POST)
-	public Map<String, Object> payBookingOrder(@RequestParam(required = false) Long bookingId, 
+	public Map<String, Object> payBookingOrder(@RequestParam(required = false) Long bookingId,
 			@RequestParam(required = false) Boolean quick,
 			@RequestParam(required = false) Double money,
 			@RequestParam(required = false) String time,

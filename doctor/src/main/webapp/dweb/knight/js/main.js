@@ -3,8 +3,8 @@
  */
 
 
-//ContextUrl="http://10.0.0.15:8080";
-ContextUrl="http://115.28.176.74:8080/doctor";
+ContextUrl="http://10.0.0.8:8080";
+//ContextUrl="http://zhixin.me:8080/doctor";
 //ContextUrl="http://10.0.0.88:8080/know-heart";
 //
 //if(!(location.hostname).match("www.qubaopen.com.cn")){

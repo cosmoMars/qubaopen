@@ -81,6 +81,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		}
 		
 		[
+			"success" : "1",
 			'inCash' : cash?.inCash,
 			'outCash' : cash?.outCash,
 			'currentCash' : cash?.currentCash,

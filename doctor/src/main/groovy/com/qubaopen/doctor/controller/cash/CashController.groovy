@@ -15,12 +15,16 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.doctor.controller.doctor.DoctorController;
 import com.qubaopen.doctor.repository.cash.CashLogRepository
 import com.qubaopen.doctor.repository.cash.CashRepository
 import com.qubaopen.doctor.repository.cash.TakeCashRepository;
 import com.qubaopen.doctor.repository.doctor.DoctorCaptchaRepository
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
+import com.qubaopen.doctor.repository.doctor.DoctorRepository;
 import com.qubaopen.doctor.service.DoctorIdCardBindService
+import com.qubaopen.doctor.service.DoctorService;
+import com.qubaopen.doctor.service.SmsService;
 import com.qubaopen.survey.entity.cash.Bank
 import com.qubaopen.survey.entity.cash.Cash
 import com.qubaopen.survey.entity.cash.CashLog
@@ -51,6 +55,12 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 	
 	@Autowired
 	TakeCashRepository takeCashRepository
+	
+	@Autowired
+	DoctorService doctorService
+	
+	@Autowired
+	DoctorRepository doctorRepository
 
 	@Override
 	MyRepository<Cash, Long> getRepository() {
@@ -102,8 +112,8 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 	 * @return
 	 */
 	@Transactional
-	@RequestMapping(value = 'alipayCash', method = RequestMethod.POST)
-	alipayCash(@RequestParam(required = false) Double curCash,
+	@RequestMapping(value = 'takeCash', method = RequestMethod.POST)
+	takeCash(@RequestParam(required = false) Double curCash,
 		@RequestParam(required = false) Integer type,
 		@RequestParam(required = false) String alipayNum,
 		@RequestParam(required = false) Long bankId,
@@ -210,6 +220,23 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		}
 		takeCashRepository.save(takeCash)
 		'{"success" : "1"}'
+	}
+	
+	/**
+	 * @param doctor
+	 * @return
+	 * 提现验证码发送
+	 */
+	@RequestMapping(value = 'retireveCashCaptcha', method = RequestMethod.GET)
+	retireveCashCaptcha(@ModelAttribute('currentDoctor') Doctor doctor){
+		 
+		def phone = doctor.phone
+		if (!phone) {
+			def d = doctorRepository.findOne(doctor.id)
+			phone = d.phone
+		}
+		
+		doctorService.sendCaptcha(phone, true)
 	}
 	
 }

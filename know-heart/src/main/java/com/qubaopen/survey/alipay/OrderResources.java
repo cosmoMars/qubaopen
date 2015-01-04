@@ -103,7 +103,69 @@ public class OrderResources {
         map.put("payData", message);
 		
 		return map;
-		
 	}
+	@Transactional
+	@RequestMapping(value = "confirmBooking", method = RequestMethod.POST)
+	public Map<String, Object> confirmBooking(@RequestParam(required = false) Long bookingId,
+			@RequestParam(required = false) Boolean quick,
+			@RequestParam(required = false) Double money,
+			@RequestParam(required = false) String time,
+			@ModelAttribute("currentUser") User user) {
+		
+		logger.trace("====== {}", bookingId);
+		Booking booking = bookingRepository.findOne(bookingId);
+		if (quick != null) {
+			booking.setQuick(quick);
+		}
+		if (money != null) {
+			booking.setMoney(money);
+		}
+		if (time != null) {
+			try {
+				booking.setTime(DateUtils.parseDate(time, "yyyy-MM-dd HH:mm"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		bookingRepository.save(booking);
+		
+		PayEntity payEntity = new PayEntity();
+		
+		payEntity.setBooking(booking);
+		payEntity.setPayTime(booking.getTime());
+		payEntity.setPayment("支付宝");
+		payEntity.setPayStatus(PayStatus.WAITING_PAYMENT);
+		payEntity.setPayAmount(booking.getMoney());
+		payEntityRepository.save(payEntity);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
 
+		StringBuilder alipayText = new StringBuilder();
+        alipayText.append("partner=\"").append(AlipayConfig.partner); // 商家名
+        alipayText.append("\"&seller_id=\"").append("qubaopen@163.com"); // 支付宝账号
+        alipayText.append("\"&out_trade_no=\"").append(booking.getTradeNo()); // 订单号（订单号+"_"+支付ID+"_"++系统当前时间）
+        alipayText.append("\"&subject=\""); // 商品名("购车订金:"+汽车品牌+车型名称+车款名称)
+        alipayText.append("知心心理咨询");
+		
+        alipayText.append("\"&body=\""); // 商品描述
+        alipayText.append("下单时间：").append(DateFormatUtils.format(booking.getTime(), "yyyy-MM-dd"));
+        alipayText.append("，订单号：").append(booking.getTradeNo());
+
+        // 如果系统没有工作在产品模式时只需要支付0.01元
+        alipayText.append("\"&total_fee=\"").append(booking.getMoney()); // 支付金额
+        alipayText.append("\"&notify_url=\"").append("http://www.zhixin.me"); // 支付完成回调url
+        alipayText.append("\"&service=\"mobile.securitypay.pay"); // 默认填写，@"mobile.securitypay.pay"
+        alipayText.append("\"&_input_charset=\"UTF-8"); // 默认填写，@"utf-8"
+        alipayText.append("\"&payment_type=\"1"); // 默认填写，@"1"
+        alipayText.append("\"&it_b_pay=\"30m\""); // 超时时间
+        
+        String sign = RSA.sign(alipayText.toString(), AlipayConfig.private_key, AlipayConfig.input_charset);
+        String message = alipayText.toString() + "&sign=\"" + sign + "\"&sign_type=\"RSA\"";
+
+        map.put("payType", 1);
+        map.put("name", "支付宝");
+        map.put("payData", message);
+		
+		return map;
+	}
 }

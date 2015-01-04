@@ -88,7 +88,10 @@ public class DoctorIdCardBindService {
 				if ('0' == mapStatus && '1' == result) {
 					return '{"success" : "0", "message" : "err205"}'
 				}
-				if ('0' == mapStatus && '1' != result) {
+				if ('0' == mapStatus && '2' == result) {
+					return '{"success" : "0", "message" : "err200"}'
+				}
+				if ('0' == mapStatus && '3' == result) {
 					userIdCard = new UserIDCard(
 						IDCard : idCard,
 						name : name

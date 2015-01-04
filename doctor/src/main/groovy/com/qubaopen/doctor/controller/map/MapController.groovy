@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.map.MapStatisticsRepository
+import com.qubaopen.doctor.repository.user.UserRepository;
 import com.qubaopen.doctor.service.MapStatisticsService
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.mindmap.MapStatistics
@@ -26,6 +27,9 @@ public class MapController extends AbstractBaseController<MapStatistics, Long> {
 	
 	@Autowired
 	MapStatisticsService mapStatisticsService
+	
+	@Autowired
+	UserRepository userRepository
 
 	@Override
 	protected MyRepository<MapStatistics, Long> getRepository() {
@@ -42,7 +46,7 @@ public class MapController extends AbstractBaseController<MapStatistics, Long> {
 	retrieveSelfResult(@RequestParam(required = false) Long userId, @RequestParam(required = false) Long typeId, @ModelAttribute('currentDoctor') Doctor doctor) {
 
 		logger.trace(' -- 获取心理地图信息 -- ')
-
-		mapStatisticsService.newRetrieveMapStatistics(new User(id : userId), typeId)
+		def user = userRepository.findOne(userId)
+		mapStatisticsService.newRetrieveMapStatistics(user, typeId)
 	}
 }

@@ -130,7 +130,6 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		if (captcha != dCaptcha.captcha) {
 			return '{"success" : "0", "message" : "err007"}'
 		}
-		dCaptcha.captcha = null
 		
 		// 身份证绑定
 		def idCardBind = doctorIdCardBindRepository.findOne(doctor.id),
@@ -164,14 +163,15 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			cash : curCash,
 			status : TakeCash.Status.Auditing
 		)
-		if (TakeCash.Type.Alipay == TakeCash.Type.values[type]) {
+//		def payType = TakeCash.Type.values[type]
+		if (TakeCash.Type.Alipay.ordinal() == type) {
 			takeCash.type = TakeCash.Type.Alipay
 			if (!alipayNum) {
 				return '{"success" : "0", "message" : "err902"}' // 支付宝帐号为空
 			}
 			takeCash.alipayNum = alipayNum
 			
-		} else if (TakeCash.Type.BackCard == TakeCash.Type.values[type]) {
+		} else if (TakeCash.Type.BackCard.ordinal() == type) {
 			takeCash.type = TakeCash.Type.BackCard
 			
 			if (bankId == null) {
@@ -183,6 +183,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			takeCash.bank = new Bank(id : bankId)
 			takeCash.bankCard = bankCard
 		}
+		dCaptcha.captcha = null
 		doctorCaptchaRepository.save(dCaptcha)
 		cashRepository.save(cash)
 		takeCashRepository.save(takeCash)

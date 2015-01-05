@@ -6,6 +6,9 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -149,16 +152,20 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 * 拒绝理由
 	 */
 	private String refusalReason;
-	
+
 	/**
 	 * 擅长人群
 	 */
-//	private Set<TargetUser> targetUsers;
+	@ManyToMany
+	@JoinTable(name = "doctor_target_relation", joinColumns = @JoinColumn(name = "doctor_id"), inverseJoinColumns = @JoinColumn(name = "target_id"))
+	private Set<TargetUser> targetUsers;
 
 	/**
 	 * 流派
 	 */
-//	private Set<Genre> genres;
+	@ManyToMany
+	@JoinTable(name = "doctor_genre_relation", joinColumns = @JoinColumn(name = "doctor_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+	private Set<Genre> genres;
 
 	public Doctor getDoctor() {
 		return doctor;
@@ -342,6 +349,22 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 
 	public void setRefusalReason(String refusalReason) {
 		this.refusalReason = refusalReason;
+	}
+
+	public Set<TargetUser> getTargetUsers() {
+		return targetUsers;
+	}
+
+	public void setTargetUsers(Set<TargetUser> targetUsers) {
+		this.targetUsers = targetUsers;
+	}
+
+	public Set<Genre> getGenres() {
+		return genres;
+	}
+
+	public void setGenres(Set<Genre> genres) {
+		this.genres = genres;
 	}
 
 }

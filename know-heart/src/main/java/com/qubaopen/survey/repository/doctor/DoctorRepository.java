@@ -13,4 +13,5 @@ public interface DoctorRepository extends MyRepository<Doctor, Long> {
 
 	@Query("from Doctor d where d.id not in (:ids)")
 	List<Doctor> findOtherDoctor(@Param("ids") List<Long> ids, Pageable pageable);
+	
 }

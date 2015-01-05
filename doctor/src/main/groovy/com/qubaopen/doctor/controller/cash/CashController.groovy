@@ -5,7 +5,7 @@ import groovy.json.JsonSlurper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -15,21 +15,20 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.controller.doctor.DoctorController;
 import com.qubaopen.doctor.repository.cash.CashLogRepository
 import com.qubaopen.doctor.repository.cash.CashRepository
-import com.qubaopen.doctor.repository.cash.TakeCashRepository;
+import com.qubaopen.doctor.repository.cash.TakeCashRepository
 import com.qubaopen.doctor.repository.doctor.DoctorCaptchaRepository
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
-import com.qubaopen.doctor.repository.doctor.DoctorRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorRepository
 import com.qubaopen.doctor.service.DoctorIdCardBindService
-import com.qubaopen.doctor.service.DoctorService;
-import com.qubaopen.doctor.service.SmsService;
+import com.qubaopen.doctor.service.DoctorService
 import com.qubaopen.survey.entity.cash.Bank
 import com.qubaopen.survey.entity.cash.Cash
 import com.qubaopen.survey.entity.cash.CashLog
 import com.qubaopen.survey.entity.cash.TakeCash
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.user.User
 
 @RestController
 @RequestMapping('cash')
@@ -132,22 +131,21 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			return '{"success" : "0", "message" : "err007"}'
 		}
 		dCaptcha.captcha = null
-		doctorCaptchaRepository.save(dCaptcha)
 		
 		// 身份证绑定
-		def idCardBind = doctorIdCardBindRepository.findByDoctor(doctor),
+		def idCardBind = doctorIdCardBindRepository.findOne(doctor.id),
 			result
 		
 		if (!idCardBind) {
 			result = doctorIdCardBindService.submitUserIdCard(idCard, name, doctor)
-		}
-		if (result) {
-			def json = (Map<String, ?>) new JsonSlurper().parseText(result)
-			if ('1' != json['success'] || !'1'.equals(json['success'])) {
-				return result
+			if (result) {
+				def json = (Map<String, ?>) new JsonSlurper().parseText(result)
+				if ('1' != json['success'] || !'1'.equals(json['success'])) {
+					return result
+				}
+			} else {
+				return '{"success" : "0", "message" : "err900"}' // 该医师还未认证
 			}
-		} else {
-			return '{"success" : "0", "message" : "err900"}' // 该医师还未认证
 		}
 		
 		def cash = cashRepository.findOne(doctor.id)
@@ -159,7 +157,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		}
 		
 		cash.currentCash -= curCash
-		cash.outCash += curCash
+//		cash.outCash += curCash
 		
 		def takeCash = new TakeCash(
 			doctor : doctor,
@@ -185,6 +183,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			takeCash.bank = new Bank(id : bankId)
 			takeCash.bankCard = bankCard
 		}
+		doctorCaptchaRepository.save(dCaptcha)
 		cashRepository.save(cash)
 		takeCashRepository.save(takeCash)
 		'{"success" : "1"}'
@@ -209,6 +208,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		}
 		
 		if (TakeCash.Status.Success == TakeCash.Status.values()[status]) {
+			
 			takeCash.status = TakeCash.Status.Success
 		}
 		if (TakeCash.Status.Failure == TakeCash.Status.values()[status]) {

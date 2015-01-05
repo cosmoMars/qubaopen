@@ -48,7 +48,7 @@ public class DoctorIdCardBindService {
 			existLogs = doctorIdCardLogRepository.findCurrentMonthIdCardLogByUser(doctor),
 			existIdCardBind = doctorIdCardBindRepository.findByUserIDCard(userIdCard)
 			
-		if (existIdCardBind && existIdCardBind.user != doctor) {
+		if (existIdCardBind && existIdCardBind.doctor != doctor) {
 			return '{"success" : "0", "message" : "err203"}' // 身份证已被他人绑定
 		}
 			

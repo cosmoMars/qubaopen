@@ -6,9 +6,13 @@ import javax.persistence.Table;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-//@Entity
-//@Table(name = "genre")
-//@Audited
+/**
+ * @author mars
+ * 流派
+ */
+@Entity
+@Table(name = "genre")
+@Audited
 public class Genre extends AbstractPersistable<Long> {
 	
 	private static final long serialVersionUID = 5382561791556669144L;

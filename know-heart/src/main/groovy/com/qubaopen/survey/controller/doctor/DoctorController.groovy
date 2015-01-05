@@ -1,7 +1,5 @@
 package com.qubaopen.survey.controller.doctor;
 
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttributes
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.Genre
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.doctor.DoctorAddressRepository
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
@@ -45,31 +44,41 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	}
 
 	@RequestMapping(value = 'retrieveDoctorList', method = RequestMethod.POST)
-	retrieveDoctorList(@RequestParam(required = false) String ids,
+	retrieveDoctorList(@RequestParam(required = false) Long genreId,
+		@RequestParam(required = false) Long targetId,
+		@RequestParam(required = false) String ids,
 		@PageableDefault(page = 0, size = 20) Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 		logger.trace '-- 医师列表 --'
 		
-		def list = [], doctors, data = []
+		def list = [], doctorInfos, data = []
 		if (ids) {
 			def strIds = ids.split(',')
 			strIds.each {
 				list << Long.valueOf(it.trim())
 			}
-			doctors = doctorRepository.findOtherDoctor(list, pageable)
+			
+//			if (generId != null) {
+//				
+//			}
+			
+//			doctorInfos = doctorRepository.findOtherDoctor(list, pageable)
 		} else {
-			doctors = doctorRepository.findAll(pageable)
+			if (genreId != null) {
+				doctorInfos = doctorInfoRepository.findDoctorWithoutGenre(new Genre(id : genreId), pageable)
+			}
+			doctorInfos = doctorInfoRepository.findAll(pageable)
 		}
-		doctors.each {
+		doctorInfos.each {
 //			def address = doctorAddressRepository.findByDoctorAndUsed(it, true)
 			data << [
 				'doctorId' : it?.id,
-				'doctorName' : it?.doctorInfo?.name,
-				'doctorAvatar' : it?.doctorInfo?.avatarPath,
-				'doctorAddress' : it?.doctorInfo?.address,
-				'doctorIntroduce' : it?.doctorInfo?.introduce,
-				'faceToFace' : it?.doctorInfo?.faceToFace,
-				'video' : it?.doctorInfo?.video
+				'doctorName' : it?.name,
+				'doctorAvatar' : it?.avatarPath,
+				'doctorAddress' : it?.address,
+				'doctorIntroduce' : it?.introduce,
+				'faceToFace' : it?.faceToFace,
+				'video' : it?.video
 			]
 		}
 //		def more = true

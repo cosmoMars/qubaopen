@@ -1,10 +1,14 @@
 package com.qubaopen.survey.entity.cash;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -29,6 +33,12 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 	 * 用户姓名
 	 */
 	private String userName;
+	
+	/**
+	 * 时间
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date time;
 
 	private double cash;
 

@@ -5,6 +5,8 @@ import groovy.json.JsonSlurper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
@@ -28,7 +30,6 @@ import com.qubaopen.survey.entity.cash.DoctorCash
 import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.cash.DoctorTakeCash
 import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.user.User
 
 @RestController
 @RequestMapping('doctorCash')
@@ -72,12 +73,13 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveCashInfo', method = RequestMethod.GET)
-	retrieveCashInfo(@ModelAttribute('currentDoctor') Doctor doctor) {
+	retrieveCashInfo(@PageableDefault(page = 0, size = 20) Pageable pageable,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
 
 		logger.trace '--  获取医师现金信息 --'
 		
 		def cash = doctorCashRepository.findOne(doctor.id),
-			cashLogs = doctorCashLogRepository.findByDoctorOrderByCreatedDateDesc(doctor)
+			cashLogs = doctorCashLogRepository.findByDoctorOrderByTimeDesc(doctor, pageable)
 			
 		def inDetail = [], outDetail = []
 		
@@ -86,23 +88,27 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 				inDetail << [
 					'userName' : it.userName,
 					'cash' : it.cash,
-					'payType' : it.payType,
-					'time' : it.createdDate
+					'payType' : it.payType.ordinal(),
+					'time' : it.time
 				]
 			} else if (DoctorCashLog.Type.Out == it.type) {
 				outDetail << [
 					'cash' : it.cash,
-					'payType' : it.payType,
-					'time' : it.createdDate
+					'payType' : it.payType.ordinal(),
+					'time' : it.time
 				]
 			}
 		}
-		
+		def more = true
+		if (cashLogs.size() < 20) {
+			more = false
+		}
 		[
 			"success" : "1",
 			'inCash' : cash?.inCash,
 			'outCash' : cash?.outCash,
 			'currentCash' : cash?.currentCash,
+			'more' : more,
 			'inDetail' : inDetail,
 			'outDetail' : outDetail
 		]
@@ -197,7 +203,8 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 			doctor : doctor,
 			type : DoctorCashLog.Type.In,
 			cash : curCash,
-			payType : DoctorCashLog.PayType.values()[type]
+			payType : DoctorCashLog.PayType.values()[type],
+			time : new Date()
 		)
 		doctorCashLogRepository.save(cashLog)
 		dCaptcha.captcha = null

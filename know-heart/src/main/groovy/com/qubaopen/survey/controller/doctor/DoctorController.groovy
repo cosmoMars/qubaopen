@@ -66,8 +66,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		} else {
 			if (genreId != null) {
 				doctorInfos = doctorInfoRepository.findDoctorWithoutGenre(new Genre(id : genreId), pageable)
+			} else {
+				doctorInfos = doctorInfoRepository.findAll(pageable)
 			}
-			doctorInfos = doctorInfoRepository.findAll(pageable)
 		}
 		doctorInfos.each {
 //			def address = doctorAddressRepository.findByDoctorAndUsed(it, true)

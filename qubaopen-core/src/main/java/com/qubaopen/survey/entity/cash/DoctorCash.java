@@ -16,9 +16,9 @@ import com.qubaopen.survey.entity.doctor.Doctor;
  *
  */
 @Entity
-@Table(name = "cash")
+@Table(name = "doctor_cash")
 @Audited
-public class Cash extends AbstractBaseEntity2<Long> {
+public class DoctorCash extends AbstractBaseEntity2<Long> {
 
 	private static final long serialVersionUID = -3161957322103278426L;
 

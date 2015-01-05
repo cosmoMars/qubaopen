@@ -15,33 +15,33 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.cash.CashLogRepository
-import com.qubaopen.doctor.repository.cash.CashRepository
-import com.qubaopen.doctor.repository.cash.TakeCashRepository
+import com.qubaopen.doctor.repository.cash.DoctorCashLogRepository
+import com.qubaopen.doctor.repository.cash.DoctorCashRepository
+import com.qubaopen.doctor.repository.cash.DoctorTakeCashRepository
 import com.qubaopen.doctor.repository.doctor.DoctorCaptchaRepository
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
 import com.qubaopen.doctor.repository.doctor.DoctorRepository
 import com.qubaopen.doctor.service.DoctorIdCardBindService
 import com.qubaopen.doctor.service.DoctorService
 import com.qubaopen.survey.entity.cash.Bank
-import com.qubaopen.survey.entity.cash.Cash
-import com.qubaopen.survey.entity.cash.CashLog
-import com.qubaopen.survey.entity.cash.TakeCash
+import com.qubaopen.survey.entity.cash.DoctorCash
+import com.qubaopen.survey.entity.cash.DoctorCashLog
+import com.qubaopen.survey.entity.cash.DoctorTakeCash
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
 
 @RestController
-@RequestMapping('cash')
+@RequestMapping('doctorCash')
 @SessionAttributes('currentDoctor')
-public class CashController extends AbstractBaseController<Cash, Long> {
+public class DoctorCashController extends AbstractBaseController<DoctorCash, Long> {
 
-	static Logger logger = LoggerFactory.getLogger(CashController.class)
+	static Logger logger = LoggerFactory.getLogger(DoctorCashController.class)
 	
 	@Autowired
-	CashRepository cashRepository
+	DoctorCashRepository doctorCashRepository
 	
 	@Autowired
-	CashLogRepository cashLogRepository
+	DoctorCashLogRepository doctorCashLogRepository
 	
 	@Autowired
 	DoctorCaptchaRepository doctorCaptchaRepository
@@ -53,7 +53,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 	DoctorIdCardBindRepository  doctorIdCardBindRepository
 	
 	@Autowired
-	TakeCashRepository takeCashRepository
+	DoctorTakeCashRepository doctorTakeCashRepository
 	
 	@Autowired
 	DoctorService doctorService
@@ -62,8 +62,8 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 	DoctorRepository doctorRepository
 
 	@Override
-	MyRepository<Cash, Long> getRepository() {
-		cashRepository
+	MyRepository<DoctorCash, Long> getRepository() {
+		DoctorCashRepository doctorCashRepository
 	}
 	
 	/**
@@ -76,16 +76,25 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 
 		logger.trace '--  获取医师现金信息 --'
 		
-		def cash = cashRepository.findOne(doctor.id),
-			cashLogs = cashLogRepository.findByDoctorOrderByCreatedDateDesc(doctor)
+		def cash = doctorCashRepository.findOne(doctor.id),
+			cashLogs = doctorCashLogRepository.findByDoctorOrderByCreatedDateDesc(doctor)
 			
 		def inDetail = [], outDetail = []
 		
 		cashLogs.each {
-			if (CashLog.Type.In == it.type) {
-				inDetail << it.detail
-			} else if (CashLog.Type.Out == it.type) {
-				outDetail << it.detail
+			if (DoctorCashLog.Type.In == it.type) {
+				inDetail << [
+					'userName' : it.userName,
+					'cash' : it.cash,
+					'payType' : it.payType,
+					'time' : it.createdDate
+				]
+			} else if (DoctorCashLog.Type.Out == it.type) {
+				outDetail << [
+					'cash' : it.cash,
+					'payType' : it.payType,
+					'time' : it.createdDate
+				]
 			}
 		}
 		
@@ -147,7 +156,7 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			}
 		}
 		
-		def cash = cashRepository.findOne(doctor.id)
+		def cash = doctorCashRepository.findOne(doctor.id)
 		if (type == null) {
 			return '{"success" : "0", "message" : "err901"}' // 支付方式不正确
 		}
@@ -158,21 +167,21 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		cash.currentCash -= curCash
 //		cash.outCash += curCash
 		
-		def takeCash = new TakeCash(
+		def takeCash = new DoctorTakeCash(
 			doctor : doctor,
 			cash : curCash,
 			status : TakeCash.Status.Auditing
 		)
 //		def payType = TakeCash.Type.values[type]
-		if (TakeCash.Type.Alipay.ordinal() == type) {
-			takeCash.type = TakeCash.Type.Alipay
+		if (DoctorTakeCash.Type.Alipay.ordinal() == type) {
+			takeCash.type = DoctorTakeCash.Type.Alipay
 			if (!alipayNum) {
 				return '{"success" : "0", "message" : "err902"}' // 支付宝帐号为空
 			}
 			takeCash.alipayNum = alipayNum
 			
-		} else if (TakeCash.Type.BackCard.ordinal() == type) {
-			takeCash.type = TakeCash.Type.BackCard
+		} else if (DoctorTakeCash.Type.BackCard.ordinal() == type) {
+			takeCash.type = DoctorTakeCash.Type.BackCard
 			
 			if (bankId == null) {
 				return '{"success" : "0", "message" : "err912"}' // 没有选择银行
@@ -183,10 +192,18 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 			takeCash.bank = new Bank(id : bankId)
 			takeCash.bankCard = bankCard
 		}
+		
+		def cashLog = new DoctorCashLog(
+			doctor : doctor,
+			type : DoctorCashLog.Type.In,
+			cash : curCash,
+			payType : DoctorCashLog.PayType.values()[type]
+		)
+		doctorCashLogRepository.save(cashLog)
 		dCaptcha.captcha = null
 		doctorCaptchaRepository.save(dCaptcha)
-		cashRepository.save(cash)
-		takeCashRepository.save(takeCash)
+		doctorCashRepository.save(cash)
+		doctorTakeCashRepository.save(takeCash)
 		'{"success" : "1"}'
 	}
 	
@@ -202,24 +219,23 @@ public class CashController extends AbstractBaseController<Cash, Long> {
 		@RequestParam(required = false) Integer status,
 		@RequestParam(required = false) String failureReason) {
 		
-		def takeCash = takeCashRepository.findOne(cashId)
+		def takeCash = doctorTakeCashRepository.findOne(cashId)
 		
 		if (status == null) {
 			return '{"success" : "0", "message" : "err914"}' // 状态位不正确
 		}
 		
-		if (TakeCash.Status.Success == TakeCash.Status.values()[status]) {
-			
-			takeCash.status = TakeCash.Status.Success
+		if (DoctorTakeCash.Status.Success.ordinal() == status) {
+			takeCash.status = DoctorTakeCash.Status.Success
 		}
-		if (TakeCash.Status.Failure == TakeCash.Status.values()[status]) {
+		if (DoctorTakeCash.Status.Failure.ordinal() == status) {
 			if (failureReason == null) {
 				return '{"success" : "0", "message" : "err915"}' // 没有失败理由
 			}
-			takeCash.status = TakeCash.Status.Failure
+			takeCash.status = DoctorTakeCash.Status.Failure
 			takeCash.failureReason = failureReason
 		}
-		takeCashRepository.save(takeCash)
+		doctorTakeCashRepository.save(takeCash)
 		'{"success" : "1"}'
 	}
 	

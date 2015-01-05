@@ -13,9 +13,9 @@ import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.User;
 
 @Entity
-@Table(name = "cash_log")
+@Table(name = "doctor_cash_log")
 @Audited
-public class CashLog extends AbstractBaseEntity<Long> {
+public class DoctorCashLog extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = -7926912318594252013L;
 
@@ -24,6 +24,11 @@ public class CashLog extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
+	
+	/**
+	 * 用户姓名
+	 */
+	private String userName;
 
 	private double cash;
 
@@ -32,9 +37,18 @@ public class CashLog extends AbstractBaseEntity<Long> {
 	 */
 	@Enumerated
 	private Type type;
-
+	
 	private enum Type {
 		In, Out
+	}
+	
+	/**
+	 * 收入方式
+	 */
+	private PayType payType;
+	
+	private enum PayType {
+		Alipay, Bank
 	}
 
 	private String detail;
@@ -45,6 +59,14 @@ public class CashLog extends AbstractBaseEntity<Long> {
 
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public User getUser() {
@@ -69,6 +91,14 @@ public class CashLog extends AbstractBaseEntity<Long> {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	public PayType getPayType() {
+		return payType;
+	}
+
+	public void setPayType(PayType payType) {
+		this.payType = payType;
 	}
 
 	public String getDetail() {

@@ -47,7 +47,7 @@ public class BankController extends AbstractBaseController<Bank, Long> {
 		
 		[
 			"success" : "1",
-			"aDate": result
+			"data": result
 		]
 		
 	}

@@ -15,6 +15,6 @@ public interface DoctorInfoRepository extends MyRepository<DoctorInfo, Long> {
 	@Query("from DoctorInfo d where d.id not in (:ids) and :genre in (d.genres) ")
 	List<DoctorInfo> findDoctorWithoutGenreAndIds(@Param("genre") Genre genre, @Param("ids") List<Long> ids, Pageable pageable);
 	
-	@Query("from DoctorInfo d where d.genres = :genre) ")
+	@Query("from DoctorInfo d where :genre in (d.genres) ")
 	List<DoctorInfo> findDoctorWithoutGenre(@Param("genre") Genre genre, Pageable pageable);
 }

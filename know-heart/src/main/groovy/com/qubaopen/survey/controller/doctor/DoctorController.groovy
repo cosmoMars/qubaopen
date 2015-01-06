@@ -43,6 +43,15 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		doctorRepository
 	}
 
+	/**
+	 * @param genreId
+	 * @param targetId
+	 * @param ids
+	 * @param pageable
+	 * @param user
+	 * @return
+	 * 获取医师列表
+	 */
 	@RequestMapping(value = 'retrieveDoctorList', method = RequestMethod.POST)
 	retrieveDoctorList(@RequestParam(required = false) Long genreId,
 		@RequestParam(required = false) Long targetId,
@@ -57,17 +66,24 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			strIds.each {
 				list << Long.valueOf(it.trim())
 			}
-			
-//			if (generId != null) {
-//				
-//			}
-			
-//			doctorInfos = doctorRepository.findOtherDoctor(list, pageable)
-		} else {
-			if (genreId != null) {
-				doctorInfos = doctorInfoRepository.findDoctorWithoutGenre(new Genre(id : genreId), pageable)
+			if (genreId == null && targetId == null) {
+				doctorInfos = doctorInfoRepository.findWithoutExistDoctor(list, pageable)
+			} else if (genreId != null && targetId == null) {
+				doctorInfos = doctorInfoRepository.findDoctorByGenre(list, genreId, pageable)
+			} else if (genreId == null && targetId != null) {
+				doctorInfos = doctorInfoRepository.findDoctorByTargetUser(list, targetId, pageable)
 			} else {
+				doctorInfos = doctorInfoRepository.findDoctorByGenreAndTargetUser(list, genreId, targetId, pageable)
+			}
+		} else {
+			if (genreId == null && targetId == null) {
 				doctorInfos = doctorInfoRepository.findAll(pageable)
+			} else if (genreId != null && targetId == null) {
+				doctorInfos = doctorInfoRepository.findDoctorByGenre(genreId, pageable)
+			} else if (genreId == null && targetId != null) {
+				doctorInfos = doctorInfoRepository.findDoctorByTargetUser(targetId, pageable)
+			} else {
+				doctorInfos = doctorInfoRepository.findDoctorByGenreAndTargetUser(genreId, targetId, pageable)
 			}
 		}
 		doctorInfos.each {
@@ -82,13 +98,13 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'video' : it?.video
 			]
 		}
-//		def more = true
-//		if (doctors && doctors.size() < pageable.pageSize) {
-//			more = false
-//		}
+		def more = true
+		if (doctorInfos && doctorInfos.size() < pageable.pageSize) {
+			more = false
+		}
 		[
 			'success' : '1',
-			'more' : true,
+			'more' : more,
 			'data' : data	
 		]
 	}

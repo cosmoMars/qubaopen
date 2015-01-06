@@ -8,13 +8,30 @@ import org.springframework.data.repository.query.Param;
 
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.doctor.DoctorInfo;
-import com.qubaopen.survey.entity.doctor.Genre;
 
 public interface DoctorInfoRepository extends MyRepository<DoctorInfo, Long> {
 
-	@Query("from DoctorInfo d where d.id not in (:ids) and :genre in (d.genres) ")
-	List<DoctorInfo> findDoctorWithoutGenreAndIds(@Param("genre") Genre genre, @Param("ids") List<Long> ids, Pageable pageable);
+	@Query("from DoctorInfo di join fetch di.genres g where g.id = :genre")
+	List<DoctorInfo> findDoctorByGenre(@Param("genre") long genre, Pageable pageable);
 	
-	@Query("from DoctorInfo d where :genre in (d.genres) ")
-	List<DoctorInfo> findDoctorWithoutGenre(@Param("genre") Genre genre, Pageable pageable);
+	@Query("from DoctorInfo di join fetch di.targetUsers tu where tu.id = :target")
+	List<DoctorInfo> findDoctorByTargetUser(@Param("target") long target, Pageable pageable);
+	
+	@Query("from DoctorInfo di join fetch di.genres g join fetch di.targetUsers tu where g.id = :genre and tu.id = :target")
+	List<DoctorInfo> findDoctorByGenreAndTargetUser(@Param("genre") long genre, @Param("target") long target, Pageable pageable);
+	
+	// 去除ids
+	
+	@Query("from DoctorInfo di where di.id not in (:ids)")
+	List<DoctorInfo> findWithoutExistDoctor(@Param("ids") List<Long> ids, Pageable pageable);
+	
+	@Query("from DoctorInfo di join fetch di.genres g where g.id = :genre and di.id not in (:ids)")
+	List<DoctorInfo> findDoctorByGenre(@Param("ids") List<Long> ids, @Param("genre") long genre, Pageable pageable);
+	
+	@Query("from DoctorInfo di join fetch di.targetUsers tu where tu.id = :target and di.id not in (:ids)")
+	List<DoctorInfo> findDoctorByTargetUser(@Param("ids") List<Long> ids, @Param("target") long target, Pageable pageable);
+	
+	@Query("from DoctorInfo di join fetch di.genres g join fetch di.targetUsers tu where g.id = :genre and tu.id = :target and di.id not in (:ids)")
+	List<DoctorInfo> findDoctorByGenreAndTargetUser(@Param("ids") List<Long> ids, @Param("genre") long genre, @Param("target") long target, Pageable pageable);
+	
 }

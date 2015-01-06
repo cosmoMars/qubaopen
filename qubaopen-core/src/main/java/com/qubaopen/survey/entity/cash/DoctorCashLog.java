@@ -48,7 +48,7 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private Type type;
 	
-	private enum Type {
+	public enum Type {
 		In, Out
 	}
 	

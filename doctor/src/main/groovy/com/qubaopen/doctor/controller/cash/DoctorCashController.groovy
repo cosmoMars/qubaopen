@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -72,14 +73,28 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 	 * @param doctor
 	 * @return
 	 */
+	@Transactional
 	@RequestMapping(value = 'retrieveCashInfo', method = RequestMethod.GET)
-	retrieveCashInfo(@PageableDefault(page = 0, size = 20) Pageable pageable,
+	retrieveCashInfo(@RequestParam(required = false) Integer typeIdx,
+		@PageableDefault(page = 0, size = 20) Pageable pageable,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 
 		logger.trace '--  获取医师现金信息 --'
 		
-		def cash = doctorCashRepository.findOne(doctor.id),
-			cashLogs = doctorCashLogRepository.findByDoctorOrderByTimeDesc(doctor, pageable)
+		def cash, cashLogs 
+		if (pageable.pageNumber == 0) {
+			cash = doctorCashRepository.findOne(doctor.id)
+			if (!cash) {
+				cash = new DoctorCash(
+					id : doctor.id
+				)
+			}
+		}
+		if (typeIdx == null) {
+			cashLogs = doctorCashLogRepository.findByDoctorAndTypeOrderOrderByTimeDesc(doctor, DoctorCashLog.Type.In, pageable)
+		} else {
+			cashLogs = doctorCashLogRepository.findByDoctorAndTypeOrderOrderByTimeDesc(doctor, DoctorCashLog.Type.values()[typeIdx], pageable)
+		}
 			
 		def inDetail = [], outDetail = []
 		
@@ -91,7 +106,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 					'payType' : it.payType.ordinal(),
 					'time' : it.time
 				]
-			} else if (DoctorCashLog.Type.Out == it.type) {
+			} else if (DoctorCashLog.Type.Out.ordinal() == it.type) {
 				outDetail << [
 					'cash' : it.cash,
 					'payType' : it.payType.ordinal(),
@@ -103,15 +118,25 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		if (cashLogs.size() < 20) {
 			more = false
 		}
-		[
-			"success" : "1",
-			'inCash' : cash?.inCash,
-			'outCash' : cash?.outCash,
-			'currentCash' : cash?.currentCash,
-			'more' : more,
-			'inDetail' : inDetail,
-			'outDetail' : outDetail
-		]
+		if (pageable.pageNumber == 0) {
+			return [
+				"success" : "1",
+				'inCash' : cash?.inCash,
+				'outCash' : cash?.outCash,
+				'currentCash' : cash?.currentCash,
+				'more' : more,
+				'inDetail' : inDetail,
+				'outDetail' : outDetail
+			]
+		} else {
+			return [
+				"success" : "1",
+				'more' : more,
+				'inDetail' : inDetail,
+				'outDetail' : outDetail
+			]
+		}
+		
 	}
 	
 	/**

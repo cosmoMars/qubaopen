@@ -132,8 +132,8 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		@RequestParam(required = false) String alipayNum,
 		@RequestParam(required = false) Long bankId,
 		@RequestParam(required = false) String bankCard,
-		@RequestParam(required = false) String name,
-		@RequestParam(required = false) String idCard,
+//		@RequestParam(required = false) String name,
+//		@RequestParam(required = false) String idCard,
 		@RequestParam(required = false) String captcha,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
@@ -147,7 +147,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		}
 		
 		// 身份证绑定
-		def idCardBind = doctorIdCardBindRepository.findOne(doctor.id),
+		/*def idCardBind = doctorIdCardBindRepository.findOne(doctor.id),
 			result
 		
 		if (!idCardBind) {
@@ -160,7 +160,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 			} else {
 				return '{"success" : "0", "message" : "err900"}' // 该医师还未认证
 			}
-		}
+		}*/
 		
 		def cash = doctorCashRepository.findOne(doctor.id)
 		if (type == null) {
@@ -201,7 +201,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		
 		def cashLog = new DoctorCashLog(
 			doctor : doctor,
-			type : DoctorCashLog.Type.In,
+			type : DoctorCashLog.Type.Out,
 			cash : curCash,
 			payType : DoctorCashLog.PayType.values()[type],
 			time : new Date()

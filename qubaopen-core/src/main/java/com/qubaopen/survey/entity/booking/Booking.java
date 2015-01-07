@@ -59,7 +59,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private Sex sex;
 
-	private enum Sex {
+	public enum Sex {
 		Male, Female, Other
 	}
 
@@ -128,7 +128,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private ConsultType consultType;
 	
-	private enum ConsultType {
+	public enum ConsultType {
 		Facetoface, Video
 	}
 

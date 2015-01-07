@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.doctor.DoctorShareRepository
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.doctor.DoctorShare
 
 @RestController
@@ -25,6 +27,9 @@ public class DoctorShareController extends AbstractBaseController<DoctorShare, L
 	
 	@Autowired
 	DoctorShareRepository doctorShareRepository
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
 	
 	@Override
 	protected MyRepository<DoctorShare, Long> getRepository() {
@@ -45,6 +50,12 @@ public class DoctorShareController extends AbstractBaseController<DoctorShare, L
 		) {
 		
 		logger.trace('-- 医师分享 --')
+		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
 		
 		if (target != null && origin != null) {
 			def doctorShare = new DoctorShare(

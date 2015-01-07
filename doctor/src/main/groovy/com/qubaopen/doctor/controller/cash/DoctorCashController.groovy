@@ -1,12 +1,9 @@
 package com.qubaopen.doctor.controller.cash;
 
-import groovy.json.JsonSlurper
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -23,6 +20,7 @@ import com.qubaopen.doctor.repository.cash.DoctorCashRepository
 import com.qubaopen.doctor.repository.cash.DoctorTakeCashRepository
 import com.qubaopen.doctor.repository.doctor.DoctorCaptchaRepository
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.doctor.DoctorRepository
 import com.qubaopen.doctor.service.DoctorIdCardBindService
 import com.qubaopen.doctor.service.DoctorService
@@ -31,6 +29,7 @@ import com.qubaopen.survey.entity.cash.DoctorCash
 import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.cash.DoctorTakeCash
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 
 @RestController
 @RequestMapping('doctorCash')
@@ -62,6 +61,9 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 	
 	@Autowired
 	DoctorRepository doctorRepository
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
 
 	@Override
 	MyRepository<DoctorCash, Long> getRepository() {
@@ -81,7 +83,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 
 		logger.trace '--  获取医师现金信息 --'
 		
-		def cash, cashLogs 
+		def cash, cashLogs
 		if (pageable.pageNumber == 0) {
 			cash = doctorCashRepository.findOne(doctor.id)
 			if (!cash) {
@@ -164,6 +166,11 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		
 		logger.trace '-- 提现请求 --'
 		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
 		// 验证码对比
 		def dCaptcha = doctorCaptchaRepository.findOne(doctor.id)
 		

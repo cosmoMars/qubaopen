@@ -58,4 +58,12 @@ public class Hospital extends AbstractBaseEntity<Long> {
 		this.activated = activated;
 	}
 
+	public HospitalInfo getHospitalInfo() {
+		return hospitalInfo;
+	}
+
+	public void setHospitalInfo(HospitalInfo hospitalInfo) {
+		this.hospitalInfo = hospitalInfo;
+	}
+
 }

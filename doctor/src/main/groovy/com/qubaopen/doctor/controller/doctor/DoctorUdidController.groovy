@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.doctor.DoctorUdidRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.doctor.repository.doctor.DoctorUdidRepository
 import com.qubaopen.doctor.utils.DateCommons
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.doctor.DoctorUdid
-import com.qubaopen.survey.entity.user.User
 
 @RestController
 @RequestMapping('doctorUdid')
@@ -23,6 +24,9 @@ public class DoctorUdidController extends AbstractBaseController<DoctorUdid, Lon
 
 	@Autowired
 	DoctorUdidRepository doctorUdidRepository
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
 	
 	@Override
 	protected MyRepository<DoctorUdid, Long> getRepository() {
@@ -64,6 +68,14 @@ public class DoctorUdidController extends AbstractBaseController<DoctorUdid, Lon
 		@ModelAttribute('currentDoctor') Doctor doctor
 		) {
 
+		logger.trace(" -- 修改推送信息 -- ")
+		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
+		
 		def doctorUdid = doctorUdidRepository.findOne(doctor.id)
 		if (push != null) {
 			doctorUdid.push = push

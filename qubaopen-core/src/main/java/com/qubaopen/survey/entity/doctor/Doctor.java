@@ -34,29 +34,29 @@ public class Doctor extends AbstractBaseEntity<Long> {
 	 */
 	private String email;
 
-//	/**
-//	 * token
-//	 */
-//	private String token;
+	// /**
+	// * token
+	// */
+	// private String token;
 
-//	/**
-//	 * 第三方类型
-//	 */
-//	@Enumerated
-//	private ThirdType thirdType;
-//	
-//	private enum ThirdType {
-//		Sina, WeChat, Qzone
-//	}
-//	
+	// /**
+	// * 第三方类型
+	// */
+	// @Enumerated
+	// private ThirdType thirdType;
+	//
+	// private enum ThirdType {
+	// Sina, WeChat, Qzone
+	// }
+	//
 	/**
 	 * 启用
 	 */
 	private boolean activated;
-	
+
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "doctor")
 	private DoctorInfo doctorInfo;
-	
+
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "doctor")
 	private DoctorIdCardBind doctorIdCardBind;
 
@@ -90,6 +90,22 @@ public class Doctor extends AbstractBaseEntity<Long> {
 
 	public void setActivated(boolean activated) {
 		this.activated = activated;
+	}
+
+	public DoctorInfo getDoctorInfo() {
+		return doctorInfo;
+	}
+
+	public void setDoctorInfo(DoctorInfo doctorInfo) {
+		this.doctorInfo = doctorInfo;
+	}
+
+	public DoctorIdCardBind getDoctorIdCardBind() {
+		return doctorIdCardBind;
+	}
+
+	public void setDoctorIdCardBind(DoctorIdCardBind doctorIdCardBind) {
+		this.doctorIdCardBind = doctorIdCardBind;
 	}
 
 }

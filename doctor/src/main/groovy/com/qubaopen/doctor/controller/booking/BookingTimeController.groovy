@@ -15,9 +15,11 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository
 import com.qubaopen.doctor.repository.booking.BookingTimeRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.survey.entity.booking.BookingSelfTime
 import com.qubaopen.survey.entity.booking.BookingTime
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo;
 
 
 @RestController
@@ -30,6 +32,9 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	
 	@Autowired
 	BookingSelfTimeRepository bookingSelfTimeRepository
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
 	
 	@Override
 	MyRepository<BookingTime, Long> getRepository() {
@@ -50,6 +55,11 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		}
 		logger.debug(" =============== {}", json)
 		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
 		
 		def jsonNodes = objectMapper.readTree(json),
 			bookingModels = []
@@ -119,6 +129,14 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	@RequestMapping(value = 'deleteSelfTime', method = RequestMethod.POST)
 	deleteSelfTime(@RequestParam Long id, @ModelAttribute('currentDoctor') Doctor doctor) {
 		
+		logger.trace '-- 删除形成 --'
+		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
+		
 		if (id == null) {
 			return '{"success" : "0", "message" : "err906"}'
 		}
@@ -151,6 +169,14 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
 //		def date = DateUtils.parseDate(strDate, 'yyyy-MM-dd')
+		
+		logger.trace '-- 添加自我时间 --'
+		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
 		
 		def start = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH:mm'),
 			end
@@ -203,6 +229,14 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		@RequestParam(required = false) String endTime,
 		@RequestParam(required = false) String location,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
+		
+		logger.trace '-- 修改自我时间 --'
+		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
 		
 		def selfTime =  bookingSelfTimeRepository.findOne(id)
 		

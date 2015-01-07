@@ -104,6 +104,17 @@ public class OrderResources {
 		
 		return map;
 	}
+	
+	
+	/**
+	 * @param bookingId
+	 * @param quick
+	 * @param money
+	 * @param time
+	 * @param user
+	 * @return
+	 * 确认订单
+	 */
 	@Transactional
 	@RequestMapping(value = "confirmBooking", method = RequestMethod.POST)
 	public Map<String, Object> confirmBooking(@RequestParam(required = false) Long bookingId,
@@ -133,14 +144,14 @@ public class OrderResources {
 		
 		payEntity.setBooking(booking);
 		payEntity.setPayTime(booking.getTime());
-		payEntity.setPayment("支付宝");
+//		payEntity.setPayment("支付宝");
 		payEntity.setPayStatus(PayStatus.WAITING_PAYMENT);
 		payEntity.setPayAmount(booking.getMoney());
 		payEntityRepository.save(payEntity);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		StringBuilder alipayText = new StringBuilder();
+		/*StringBuilder alipayText = new StringBuilder();
         alipayText.append("partner=\"").append(AlipayConfig.partner); // 商家名
         alipayText.append("\"&seller_id=\"").append("qubaopen@163.com"); // 支付宝账号
         alipayText.append("\"&out_trade_no=\"").append(booking.getTradeNo()); // 订单号（订单号+"_"+支付ID+"_"++系统当前时间）
@@ -160,12 +171,55 @@ public class OrderResources {
         alipayText.append("\"&it_b_pay=\"30m\""); // 超时时间
         
         String sign = RSA.sign(alipayText.toString(), AlipayConfig.private_key, AlipayConfig.input_charset);
-        String message = alipayText.toString() + "&sign=\"" + sign + "\"&sign_type=\"RSA\"";
-
-        map.put("payType", 1);
-        map.put("name", "支付宝");
-        map.put("payData", message);
+        String message = alipayText.toString() + "&sign=\"" + sign + "\"&sign_type=\"RSA\"";*/
 		
+		map.put("success", "1");
+        map.put("id", booking.getId());
+        String doctorName = "";
+        if (booking.getDoctor() != null &&  booking.getDoctor().getDoctorInfo() != null && booking.getDoctor().getDoctorInfo().getName() != null) {
+        	doctorName = booking.getDoctor().getDoctorInfo().getName();
+        }
+        map.put("doctor", doctorName);
+        String hospitalName = "";
+        if (booking.getHospital() != null && booking.getHospital().getHospitalInfo() != null && booking.getHospital().getHospitalInfo().getName() != null) {
+        	hospitalName = booking.getHospital().getHospitalInfo().getName();
+        }
+        map.put("hospital", hospitalName);
+		map.put("tradeNo", booking.getTradeNo());
+		map.put("name", booking.getName());
+		map.put("phone", booking.getPhone());
+		
+		if (booking.getSex() != null) {
+			map.put("sex", booking.getSex().ordinal());
+		} else {
+			map.put("sex", "");
+		}
+		
+		map.put("birthday", booking.getBirthday());
+		map.put("profession", booking.getProfession());
+		map.put("city", booking.getCity());
+		map.put("married", booking.isMarried());
+		map.put("haveChildren", booking.isHaveChildren());
+		map.put("helpReason", booking.getHelpReason());
+		map.put("otherProblem", booking.getOtherProblem());
+		map.put("treatmented", booking.isTreatmented());
+		map.put("haveConsulted", booking.isHaveConsulted());
+		map.put("refusalReason", booking.getRefusalReason());
+		map.put("time", booking.getTime());
+		map.put("payTime", booking.getPayTime());
+		map.put("quick", booking.isQuick());
+		if (booking.getConsultType() != null) {
+			map.put("consultType", booking.getConsultType().ordinal());
+		} else {
+			map.put("consultType", "");
+		}
+		if (booking.getStatus() != null) {
+			map.put("status", booking.getStatus().ordinal());
+		} else {
+			map.put("status", "");
+		}
+		
+		map.put("money", booking.getMoney());
 		return map;
 	}
 }

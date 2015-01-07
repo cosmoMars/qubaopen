@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qubaopen.survey.alipay.util.AlipayNotify;
 import com.qubaopen.survey.entity.booking.Booking;
+import com.qubaopen.survey.entity.cash.DoctorCashLog;
 import com.qubaopen.survey.entity.payment.RecordEntity;
 import com.qubaopen.survey.repository.booking.BookingRepository;
+import com.qubaopen.survey.repository.cash.DoctorCashLogRepository;
 import com.qubaopen.survey.repository.payment.RecordEntityRepository;
 
 /**
@@ -30,6 +32,9 @@ public class OrderAlipayNotifyController {
 	
 	@Autowired
 	private BookingRepository bookingRepository;
+	
+	@Autowired
+	private DoctorCashLogRepository doctorCashLogRepository;
 	
 	@Autowired
 	private RecordEntityRepository recordEntityRepository;
@@ -103,11 +108,23 @@ public class OrderAlipayNotifyController {
 	                //该种交易状态只在一种情况下出现——开通了高级即时到账，买家付款成功后。
 	            }
 	            
+	            
         	} catch (Exception ex) {
 				logger.error("支付宝支付完成后回调业务处理类发生异常，订单号："+out_trade_no, ex);
 				return "fail";
 			}
-
+        	
+        	DoctorCashLog cashLog = new DoctorCashLog();
+        	cashLog.setCash(Double.valueOf(price));
+        	cashLog.setUser(booking.getUser());
+        	cashLog.setUserName(booking.getName());
+        	cashLog.setDoctor(booking.getDoctor());
+        	cashLog.setTime(new Date());
+        	cashLog.setType(DoctorCashLog.Type.In);
+        	cashLog.setPayType(DoctorCashLog.PayType.Alipay);
+        	
+        	doctorCashLogRepository.save(cashLog);
+        	
             return "success";
         } else {//验证失败
             logger.error("交易号 {} 处理失败", trade_no);

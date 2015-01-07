@@ -57,7 +57,7 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 	 */
 	private PayType payType;
 	
-	private enum PayType {
+	public enum PayType {
 		Alipay, Bank
 	}
 
@@ -117,6 +117,14 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
 	}
 
 }

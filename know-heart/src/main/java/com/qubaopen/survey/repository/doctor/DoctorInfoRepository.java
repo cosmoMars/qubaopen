@@ -8,8 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.doctor.DoctorInfo;
+import com.qubaopen.survey.repository.doctor.custom.DoctorInfoRepositoryCustom;
 
-public interface DoctorInfoRepository extends MyRepository<DoctorInfo, Long> {
+public interface DoctorInfoRepository extends MyRepository<DoctorInfo, Long>, DoctorInfoRepositoryCustom {
 
 	@Query("from DoctorInfo di join fetch di.genres g where g.id = :genre")
 	List<DoctorInfo> findDoctorByGenre(@Param("genre") long genre, Pageable pageable);

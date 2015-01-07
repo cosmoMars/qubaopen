@@ -55,39 +55,40 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	@RequestMapping(value = 'retrieveDoctorList', method = RequestMethod.POST)
 	retrieveDoctorList(@RequestParam(required = false) Long genreId,
 		@RequestParam(required = false) Long targetId,
+		@RequestParam(required = false) Long areaId,
+		@RequestParam(required = false) Boolean faceToFace,
+		@RequestParam(required = false) Boolean video,
 		@RequestParam(required = false) String ids,
 		@PageableDefault(page = 0, size = 20) Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 		logger.trace '-- 医师列表 --'
 		
-		def list = [], doctorInfos, data = []
+		def list = [], doctorInfos, data = [], filters = [:]
 		if (ids) {
 			def strIds = ids.split(',')
 			strIds.each {
 				list << Long.valueOf(it.trim())
 			}
-			if (genreId == null && targetId == null) {
-				doctorInfos = doctorInfoRepository.findWithoutExistDoctor(list, pageable)
-			} else if (genreId != null && targetId == null) {
-				doctorInfos = doctorInfoRepository.findDoctorByGenre(list, genreId, pageable)
-			} else if (genreId == null && targetId != null) {
-				doctorInfos = doctorInfoRepository.findDoctorByTargetUser(list, targetId, pageable)
-			} else {
-				doctorInfos = doctorInfoRepository.findDoctorByGenreAndTargetUser(list, genreId, targetId, pageable)
-			}
-		} else {
-			if (genreId == null && targetId == null) {
-				doctorInfos = doctorInfoRepository.findAll(pageable)
-			} else if (genreId != null && targetId == null) {
-				doctorInfos = doctorInfoRepository.findDoctorByGenre(genreId, pageable)
-			} else if (genreId == null && targetId != null) {
-				doctorInfos = doctorInfoRepository.findDoctorByTargetUser(targetId, pageable)
-			} else {
-				doctorInfos = doctorInfoRepository.findDoctorByGenreAndTargetUser(genreId, targetId, pageable)
-			}
+			filters.put('ids', list)
 		}
+		filters.put('pageable', pageable)
+		if (genreId != null) {
+			filters.put('genreId', genreId)
+		}
+		if (targetId != null) {
+			filters.put('targetId', targetId)
+		}
+		if (areaId != null) {
+			filters.put('areaId', areaId)
+		}
+		if (faceToFace != null) {
+			filters.put('faceToFace', faceToFace)
+		}
+		if (video != null) {
+			filters.put('video', video)
+		}
+		doctorInfos = doctorInfoRepository.findByFilter(filters)
 		doctorInfos.each {
-//			def address = doctorAddressRepository.findByDoctorAndUsed(it, true)
 			data << [
 				'doctorId' : it?.id,
 				'doctorName' : it?.name,

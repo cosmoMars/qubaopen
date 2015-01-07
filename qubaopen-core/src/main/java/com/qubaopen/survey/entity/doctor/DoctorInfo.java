@@ -19,6 +19,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity2;
+import com.qubaopen.survey.entity.base.AreaCode;
 import com.qubaopen.survey.entity.hospital.Hospital;
 
 /**
@@ -152,7 +153,10 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 * 拒绝理由
 	 */
 	private String refusalReason;
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private AreaCode areaCode;
+	
 	/**
 	 * 擅长人群
 	 */
@@ -349,6 +353,14 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 
 	public void setRefusalReason(String refusalReason) {
 		this.refusalReason = refusalReason;
+	}
+
+	public AreaCode getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(AreaCode areaCode) {
+		this.areaCode = areaCode;
 	}
 
 	public Set<TargetUser> getTargetUsers() {

@@ -7,8 +7,6 @@
  * 事件
  * */
 $(document).ready(function () {
-    getOrderList();
-
     var status,helpId;
 
 

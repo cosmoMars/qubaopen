@@ -12,6 +12,7 @@ $(document).ready(function () {
 
 
     $("#btn-signin").click(function(){
+        //clinicSignIn();
         signin();
 
     });
@@ -63,6 +64,7 @@ function signin(){
                 //setCookie("cookie1",JSON.stringify(data),new Date() );
 
                 if(data.loginStatus==3){
+                    setCookie("phone",data.phone);
                     self.location = "menu.html";
                 }else{
                     self.location = "profile.html";
@@ -143,5 +145,10 @@ function signupDoctor(){
     });
 }
 
+
+/*诊所登陆*/
+function clinicSignIn(){
+    self.location="clinic/menu.html"
+}
 
 /*诊所注册*/

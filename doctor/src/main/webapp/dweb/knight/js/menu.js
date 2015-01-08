@@ -42,6 +42,19 @@ $(document).ready(function () {
             case "profile":
                 self.location="profile.html";
                 break;
+            /*诊所*/
+            case "help_clinic":
+                self.location="helpSquare.html";
+                break;
+            case "order_clinic":
+                self.location="orderList.html";
+                break;
+            case "cash_clinic":
+                self.location="cashAccount.html";
+                break;
+            case "profile_clinic":
+                self.location="profile.html";
+                break;
             default :
                 break;
         }
@@ -65,7 +78,7 @@ function logout(){
 
             var result = data.success;
             if (result == 1) {
-                //setCookie("cookie1","");
+                setCookie("phone","");
                 alert("退出成功");
                 self.location = "signin.html";
             }else if (result == 0) {
@@ -121,9 +134,9 @@ function resizeMenu(){
 
     //每项菜单的文字 格式
     if(width<=200){
-        $(".menu-item p").css("margin-top",width/2-10);
+        $(".menu-item div").css("margin-top",width/2-30);
     }else{
-        $(".menu-item p").css("margin-top",200/2-10);
+        $(".menu-item div").css("margin-top",200/2-30);
     }
 }
 

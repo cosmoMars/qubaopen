@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <link rel="icon" href="../../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>知心-现金账户</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../../bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="../../knight/css/zhixin.css" rel="stylesheet">
+    <link href="../../knight/css/content.css" rel="stylesheet">
+</head>
+<body>
+
+
+
+<div class="container">
+
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-zhixin-header">
+                <a class="navbar-brand" href="menu.html"><p class="glyphicon glyphicon-chevron-left"></p></a>
+            </div>
+            <div class="navbar-text navbar-zhixin-title text-center">
+                现金账户
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+
+    <div class="marketing">
+
+        <div class="row well">
+            <div class="col-xs-12"><p><span>账户余额:￥</span><span id="currentCash">300</span></p></div>
+            <div class="col-xs-6"><p><span>总收入:￥</span><span id="inCash">400</span></p></div>
+            <div class="col-xs-6"><p><span>总支出:￥</span><span id="outCash">100</span></p></div>
+
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row">
+            <div class="col-xs-6 col-md-offset-3 col-md-3">
+                <button class="btn btn-lg btn-zhixin btn-block" type="button" id="btn-alipay">支付宝提现</button>
+            </div>
+            <div class="col-xs-6 col-md-3">
+                <button class="btn btn-lg btn-zhixin btn-block" type="button" id="btn-bank">银行卡提现</button>
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+
+        <div class="row">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+                <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">收入</a></li>
+                <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">支出</a></li>
+            </ul>
+        </div>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th width="50%">时间</th>
+                            <th width="30%">详情</th>
+                            <th width="20%">金额</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>2015-01-04 05:22:00</td>
+                            <td>完成预约</td>
+                            <td>320</td>
+                        </tr>
+                        <tr>
+                            <td>2015-01-04 05:22:00</td>
+                            <td>完成预约</td>
+                            <td>320</td>
+                        </tr>
+                        <tr>
+                            <td>2015-01-04 05:22:00</td>
+                            <td>完成预约</td>
+                            <td>320</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="profile">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th width="50%">时间</th>
+                            <th width="30%">详情</th>
+                            <th width="20%">金额</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>2015-01-04 05:22:00</td>
+                            <td>完成预约</td>
+                            <td>320</td>
+                        </tr>
+                        <tr>
+                            <td>2015-01-04 05:22:00</td>
+                            <td>完成预约</td>
+                            <td>320</td>
+                        </tr>
+                        <tr>
+                            <td>2015-01-04 05:22:00</td>
+                            <td>完成预约</td>
+                            <td>320</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+
+        <hr class="featurette-divider">
+
+
+    </div>
+    <!-- FOOTER -->
+    <footer>
+        <p class="pull-right"><a href="#">回到顶部</a></p>
+        <p>© 2014 Company, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+    </footer>
+
+</div>
+
+
+
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../../jquery/jquery-1.11.1.min.js"></script>
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="../../knight/js/main.js"></script>
+<script src="../../knight/js/cashAccount.js"></script>
+
+</body>
+</html>

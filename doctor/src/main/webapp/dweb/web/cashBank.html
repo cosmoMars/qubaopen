@@ -71,14 +71,14 @@
         <div class="form-group">
             <label for="name" class="col-sm-3 control-label">持卡人姓名</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control" id="name" autocomplete="off"
+                <input type="text" class="form-control" id="name" disabled
                        placeholder="请输入姓名">
             </div>
         </div>
         <div class="form-group">
             <label for="idCard" class="col-sm-3 control-label">持卡人身份证</label>
             <div class="col-sm-9">
-                <input type="email" class="form-control" id="idCard"
+                <input type="email" class="form-control" id="idCard" disabled
                        placeholder="请输入身份证">
             </div>
         </div>
@@ -128,7 +128,7 @@
         retrieveBank();
 
 
-
+        retrieveIdCard();
 
         /* 获取验证码 */
         $("#btn-captcha").on("click",function(){
@@ -144,6 +144,31 @@
 
 
 
+        /*获取身份证信息*/
+        function retrieveIdCard(){
+
+            $.ajax({
+                url: ContextUrl+"/doctorIdCardBind/retrieveIdCard",
+                type: "GET",
+                async:false,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+
+                    console.log(data);
+                    if (result == 1 && data.exist) {
+                        $("#name").val(data.name);
+                        $("#idCard").val(data.idCard);
+
+                    }else if (result == 0) {
+                        if(data.message=="err000"){
+                            backToSignIn();
+                        }
+                    }
+                }
+            });
+        }
 
 
         /*获取账户信息*/
@@ -159,7 +184,7 @@
 
                     console.log(data);
                     if (result == 1) {
-                        updateView(data.aDate);
+                        updateView(data.data);
 
                     }else if (result == 0) {
                         if(data.message=="err000"){
@@ -169,6 +194,8 @@
                 }
             });
         }
+
+
 
 
         function updateView(data) {

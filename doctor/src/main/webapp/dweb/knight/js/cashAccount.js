@@ -9,7 +9,6 @@
  * 事件
  * */
 $(document).ready(function () {
-    retrieveCashInfo();
 
     $("#btn-bank").on("click",function(){
         self.location="cashBank.html";
@@ -26,9 +25,11 @@ $(document).ready(function () {
  */
 
 /*获取账户信息*/
-function retrieveCashInfo(){
+function retrieveCashInfo(page,type){
+
+    var params="?page="+page+"&typeIndex="+type;
     $.ajax({
-        url: ContextUrl+"/cash/retrieveCashInfo",
+        url: ContextUrl+"/doctorCash/retrieveCashInfo"+params,
         type: "GET",
         async:false,
         dataType: "json",

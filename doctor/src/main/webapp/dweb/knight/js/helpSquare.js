@@ -7,7 +7,6 @@
  * 事件
  * */
 $(document).ready(function () {
-    getHelpListRequest();
 
     $(document).on("click",".child-view",function(){
         var helpId=$(this).attr("help-id");

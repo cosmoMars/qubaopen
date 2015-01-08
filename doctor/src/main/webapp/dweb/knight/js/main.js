@@ -3,7 +3,7 @@
  */
 
 
-ContextUrl="http://10.0.0.8:8080";
+ContextUrl="http://10.0.0.2:8080";
 //ContextUrl="http://zhixin.me:8080/doctor";
 //ContextUrl="http://10.0.0.88:8080/know-heart";
 //

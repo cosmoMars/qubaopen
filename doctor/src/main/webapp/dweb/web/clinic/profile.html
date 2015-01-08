@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <link rel="icon" href="../../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>知心-个人资料</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../../bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="../../knight/css/zhixin.css" rel="stylesheet">
+    <link href="../../knight/css/sign.css" rel="stylesheet">
+    <link href="../../jquery/css/jquery-ui.css" rel="stylesheet">
+    <link href="../../jquery/css/jquery-ui.theme.min.css" rel="stylesheet">
+    <link href="../../plugin/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <style>
+        .selectable .ui-selecting { background: #f6f6f6; }
+        .selectable .ui-selected { background: #fff; color: white; }
+        .selectable { list-style-type: none; margin: 0; padding: 0; width: 350px;  float:left;}
+        .selectable li { margin-left: 5px; padding: 0px; float: left; width: 45px; height: 20px; font-size: 1em; text-align: center; }
+        .selectable li:nth-child(7n+1) { margin-left: 0px; padding: 0px; float: left; width: 45px; height: 20px; font-size: 1em; text-align: center; }
+
+
+        .ui-state-default{
+            background-color: #efefef;
+        }
+
+        .left-bar {clear:left; list-style-type: none; margin: 0; padding: 0; width: 100px;  float:left;}
+        .left-bar li { background-color: #fff; margin: 0px; padding: 0px; float: left; width: 90px; height: 20px; font-size: 1em; text-align: center; }
+
+        .title-bar { width:450px;}
+        .title-bar div{ float:left; width:50px; padding: 5px;}
+        .title-bar div:nth-child(1){ float:left; width:100px;}
+
+        .ui-line1{
+            width: 47px;
+            height: 0px;
+            border-top: 1px solid #ccc;
+            -webkit-transform:
+            translateY(9px)
+            translateX(-2px)
+            rotate(23deg);
+        }
+
+        .gone{
+            display: none;
+        }
+
+        .modal-content{
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .icon4btn{
+            color:#aaa;
+            float: right;
+        }
+        .icon4btn.glyphicon-ok{
+            color:#4aaa4a;
+        }
+
+    </style>
+</head>
+<body>
+
+
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-zhixin-header">
+                <a class="navbar-brand" href="menu.html"><p class="glyphicon glyphicon-chevron-left"></p></a>
+            </div>
+            <div class="navbar-text navbar-zhixin-title text-center">
+                诊所资料
+            </div>
+        </div>
+    </nav>
+
+
+
+
+    <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
+        <div class="form-group">
+            <label for="realname" class="col-sm-2 control-label">诊所名称</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="realname" autocomplete="off"
+                       placeholder="请输入姓名" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="contactPhone" class="col-sm-2 control-label">联系电话</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="contactPhone" autocomplete="off"
+                       placeholder="请输入电话号">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">电子邮箱</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email"
+                       placeholder="请输入邮箱">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="qq" class="col-sm-2 control-label profile-left">联系QQ</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="qq"
+                       placeholder="请输入联系QQ">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address" class="col-sm-2 control-label">咨询地址</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="address"
+                       placeholder="请输入详细地址">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="quality" class="col-sm-2 control-label">专业资质</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="quality"
+                       placeholder="请输入">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="record" class="col-sm-2 control-label">资质证明</label>
+            <div class="col-sm-10">
+                <input type="file" class="form-control" id="record" name="record"
+                       placeholder="请上传">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="goodArea" class="col-sm-2 control-label">擅长领域</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="goodArea"
+                       placeholder="请说明">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="goodObject" class="col-sm-2 control-label">擅长对象</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="goodObject"
+                       placeholder="请说明">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="cureMethod" class="col-sm-2 control-label">所用流派</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="cureMethod"
+                       placeholder="请说明">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="btn-pick" class="col-sm-2 control-label">可预约时间</label>
+            <div class="col-sm-10">
+                <button type="button" id="btn-pick" class="btn btn-default btn-block">选择</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="commentConsult" class="col-sm-8 control-label">是否接受免费在线文字咨询</label>
+            <div class="col-sm-4">
+                <div class="btn-group" data-toggle="buttons" id="commentConsult" style="float: right;">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="options" autocomplete="off">是
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options"  autocomplete="off">否
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="phoneConsult" class="col-sm-8 control-label">是否接受免费20分钟电话咨询</label>
+            <div class="col-sm-4">
+                <div class="btn-group" data-toggle="buttons" id="phoneConsult" style="float: right;">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="options" autocomplete="off">是
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options"  autocomplete="off">否
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="urgentConsult" class="col-sm-8 control-label">是否接受加急预约</label>
+            <div class="col-sm-4">
+                <div class="btn-group" data-toggle="buttons" id="urgentConsult" style="float: right;">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="options" autocomplete="off">是
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="options"  autocomplete="off">否
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="introduction" class="col-sm-2 control-label">诊所介绍</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" rows="3"  id="introduction"  placeholder="请填写"></textarea>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" id="btn-saveInfo" class="btn btn-zhixin btn-block">提交</button>
+            </div>
+        </div>
+    </form>
+
+
+    <!-- 模态框（Modal） -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        日程安排
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="title-bar">
+
+                            <div>日程表</div>
+                            <div>周一</div>
+                            <div>周二</div>
+                            <div>周三</div>
+                            <div>周四</div>
+                            <div>周五</div>
+                            <div>周六</div>
+                            <div>周日</div>
+                        </div>
+
+                        <ol class="left-bar">
+
+                            <li >00:00 - 01:00</li>
+                            <li >01:00 - 02:00</li>
+                            <li >02:00 - 03:00</li>
+                            <li >03:00 - 04:00</li>
+                            <li >04:00 - 05:00</li>
+                            <li >05:00 - 06:00</li>
+                            <li >06:00 - 07:00</li>
+
+                            <li >07:00 - 08:00</li>
+                            <li >08:00 - 09:00</li>
+                            <li >09:00 - 10:00</li>
+                            <li >10:00 - 11:00</li>
+                            <li >11:00 - 12:00</li>
+                            <li >12:00 - 13:00</li>
+                            <li >13:00 - 14:00</li>
+                            <li >14:00 - 15:00</li>
+                            <li >15:00 - 16:00</li>
+                            <li >16:00 - 17:00</li>
+                            <li >17:00 - 18:00</li>
+
+                            <li >18:00 - 19:00</li>
+                            <li >19:00 - 20:00</li>
+                            <li >20:00 - 21:00</li>
+                            <li >21:00 - 22:00</li>
+                            <li >22:00 - 23:00</li>
+                            <li >23:00 - 00:00</li>
+                        </ol>
+
+
+                        <ol id="selectable" class="selectable">
+
+                        </ol>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" id="btn-confirm" class="btn btn-primary">
+                        确认
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
+    <!-- 模态框（Modal） end -->
+</div> <!-- /container -->
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../../jquery/jquery-1.11.1.min.js"></script>
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../plugin/datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="../../plugin/datetimepicker/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+
+
+<script src="../../jquery/jquery.form.js"></script>
+<script src="../../knight/js/main.js"></script>
+<script src="../../knight/js/profile.js"></script>
+<script src="../../jquery/jquery-ui.js"></script>
+<script>
+    $(document).ready(function () {
+
+
+
+
+
+        $("#btn-pick").on("click",function(){
+            $("#myModal").modal("show");
+            $( "#selectable" ).selectable( "refresh" );
+            showDefaultTime($("#btn-pick").attr("data-time"));
+        });
+
+        $("#btn-confirm").on("click",function(){
+            $("#myModal").modal("hide");
+            $("#btn-pick").attr("data-time",calcAll());
+        });
+
+
+
+
+        var bWorkTime=false;
+        var oWeekTable=$( "#selectable" );
+        for(var i=0;i<168;i++){
+            oWeekTable.append('<li class="ui-state-default"></li>');
+        }
+        oWeekTable.selectable({ autoRefresh: false });
+        $( "#selectable" ).selectable( "option", "filter", "li" );
+
+
+        //关闭所有时间段，包括未显示的
+        function deleteAll(){
+            $("#selectable").children().each(function(){
+                var selectee = $.data(this, "selectable-item");
+                $(this).removeClass("ui-selected");
+                if($(this).children().length==0){
+                    $(this).append('<div class="ui-line1"></div>');
+                }
+                selectee.selected = false;
+                selectee.isSelected=false;
+                selectee.startselected = false;
+            });
+        }
+
+        deleteAll();
+
+        $("#custom1").on("click",function(){
+            //全部点亮
+            $("#selectable").children().each(function(i,e){
+                if($(e).hasClass("gone")){
+                    return;
+                }
+                var selectee = $.data(this, "selectable-item");
+                $(this).addClass("ui-selected");
+                $(this).children().remove();
+                selectee.selected = true;
+                selectee.isSelected=true;
+                selectee.startselected = true;
+
+            });
+        });
+
+        $("#custom2").on("click",function(){
+            toggleWorkTime();
+        });
+
+
+        $("#custom3").on("click",function(){
+            deleteAll();
+        });
+
+
+        $("#custom4").on("click",function(){
+            calcAll();
+        });
+
+
+
+        //开关是否显示所有日期, 切换到工作日期时，隐藏的日期会设置关闭
+        function toggleWorkTime(){
+            if(bWorkTime){
+                $(".left-bar").children().each(function(){
+                    $(this).removeClass("gone");
+                });
+                $("#selectable").children().each(function(){
+                    $(this).removeClass("gone");
+                });
+                $("#custom2").empty().append("仅显示工作时间")
+            }else{
+                var iCount=0;
+                var aTable=$("#selectable").children();
+                $(".left-bar").children().each(function(){
+                    if(iCount<7 || iCount>17){
+                        $(this).addClass("gone");
+
+                        for(var j=0;j<7;j++){
+                            var oItem=aTable[(iCount)*7+j];
+                            $(oItem).addClass("gone");
+                            var selectee = $.data(oItem, "selectable-item");
+                            $(oItem).removeClass("ui-selected");
+                            if($(oItem).children().length==0){
+                                $(oItem).append('<div class="ui-line1"></div>');
+                            }
+                            selectee.selected = false;
+                            selectee.isSelected=false;
+                            selectee.startselected = false;
+                        }
+
+                    }
+                    iCount++;
+                });
+
+                $("#custom2").empty().append("显示全部时间")
+
+            }
+            $( "#selectable" ).selectable( "refresh" );
+            bWorkTime=!bWorkTime;
+        }
+
+
+        //计算日期选择情况， 按照天来来分组
+        function calcAll(){
+
+            var aData=[];
+            $("#selectable").children().each(function(i,e){
+
+                var iArray=i%7;
+                if(aData[iArray]==null){
+                    aData.push("");
+                }
+
+                aData[iArray]+=$(e).hasClass("ui-selected")?"1":"0";
+
+            });
+
+//            console.log(aData);
+            var str="";
+            for(var i=0;i<aData.length;i++){
+                str+=aData[i]+",";
+            }
+            return str.substring(0,str.length-1);
+        }
+
+
+        function showDefaultTime(str){
+
+            var aDate=str.split(",");
+            var iD,iH,sSelected;
+            var selectee;
+            $("#selectable").children().each(function(i,e){
+
+                iD=i%7;
+                iH=i/7;
+                selectee = $.data(this, "selectable-item");
+                sSelected=aDate[iD].substring(iH,iH+1);
+
+                if(sSelected=="1"){
+                    $(e).addClass("ui-selected");
+                    selectee = $.data(this, "selectable-item");
+                    $(this).addClass("ui-selected");
+                    $(this).children().remove();
+                    selectee.selected = true;
+                    selectee.isSelected=true;
+                    selectee.startselected = true;
+
+                }else{
+                    $(e).removeClass("ui-selected");
+
+                    $(this).removeClass("ui-selected");
+                    if($(this).children().length==0){
+                        $(this).append('<div class="ui-line1"></div>');
+                    }
+                    selectee.selected = false;
+                    selectee.isSelected=false;
+                    selectee.startselected = false;
+                }
+
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

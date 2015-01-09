@@ -1,5 +1,6 @@
-package com.qubaopen.survey.alipay;
+package com.qubaopen.survey.order;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.qubaopen.survey.entity.payment.PayStatus;
 import com.qubaopen.survey.entity.user.User;
 import com.qubaopen.survey.repository.booking.BookingRepository;
 import com.qubaopen.survey.repository.payment.PayEntityRepository;
+import com.qubaopen.survey.service.creator.WeixinContentCreator;
 
 @RestController
 @RequestMapping("orderResources")
@@ -39,10 +41,13 @@ public class OrderResources {
 	@Autowired
 	private PayEntityRepository payEntityRepository;
 	
+	@Autowired
+	private WeixinContentCreator weixinContentCreator;
+	
 	
 	@Transactional
-	@RequestMapping(value = "payBookingOrder", method = RequestMethod.POST)
-	public Map<String, Object> payBookingOrder(@RequestParam(required = false) Long bookingId,
+	@RequestMapping(value = "alipayOrder", method = RequestMethod.POST)
+	public Map<String, Object> alipayOrder(@RequestParam(required = false) Long bookingId,
 			@RequestParam(required = false) Boolean quick,
 			@RequestParam(required = false) Double money,
 			@RequestParam(required = false) String time,
@@ -144,7 +149,7 @@ public class OrderResources {
 		
 		payEntity.setBooking(booking);
 		payEntity.setPayTime(booking.getTime());
-//		payEntity.setPayment("支付宝");
+		payEntity.setPayment("支付宝");
 		payEntity.setPayStatus(PayStatus.WAITING_PAYMENT);
 		payEntity.setPayAmount(booking.getMoney());
 		payEntityRepository.save(payEntity);
@@ -220,6 +225,53 @@ public class OrderResources {
 		}
 		
 		map.put("money", booking.getMoney());
+		return map;
+	}
+	
+	@RequestMapping(value = "wenxinOrder", method = RequestMethod.POST)
+	private Map<String, Object> wenxinOrder(@RequestParam(required = false) Long bookingId,
+			@RequestParam(required = false) Boolean quick,
+			@RequestParam(required = false) Double money,
+			@RequestParam(required = false) String time,
+			@ModelAttribute("currentUser") User user) {
+		
+		logger.trace("====== {}", bookingId);
+		Booking booking = bookingRepository.findOne(bookingId);
+		if (quick != null) {
+			booking.setQuick(quick);
+		}
+		if (money != null) {
+			booking.setMoney(money);
+		}
+		if (time != null) {
+			try {
+				booking.setTime(DateUtils.parseDate(time, "yyyy-MM-dd HH:mm"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		bookingRepository.save(booking);
+		
+		PayEntity payEntity = new PayEntity();
+		
+		payEntity.setBooking(booking);
+		payEntity.setPayTime(booking.getTime());
+		payEntity.setPayment("微信");
+		payEntity.setPayStatus(PayStatus.WAITING_PAYMENT);
+		payEntity.setPayAmount(booking.getMoney());
+		payEntityRepository.save(payEntity);
+		Object buildContent = null;
+		try {
+			buildContent = weixinContentCreator.buildContent(booking);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("success", "1");
+		map.put("weixinData", buildContent);
+		
 		return map;
 	}
 }

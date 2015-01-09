@@ -48,7 +48,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 
 	
 	/**
-	 * 医师登录
+	 * 诊所登录
 	 * @param user
 	 * @return
 	 */
@@ -60,7 +60,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		@RequestParam(required = false) String imei,
 		Model model, HttpSession session) {
 		
-		logger.trace ' -- 医师登录 -- '
+		logger.trace ' -- 诊所登录 -- '
 
 		if (!validatePwd(password)) {
 			return '{"success": "0", "message": "err004"}'

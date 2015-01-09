@@ -127,7 +127,11 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				]
 			}
 		}
-		
+		def more = true
+		if (helps.size() < pageable.pageSize) {
+			more = false
+		}
+		data << ['more' : more]
 		[
 			'success' : '1',
 			'data' : data

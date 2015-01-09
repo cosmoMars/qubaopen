@@ -1,4 +1,4 @@
-package com.qubaopen.survey.alipay;
+package com.qubaopen.survey.order.notify;
 
 import java.util.Date;
 import java.util.HashMap;

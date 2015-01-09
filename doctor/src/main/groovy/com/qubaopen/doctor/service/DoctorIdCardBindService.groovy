@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository;
 import com.qubaopen.doctor.repository.doctor.DoctorIdCardLogRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.doctor.repository.user.UserIdCardRepository;
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorIdCardBind;
@@ -32,6 +33,9 @@ public class DoctorIdCardBindService {
 	
 	@Autowired
 	IdentityValidationService identityValidationService
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
 	
 	/**
 	 * 提交身份证验证，每月每个账号只能认证3次，修改1次
@@ -96,6 +100,9 @@ public class DoctorIdCardBindService {
 						IDCard : idCard,
 						name : name
 					)
+					def di = doctorInfoRepository.findOne(doctor.id)
+					di.name = name
+					doctorInfoRepository.save(di)
 				}
 			}
 			if (userIdCard) {

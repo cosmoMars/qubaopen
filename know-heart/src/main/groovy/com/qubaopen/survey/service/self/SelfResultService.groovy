@@ -103,10 +103,13 @@ public class SelfResultService {
 				break
 			case 'HopeSense' :
 				result = calculateHopeSense(user, self, questionOptions, questionVos, questions, refresh)
-			break
-			case 'HopeSense' :
+				break
+			case 'AMS' :
 				result = calculateAMS(user, self, questionOptions, questionVos, questions, refresh)
-			break
+				break
+			case 'Bass' :
+				result = calculateBass(user, self, questionOptions, questionVos, questions, refresh)
+				break
 		}
 		result
 	}
@@ -122,6 +125,10 @@ public class SelfResultService {
 			case 'DISC' :
 				result = calculateDISC(user, self, questionOptions, questionVos, questions, refresh)
 				break
+			case 'SCL90' :
+				result = calculateSCL90(user, self, questionOptions, questionVos, questions, refresh)
+				break
+				
 		}
 		result
 	}
@@ -411,6 +418,76 @@ public class SelfResultService {
 //		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
 	}
 	
+	
+	/**
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 * SCL90
+	 */
+	@Transactional
+	calculateSCL90(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		
+		def optionMap = [:]
+		def score = 0
+		
+		
+		questionOptions.each {
+			
+			score += it.score
+		
+			if (it.score == 1) { // 阴性
+				if (optionMap.get('1')) {
+					optionMap.get('1') << it
+				} else {
+					def list = []
+					list << it
+					optionMap.put('1', list)
+				}
+			}
+		}
+		def mapRecord, resultOption, result = []
+		
+		def resultScore = score
+		
+		def size1 = optionMap['1'] ? optionMap['1'].size() : 0
+		if (score > 160 || (questionOptions.size() - size1) > 43) {
+			
+			def doubleScore =  (score - size1) as double
+			resultScore = (doubleScore / (questionOptions.size() - size1) * 90) as Integer
+		}
+		mapRecord = new MapRecord(
+			name : self.abbreviation,
+			value :	resultScore
+		)
+		result << mapRecord
+		
+		resultOption = selfResultOptionRepository.findOneByFilters(
+			[
+				'selfResult.self_equal' : self,
+				'highestScore_greaterThan' : resultScore,
+				'lowestScore_lessThanOrEqualTo' : resultScore
+			]
+		)
+		
+		def selfUserQuestionnaire =	selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh, resultScore)
+		if (refresh) {
+			selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, resultScore)
+		}
+		
+//
+//		def selfResult = new SelfResult()
+//		def resultOption = new SelfResultOption(
+//			selfResult : selfResult,
+//			content : '问卷已完成，请通过心里地图查看内容'
+//		)
+		resultOption
+//		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
+	}
 	
 	/**
 	 * 计算EPQ量表
@@ -727,6 +804,69 @@ public class SelfResultService {
 		def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null, refresh, resutlScore)
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, resutlScore) // 保存心理地图
+		}
+		
+		resultOption
+	}
+	/**
+	 * 测测你上司的领导风格
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculateBass(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		
+		def optionMap = [:]
+		questionOptions.each {
+			def questionType = it?.selfQuestion?.selfQuestionType?.name
+			
+			if (questionType) {
+				if (optionMap.get(questionType)) { // key: 种类 , value: 题目
+					optionMap.get(questionType) << it
+				} else {
+					def optionList = []
+					optionList << it
+					optionMap.put(questionType, optionList)
+				}
+			}
+		}
+
+		def typeMap = [:]
+
+		def result = []
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def optionScore = 0
+			v.each {
+				optionScore = optionScore + it.score
+			}
+			
+			typeMap.put(k, optionScore)
+		}
+		
+		def resultOption
+		
+		if ((double)(typeMap['变革型领导']) / optionMap['变革型领导'].size() > (double)(typeMap['交易型领导']) / optionMap['交易型领导'].size()) {
+			resultOption = selfResultOptionRepository.findOne(198l)
+		}
+		if ((double)(typeMap['变革型领导']) / optionMap['变革型领导'].size() < (double)(typeMap['交易型领导']) / optionMap['交易型领导'].size()) {
+			resultOption = selfResultOptionRepository.findOne(199l)
+		}
+		typeMap.each { k, v ->
+			def mapRecord = new MapRecord(
+				name : k,
+				value : typeMap.get(k)
+			)
+			result << mapRecord
+		}
+		
+		def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null, refresh, 0)
+		if (refresh) {
+			selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, 0) // 保存心理地图
 		}
 		
 		resultOption

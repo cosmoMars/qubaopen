@@ -44,8 +44,8 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 			if (filters.get("targetId") != null) {
 				where.add("tu.id = :targetId");
 			}
-			if (filters.get("areaId") != null) {
-				where.add("di.areaCode.id = :areaId");
+			if (filters.get("areaCode") != null) {
+				where.add("di.areaCode.code = :areaCode");
 			}
 			if (filters.get("faceToFace") != null) {
 				where.add("di.faceToFace = :faceToFace");
@@ -69,8 +69,8 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 			query.setParameter("genreId", filters.get("genreId"));
 		if (filters.get("targetId") != null)
 			query.setParameter("targetId", filters.get("targetId"));
-		if (filters.get("areaId") != null)
-			query.setParameter("areaId", filters.get("areaId"));
+		if (filters.get("areaCode") != null)
+			query.setParameter("areaCode", filters.get("areaCode"));
 		if (filters.get("faceToFace") != null)
 			query.setParameter("faceToFace", filters.get("faceToFace"));
 		if (filters.get("video") != null)

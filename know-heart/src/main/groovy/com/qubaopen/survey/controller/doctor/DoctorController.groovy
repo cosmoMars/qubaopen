@@ -55,7 +55,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	@RequestMapping(value = 'retrieveDoctorList', method = RequestMethod.POST)
 	retrieveDoctorList(@RequestParam(required = false) Long genreId,
 		@RequestParam(required = false) Long targetId,
-		@RequestParam(required = false) Long areaId,
+		@RequestParam(required = false) Long areaCode,
 		@RequestParam(required = false) Boolean faceToFace,
 		@RequestParam(required = false) Boolean video,
 		@RequestParam(required = false) String ids,
@@ -78,8 +78,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		if (targetId != null) {
 			filters.put('targetId', targetId)
 		}
-		if (areaId != null) {
-			filters.put('areaId', areaId)
+		if (areaCode != null) {
+			filters.put('areaCode', areaCode)
 		}
 		if (faceToFace != null) {
 			filters.put('faceToFace', faceToFace)

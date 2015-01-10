@@ -56,8 +56,17 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 			if (filters.get("ids") != null) {
 				where.add("di.id not in (:ids)");
 			}
-			String whereFilters = String.join(" and ", where);
-			hql.append(whereFilters);
+			StringBuilder whereFilters = new StringBuilder();
+			for (int i = 0; i < where.size(); i++) {
+				whereFilters.append(where.get(i));
+				if (i < where.size() - 1) {
+					whereFilters.append(" and ");
+				}
+			}
+			
+//			String whereFilters = String.join(" and ", where);
+			
+			hql.append(whereFilters.toString());
 			System.out.println(hql.toString());
 		}
 

@@ -108,7 +108,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 					'payType' : it.payType.ordinal(),
 					'time' : it.time
 				]
-			} else if (DoctorCashLog.Type.Out.ordinal() == it.type) {
+			} else if (DoctorCashLog.Type.Out == it.type) {
 				outDetail << [
 					'cash' : it.cash,
 					'payType' : it.payType.ordinal(),

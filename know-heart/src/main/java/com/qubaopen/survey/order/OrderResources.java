@@ -129,13 +129,40 @@ public class OrderResources {
 			@ModelAttribute("currentUser") User user) {
 		
 		logger.trace("====== {}", bookingId);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
 		Booking booking = bookingRepository.findOne(bookingId);
+		
+		if (money == null) {
+			map.put("success", "0");
+			map.put("message", "err802");
+			return map;
+		}
+		
 		if (quick != null) {
 			booking.setQuick(quick);
-		}
-		if (money != null) {
+			
+			if (Booking.ConsultType.Facetoface == booking.getConsultType()) {
+				double faceFee = booking.getDoctor().getDoctorInfo().getOfflineFee() * 1.5;
+				if (money < faceFee) {
+					map.put("success", "0");
+					map.put("message", "err803");
+					return map;
+				}
+			}
+			if (Booking.ConsultType.Video == booking.getConsultType()) {
+				double videoFee = booking.getDoctor().getDoctorInfo().getOnlineFee() * 1.5;
+				if (money < videoFee) {
+					map.put("success", "0");
+					map.put("message", "err803");
+					return map;
+				}
+			}
 			booking.setMoney(money);
 		}
+		
+		
 		if (time != null) {
 			try {
 				booking.setTime(DateUtils.parseDate(time, "yyyy-MM-dd HH:mm"));
@@ -154,8 +181,6 @@ public class OrderResources {
 		payEntity.setPayAmount(booking.getMoney());
 		payEntityRepository.save(payEntity);
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-
 		/*StringBuilder alipayText = new StringBuilder();
         alipayText.append("partner=\"").append(AlipayConfig.partner); // 商家名
         alipayText.append("\"&seller_id=\"").append("qubaopen@163.com"); // 支付宝账号

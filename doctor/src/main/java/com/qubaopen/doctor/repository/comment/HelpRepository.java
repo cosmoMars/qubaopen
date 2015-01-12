@@ -21,4 +21,7 @@ public interface HelpRepository extends MyRepository<Help, Long> {
 
 	@Query("from Help h where h.id not in (:ids)")
 	List<Help> findAllHelp(@Param("ids") List<Long> ids, Pageable pageable);
+	
+	@Query("from Help h")
+	List<Help> findAllByPageable(Pageable pageable);
 }

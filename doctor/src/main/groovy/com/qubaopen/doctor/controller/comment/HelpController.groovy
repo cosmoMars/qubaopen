@@ -99,7 +99,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			if (ids) {
 				helps = helpRepository.findAllHelp(list, pageable)
 			} else {
-				helps = helpRepository.findAll(pageable)
+				helps = helpRepository.findAllByPageable(pageable)
 			}
 			helps.each {
 				def comments = helpCommentRepository.findLimitComment(it)

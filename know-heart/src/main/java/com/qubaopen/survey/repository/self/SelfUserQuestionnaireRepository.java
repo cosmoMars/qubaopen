@@ -15,6 +15,9 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.used = true and suq.time in (select max(s.time) from SelfUserQuestionnaire s where s.user = :user and s.used = true group by s.self) order by suq.time desc")
 	List<SelfUserQuestionnaire> findByMaxTime(@Param("user") User user);
 	
+	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.self.selfManagementType.id = :typeId and suq.used = true and suq.time in (select max(s.time) from SelfUserQuestionnaire s where s.user = :user and s.used = true group by s.self) order by suq.time desc")
+	List<SelfUserQuestionnaire> findByMaxTimeAndType(@Param("user") User user, @Param("typeId") long typeId);
+	
 	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.self.analysis = :analysis and suq.used = true group by self_id ")
 	List<SelfUserQuestionnaire> findByAnalysis(@Param("user") User user,@Param("analysis") boolean analysis);
 
@@ -33,6 +36,9 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	SelfUserQuestionnaire findByUserAndSelfAndUsed(User user, Self self, boolean used);
 	
 	List<SelfUserQuestionnaire> findBySelfAndUserOrderByTimeAsc(Self self, User user);
+	
+	@Query("from SelfUserQuestionnaire suq where DATE_FORMAT(suq.time,'%Y-%m-%d') = :time and suq.self.selfManagementType.id = :typeId and suq.self != :self and suq.used = true and suq.user = :user")
+	List<SelfUserQuestionnaire> findByTimeAndTypeIdWithOutSpecial(@Param("time") String time, @Param("typeId") long typeId, @Param("self") Self self, @Param("user") User user);
 	
 	
 }

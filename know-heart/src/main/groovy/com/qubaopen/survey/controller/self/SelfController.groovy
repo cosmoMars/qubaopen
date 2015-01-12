@@ -179,15 +179,18 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveSelfByType/{typeId}', method = RequestMethod.GET)
-	retrieveSelfByType(@PathVariable Long typeId) {
-		def selfs = selfRepository.findAll(
+	retrieveSelfByType(@PathVariable Long typeId, @ModelAttribute('currentUser') User user) {
+		/*def selfs = selfRepository.findAll(
 			[
 				'selfManagementType.id_equal' : typeId,
 				'status_equal' : Self.Status.ONLINE
 			]
 		)
+		
 		def data = [],
 			specialSelf = selfRepository.findByMaxRecommendedValue()
+			
+		def selfs = selfService.retrieveSelfByTypeId(user, typeId)
 		selfs.each {
 			if (it.id != specialSelf.id) {
 				data <<	[
@@ -196,6 +199,24 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 					'title' : it?.title
 				]
 			}
+		}*/
+		
+		def specialSelf = selfRepository.findByMaxRecommendedValue()
+		
+		def todayQuestionnaires = selfUserQuestionnaireRepository.findByTimeAndTypeIdWithOutSpecial(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), typeId, specialSelf, user)
+		
+		if (todayQuestionnaires?.size() >= 4) {
+			return '{"success" : "0", "message" : "亲，该类别每日4题上线你已经答满咯～"}'
+		}
+		
+		def data = []
+		def selfs = selfService.retrieveSelfByTypeId(user, typeId, specialSelf)
+		selfs.each {
+			data <<	[
+				'selfId' : it?.id,
+				'managementType' : it?.selfManagementType?.id,
+				'title' : it?.title
+			]
 		}
 		[
 			'success' : '1',

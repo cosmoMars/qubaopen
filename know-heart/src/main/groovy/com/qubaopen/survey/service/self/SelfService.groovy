@@ -224,6 +224,30 @@ public class SelfService {
 		}
 	}
 	
+	@Transactional(readOnly = true)
+	retrieveSelfByTypeId(User user, long typeId, Self specialSelf) {
+		
+		def usedSelfs = [], ids = []
+		
+		def selfUserQuestionnaires = selfUserQuestionnaireRepository.findByMaxTimeAndType(user, typeId),
+			existQuestionnaires = selfUserQuestionnaires.findAll {
+				def intervalTime = it.self.intervalTime as Long
+				((new Date()).getTime() - it.time.getTime()) < intervalTime * 60 * 60 * 1000
+			}
+		
+		ids << specialSelf.id
+		if (existQuestionnaires) {
+			existQuestionnaires.each {
+				ids << it.self.id
+			}
+		}
+		
+		def selfs = selfRepository.findByTypeWithoutExistSelfId(typeId, ids)
+		
+		selfs
+		
+	}
+	
 	/**
 	 * 查找自测问卷问题
 	 * @param selfId

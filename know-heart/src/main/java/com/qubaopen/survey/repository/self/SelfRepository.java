@@ -29,4 +29,8 @@ public interface SelfRepository extends MyRepository<Self, Long>, SelfRepository
 	
 	@Query("from Self s where s.recommendedValue = (select max(ss.recommendedValue) from Self ss)")
 	Self findByMaxRecommendedValue();
+	
+	@Query("from Self s where s.selfManagementType.id = :selfManagementType and s.status = 1 and s.id not in (:exists)")
+	List<Self> findByTypeWithoutExistSelfId(@Param("selfManagementType") Long selfManagementType, @Param("exists") List<Long> exists);
+	
 }

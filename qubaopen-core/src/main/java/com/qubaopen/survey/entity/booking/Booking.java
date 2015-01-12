@@ -36,7 +36,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Hospital hospital;
-	
+
 	/**
 	 * 订单号
 	 */
@@ -47,7 +47,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 * 姓名
 	 */
 	private String name;
-	
+
 	/**
 	 * 手机
 	 */
@@ -116,7 +116,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
-	
+
 	/**
 	 * 支付时间
 	 */
@@ -127,7 +127,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	@Enumerated
 	private ConsultType consultType;
-	
+
 	public enum ConsultType {
 		Facetoface, Video
 	}
@@ -143,6 +143,18 @@ public class Booking extends AbstractBaseEntity<Long> {
 	}
 
 	private Double money;
+
+	/**
+	 * 用户订单状态
+	 */
+	@Enumerated
+	private Status userStatus;
+
+	/**
+	 * 医师订单状态
+	 */
+	@Enumerated
+	private Status doctorStatus;
 
 	public String getTradeNo() {
 		return tradeNo;
@@ -327,4 +339,21 @@ public class Booking extends AbstractBaseEntity<Long> {
 	public void setMoney(Double money) {
 		this.money = money;
 	}
+
+	public Status getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(Status userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public Status getDoctorStatus() {
+		return doctorStatus;
+	}
+
+	public void setDoctorStatus(Status doctorStatus) {
+		this.doctorStatus = doctorStatus;
+	}
+
 }

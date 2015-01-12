@@ -153,10 +153,20 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 * 拒绝理由
 	 */
 	private String refusalReason;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AreaCode areaCode;
-	
+
+	/**
+	 * 在线咨询费用
+	 */
+	private double onlineFee;
+
+	/**
+	 * 线下咨询费用
+	 */
+	private double offlineFee;
+
 	/**
 	 * 擅长人群
 	 */
@@ -377,6 +387,22 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 
 	public void setGenres(Set<Genre> genres) {
 		this.genres = genres;
+	}
+
+	public double getOnlineFee() {
+		return onlineFee;
+	}
+
+	public void setOnlineFee(double onlineFee) {
+		this.onlineFee = onlineFee;
+	}
+
+	public double getOfflineFee() {
+		return offlineFee;
+	}
+
+	public void setOfflineFee(double offlineFee) {
+		this.offlineFee = offlineFee;
 	}
 
 }

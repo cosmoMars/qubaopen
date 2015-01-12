@@ -95,7 +95,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			'loginStatus' : doctorInfo?.loginStatus?.ordinal(),
 			'refauslReason' : doctorInfo?.refusalReason,
 			'commentConsult' : doctorInfo?.commentConsult,
-			'phoneConsult' : doctorInfo?.phoneConsult
+			'phoneConsult' : doctorInfo?.phoneConsult,
+			'onlineFee' : doctorInfo?.onlineFee,
+			'offlineFee' : doctorInfo?.offlineFee
 		]
 	}
 	
@@ -139,6 +141,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		@RequestParam(required = false) Boolean commentConsult,
 		@RequestParam(required = false) Boolean phoneConsult,
 		@RequestParam(required = false) String address,
+		@RequestParam(required = false) Double onlineFee,
+		@RequestParam(required = false) Double offlineFee,
 		@RequestParam(required = false) MultipartFile avatar,
 		@RequestParam(required = false) MultipartFile record,
 		@RequestParam(required = false) String times,
@@ -210,6 +214,13 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		}
 		if (address != null) {
 			doctorInfo.address = address
+		}
+		
+		if (onlineFee != null) {
+			doctorInfo.onlineFee = onlineFee
+		}
+		if (doctorInfo.offlineFee != null) {
+			doctorInfo.offlineFee != offlineFee
 		}
 		
 		if (times != null) {

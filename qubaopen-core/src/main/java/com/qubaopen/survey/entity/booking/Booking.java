@@ -139,22 +139,10 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 * 1 预约，2 接受，拒绝，3 已咨询，未咨询，4 已约下次, 5 已付款
 	 */
 	public enum Status {
-		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid
+		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate
 	}
 
 	private Double money;
-
-	/**
-	 * 用户订单状态
-	 */
-	@Enumerated
-	private Status userStatus;
-
-	/**
-	 * 医师订单状态
-	 */
-	@Enumerated
-	private Status doctorStatus;
 
 	public String getTradeNo() {
 		return tradeNo;
@@ -338,22 +326,6 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setMoney(Double money) {
 		this.money = money;
-	}
-
-	public Status getUserStatus() {
-		return userStatus;
-	}
-
-	public void setUserStatus(Status userStatus) {
-		this.userStatus = userStatus;
-	}
-
-	public Status getDoctorStatus() {
-		return doctorStatus;
-	}
-
-	public void setDoctorStatus(Status doctorStatus) {
-		this.doctorStatus = doctorStatus;
 	}
 
 }

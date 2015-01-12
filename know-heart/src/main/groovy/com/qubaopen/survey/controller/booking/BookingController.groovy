@@ -142,18 +142,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 用户获取医师每月列表
 	 */
 	@RequestMapping(value = 'retrieveMonthBooking', method = RequestMethod.GET)
-	retrieveMonthBooking(@RequestParam(required = false) String time, @RequestParam long doctorId, @ModelAttribute('currentUser') User user) {
+	retrieveMonthBooking(@RequestParam(required = false) String time,
+		@RequestParam long doctorId,
+		@RequestParam boolean quick,
+		@ModelAttribute('currentUser') User user) {
 
-		
 		def date
 		if (time == null) {
 			date = new Date()
 		} else {
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
-//			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
-//			if (date < today) {
-//				return '{"success" : "0", "message" : "err801"}'
-//			}
  		}
 		
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
@@ -171,14 +169,19 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			
 			def day = c.getTime(),
 				idx = dayForWeek(day),
-				timeModel = times[idx - 1], // 医师计划 1
-				dateBookingTime = bookingTimeRepository.findByDoctorAndTime(new Doctor(id : doctorId), day), // default 3
-//				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
+				timeModel = times[idx - 1] // 医师计划 1
 				
-				selfBookingTimes = bookingSelfTimeRepository.findByDoctorAndTime(new Doctor(id : doctorId), day),
+			def dateBookingTime, selfBookingTimes, bookingList
+			if (quick) {
+				bookingList = bookingRepository.findAllByTimeAndQuick(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
+			} else {
+					dateBookingTime = bookingTimeRepository.findByDoctorAndTime(new Doctor(id : doctorId), day) // default 3
+					
+					selfBookingTimes = bookingSelfTimeRepository.findByDoctorAndTime(new Doctor(id : doctorId), day)
+					
+					bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)) // 订单占用 2
+			}
 				
-				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)) // 订单占用 2
-			
 			dayData << [
 				'dayId' : i + 1,
 				'dayOfWeek' : idx,

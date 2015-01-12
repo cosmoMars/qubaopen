@@ -3,6 +3,7 @@ package com.qubaopen.survey.order;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -162,15 +163,36 @@ public class OrderResources {
 			booking.setMoney(money);
 		}
 		
-		
-		if (time != null) {
-			try {
-				booking.setTime(DateUtils.parseDate(time, "yyyy-MM-dd HH:mm"));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+		if (time == null) {
+			map.put("success", "0");
+			map.put("message", "err804");
+			return map;
 		}
-		bookingRepository.save(booking);
+		
+		
+//		'%Y-%m-%d %H:%i:%S'
+		
+		List<Booking> quickBookings = bookingRepository.findAllByFormatTimeAndQuick(time, booking.getDoctor(), quick);
+		
+		if (quickBookings != null) {
+			map.put("success", "0");
+			map.put("message", "err805");
+			return map;
+		}
+		List<Booking> nowBookings = bookingRepository.findAllByFormatTimeAndQuick(time, booking.getDoctor(), false);
+		
+		for (int i = 0; i < nowBookings.size(); i++) {
+			nowBookings.get(i).setStatus(Booking.Status.ChangeDate);
+		}
+		
+		try {
+			booking.setTime(DateUtils.parseDate(time, "yyyy-MM-dd HH:mm"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		nowBookings.add(booking);
+		
+		bookingRepository.save(nowBookings);
 		
 		PayEntity payEntity = new PayEntity();
 		

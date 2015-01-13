@@ -153,6 +153,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'refauslReason' : doctorInfo?.refusalReason,
 				'commentConsult' : doctorInfo?.commentConsult,
 				'phoneConsult' : doctorInfo?.phoneConsult,
+				'onlineFee' : doctorInfo?.onlineFee,
+				'offlineFee' : doctorInfo?.offlineFee,
 				'timeData' : timeData
 			]
 		}

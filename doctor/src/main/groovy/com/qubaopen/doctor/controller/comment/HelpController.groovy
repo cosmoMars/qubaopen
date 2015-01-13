@@ -131,10 +131,10 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		if (helps.size() < pageable.pageSize) {
 			more = false
 		}
-		data << ['more' : more]
 		[
 			'success' : '1',
-			'data' : data
+			'data' : data,
+			'more' : more
 		]
 	}
 		

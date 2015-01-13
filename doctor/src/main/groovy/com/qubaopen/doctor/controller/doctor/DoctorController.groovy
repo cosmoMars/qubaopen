@@ -141,7 +141,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'video' : doctorInfo?.video,
 				'targetUser' : doctorInfo?.targetUser,
 				'genre' : doctorInfo?.genre,
-				//			'time' : doctorInfo?.bookingTime,
+//				'time' : doctorInfo?.bookingTime,
 				'introduce' : doctorInfo?.introduce,
 				'quick' : doctorInfo?.quick,
 				'email' : loginDoctor?.email,

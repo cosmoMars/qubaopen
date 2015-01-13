@@ -3,7 +3,6 @@ package com.qubaopen.survey.order;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -172,27 +171,26 @@ public class OrderResources {
 		
 //		'%Y-%m-%d %H:%i:%S'
 		
-		List<Booking> quickBookings = bookingRepository.findAllByFormatTimeAndQuick(time, booking.getDoctor(), quick);
-		
-		if (quickBookings != null) {
-			map.put("success", "0");
-			map.put("message", "err805");
-			return map;
-		}
-		List<Booking> nowBookings = bookingRepository.findAllByFormatTimeAndQuick(time, booking.getDoctor(), false);
-		
-		for (int i = 0; i < nowBookings.size(); i++) {
-			nowBookings.get(i).setStatus(Booking.Status.ChangeDate);
-		}
+//		List<Booking> quickBookings = bookingRepository.findAllByFormatTimeAndQuick(time, booking.getDoctor(), true);
+//		
+//		if (quickBookings != null && quickBookings.size() > 0) {
+//			map.put("success", "0");
+//			map.put("message", "err805");
+//			return map;
+//		}
+//		List<Booking> nowBookings = bookingRepository.findAllByFormatTimeAndQuick(time, booking.getDoctor(), false);
+//		
+//		for (int i = 0; i < nowBookings.size(); i++) {
+//			nowBookings.get(i).setStatus(Booking.Status.ChangeDate);
+//		}
 		
 		try {
 			booking.setTime(DateUtils.parseDate(time, "yyyy-MM-dd HH:mm"));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		nowBookings.add(booking);
 		
-		bookingRepository.save(nowBookings);
+		bookingRepository.save(booking);
 		
 		PayEntity payEntity = new PayEntity();
 		
@@ -202,28 +200,6 @@ public class OrderResources {
 		payEntity.setPayStatus(PayStatus.WAITING_PAYMENT);
 		payEntity.setPayAmount(booking.getMoney());
 		payEntityRepository.save(payEntity);
-		
-		/*StringBuilder alipayText = new StringBuilder();
-        alipayText.append("partner=\"").append(AlipayConfig.partner); // 商家名
-        alipayText.append("\"&seller_id=\"").append("qubaopen@163.com"); // 支付宝账号
-        alipayText.append("\"&out_trade_no=\"").append(booking.getTradeNo()); // 订单号（订单号+"_"+支付ID+"_"++系统当前时间）
-        alipayText.append("\"&subject=\""); // 商品名("购车订金:"+汽车品牌+车型名称+车款名称)
-        alipayText.append("知心心理咨询");
-		
-        alipayText.append("\"&body=\""); // 商品描述
-        alipayText.append("下单时间：").append(DateFormatUtils.format(booking.getTime(), "yyyy-MM-dd"));
-        alipayText.append("，订单号：").append(booking.getTradeNo());
-
-        // 如果系统没有工作在产品模式时只需要支付0.01元
-        alipayText.append("\"&total_fee=\"").append(booking.getMoney()); // 支付金额
-        alipayText.append("\"&notify_url=\"").append("http://www.zhixin.me"); // 支付完成回调url
-        alipayText.append("\"&service=\"mobile.securitypay.pay"); // 默认填写，@"mobile.securitypay.pay"
-        alipayText.append("\"&_input_charset=\"UTF-8"); // 默认填写，@"utf-8"
-        alipayText.append("\"&payment_type=\"1"); // 默认填写，@"1"
-        alipayText.append("\"&it_b_pay=\"30m\""); // 超时时间
-        
-        String sign = RSA.sign(alipayText.toString(), AlipayConfig.private_key, AlipayConfig.input_charset);
-        String message = alipayText.toString() + "&sign=\"" + sign + "\"&sign_type=\"RSA\"";*/
 		
 		map.put("success", "1");
         map.put("id", booking.getId());

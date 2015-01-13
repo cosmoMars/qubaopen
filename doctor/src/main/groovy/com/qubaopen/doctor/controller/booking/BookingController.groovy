@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.web.PageableDefault
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -24,6 +25,7 @@ import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository;
 import com.qubaopen.doctor.repository.booking.BookingTimeRepository;
 import com.qubaopen.doctor.repository.doctor.BookingRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.doctor.repository.payEntity.PayEntityRepository;
 import com.qubaopen.survey.entity.booking.Booking
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
@@ -46,6 +48,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	
 	@Autowired
 	BookingSelfTimeRepository bookingSelfTimeRepository
+	
+	@Autowired
+	PayEntityRepository payEntityRepository
 	
 	@Override
 	protected MyRepository<Booking, Long> getRepository() {
@@ -145,12 +150,13 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		logger.trace('-- 查看单个信息 --')
 		
 		def booking = bookingRepository.findOne(id)
-		
+
 		if (booking) {
 			[
 				'success' : '1',
 				'userId' : booking?.user?.id,
 				'userName' : booking?.name,
+				'phone' : booking?.phone,
 				'userSex' : booking?.sex?.ordinal(),
 				'birthday' : booking?.birthday,
 				'profession' : booking?.profession,
@@ -515,6 +521,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @return
 	 * 修改订单状态
 	 */
+	@Transactional
 	@RequestMapping(value = 'modifyBookingStatus', method = RequestMethod.POST)
 	modifyBookingStatus(@RequestParam(required = false) Long id,
 		@RequestParam(required = false) String content,
@@ -530,6 +537,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		if (bookingStatus && bookingStatus == Booking.Status.Refusal) {
 			booking.refusalReason = content
+			booking.time = null
+			
+			payEntityRepository.deleteByBooking(booking)
+			
 		}
 		
 		if (bookingStatus && bookingStatus == Booking.Status.Next) {
@@ -554,6 +565,63 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			idx = c.get(Calendar.DAY_OF_WEEK) - 1
 		}
 		idx
+	}
+	
+	/************************************************************************************************************************/
+	
+	/**
+	 * @param qBookingId
+	 * @param doctor
+	 * @return
+	 * 获取冲突订单
+	 */
+	@RequestMapping(value = 'retrieveChangeDateBooking', method = RequestMethod.POST)
+	retrieveChangeDateBooking(@RequestParam long qBookingId,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
+
+		def qBooking = bookingRepository.findOne(qBookingId)
+		if (!qBooking?.time) {
+			return '{"success" : "1"}'
+		}
+		def aBookings = bookingRepository.findAllByFormatTimeAndQuickWithExist(DateFormatUtils.format(qBooking?.time, 'yyyy-MM-dd HH'), doctor, true, qBookingId)
+		
+		if (aBookings) {
+			return '{"success" : "0", "message" : "err805"}'
+		}
+		def fbookings = bookingRepository.findAllByFormatTimeAndQuick(DateFormatUtils.format(qBooking?.time, 'yyyy-MM-dd HH'), doctor, false),
+		data = []
+	
+		fbookings.each {
+			data << [
+				'id' : it.id
+			]
+		}
+		[
+			'success' : '1',
+			'data' : data
+		]
+	}
+		
+	
+	/**
+	 * @param id
+	 * @param date
+	 * @param doctor
+	 * @return
+	 * 改约时间
+	 */
+	@RequestMapping(value = 'changeDateForBooking', method = RequestMethod.POST)
+	changeDateForBooking(@RequestParam(required = false) Long id,
+		@RequestParam(required = false) String date,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
+		
+		def booking = bookingRepository.findOne(id)
+		
+		if (date)
+			booking.time = DateUtils.parseDate(date, 'yyyy-MM-dd HH')
+		
+		bookingRepository.save(booking)
+		'{"success" : "1"}'
 	}
 	
 }

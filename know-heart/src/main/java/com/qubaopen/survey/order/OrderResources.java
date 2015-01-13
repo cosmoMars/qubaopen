@@ -196,7 +196,7 @@ public class OrderResources {
 		
 		payEntity.setBooking(booking);
 		payEntity.setPayTime(booking.getTime());
-		payEntity.setPayment("支付宝");
+//		payEntity.setPayment("支付宝");
 		payEntity.setPayStatus(PayStatus.WAITING_PAYMENT);
 		payEntity.setPayAmount(booking.getMoney());
 		payEntityRepository.save(payEntity);

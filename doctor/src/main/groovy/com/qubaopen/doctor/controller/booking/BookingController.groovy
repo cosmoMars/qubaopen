@@ -91,26 +91,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			} else {
 				bookingList = bookingRepository.findBookingList(doctor, status, age, pageable)
 			}
-//			bookingList = doctorBookingRepository.findAll(
-//				[
-//					doctor_equal : doctor,
-//					status_equal : status,
-//					time_greaterThanOrEqualTo : age
-//				], pageable
-//			)
 		} else {
 			if (idsStr) {
 				bookingList = bookingRepository.findBookingList(doctor, age, ids, pageable)
 			} else {
 				bookingList = bookingRepository.findBookingList(doctor, age, pageable)
 			}
-//			bookingList = doctorBookingRepository.findAll(
-//				[
-//					doctor_equal : doctor,
-//					time_greaterThanOrEqualTo : age
-//				], pageable
-//			
-//			)
 		}
 		
 		def data = []
@@ -201,14 +187,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		} else {
 			bookingList = bookingRepository.findByUserAndStatus(doctor, new User(id : userId), Booking.Status.Consulted, pageable)
 		}
-		
-//		bookingList = doctorBookingRepository.findAll(
-//			[
-//				doctor_equal : doctor,
-//				user_equal : new User(id : userId),
-//				status_equal : DoctorBooking.Status.Consulted
-//			], pageable
-//		)
 		def data = []
 		bookingList.each {
 			data << [
@@ -470,37 +448,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					'startTime' : DateFormatUtils.format(it?.time, 'HH:mm'),
 					'endTime' : DateFormatUtils.format(endTime, 'HH:mm')
 				]
-//				
-//				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
-//					occupy = timeModel.substring(index, index + 1)
-//				if ("1" != occupy || !"1".equals(occupy)) {
-//					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
-//				}
-//				
-//				def endTime = ''
-//				if (it.time) {
-//					endTime = "${DateFormatUtils.format(it.time, 'yyyy-MM-dd')} ${index + 1}:00:00" as String
-//				}
-//				timeAll << [
-//					'type' : 2,
-//					'bookingId' : it?.id,
-//					'name' : it?.name,
-//					'helpReason' : it?.helpReason,
-//					'consultType' : it?.consultType?.ordinal(),
-//					'startTime' : it?.time,
-//					'endTime' : endTime
-//				]
 			}
 			
-//			for (k in 0..timeModel.length() - 1) {
-//				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
-//					timeAll << [
-//						'type' : 0,
-//						'startTime' : DateFormatUtils.format(DateUtils.parseDate("$k:00", 'HH:mm'), 'HH:mm'),
-//						'endTime' : DateFormatUtils.format(DateUtils.parseDate("${k+1}:00", 'HH:mm'), 'HH:mm')
-//					]
-//				}
-//			}
 			result << [
 				'dayOfWeek' : idx,
 				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd'),
@@ -537,7 +486,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		if (bookingStatus && bookingStatus == Booking.Status.Refusal) {
 			booking.refusalReason = content
-			booking.time = null
 			
 			payEntityRepository.deleteByBooking(booking)
 			
@@ -589,9 +537,13 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			return '{"success" : "0", "message" : "err805"}'
 		}
 		def fbookings = bookingRepository.findAllByFormatTimeAndQuick(DateFormatUtils.format(qBooking?.time, 'yyyy-MM-dd HH'), doctor, false),
-		data = []
-	
+		data = [], now = System.currentTimeMillis()
+		
 		fbookings.each {
+			if (it?.time?.time - now < 4 * 60 * 60 * 1000) {
+				return '{"success" : "0", "message" : "err806"}'
+			}
+			
 			data << [
 				'id' : it.id
 			]

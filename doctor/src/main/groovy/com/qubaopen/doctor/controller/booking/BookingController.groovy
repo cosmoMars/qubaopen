@@ -617,6 +617,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		def booking = bookingRepository.findOne(id)
 		
+		booking.status = Booking.Status.ChangeDate
+		
 		if (date)
 			booking.time = DateUtils.parseDate(date, 'yyyy-MM-dd HH')
 		

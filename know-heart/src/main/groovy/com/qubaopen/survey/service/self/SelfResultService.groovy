@@ -407,15 +407,7 @@ public class SelfResultService {
 		if (refresh) {
 			selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, resultScore)
 		}
-		
-//
-//		def selfResult = new SelfResult()
-//		def resultOption = new SelfResultOption(
-//			selfResult : selfResult,
-//			content : '问卷已完成，请通过心里地图查看内容'
-//		)
 		resultOption
-//		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
 	}
 	
 	
@@ -479,14 +471,7 @@ public class SelfResultService {
 			selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, resultScore)
 		}
 		
-//
-//		def selfResult = new SelfResult()
-//		def resultOption = new SelfResultOption(
-//			selfResult : selfResult,
-//			content : '问卷已完成，请通过心里地图查看内容'
-//		)
 		resultOption
-//		'{"success": "1", "message" : "问卷已完成，请通过心里地图查看内容"}'
 	}
 	
 	/**

@@ -103,7 +103,8 @@ public class HospitalService {
 			h = hospitalRepository.save(h)
 			
 			def hospitalInfo = new HospitalInfo(
-				id : h.id
+				id : h.id,
+				bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
 			)
 			hospitalInfoRepository.save(hospitalInfo)
 			def hospitalUdid = new HospitalUdid(

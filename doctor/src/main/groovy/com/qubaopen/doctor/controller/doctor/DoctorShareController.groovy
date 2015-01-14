@@ -56,17 +56,19 @@ public class DoctorShareController extends AbstractBaseController<DoctorShare, L
 		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
 			return '{"success" : "0", "message" : "err916"}'
 		}
-		
-		if (target != null && origin != null) {
-			def doctorShare = new DoctorShare(
-				doctor : doctor,
-				shareTarget : DoctorShare.ShareTarget.values()[target],
-				shareOrigin : DoctorShare.ShareOrigin.values()[origin],
-			)
-			doctorShareRepository.save(doctorShare)
-			return '{"success" : "1"}'
+		if (target == null) {
+			return '{"success" : "0", "message" : "err500"}'
 		}
-		'{"success" : "0", "message" : "传入的参数不正确"}'
+		if (origin == null) {
+			return '{"success" : "0", "message" : "err501"}'
+		}
+		def doctorShare = new DoctorShare(
+			doctor : doctor,
+			shareTarget : DoctorShare.ShareTarget.values()[target],
+			shareOrigin : DoctorShare.ShareOrigin.values()[origin],
+		)
+		doctorShareRepository.save(doctorShare)
+		return '{"success" : "1"}'
 	}
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.qubaopen.survey.entity.doctor.Doctor;
+import com.qubaopen.survey.entity.hospital.Hospital;
 
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -32,7 +33,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 		HttpSession session = request.getSession();
 		Doctor doctor = (Doctor) session.getAttribute("currentDoctor");
-		if (null == doctor) {
+		Hospital hospital = (Hospital) session.getAttribute("currentHospital");
+		if (null == doctor && null == hospital) {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			PrintWriter writer = response.getWriter();

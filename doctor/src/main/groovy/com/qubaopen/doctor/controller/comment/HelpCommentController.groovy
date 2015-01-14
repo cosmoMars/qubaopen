@@ -59,7 +59,7 @@ public class HelpCommentController extends AbstractBaseController<HelpComment, L
 		}
 		
 		if (!helpId) {
-			return '{"success" : "0", "message" : "信息不完整"}'
+			return '{"success" : "0", "message" : "err807"}'
 		}
 		
 		def helpComment = new HelpComment(

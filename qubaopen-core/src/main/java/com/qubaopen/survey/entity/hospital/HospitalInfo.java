@@ -42,7 +42,7 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 	private String address;
 
 	/**
-	 * 
+	 * 成立时间
 	 */
 	@Temporal(TemporalType.DATE)
 	private Date establishTime;

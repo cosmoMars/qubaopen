@@ -464,7 +464,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		]
 		
 	}
-	
+		
 	def dayForWeek(Date date) {
 		def c = Calendar.getInstance()
 		c.setTime date
@@ -477,4 +477,30 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		idx
 	}
 
+	
+	/**
+	 * @param bookingId
+	 * @param idx
+	 * @param doctor
+	 * @return
+	 * 修改用户订单状态
+	 */
+	@RequestMapping(value = 'confirmUserBookingStatus', method = RequestMethod.POST)
+	confirmUserBookingStatus(@RequestParam long bookingId,
+		@RequestParam(required = false) Integer idx,
+		@ModelAttribute('currentUser') User user) {
+		
+		logger.trace '--- 修改医师订单状态 ---'
+		def booking = bookingRepository.findOne(bookingId)
+		
+		if (idx) {
+			booking.userStatus = Booking.BookStatus.values()[idx]
+		}
+		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
+			booking.status == Booking.Status.Consulted
+		}
+		
+		bookingRepository.save(booking)
+		'{"success" : "1"}'
+	}
 }

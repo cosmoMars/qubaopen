@@ -144,6 +144,22 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	private double money;
 
+	private enum BookStatus {
+		Consulted, NoConsult
+	}
+
+	/**
+	 * 用户订单状态
+	 */
+	@Enumerated
+	private BookStatus userStatus;
+
+	/**
+	 * 医师订单状态
+	 */
+	@Enumerated
+	private BookStatus doctorStatus;
+
 	public String getTradeNo() {
 		return tradeNo;
 	}
@@ -326,6 +342,22 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setMoney(double money) {
 		this.money = money;
+	}
+
+	public BookStatus getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(BookStatus userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public BookStatus getDoctorStatus() {
+		return doctorStatus;
+	}
+
+	public void setDoctorStatus(BookStatus doctorStatus) {
+		this.doctorStatus = doctorStatus;
 	}
 
 }

@@ -577,5 +577,31 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}
+		
+	/**
+	 * @param bookingId
+	 * @param idx
+	 * @param doctor
+	 * @return
+	 * 修改医师订单状态
+	 */
+	@RequestMapping(value = 'confirmDoctorBookingStatus', method = RequestMethod.POST)
+	confirmDoctorBookingStatus(@RequestParam long bookingId,
+		@RequestParam(required = false) Integer idx,
+		@ModelAttribute('currentDoctor') Doctor doctor) {
+		
+		logger.trace '--- 修改医师订单状态 ---'
+		def booking = bookingRepository.findOne(bookingId)
+		
+		if (idx) {
+			booking.doctorStatus = Booking.BookStatus.values()[idx]
+		}
+		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
+			booking.status == Booking.Status.Consulted
+		}
+		
+		bookingRepository.save(booking)
+		'{"success" : "1"}'
+	}
 	
 }

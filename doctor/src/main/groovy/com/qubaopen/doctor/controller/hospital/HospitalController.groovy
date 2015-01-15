@@ -84,7 +84,10 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 				records = hospitalInfo.hospitalDoctorRecords,
 				recordPaths = []
 				records.each {
-					recordPaths << it.doctorRecordPath
+					recordPaths << [
+						'pathId' : it.id,
+						'path' : it.doctorRecordPath
+					]
 				}
 
 			return  [
@@ -102,7 +105,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 				'wordsConsult' : hospitalInfo?.wordsConsult,
 				'minCharge' : hospitalInfo?.minCharge,
 				'maxCharge' : hospitalInfo?.maxCharge,
-				'recordPaths' : recordPaths.join(',')
+				'recordPaths' : recordPaths
 			]
 		}
 

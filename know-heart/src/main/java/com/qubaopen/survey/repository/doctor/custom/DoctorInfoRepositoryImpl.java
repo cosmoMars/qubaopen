@@ -35,7 +35,9 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 		}
 
 		if (filters != null) {
-			hql.append("where ");
+			if (filters.size() > 1) {
+				hql.append("where ");
+			}
 			List<String> where = new ArrayList<String>();
 
 			if (filters.get("genreId") != null) {

@@ -1,14 +1,14 @@
 package com.qubaopen.doctor.controller.hospital;
 
+import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone;
+
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Map;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,9 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
-
-import static com.qubaopen.doctor.utils.ValidateUtil.*;
-
 import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.hospital.HospitalInfo;
 
@@ -44,6 +41,21 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		return hospitalInfoRepository;
 	}
 	
+	/**
+	 * @param name
+	 * @param address
+	 * @param establishTime
+	 * @param phone
+	 * @param urgentPhone
+	 * @param qq
+	 * @param introduce
+	 * @param wordsConsult
+	 * @param minCharge
+	 * @param maxCharge
+	 * @param timeJson
+	 * @param hospital
+	 * @return 修改诊所信息
+	 */
 	@RequestMapping(value = "modifyHosptialInfo")	
 	private String modifyHosptialInfo(
 			@RequestParam(required = false) String name,

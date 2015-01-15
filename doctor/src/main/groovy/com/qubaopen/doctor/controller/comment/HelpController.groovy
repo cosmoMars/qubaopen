@@ -174,6 +174,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		comments.each {
 			def goods = helpCommentGoodRepository.countByHelpComment(it)
 			commentData << [
+				'commentId' : it?.id,
 				'doctorId' : it?.doctor?.id,
 				'doctorName' : it?.doctor?.doctorInfo?.name,
 				'doctorContent' : it?.content,

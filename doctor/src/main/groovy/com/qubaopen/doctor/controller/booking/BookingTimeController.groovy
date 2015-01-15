@@ -67,7 +67,7 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			
 			def dateTime = it.get('date').asText()
 			if (dateTime == null) {
-				'{"success" : "0", "message" : "err907"}' // 时间不正确
+				return '{"success" : "0", "message" : "err907"}' // 时间不正确
 			}
 			def dbTime = bookingTimeRepository.findByFormatTime(doctor, dateTime)
 			def strTime

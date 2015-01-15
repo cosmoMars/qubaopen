@@ -142,7 +142,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate
 	}
 
-	private Double money;
+	private double money;
 
 	public String getTradeNo() {
 		return tradeNo;
@@ -320,11 +320,11 @@ public class Booking extends AbstractBaseEntity<Long> {
 		this.birthday = birthday;
 	}
 
-	public Double getMoney() {
+	public double getMoney() {
 		return money;
 	}
 
-	public void setMoney(Double money) {
+	public void setMoney(double money) {
 		this.money = money;
 	}
 

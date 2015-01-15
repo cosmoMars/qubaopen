@@ -2,6 +2,7 @@ package com.qubaopen.survey.controller.doctor;
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.base.AreaCode
 import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.doctor.Genre
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.repository.base.AreaCodeRepository
 import com.qubaopen.survey.repository.doctor.DoctorAddressRepository
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
 import com.qubaopen.survey.repository.doctor.DoctorRepository
+import com.qubaopen.survey.service.AreaCodeService;
 
 @RestController
 @RequestMapping('doctor')
@@ -37,6 +40,12 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	
 	@Autowired
 	DoctorAddressRepository doctorAddressRepository
+	
+	@Autowired
+	AreaCodeRepository areaCodeRepository
+	
+	@Autowired
+	AreaCodeService areaCodeService
 	
 	@Override
 	MyRepository<Doctor, Long> getRepository() {
@@ -79,7 +88,10 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			filters.put('targetId', targetId)
 		}
 		if (areaCode != null) {
-			filters.put('areaCode', areaCode)
+			def code = areaCodeRepository.findByCode(areaCode),
+				idsList = []
+			idsList = areaCodeService.getAreaCodeIds(idsList, code)
+			filters.put('areaCode', idsList)
 		}
 		if (faceToFace != null) {
 			filters.put('faceToFace', faceToFace)
@@ -146,6 +158,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			'faceToFace' : doctorInfo?.faceToFace,
 			'video' : doctorInfo?.video,
 			'avatar' : doctorInfo?.avatarPath,
+			'onlineFee' : doctorInfo?.onlineFee,
+			'offlineFee' : doctorInfo?.offlineFee,
 			'timeData' : timeData
 		]
 		

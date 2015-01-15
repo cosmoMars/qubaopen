@@ -47,7 +47,7 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 				where.add("tu.id = :targetId");
 			}
 			if (filters.get("areaCode") != null) {
-				where.add("di.areaCode.code = :areaCode");
+				where.add("di.areaCode.id in (:areaCode)");
 			}
 			if (filters.get("faceToFace") != null) {
 				where.add("di.faceToFace = :faceToFace");

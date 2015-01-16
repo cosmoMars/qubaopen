@@ -14,6 +14,7 @@
     <module>backend</module>
     <!--<module>know-heart2</module>-->
     <module>doctor</module>
+    <!--<module>doctor2</module>-->
   </modules>
 
 </project>

@@ -174,6 +174,9 @@ public class UserService {
 		def user
 		if (!activated) { //新用户
 			user = userRepository.findByPhone(phone)
+			if (user && user.activated) {
+				return '{"success" : "0", "message" : "err006"}'
+			}
 		} else { // 忘记密码发送短信
 			user = userRepository.findByPhoneAndActivated(phone, activated)
 			if (!user) {

@@ -332,7 +332,7 @@ class UserController extends AbstractBaseController<User, Long> {
 
 		userService.sendCaptcha(phone, activated)
 	}
-
+	
 	/**
 	 * 忘记密码重置
 	 * @param phone

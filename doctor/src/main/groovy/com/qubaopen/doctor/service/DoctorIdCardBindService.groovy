@@ -93,8 +93,9 @@ public class DoctorIdCardBindService {
 					return '{"success" : "0", "message" : "err205"}'
 				}
 				if ('0' == mapStatus && '2' == result) {
-					return '{"success" : "0", "message" : "err200"}'
+					return '{"success" : "0", "message" : "err206"}'
 				}
+			
 				if ('0' == mapStatus && '3' == result) {
 					userIdCard = new UserIDCard(
 						IDCard : idCard,
@@ -113,9 +114,9 @@ public class DoctorIdCardBindService {
 				userIdCardRepository.save(userIdCard)
 				doctorIdCardBindRepository.save(doctorIdCardBind)
 				return '{"success" : "1", "message" : "认证成功"}'
-			} else {
+			}/* else {
 				return '{"success" : "0", "message" : "err200"}'
-			}
+			}*/
 		} else {
 			def correctLog = existLogs.find {
 				it.status == 'local' || it.status == '2' || it.status == '3'
@@ -177,9 +178,9 @@ public class DoctorIdCardBindService {
 				doctorIdCardBind.userIDCard = userIdCard
 				doctorIdCardBindRepository.save(doctorIdCardBind)
 				return '{"success" : "1", "message" : "认证成功"}'
-			} else {
+			} /*else {
 				return '{"success" : "0", "message" : "err200"}'
-			}
+			}*/
 		}
 	}
 	

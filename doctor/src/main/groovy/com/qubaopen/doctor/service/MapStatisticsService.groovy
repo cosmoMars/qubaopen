@@ -70,7 +70,7 @@ public class MapStatisticsService {
 			}
 			
 			groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
-				if (v.size() < k.selfs.size() && v != null) {
+				/*if (v.size() < k.selfs.size() && v != null) {
 					
 					def allName = []
 					def completeName = [] as Set
@@ -100,7 +100,8 @@ public class MapStatisticsService {
 						'lock' : true,
 						'tips' : strName
 					]
-				} else if (v.size() == 1 && k.selfs.size() == 1) {
+				} else */
+				if (v.size() == 1 && k.selfs.size() == 1) {
 					singleMaps += v
 				} else if (v.size() == k.selfs.size() && k.selfs.size() > 1) {
 					def records = []
@@ -155,7 +156,7 @@ public class MapStatisticsService {
 						}
 						
 						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
-						def resultStr = "根据您对EPQ量表的测试，经过量表的标准分数换算得到你的性格偏向，如上图"
+						def resultStr = "根据您对EPQ量表的测试，经过量表的标准分数换算得到该用户的性格偏向，如上图"
 						if (recordMaps.get('L') > 60) {
 							resultStr = '由于量表中测谎题总分过高，故此次结果具有不针对性' as String
 						}
@@ -213,7 +214,7 @@ public class MapStatisticsService {
 				}
 				
 				
-				if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
+				/*if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
 					selfResultCount ++
 					def selfResult = selfResultOptionRepository.findOne(145l)
 					data << [
@@ -231,7 +232,7 @@ public class MapStatisticsService {
 						'lock' : false,
 						'picPath' : ''
 					]
-				}
+				}*/
 				
 				data << [
 					'groupId' : it?.self?.selfGroup?.id,
@@ -269,7 +270,7 @@ public class MapStatisticsService {
 			}
 			
 			groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
-				if (v.size() < k.selfs.size() && v != null) {
+				/*if (v.size() < k.selfs.size() && v != null) {
 					def allName = []
 					def completeName = [] as Set
 					k.selfs.each {
@@ -298,7 +299,8 @@ public class MapStatisticsService {
 						'lock' : true,
 						'tips' : strName
 					]
-				} else if (v.size() == 1 && k.selfs.size() == 1) {
+				} else*/ 
+				if (v.size() == 1 && k.selfs.size() == 1) {
 					singleMaps += v
 				} else if (v.size() == k.selfs.size() && k.selfs.size() > 1) {
 					def records = []
@@ -353,7 +355,7 @@ public class MapStatisticsService {
 							recordMaps.put(rk, tScore)
 							
 						}
-						def resultStr = "根据您对EPQ量表的测试，经过量表的标准分数换算得到你的性格偏向，如上图"
+						def resultStr = "根据您对EPQ量表的测试，经过量表的标准分数换算得到该用户的性格偏向，如上图"
 						if (recordMaps.get('L') > 60) {
 							resultStr = '由于量表中测谎题总分过高，故此次结果具有不针对性' as String
 						}
@@ -410,7 +412,7 @@ public class MapStatisticsService {
 					}
 				}
 				
-				if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
+				/*if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
 					selfResultCount ++
 					def selfResult = selfResultOptionRepository.findOne(145l)
 					data << [
@@ -428,7 +430,7 @@ public class MapStatisticsService {
 						'lock' : false,
 						'picPath' : ''
 					]
-				}
+				}*/
 				
 				data << [
 					'groupId' : it?.self?.selfGroup?.id,

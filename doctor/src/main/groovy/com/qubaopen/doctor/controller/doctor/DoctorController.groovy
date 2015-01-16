@@ -216,7 +216,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		doctorService.sendCaptcha(phone, activated)
 		
 	}
-	
+
 	/**
 	 * 忘记密码重置
 	 * @param phone

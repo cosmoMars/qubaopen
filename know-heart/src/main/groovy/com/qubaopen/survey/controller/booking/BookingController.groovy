@@ -399,7 +399,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'helpReason' : booking?.helpReason,
 				'otherProblem' : booking?.otherProblem,
 				'treatmented' : booking?.treatmented,
-				'haveConsulted' : booking?.haveConsulted
+				'haveConsulted' : booking?.haveConsulted,
+				'userStatus' : booking?.userStatus,
+				'doctorStatus' : booking?.doctorStatus
 			]
 		} else {
 			'{"success" : "0", "message" : "err"}'
@@ -453,7 +455,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'quick' : it?.quick,
 				'consultType' : it?.consultType?.ordinal(),
 				'status' : it?.status?.ordinal(),
-				'money' : it?.money
+				'money' : it?.money,
+				'userStatus' : it?.userStatus,
+				'doctorStatus' : it?.doctorStatus
 			]
 		}
 		
@@ -493,7 +497,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		logger.trace '--- 修改医师订单状态 ---'
 		def booking = bookingRepository.findOne(bookingId)
 		
-		if (idx) {
+		if (idx != null) {
 			booking.userStatus = Booking.BookStatus.values()[idx]
 		}
 		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {

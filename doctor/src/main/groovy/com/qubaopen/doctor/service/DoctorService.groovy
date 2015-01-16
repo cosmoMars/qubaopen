@@ -112,6 +112,9 @@ public class DoctorService {
 		def doctor
 		if (!activated) { //新用户
 			doctor = doctorRepository.findByPhone(phone)
+			if (doctor && doctor.activated) {
+				return '{"success" : "0", "message" : "err006"}'
+			}
 		} else { // 忘记密码发送短信
 			doctor = doctorRepository.findByPhoneAndActivated(phone, activated)
 			if (!doctor) {

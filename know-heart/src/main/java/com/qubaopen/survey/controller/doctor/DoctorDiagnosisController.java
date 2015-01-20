@@ -1,6 +1,9 @@
 package com.qubaopen.survey.controller.doctor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +43,24 @@ public class DoctorDiagnosisController extends AbstractBaseController<DoctorDiag
 	 * 获取医师诊断
 	 */
 	@RequestMapping(value = "retrieveDoctorDiagnosisByBookingId", method = RequestMethod.GET)
-	private List<DoctorDiagnosis> retrieveDoctorDiagnosisByBookingId(@RequestParam long bookingId,
+	private Map<String, Object> retrieveDoctorDiagnosisByBookingId(@RequestParam long bookingId,
 			@ModelAttribute("currentUser") User user) {
 		
 		logger.trace("-- 获取医师诊断 --");
 		
-		return doctorDiagnosisRepository.findByBookingIdOrderByTimeDesc(bookingId);
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		List<DoctorDiagnosis> doctorDiagnosis = doctorDiagnosisRepository.findByBookingIdOrderByTimeDesc(bookingId);
 		
+		for (DoctorDiagnosis dd : doctorDiagnosis) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("diagnosisId", dd.getId());
+			map.put("diagnosis", dd.getDiagnosis() != null ? dd.getDiagnosis() : "");
+			map.put("time", dd.getTime());
+			list.add(map);
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("success", "1");
+		result.put("data", list);
+		return result;
 	}
 }

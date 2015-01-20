@@ -1,7 +1,10 @@
 package com.qubaopen.doctor.controller.booking;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,12 +54,24 @@ public class DoctorDiagnosisController extends AbstractBaseController<DoctorDiag
 	 * @return
 	 * 查询医师诊断
 	 */
-	@RequestMapping(value = "retrieveDoctorDiagnosisByBooking", method = RequestMethod.POST)
-	private List<DoctorDiagnosis> retrieveDoctorDiagnosisByBooking(@RequestParam long bookingId, @ModelAttribute("currentDoctor") Doctor doctor) {
+	@RequestMapping(value = "retrieveDoctorDiagnosisByBooking", method = RequestMethod.GET)
+	private Map<String, Object> retrieveDoctorDiagnosisByBooking(@RequestParam long bookingId, @ModelAttribute("currentDoctor") Doctor doctor) {
 		
 		logger.trace("-- 查询医师诊断 --");
 		
-		return doctorDiagnosisRepository.findByBookingIdOrderByTimeDesc(bookingId);
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		List<DoctorDiagnosis> doctorDiagnosis = doctorDiagnosisRepository.findByBookingIdOrderByTimeDesc(bookingId);
+		for (DoctorDiagnosis dd : doctorDiagnosis) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("diagnosisId", dd.getId());
+			map.put("diagnosis", dd.getDiagnosis() != null ? dd.getDiagnosis() : "");
+			map.put("time", dd.getTime());
+			list.add(map);
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("success", "1");
+		result.put("data", list);
+		return result;
 	}
 	
 	/**

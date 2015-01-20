@@ -234,21 +234,22 @@ public class MapStatisticsService {
 					]
 				}*/
 				
-				data << [
-					'groupId' : it?.self?.selfGroup?.id,
-					'mapTitle' : it?.self?.title,
-					'chart' : chart,
-					'mapMax' : it?.mapMax,
-					'resultName' : it?.selfResultOption?.name,
-					'resultScore' : '',
-					'resultContent' : it?.selfResultOption?.content,
-					'managementType' : it?.selfManagementType?.id,
-					'recommendedValue' : it?.recommendedValue,
-					'graphicsType' : it?.self?.graphicsType?.id,
-					'special' : false,
-					'lock' : false,
-					'picPath' : it?.selfResultOption?.picPath
-				]
+				if (it?.selfResultOption) {
+					data << [
+						'groupId' : it?.self?.selfGroup?.id,
+						'mapTitle' : it?.self?.title,
+						'chart' : chart,
+						'mapMax' : it?.mapMax,
+						'resultName' : it?.selfResultOption?.name,
+						'resultScore' : '',
+						'resultContent' : it?.selfResultOption?.content,
+						'managementType' : it?.selfManagementType?.id,
+						'recommendedValue' : it?.recommendedValue,
+						'graphicsType' : it?.self?.graphicsType?.id,
+						'special' : false,
+						'lock' : false
+					]
+				}
 			}
 		
 		} else {
@@ -432,21 +433,22 @@ public class MapStatisticsService {
 					]
 				}*/
 				
-				data << [
-					'groupId' : it?.self?.selfGroup?.id,
-					'mapTitle' : it?.self?.title,
-					'chart' : chart,
-					'mapMax' : it?.mapMax,
-					'resultName' : it?.selfResultOption?.name,
-					'resultScore' : '',
-					'resultContent' : it?.selfResultOption?.content,
-					'managementType' : it?.selfManagementType?.id,
-					'recommendedValue' : it?.recommendedValue,
-					'graphicsType' : it?.self?.graphicsType?.id,
-					'special' : false,
-					'lock' : false,
-					'picPath' : it?.selfResultOption?.picPath
-				]
+				if (it?.selfResultOption) {
+					data << [
+						'groupId' : it?.self?.selfGroup?.id,
+						'mapTitle' : it?.self?.title,
+						'chart' : chart,
+						'mapMax' : it?.mapMax,
+						'resultName' : it?.selfResultOption?.name,
+						'resultScore' : '',
+						'resultContent' : it?.selfResultOption?.content,
+						'managementType' : it?.selfManagementType?.id,
+						'recommendedValue' : it?.recommendedValue,
+						'graphicsType' : it?.self?.graphicsType?.id,
+						'special' : false,
+						'lock' : false
+					]
+				}
 			}
 		}
 		[

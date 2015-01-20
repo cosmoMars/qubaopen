@@ -107,9 +107,9 @@ public class DoctorDiagnosisController extends AbstractBaseController<DoctorDiag
 		
 //		booking.getDoctorDiagnosis().add(doctorDiagnosis);
 		
-		doctorDiagnosisRepository.save(doctorDiagnosis);
+		doctorDiagnosis = doctorDiagnosisRepository.save(doctorDiagnosis);
 		
-		return "{\"success\" : \"1\"}";
+		return "{\"success\" : \"1\", \"diagnosisId\" : " + doctorDiagnosis.getId() + "}";
 	}
 	
 	

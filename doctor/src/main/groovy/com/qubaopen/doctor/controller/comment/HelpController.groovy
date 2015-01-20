@@ -153,7 +153,6 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	
 		logger.trace '-- 获取详细评论 --'
 		
-		
 		def help = helpRepository.findOne(helpId),
 			commentData = [], comments
 		if (ids) {

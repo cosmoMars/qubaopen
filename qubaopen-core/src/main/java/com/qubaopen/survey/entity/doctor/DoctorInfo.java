@@ -145,7 +145,7 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	@Enumerated
 	private LoginStatus loginStatus;
 
-	private enum LoginStatus {
+	public enum LoginStatus {
 		Unaudited, Auditing, Refusal, Audited
 	}
 

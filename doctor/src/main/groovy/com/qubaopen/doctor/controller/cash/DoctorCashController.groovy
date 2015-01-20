@@ -285,6 +285,12 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 	 */
 	@RequestMapping(value = 'retireveCashCaptcha', method = RequestMethod.GET)
 	retireveCashCaptcha(@ModelAttribute('currentDoctor') Doctor doctor){
+		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
 		 
 		def phone = doctor.phone
 		if (!phone) {

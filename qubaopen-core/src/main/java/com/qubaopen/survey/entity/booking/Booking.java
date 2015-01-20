@@ -1,12 +1,15 @@
 package com.qubaopen.survey.entity.booking;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -163,6 +166,12 @@ public class Booking extends AbstractBaseEntity<Long> {
 	public String getTradeNo() {
 		return tradeNo;
 	}
+
+	/**
+	 * 订单医师诊断
+	 */
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "booking", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+	private Set<DoctorDiagnosis> doctorDiagnosis;
 
 	public void setTradeNo(String tradeNo) {
 		this.tradeNo = tradeNo;
@@ -358,6 +367,14 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setDoctorStatus(BookStatus doctorStatus) {
 		this.doctorStatus = doctorStatus;
+	}
+
+	public Set<DoctorDiagnosis> getDoctorDiagnosis() {
+		return doctorDiagnosis;
+	}
+
+	public void setDoctorDiagnosis(Set<DoctorDiagnosis> doctorDiagnosis) {
+		this.doctorDiagnosis = doctorDiagnosis;
 	}
 
 }

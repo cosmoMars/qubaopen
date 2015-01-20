@@ -1,7 +1,5 @@
 package com.qubaopen.doctor.controller.booking;
 
-import java.awt.event.ItemEvent;
-
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
@@ -10,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.web.PageableDefault
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,13 +19,14 @@ import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository;
-import com.qubaopen.doctor.repository.booking.BookingTimeRepository;
+import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository
+import com.qubaopen.doctor.repository.booking.BookingTimeRepository
 import com.qubaopen.doctor.repository.doctor.BookingRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
-import com.qubaopen.doctor.repository.payEntity.PayEntityRepository;
+import com.qubaopen.doctor.repository.payEntity.PayEntityRepository
 import com.qubaopen.survey.entity.booking.Booking
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.user.User
 
 @RestController
@@ -485,6 +484,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		logger.trace('-- 修改订单状态 --')
 		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
+	
 		def booking = bookingRepository.findOne(id),
 			bookingStatus = Booking.Status.values()[index]
 			
@@ -573,6 +578,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@RequestParam(required = false) String date,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
+		
 		def booking = bookingRepository.findOne(id)
 		
 		booking.status = Booking.Status.ChangeDate
@@ -597,6 +608,13 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 		
 		logger.trace '--- 修改医师订单状态 ---'
+		
+		def di = doctorInfoRepository.findOne(doctor.id)
+		
+		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+			return '{"success" : "0", "message" : "err916"}'
+		}
+	
 		def booking = bookingRepository.findOne(bookingId)
 		
 		if (idx != null) {
@@ -609,5 +627,13 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}
+		
+//	class QuestionComparator implements Comparator {
+//		public int compare(Object o1, Object o2) {
+//			InterestQuestion io1 = (InterestQuestion) o1
+//			InterestQuestion io2 = (InterestQuestion) o2
+//			return io1.questionNum.compareTo(io2.questionNum)
+//		}
+//	}
 	
 }

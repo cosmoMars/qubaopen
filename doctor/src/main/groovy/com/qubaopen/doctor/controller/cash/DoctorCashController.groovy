@@ -198,7 +198,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		if (type == null) {
 			return '{"success" : "0", "message" : "err901"}' // 支付方式不正确
 		}
-		if (curCash != null && curCash > cash.currentCash) {
+		if (curCash != null && curCash > cash?.currentCash) {
 			return '{"success" : "0", "message" : "err911"}' // 取款金额超过当前余额
 		}
 		
@@ -208,7 +208,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		def takeCash = new DoctorTakeCash(
 			doctor : doctor,
 			cash : curCash,
-			status : TakeCash.Status.Auditing
+			status : DoctorTakeCash.Status.Auditing
 		)
 //		def payType = TakeCash.Type.values[type]
 		if (DoctorTakeCash.Type.Alipay.ordinal() == type) {

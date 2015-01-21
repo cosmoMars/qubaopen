@@ -22,9 +22,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 		logger.info(" =================== request preHandle =========================");
 		
-		System.out.println(request.getSession().getId() + "-------------------------------");
+		System.out.println(request.getRequestURI() + " *******************");
 
-		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic") || request.getRequestURI().contains("systemVersions") || request.getRequestURI().contains("notify")) {
+		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic") || request.getRequestURI().contains("systemVersions") || request.getRequestURI().contains("notify")
+				|| request.getRequestURI().contains("breakTalk")) {
 			return true;
 		}
 

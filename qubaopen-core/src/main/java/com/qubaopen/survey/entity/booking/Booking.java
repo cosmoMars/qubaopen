@@ -147,7 +147,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	private double money;
 
-	private enum BookStatus {
+	public enum BookStatus {
 		Consulted, NoConsult
 	}
 

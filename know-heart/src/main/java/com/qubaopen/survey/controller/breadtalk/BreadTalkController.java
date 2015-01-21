@@ -37,25 +37,35 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 	 * @return
 	 * 获取面包卷
 	 */
-	@RequestMapping(value = "retrieveBreadTalkCode", method = RequestMethod.GET)
-	private String retrieveBreadTalkCode() {
+	@RequestMapping(value = "retrieveBreadTalkCode", method = RequestMethod.POST)
+	private String retrieveBreadTalkCode(@RequestParam int idx) {
 		
 		logger.trace("-- 获取面包卷 --");
 		
 //		List<BreadTalk> breadTalks = breadTalkRepository.findByUsedOrderByIdAsc(true, pageable);
 		
 		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put("used_equal", true);
+		filters.put("status_equal", BreadTalk.Status.Unused);
+		BreadTalk breadTalk = null;
+		for (int i = idx; i >= 0; i--) {
+			filters.put("level_equal", BreadTalk.Level.values()[i]);
+			breadTalk = breadTalkRepository.findOneByFilters(filters);
+			if (breadTalk != null) {
+				break;
+			}
+		}
 		
-		BreadTalk breadTalk = breadTalkRepository.findOneByFilters(filters);
-		
-		String code = breadTalk != null ? (breadTalk.getCode() != null ? breadTalk.getCode() : "亲，活动已经结束咯～") : "亲，活动已经结束咯～";
+		if (breadTalk == null) {
+			return "{\"success\" : \"0\", \"message\" : \"亲，兑换卷已经被抢光啦～请期待其他活动～\"}";
+		}
 		
 		if (breadTalk != null) {
 			breadTalk.setReceiveTime(new Date());
+			breadTalk.setStatus(BreadTalk.Status.Using);
 			breadTalkRepository.save(breadTalk);
+			
 		}
-		return "{\"success\" : \"1\", \"code\" : \""  + code + "\"}";
+		return "{\"success\" : \"1\", \"code\" : \""  + breadTalk.getCode() + "\", \"money\" : \"" + breadTalk.getMoney() + "\"}";
 	}
 	
 	/**
@@ -73,11 +83,14 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		if (breadTalk == null) {
 			return "{\"success\" : \"0\", \"message\" : \"该面包卷不存在～\"}";
 		}
-		if (breadTalk.isUsed() == true) {
+		if (breadTalk.getStatus() == BreadTalk.Status.Unused) {
+			return "{\"success\" : \"0\", \"message\" : \"该面包卷不存在～\"}";
+		}
+		if (breadTalk.getStatus() == BreadTalk.Status.Used) {
 			return "{\"success\" : \"0\", \"message\" : \"该面包卷已被兑换\"}";
 		}
 		
-		breadTalk.setUsed(true);
+		breadTalk.setStatus(BreadTalk.Status.Used);
 		breadTalk.setExchangeTime(new Date());
 		
 		breadTalkRepository.save(breadTalk);

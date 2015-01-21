@@ -2,7 +2,9 @@ package com.qubaopen.survey.entity.bread;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,12 +23,23 @@ public class BreadTalk extends AbstractBaseEntity<Long> {
 	/**
 	 * 兑换吗
 	 */
+	@Column(unique = true)
 	private String code;
 
 	/**
-	 * 使用
+	 * 金额
 	 */
-	private boolean used;
+	private int money;
+
+	/**
+	 * 使用状态
+	 */
+	@Enumerated
+	private Status status;
+
+	public enum Status {
+		Unused, Using, Used
+	}
 
 	/**
 	 * 领取时间
@@ -40,6 +53,13 @@ public class BreadTalk extends AbstractBaseEntity<Long> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date exchangeTime;
 
+	@Enumerated
+	private Level level;
+
+	public enum Level {
+		Ten, Twenty, Fifty, Hundred
+	}
+
 	public String getCode() {
 		return code;
 	}
@@ -48,12 +68,20 @@ public class BreadTalk extends AbstractBaseEntity<Long> {
 		this.code = code;
 	}
 
-	public boolean isUsed() {
-		return used;
+	public int getMoney() {
+		return money;
 	}
 
-	public void setUsed(boolean used) {
-		this.used = used;
+	public void setMoney(int money) {
+		this.money = money;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	public Date getReceiveTime() {
@@ -70,6 +98,14 @@ public class BreadTalk extends AbstractBaseEntity<Long> {
 
 	public void setExchangeTime(Date exchangeTime) {
 		this.exchangeTime = exchangeTime;
+	}
+
+	public Level getLevel() {
+		return level;
+	}
+
+	public void setLevel(Level level) {
+		this.level = level;
 	}
 
 }

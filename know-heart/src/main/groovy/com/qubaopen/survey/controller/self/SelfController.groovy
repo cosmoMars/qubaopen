@@ -206,7 +206,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		def todayQuestionnaires = selfUserQuestionnaireRepository.findByTimeAndTypeIdWithOutSpecial(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), typeId, specialSelf, user)
 		
 		if (todayQuestionnaires?.size() >= 2) {
-			return '{"success" : "0", "message" : "err603"}'
+			return '{"success" : "0", "message" : "亲，该类别每日2题上线你已经答满咯～"}' // err603
 		}
 		
 		def data = []

@@ -54,12 +54,16 @@ public class SelfResultService {
 		if ('SAS' == self.abbreviation) {
 			score = score * 1.25 as int
 		}
-
-		def resultOption = selfResultOptionRepository.findOneByFilters(
-			'selfResult.self_equal' : self,
-			'highestScore_greaterThanOrEqualTo' : score,
-			'lowestScore_lessThanOrEqualTo' : score
-		)
+		def resultOption
+		if ('Delay' == self.abbreviation) {
+			resultOption = selfResultOptionRepository.findOne(208l)
+		} else {
+			resultOption = selfResultOptionRepository.findOneByFilters(
+				'selfResult.self_equal' : self,
+				'highestScore_greaterThanOrEqualTo' : score,
+				'lowestScore_lessThanOrEqualTo' : score
+			)
+		}
 		
 		def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh, score)
 		if (refresh) {

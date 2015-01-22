@@ -49,8 +49,6 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		
 		logger.trace("-- 获取面包卷 --");
 		
-//		List<BreadTalk> breadTalks = breadTalkRepository.findByUsedOrderByIdAsc(true, pageable);
-		
 		Map<String, Object> filters = new HashMap<String, Object>();
 		filters.put("status_equal", BreadTalk.Status.Unused);
 		Page<BreadTalk> page = null;
@@ -107,7 +105,7 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		
 		breadTalkRepository.save(breadTalk);
 		
-		return "{\"success\" : \"1\"}";
+		return "{\"success\" : \"1\", \"money\" : " + breadTalk.getMoney() + "}";
 	}
 
 	

@@ -2,12 +2,18 @@ package com.qubaopen.survey.controller.breadtalk;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.envers.Audited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +44,8 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 	 * 获取面包卷
 	 */
 	@RequestMapping(value = "retrieveBreadTalkCode", method = RequestMethod.POST)
-	private String retrieveBreadTalkCode(@RequestParam int idx) {
+	private String retrieveBreadTalkCode(@RequestParam int idx,
+			@PageableDefault(size = 1) Pageable pageable) {
 		
 		logger.trace("-- 获取面包卷 --");
 		
@@ -46,26 +53,30 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		
 		Map<String, Object> filters = new HashMap<String, Object>();
 		filters.put("status_equal", BreadTalk.Status.Unused);
-		BreadTalk breadTalk = null;
+		Page<BreadTalk> page = null;
+		BreadTalk bt = null;
 		for (int i = idx; i >= 0; i--) {
 			filters.put("level_equal", BreadTalk.Level.values()[i]);
-			breadTalk = breadTalkRepository.findOneByFilters(filters);
-			if (breadTalk != null) {
+			page = breadTalkRepository.findAll(filters, pageable);
+			if (page.getContent() != null && page.getContent().size() > 0) {
+				bt = page.getContent().get(0);
+			}
+			if (bt != null) {
 				break;
 			}
 		}
 		
-		if (breadTalk == null) {
+		if (bt == null) {
 			return "{\"success\" : \"0\", \"message\" : \"亲，兑换卷已经被抢光啦～请期待其他活动～\"}";
 		}
 		
-		if (breadTalk != null) {
-			breadTalk.setReceiveTime(new Date());
-			breadTalk.setStatus(BreadTalk.Status.Using);
-			breadTalkRepository.save(breadTalk);
+		if (bt != null) {
+			bt.setReceiveTime(new Date());
+			bt.setStatus(BreadTalk.Status.Using);
+			breadTalkRepository.save(bt);
 			
 		}
-		return "{\"success\" : \"1\", \"code\" : \""  + breadTalk.getCode() + "\", \"money\" : \"" + breadTalk.getMoney() + "\"}";
+		return "{\"success\" : \"1\", \"code\" : \""  + bt.getCode() + "\", \"money\" : \"" + bt.getMoney() + "\"}";
 	}
 	
 	/**
@@ -78,6 +89,7 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		
 		logger.trace("-- 兑换面包卷 --");
 		
+		code = code.toUpperCase();
 		BreadTalk breadTalk = breadTalkRepository.findByCode(code);
 		
 		if (breadTalk == null) {
@@ -98,4 +110,74 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		return "{\"success\" : \"1\"}";
 	}
 
+	
+	@RequestMapping(value = "generateCode", method = RequestMethod.GET)
+	private String generateCode() {
+//		RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)
+		Set<BreadTalk> breadTalks = new HashSet<BreadTalk>();
+		
+		for (int i = 0; i < 8000; i++) {
+			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			BreadTalk bt = new BreadTalk();
+			bt.setCode(code);
+			bt.setLevel(BreadTalk.Level.Ten);
+			bt.setStatus(BreadTalk.Status.Unused);
+			bt.setMoney(10);
+			breadTalks.add(bt);
+			if (breadTalks.size() < (i + 1)) {
+				i--;
+			}
+			if (breadTalks.size() == 8000) {
+				break;
+			}
+		}
+		for (int i = 0; i < 3000; i++) {
+			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			BreadTalk bt = new BreadTalk();
+			bt.setCode(code);
+			bt.setLevel(BreadTalk.Level.Twenty);
+			bt.setStatus(BreadTalk.Status.Unused);
+			bt.setMoney(20);
+			breadTalks.add(bt);
+			if (breadTalks.size() < (i + 1)) {
+				i--;
+			}
+			if (breadTalks.size() == 3000) {
+				break;
+			}
+		}
+		for (int i = 0; i < 300; i++) {
+			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			BreadTalk bt = new BreadTalk();
+			bt.setCode(code);
+			bt.setLevel(BreadTalk.Level.Fifty);
+			bt.setStatus(BreadTalk.Status.Unused);
+			bt.setMoney(50);
+			breadTalks.add(bt);
+			if (breadTalks.size() < (i + 1)) {
+				i--;
+			}
+			if (breadTalks.size() == 300) {
+				break;
+			}
+		}
+		for (int i = 0; i < 20; i++) {
+			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			BreadTalk bt = new BreadTalk();
+			bt.setCode(code);
+			bt.setLevel(BreadTalk.Level.Hundred);
+			bt.setStatus(BreadTalk.Status.Unused);
+			bt.setMoney(100);
+			breadTalks.add(bt);
+			if (breadTalks.size() < (i + 1)) {
+				i--;
+			}
+			if (breadTalks.size() == 20) {
+				break;
+			}
+		}
+		System.out.println(breadTalks.size());
+		breadTalkRepository.save(breadTalks);
+		return "success";
+	}
 }

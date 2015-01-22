@@ -108,4 +108,30 @@ public class BreadTalk extends AbstractBaseEntity<Long> {
 		this.level = level;
 	}
 
+	// @Override
+	// public boolean equals(Object obj) {
+	// // TODO Auto-generated method stub
+	// return super.equals(obj);
+	// }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return false;
+		if (obj == null)
+			return false;
+		else {
+			if (obj instanceof BreadTalk) {
+				BreadTalk bt = (BreadTalk) obj;
+				if (bt.code == this.code) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return this.code.hashCode();
+	}
 }

@@ -219,8 +219,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		if (onlineFee != null) {
 			doctorInfo.onlineFee = onlineFee
 		}
-		if (doctorInfo.offlineFee != null) {
-			doctorInfo.offlineFee != offlineFee
+		if (offlineFee != null) {
+			doctorInfo.offlineFee = offlineFee
 		}
 		
 		if (times != null) {

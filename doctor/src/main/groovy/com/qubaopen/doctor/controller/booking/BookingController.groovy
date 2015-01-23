@@ -428,14 +428,25 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 							]
 						}
 					} else if (!DateUtils.isSameDay(it.startTime, day) && it.startTime.before(day)) {
-						timeAll << [
-							'type' : 1,
-							'timeId' : it.id,
-							'startTime' : '00:00',
-							'endTime' : DateFormatUtils.format(it?.endTime, 'HH:mm'),
-							'location' : it?.location,
-							'content' : it?.content
-						]
+						if (DateUtils.isSameDay(it.endTime, day)) {
+							timeAll << [
+								'type' : 1,
+								'timeId' : it.id,
+								'startTime' : '00:00',
+								'endTime' : DateFormatUtils.format(it?.endTime, 'HH:mm'),
+								'location' : it?.location,
+								'content' : it?.content
+							]
+						} else {
+							timeAll << [
+								'type' : 1,
+								'timeId' : it.id,
+								'startTime' : '00:00',
+								'endTime' : '24:00',
+								'location' : it?.location,
+								'content' : it?.content
+							]
+						}
 					}
 				}
 			}

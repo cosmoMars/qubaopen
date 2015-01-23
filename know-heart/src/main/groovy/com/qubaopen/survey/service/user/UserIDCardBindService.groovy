@@ -1,5 +1,6 @@
 package com.qubaopen.survey.service.user;
 
+import org.apache.commons.lang3.time.DateUtils
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -9,9 +10,11 @@ import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserIDCard
 import com.qubaopen.survey.entity.user.UserIDCardBind
 import com.qubaopen.survey.entity.user.UserIDCardLog
+import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.repository.user.UserIDCardBindRepository
 import com.qubaopen.survey.repository.user.UserIDCardLogRepository
 import com.qubaopen.survey.repository.user.UserIDCardRepository
+import com.qubaopen.survey.repository.user.UserInfoRepository
 import com.qubaopen.survey.service.IdentityValidationService
 
 @Service
@@ -28,6 +31,9 @@ public class UserIDCardBindService {
 	
 	@Autowired
 	UserIDCardBindRepository userIDCardBindRepository
+	
+	@Autowired
+	UserInfoRepository userInfoRepository
 
 	/**
 	 * 提交身份证验证，每月每个账号只能认证3次，修改1次
@@ -61,6 +67,20 @@ public class UserIDCardBindService {
 				)
 				userIdCard.name = name
 				userIDCardLogRepository.save(userIdCardLog)
+				
+				def infoMap = retrieveBirthdayAndSex(idCard),
+				birthday = infoMap['birthday'],
+				sex = infoMap['sex'] as int,
+				userInfo = userInfoRepository.findOne(user.id)
+				userInfo.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+				if (1 == sex) {
+					userInfo.sex = UserInfo.Sex.MALE
+				}
+				if (0 == sex) {
+					userInfo.sex = UserInfo.Sex.FEMALE
+				}
+				
+				userInfoRepository.save(userInfo)
 			} else {
 				def result,
 					map = identityValidationService.identityValidation(idCard, name),
@@ -92,6 +112,18 @@ public class UserIDCardBindService {
 						IDCard : idCard,
 						name : name
 					)
+					def infoMap = retrieveBirthdayAndSex(idCard),
+					birthday = infoMap['birthday'],
+					sex = infoMap['sex'] as int,
+					userInfo = userInfoRepository.findOne(user.id)
+					userInfo.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+					if (1 == sex) {
+					userInfo.sex = UserInfo.Sex.MALE
+					}
+					if (0 == sex) {
+						userInfo.sex = UserInfo.Sex.FEMALE
+					}
+					userInfoRepository.save(userInfo)
 				}
 			}
 			if (userIdCard) {
@@ -130,6 +162,18 @@ public class UserIDCardBindService {
 				userIdCard.name = name
 				userIDCardRepository.save(userIdCard)
 				userIDCardLogRepository.save(userIdCardLog)
+				def infoMap = retrieveBirthdayAndSex(idCard),
+				birthday = infoMap['birthday'],
+				sex = infoMap['sex'] as int,
+				userInfo = userInfoRepository.findOne(user.id)
+				userInfo.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+				if (1 == sex) {
+					userInfo.sex = UserInfo.Sex.MALE
+				}
+				if (0 == sex) {
+					userInfo.sex = UserInfo.Sex.FEMALE
+				}
+				userInfoRepository.save(userInfo)
 				return '{"success" : "1", "message" : "认证成功"}'
 			} else {
 				def result,
@@ -154,11 +198,26 @@ public class UserIDCardBindService {
 				if ('0' == mapStatus && '1' == result) {
 					return '{"success" : "0", "message" : "err205"}'
 				}
-				if ('0' == mapStatus && '1' != result) {
+				if ('0' == mapStatus && '2' == result) {
+					return '{"success" : "0", "message" : "err200"}'
+				}
+				if ('0' == mapStatus && '3' == result) {
 					userIdCard = new UserIDCard(
 						IDCard : idCard,
 						name : name
 					)
+					def infoMap = retrieveBirthdayAndSex(idCard),
+					birthday = infoMap['birthday'],
+					sex = infoMap['sex'] as int,
+					userInfo = userInfoRepository.findOne(user.id)
+					userInfo.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+					if (1 == sex) {
+						userInfo.sex = UserInfo.Sex.MALE
+					}
+					if (0 == sex) {
+						userInfo.sex = UserInfo.Sex.FEMALE
+					}
+					userInfoRepository.save(userInfo)
 					userIDCardRepository.save(userIdCard)
 				}
 			}
@@ -180,14 +239,23 @@ public class UserIDCardBindService {
 		def idCard = userIDCardBind.userIDCard.IDCard,
 			age = Integer.valueOf(DateTime.now().year) - Integer.valueOf(idCard.substring(6, 10))
 		
-		String lastValue = idCard.substring(idCard.length() - 1, idCard.length());
-		def sex
-		if (lastValue.trim().toLowerCase().equals('x') || lastValue.trim().toLowerCase().equals('e')) {
-			sex = 0
-		} else {
-			sex = Integer.parseInt(lastValue) % 2
-		}
+		String last2Value = idCard.substring(idCard.length() - 2, idCard.length() - 1);
+		def sex = Integer.parseInt(last2Value) % 2
+//		if (lastValue.trim().toLowerCase().equals('x') || lastValue.trim().toLowerCase().equals('e')) {
+//			sex = 0
+//		} else {
+//			sex = Integer.parseInt(lastValue) % 2
+//		}
 		[age : age, sex : sex]
 	}
+	
+	def retrieveBirthdayAndSex(String idCard) {
 		
+		def birthday = idCard.substring(6, 14)
+		
+		String last2Value = idCard.substring(idCard.length() - 2, idCard.length() - 1);
+		def sex = Integer.parseInt(last2Value) % 2
+		
+		[birthday : birthday, sex : sex]
+	}
 }

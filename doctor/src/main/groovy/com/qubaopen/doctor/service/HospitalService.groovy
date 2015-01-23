@@ -1,9 +1,12 @@
 package com.qubaopen.doctor.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import groovy.transform.AutoClone;
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -166,14 +169,11 @@ public class HospitalService {
 		if (hospitalCaptcha && hospitalCaptcha.captcha) {
 			captcha = hospitalCaptcha.captcha
 		} else {
-			// 生成6位数字格式的验证码
-			captcha = RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)
+			// 生成30位验证码
+			captcha = DateFormatUtils.format(new Date(), 'yyyyMMdd') + RandomStringUtils.random(22, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 		}
 		
-		// 给指定的用户手机号发送6位随机数的验证码
-//		def result = smsService.sendCaptcha(email, captcha)
-		def result = captchaService.sandCaptcha(email, captcha)
-		
+		def result = captchaService.sendTextMail(email, captcha)
 		def hospitalCaptchaLog = new HospitalCaptchaLog(
 			hospital : hospital,
 			captcha : captcha,
@@ -182,10 +182,6 @@ public class HospitalService {
 		)
 		hospitalCaptchaLogRepository.save(hospitalCaptchaLog)
 		
-//		if (!result.get('isSuccess')) {
-//			return '{"success": "0", "message": "err011"}'
-//		}
-
 		if (hospitalCaptcha) {
 			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate)) {
 				hospitalCaptcha.sentNum ++
@@ -206,6 +202,72 @@ public class HospitalService {
 		hospitalCaptchaRepository.save(hospitalCaptcha)
 		'{"success": "1"}'
 	
+	}
+	
+	@Transactional
+	sendRegisterCaptcha(String email) {
+		
+		def hospital = hospitalRepository.findByEmail(email)
+		
+		if (hospital.activated) {
+			return '{"success" : "1", "message" : "该用户已经被注册"}'
+		}
+
+		def hospitalCaptcha = hospitalCaptchaRepository.findOne(hospital.id)
+		
+		def today = new Date()
+		if (hospitalCaptcha) {
+			def lastSentDate = hospitalCaptcha.lastSentDate
+			if ((today.time - lastSentDate.time) < 60000) {
+				return '{"success": "0", "message": "err009"}' // 1分钟内不能连续发送
+			}
+
+			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate) && hospitalCaptcha.sentNum > 10) {
+				return '{"success": "0", "message": "err010"}' // 每天不能超过10次
+			}
+			if (today.before(hospitalCaptcha.expiredTime)) {
+				return '{"success": "0", "message": "超时"}' // 15mins 超时
+			}
+			
+		}
+		
+		// 生成30位验证码
+		def captcha = DateFormatUtils.format(new Date(), 'yyyyMMdd') + RandomStringUtils.random(22, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+		
+		def result = captchaService.sendTextMail(email, captcha)
+		
+		def hospitalCaptchaLog = new HospitalCaptchaLog(
+			hospital : hospital,
+			captcha : captcha,
+			status : result,
+			action : '0'
+		)
+		hospitalCaptchaLogRepository.save(hospitalCaptchaLog)
+		
+		if (hospitalCaptcha) {
+			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate)) {
+				hospitalCaptcha.sentNum ++
+			} else {
+				hospitalCaptcha.sentNum = 1
+			}
+			hospitalCaptcha.captcha = captcha
+			hospitalCaptcha.lastSentDate = today
+		} else {
+			hospitalCaptcha = new HospitalCaptcha(
+				id : hospital.id,
+				captcha : captcha,
+				lastSentDate : today,
+				sentNum : 1
+			)
+		}
+		
+		def cal = Calendar.getInstance()
+		cal.setTime today
+		cal.add(Calendar.MINUTE, 15)
+		hospitalCaptcha.expiredTime = cal.getTime()
+
+		hospitalCaptchaRepository.save(hospitalCaptcha)
+		'{"success": "1"}'
 	}
 	
 	/**

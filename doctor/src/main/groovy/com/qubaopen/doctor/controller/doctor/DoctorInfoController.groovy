@@ -2,6 +2,8 @@ package com.qubaopen.doctor.controller.doctor;
 
 import static com.qubaopen.doctor.utils.ValidateUtil.*
 
+import java.awt.Dialog;
+
 import javax.servlet.http.HttpServletRequest
 
 import org.apache.commons.lang3.time.DateFormatUtils
@@ -300,6 +302,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			
 			saveFile(record.bytes, recordPath)
 			doctorInfo.recordPath = "/$recordDir/$fileName"
+			
+			doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
 		}
 		
 		if (recordJson != null) {

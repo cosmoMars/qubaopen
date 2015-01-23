@@ -111,9 +111,10 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 	
 	@RequestMapping(value = "generateCode", method = RequestMethod.GET)
 	private String generateCode() {
-//		RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)
+
 		Set<BreadTalk> breadTalks = new HashSet<BreadTalk>();
 		
+		// 生成兑换码
 		for (int i = 0; i < 8000; i++) {
 			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 			BreadTalk bt = new BreadTalk();
@@ -174,7 +175,6 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 				break;
 			}
 		}
-		System.out.println(breadTalks.size());
 		breadTalkRepository.save(breadTalks);
 		return "success";
 	}

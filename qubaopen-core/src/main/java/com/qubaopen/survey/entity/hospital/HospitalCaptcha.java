@@ -38,6 +38,12 @@ public class HospitalCaptcha extends AbstractBaseEntity2<Long> {
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastSentDate;
+	
+	/**
+	 * 过期时间
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date expiredTime;
 
 	/**
 	 * 发送次数
@@ -66,6 +72,14 @@ public class HospitalCaptcha extends AbstractBaseEntity2<Long> {
 
 	public void setLastSentDate(Date lastSentDate) {
 		this.lastSentDate = lastSentDate;
+	}
+
+	public Date getExpiredTime() {
+		return expiredTime;
+	}
+
+	public void setExpiredTime(Date expiredTime) {
+		this.expiredTime = expiredTime;
 	}
 
 	public int getSentNum() {

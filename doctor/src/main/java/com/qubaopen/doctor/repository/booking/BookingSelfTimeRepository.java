@@ -16,4 +16,7 @@ public interface BookingSelfTimeRepository extends MyRepository<BookingSelfTime,
 	
 	@Query("from BookingSelfTime bst where bst.doctor = :doctor and date_format(bst.startTime, '%Y-%m-%d') <= date_format(:time, '%Y-%m-%d') and date_format(bst.endTime, '%Y-%m-%d') >= date_format(:time, '%Y-%m-%d')")
 	List<BookingSelfTime> findByDoctorAndTime(@Param("doctor") Doctor doctor, @Param("time") Date time);
+	
+	@Query("from BookingSelfTime bst where date_format(bst.startTime, '%Y-%m-%d %H:%M') >= :startTime and date_format(bst.endTime, '%Y-%m-%d %H:%M') <= :endTime")
+	List<BookingSelfTime> findByTime(@Param("startTime") String startTime, @Param("endTime") String endTime);
 }

@@ -15,6 +15,7 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository
 import com.qubaopen.doctor.repository.booking.BookingTimeRepository
+import com.qubaopen.doctor.repository.doctor.BookingRepository;
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.survey.entity.booking.BookingSelfTime
 import com.qubaopen.survey.entity.booking.BookingTime
@@ -35,6 +36,9 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 	
 	@Autowired
 	DoctorInfoRepository doctorInfoRepository
+	
+	@Autowired
+	BookingRepository bookingRepository
 	
 	@Override
 	MyRepository<BookingTime, Long> getRepository() {
@@ -176,6 +180,13 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 		
 		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
 			return '{"success" : "0", "message" : "err916"}'
+		}
+		
+		def bookings = bookingRepository.findByTime(startTime, endTime),
+			selfTimes = bookingSelfTimeRepository.findByTime(startTime, endTime)
+		 
+		if ((bookings && bookings.size() > 0) || (selfTimes && selfTimes?.size() > 0)) {
+			return '{"success" : "0", "message" : "err917"}'
 		}
 		
 		def start = DateUtils.parseDate(startTime, 'yyyy-MM-dd HH:mm'),

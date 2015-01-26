@@ -30,6 +30,11 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 	private User user;
 	
 	/**
+	 * 取现纪录
+	 */
+	private DoctorTakeCash doctorTakeCash;
+	
+	/**
 	 * 用户姓名
 	 */
 	private String userName;
@@ -62,6 +67,17 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 	}
 
 	private String detail;
+	
+	/**
+	 * 交易状态
+	 */
+	@Enumerated
+	private PayStatus payStatus;
+	
+	private enum PayStatus {
+		Processing, Completed, Failure
+	}
+	
 
 	public Doctor getDoctor() {
 		return doctor;
@@ -85,6 +101,14 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public DoctorTakeCash getDoctorTakeCash() {
+		return doctorTakeCash;
+	}
+
+	public void setDoctorTakeCash(DoctorTakeCash doctorTakeCash) {
+		this.doctorTakeCash = doctorTakeCash;
 	}
 
 	public double getCash() {
@@ -117,6 +141,14 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+
+	public PayStatus getPayStatus() {
+		return payStatus;
+	}
+
+	public void setPayStatus(PayStatus payStatus) {
+		this.payStatus = payStatus;
 	}
 
 	public Date getTime() {

@@ -1,5 +1,7 @@
 package com.qubaopen.doctor.controller.cash;
 
+import javax.management.modelmbean.RequiredModelMBean;
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -103,16 +105,18 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		cashLogs.each {
 			if (DoctorCashLog.Type.In == it.type) {
 				inDetail << [
-					'userName' : it.userName,
-					'cash' : it.cash,
-					'payType' : it.payType.ordinal(),
-					'time' : it.time
+					'userName' : it?.userName,
+					'cash' : it?.cash,
+					'payType' : it?.payType?.ordinal(),
+					'time' : it?.time,
+					'payStatus' : it?.payStatus
 				]
 			} else if (DoctorCashLog.Type.Out == it.type) {
 				outDetail << [
-					'cash' : it.cash,
-					'payType' : it.payType.ordinal(),
-					'time' : it.time
+					'cash' : it?.cash,
+					'payType' : it?.payType?.ordinal(),
+					'time' : it?.time,
+					'payStatus' : it?.payStatus
 				]
 			}
 		}
@@ -236,7 +240,8 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 			type : DoctorCashLog.Type.Out,
 			cash : curCash,
 			payType : DoctorCashLog.PayType.values()[type],
-			time : new Date()
+			time : new Date(),
+			payStatus : DoctorCashLog.PayStatus.Processing
 		)
 		doctorCashLogRepository.save(cashLog)
 		dCaptcha.captcha = null
@@ -255,17 +260,26 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 	 */
 	@RequestMapping(value = 'modifyTakeCashStatus', method = RequestMethod.POST)
 	modifyTakeCashStatus(@RequestParam(required = false) Long cashId,
+		@RequestParam(required = false) Long doctorCashId,
 		@RequestParam(required = false) Integer status,
 		@RequestParam(required = false) String failureReason) {
 		
 		def takeCash = doctorTakeCashRepository.findOne(cashId)
+		
+		def cashLog = doctorCashLogRepository.findByDoctorTakeCash(new DoctorTakeCash(id : cashId)),
+			doctorCash = doctorCashRepository.findOne()
 		
 		if (status == null) {
 			return '{"success" : "0", "message" : "err914"}' // 状态位不正确
 		}
 		
 		if (DoctorTakeCash.Status.Success.ordinal() == status) {
+			
 			takeCash.status = DoctorTakeCash.Status.Success
+			
+			cashLog.payStatus = DoctorCashLog.PayStatus.Completed
+
+			doctorCashLogRepository.save(cashLog)
 		}
 		if (DoctorTakeCash.Status.Failure.ordinal() == status) {
 			if (failureReason == null) {
@@ -273,7 +287,11 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 			}
 			takeCash.status = DoctorTakeCash.Status.Failure
 			takeCash.failureReason = failureReason
+			
+			cashLog.payStatus = DoctorCashLog.PayStatus.Failure
+			doctorCashLogRepository.save(cashLog)
 		}
+		
 		doctorTakeCashRepository.save(takeCash)
 		'{"success" : "1"}'
 	}

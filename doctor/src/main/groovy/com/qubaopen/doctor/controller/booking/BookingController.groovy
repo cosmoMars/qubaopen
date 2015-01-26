@@ -112,7 +112,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'status' : it.status?.ordinal(),
 				'money' : it.money,
 				'userStatus' : it.userStatus,
-				'doctorStatus' : it.doctorStatus
+				'doctorStatus' : it.doctorStatus,
+				'userSex' : it?.sex,
+				'avatar' : it?.user?.userInfo?.avatarPath
 			]
 		}
 		def more = true
@@ -194,15 +196,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		bookingList.each {
 			data << [
 				'bookingId' : it?.id,
-				'userId' : it.user?.id,
+				'userId' : it?.user?.id,
+				'doctorName' : it?.doctor?.doctorInfo?.name,
 				'userName' : it?.name,
-				'helpReason' : it.helpReason,
-				'refusalReason' : it.refusalReason,
-				'time' : it.time,
-				'quick' : it.quick,
-				'consultType' : it.consultType?.ordinal(),
-				'status' : it.status?.ordinal(),
-				'money' : it.money,
+				'helpReason' : it?.helpReason,
+				'refusalReason' : it?.refusalReason,
+				'time' : it?.time,
+				'quick' : it?.quick,
+				'consultType' : it?.consultType?.ordinal(),
+				'status' : it?.status?.ordinal(),
+				'money' : it?.money,
 				'userStatus' : it?.userStatus,
 				'doctorStatus' : it?.doctorStatus
 			]

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.cash.DoctorCashLog;
+import com.qubaopen.survey.entity.cash.DoctorTakeCash;
 import com.qubaopen.survey.entity.doctor.Doctor;
 
 public interface DoctorCashLogRepository extends MyRepository<DoctorCashLog, Long> {
@@ -17,4 +18,5 @@ public interface DoctorCashLogRepository extends MyRepository<DoctorCashLog, Lon
 	@Query("from DoctorCashLog dcl where dcl.doctor = :doctor and dcl.type = :type order by dcl.time desc")
 	List<DoctorCashLog> findByDoctorAndTypeOrderOrderByTimeDesc(@Param("doctor") Doctor doctor, @Param("type") DoctorCashLog.Type type, Pageable pageable);
 	
+	DoctorCashLog findByDoctorTakeCash(DoctorTakeCash doctorTakeCash);
 }

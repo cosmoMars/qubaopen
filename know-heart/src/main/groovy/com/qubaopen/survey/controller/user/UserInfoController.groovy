@@ -104,6 +104,11 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		logger.trace(' -- 上传头像 -- ')
 
 		if (avatar) {
+			def pic = 'pic',
+				file = new File("${request.getServletContext().getRealPath('/')}$pic");
+			if (!file.exists() && !file.isDirectory()) {
+				file.mkdir()
+			}
 
 			def filename = "${user.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
 				avatarPath = "${request.getServletContext().getRealPath('/')}pic/$filename"

@@ -632,7 +632,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			booking.doctorStatus = Booking.BookStatus.values()[idx]
 		}
 		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
-			booking.status == Booking.Status.Completed
+			booking.status == Booking.Status.Consulted
 		}
 		
 		bookingRepository.save(booking)

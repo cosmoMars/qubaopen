@@ -65,7 +65,7 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		}
 		
 		if (bt == null) {
-			return "{\"success\" : \"0\", \"message\" : \"亲，兑换卷已经被抢光啦～请期待其他活动～\"}";
+			return "{\"success\" : \"0\", \"message\" : \"亲，兑换券已经被抢光啦～请期待其他活动～\"}";
 		}
 		
 		if (bt != null) {
@@ -91,13 +91,13 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		BreadTalk breadTalk = breadTalkRepository.findByCode(code);
 		
 		if (breadTalk == null) {
-			return "{\"success\" : \"0\", \"message\" : \"该面包卷不存在～\"}";
+			return "{\"success\" : \"0\", \"message\" : \"兑换券不存在\"}";
 		}
 		if (breadTalk.getStatus() == BreadTalk.Status.Unused) {
-			return "{\"success\" : \"0\", \"message\" : \"该面包卷不存在～\"}";
+			return "{\"success\" : \"0\", \"message\" : \"兑换券不存在\"}";
 		}
 		if (breadTalk.getStatus() == BreadTalk.Status.Used) {
-			return "{\"success\" : \"0\", \"message\" : \"该面包卷已被兑换\"}";
+			return "{\"success\" : \"0\", \"message\" : \"兑换券已被兑换\"}";
 		}
 		
 		breadTalk.setStatus(BreadTalk.Status.Used);
@@ -116,7 +116,7 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 		
 		// 生成兑换码
 		for (int i = 0; i < 8000; i++) {
-			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			String code = "BT" + RandomStringUtils.random(8, "123456789ABCDEFGHJKLMNPRTUWXY");
 			BreadTalk bt = new BreadTalk();
 			bt.setCode(code);
 			bt.setLevel(BreadTalk.Level.Ten);
@@ -131,7 +131,7 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 			}
 		}
 		for (int i = 0; i < 3000; i++) {
-			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			String code = "BT" + RandomStringUtils.random(8, "123456789ABCDEFGHJKLMNPRTUWXY");
 			BreadTalk bt = new BreadTalk();
 			bt.setCode(code);
 			bt.setLevel(BreadTalk.Level.Twenty);
@@ -146,7 +146,7 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 			}
 		}
 		for (int i = 0; i < 300; i++) {
-			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			String code = "BT" + RandomStringUtils.random(8, "123456789ABCDEFGHJKLMNPRTUWXY");
 			BreadTalk bt = new BreadTalk();
 			bt.setCode(code);
 			bt.setLevel(BreadTalk.Level.Fifty);
@@ -161,7 +161,7 @@ public class BreadTalkController extends AbstractBaseController<BreadTalk, Long>
 			}
 		}
 		for (int i = 0; i < 20; i++) {
-			String code = "BT" + RandomStringUtils.random(8, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			String code = "BT" + RandomStringUtils.random(8, "123456789ABCDEFGHJKLMNPRTUWXY");
 			BreadTalk bt = new BreadTalk();
 			bt.setCode(code);
 			bt.setLevel(BreadTalk.Level.Hundred);

@@ -196,6 +196,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				g.user == user
 			}
 			commentData << [
+				'commentId' : it?.id,
 				'doctorId' : it?.doctor?.id,
 				'doctorName' : it?.doctor?.doctorInfo?.name,
 				'doctorContent' : it?.content,
@@ -224,6 +225,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			'helpTime' : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
 			'userName' : help?.user?.userInfo?.nickName,
 			'userAvatar' : help?.user?.userInfo?.avatarPath,
+			'more' : more,
 			'data' : commentData
 		]
 	}

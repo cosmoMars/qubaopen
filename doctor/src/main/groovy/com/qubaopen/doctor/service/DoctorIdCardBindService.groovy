@@ -1,22 +1,19 @@
 package com.qubaopen.doctor.service;
 
-import groovy.transform.AutoClone;
-
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorIdCardLogRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository;
-import com.qubaopen.doctor.repository.user.UserIdCardRepository;
+import com.qubaopen.doctor.repository.doctor.DoctorIdCardBindRepository
+import com.qubaopen.doctor.repository.doctor.DoctorIdCardLogRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.doctor.repository.user.UserIdCardRepository
 import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.doctor.DoctorIdCardBind;
-import com.qubaopen.survey.entity.doctor.DoctorIdCardLog;
+import com.qubaopen.survey.entity.doctor.DoctorIdCardBind
+import com.qubaopen.survey.entity.doctor.DoctorIdCardLog
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.user.UserIDCard
-import com.qubaopen.survey.entity.user.UserIDCardBind
-import com.qubaopen.survey.entity.user.UserIDCardLog
 
 
 @Service
@@ -67,6 +64,19 @@ public class DoctorIdCardBindService {
 					name : name,
 					status : 'local'
 				)
+				def di = doctorInfoRepository.findOne(doctor.id)
+				def infoMap = retrieveBirthdayAndSex(idCard),
+				birthday = infoMap['birthday'],
+				sex = infoMap['sex'] as int
+				di.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+				if (1 == sex) {
+					di.sex = DoctorInfo.Sex.Male
+				}
+				if (0 == sex) {
+					di.sex = DoctorInfo.Sex.Female
+				}
+				di.name = name
+				doctorInfoRepository.save(di)
 				userIdCard.name = name
 				doctorIdCardLogRepository.save(doctorIdCardLog)
 			} else {
@@ -102,6 +112,16 @@ public class DoctorIdCardBindService {
 						name : name
 					)
 					def di = doctorInfoRepository.findOne(doctor.id)
+					def infoMap = retrieveBirthdayAndSex(idCard),
+					birthday = infoMap['birthday'],
+					sex = infoMap['sex'] as int
+					di.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+					if (1 == sex) {
+						di.sex = DoctorInfo.Sex.Male
+					}
+					if (0 == sex) {
+						di.sex = DoctorInfo.Sex.Female
+					}
 					di.name = name
 					doctorInfoRepository.save(di)
 				}
@@ -142,6 +162,21 @@ public class DoctorIdCardBindService {
 				userIdCard.name = name
 				userIdCardRepository.save(userIdCard)
 				doctorIdCardLogRepository.save(dcotorIdCardLog)
+				
+				def di = doctorInfoRepository.findOne(doctor.id)
+				def infoMap = retrieveBirthdayAndSex(idCard),
+				birthday = infoMap['birthday'],
+				sex = infoMap['sex'] as int
+				di.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+				if (1 == sex) {
+					di.sex = DoctorInfo.Sex.Male
+				}
+				if (0 == sex) {
+					di.sex = DoctorInfo.Sex.Female
+				}
+				di.name = name
+				doctorInfoRepository.save(di)
+				
 				return '{"success" : "1", "message" : "认证成功"}'
 			} else {
 				def result,
@@ -166,11 +201,28 @@ public class DoctorIdCardBindService {
 				if ('0' == mapStatus && '1' == result) {
 					return '{"success" : "0", "message" : "err205"}'
 				}
-				if ('0' == mapStatus && '1' != result) {
+				if ('0' == mapStatus && '2' == result) {
+					return '{"success" : "0", "message" : "err206"}'
+				}
+				if ('0' == mapStatus && '3' == result) {
 					userIdCard = new UserIDCard(
 						IDCard : idCard,
 						name : name
 					)
+					def di = doctorInfoRepository.findOne(doctor.id)
+					def infoMap = retrieveBirthdayAndSex(idCard),
+					birthday = infoMap['birthday'],
+					sex = infoMap['sex'] as int
+					di.birthday = DateUtils.parseDate(birthday, "yyyyMMdd")
+					if (1 == sex) {
+						di.sex = DoctorInfo.Sex.Male
+					}
+					if (0 == sex) {
+						di.sex = DoctorInfo.Sex.Female
+					}
+					di.name = name
+					doctorInfoRepository.save(di)
+					
 					userIdCardRepository.save(userIdCard)
 				}
 			}
@@ -184,4 +236,13 @@ public class DoctorIdCardBindService {
 		}
 	}
 	
+	def retrieveBirthdayAndSex(String idCard) {
+		
+		def birthday = idCard.substring(6, 14)
+		
+		String last2Value = idCard.substring(idCard.length() - 2, idCard.length() - 1);
+		def sex = Integer.parseInt(last2Value) % 2
+		
+		[birthday : birthday, sex : sex]
+	}
 }

@@ -1,12 +1,8 @@
 package com.qubaopen.doctor.service;
 
-import javax.servlet.http.HttpServletRequest;
-
-import groovy.transform.AutoClone;
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -16,14 +12,9 @@ import com.qubaopen.doctor.repository.hospital.HospitalCaptchaLogRepository
 import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository
 import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository
 import com.qubaopen.doctor.repository.hospital.HospitalRepository
-import com.qubaopen.doctor.repository.hospital.HospitalUdidRepository
-import com.qubaopen.doctor.utils.DateCommons
-import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.hospital.HospitalCaptcha
 import com.qubaopen.survey.entity.hospital.HospitalCaptchaLog
-import com.qubaopen.survey.entity.hospital.HospitalInfo
-import com.qubaopen.survey.entity.hospital.HospitalUdid
 
 @Service
 public class HospitalService {
@@ -40,37 +31,37 @@ public class HospitalService {
 	@Autowired
 	HospitalCaptchaLogRepository hospitalCaptchaLogRepository
 	
-	@Autowired
-	HospitalUdidRepository hospitalUdidRepository
+//	@Autowired
+//	HospitalUdidRepository hospitalUdidRepository
 	
 	@Autowired
 	CaptchaService captchaService
 	
-	/**
-	 * @param user
-	 * @param udid
-	 * @param idfa
-	 * @return
-	 */
-	@Transactional
-	saveUserCode(Hospital hospital, String udid, String idfa, String imei) {
-		
-		def code = hospitalUdidRepository.findOne(hospital.id)
-		
-		if (udid) {
-			code.udid = udid
-		}
-		if (idfa) {
-			code.idfa = idfa
-		}
-		if (imei) {
-			code.imei = imei
-		}
-		if (!udid && !idfa && !imei) {
-			return
-		}
-		hospitalUdidRepository.save(code)
-	}
+//	/**
+//	 * @param user
+//	 * @param udid
+//	 * @param idfa
+//	 * @return
+//	 */
+//	@Transactional
+//	saveUserCode(Hospital hospital, String udid, String idfa, String imei) {
+//		
+//		def code = hospitalUdidRepository.findOne(hospital.id)
+//		
+//		if (udid) {
+//			code.udid = udid
+//		}
+//		if (idfa) {
+//			code.idfa = idfa
+//		}
+//		if (imei) {
+//			code.imei = imei
+//		}
+//		if (!udid && !idfa && !imei) {
+//			return
+//		}
+//		hospitalUdidRepository.save(code)
+//	}
 	
 	/**
 	 * @param phone
@@ -80,50 +71,57 @@ public class HospitalService {
 	 * 医师注册
 	 */
 	@Transactional
-	register(String email, String password, String captcha) {
+	register(String url, String email, String password) {
 		
-		def h = hospitalRepository.findByEmail(email)
-		if (h) {
-			if (h.activated) {
-				return '{"success": "0", "message": "err006"}'
-			}
-			
-			def hospitalCaptchaLog = new HospitalCaptchaLog(
-				hospital : h,
-				captcha : captcha,
-				action : '1'
-			)
-			def hospitalCaptcha = hospitalCaptchaRepository.findOne(h.id)
-			if (hospitalCaptcha?.captcha != captcha) {
-				return '{"success": "0", "message": "err007"}'
-			}
-			hospitalCaptcha.captcha = null
-			hospitalCaptchaRepository.save(hospitalCaptcha)
-			
-			h.password = DigestUtils.md5Hex(password)
-			h.activated = true
-			
-			h = hospitalRepository.save(h)
-			
-			def hospitalInfo = new HospitalInfo(
-				id : h.id,
-				bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
-			)
-			hospitalInfoRepository.save(hospitalInfo)
-			def hospitalUdid = new HospitalUdid(
-				id : h.id,
-				startTime : DateCommons.String2Date('09:00','HH:mm'),
-				endTime : DateCommons.String2Date('22:00','HH:mm'),
-				push : true
-			)
-			hospitalUdidRepository.save(hospitalUdid)
-			return [
-				'success': '1',
-				'hospitalId' : h.id
-			]
+		def hospital = hospitalRepository.findByEmailAndActivated(email, true)
+		
+		if (hospital) {
+			return '{"success" : "0", "message" : "err020"}'
 		}
-
-		'{"success": "0", "message": "err008"}'
+		
+		hospital = hospitalRepository.findByEmailAndActivated(email, false)
+		
+		if (hospital) {
+			hospital.password = DigestUtils.md5Hex(password)
+		} else {
+			hospital = new Hospital(
+				email : email,
+				password : DigestUtils.md5Hex(password)
+			)
+		}
+		
+		hospital = hospitalRepository.save(hospital)
+		
+		sendCaptcha(url, hospital.id, email)
+		
+		[
+			'success': '1',
+			'hospitalId' : hospital.id
+		]
+				
+//		def h = hospitalRepository.findByEmail(email)
+//		
+//		if (h) {
+//			if (h.activated) {
+//				return '{"success": "0", "message": "err006"}'
+//			}
+//			h.password = DigestUtils.md5Hex(password)
+//			h.activated = true
+//			
+//			h = hospitalRepository.save(h)
+//			
+//			def hospitalInfo = new HospitalInfo(
+//				id : h.id,
+//				bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
+//			)
+//			hospitalInfoRepository.save(hospitalInfo)
+//			return [
+//				'success': '1',
+//				'hospitalId' : h.id
+//			]
+//		}
+//
+//		'{"success": "0", "message": "err008"}'
 	}
 	
 	/**
@@ -133,25 +131,13 @@ public class HospitalService {
 	 * 发送验证码
 	 */
 	@Transactional
-	sendCaptcha(String email, boolean activated) {
+	sendCaptcha(String email) {
 		
-		def hospital
-		if (!activated) { //新用户
-			hospital = hospitalRepository.findByEmail(email)
-		} else { // 忘记密码发送短信
-			hospital = hospitalRepository.findByEmailAndActivated(email, activated)
-			if (!hospital) {
-				return '{"success" : "0", "message" : "err001"}'
-			}
-		}
+		def	hospital = hospitalRepository.findByEmailAndActivated(email, true)
 		
 		if (!hospital) {
-			hospital = new Hospital(
-				email : email
-			)
-			hospitalRepository.save(hospital)
+			return '{"success" : "0", "message" : "err001"}'
 		}
-
 		def hospitalCaptcha = hospitalCaptchaRepository.findOne(hospital.id)
 		def today = new Date()
 		if (hospitalCaptcha) {
@@ -160,18 +146,11 @@ public class HospitalService {
 				return '{"success": "0", "message": "err009"}'
 			}
 
-			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate) && hospitalCaptcha.sentNum > 10) {
-				return '{"success": "0", "message": "err010"}'
-			}
+//			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate) && hospitalCaptcha.sentNum > 10) {
+//				return '{"success": "0", "message": "err010"}'
+//			}
 		}
-		def captcha
-		
-		if (hospitalCaptcha && hospitalCaptcha.captcha) {
-			captcha = hospitalCaptcha.captcha
-		} else {
-			// 生成30位验证码
-			captcha = DateFormatUtils.format(new Date(), 'yyyyMMdd') + RandomStringUtils.random(22, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-		}
+		def captcha = RandomStringUtils.random(1, '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') + RandomStringUtils.random(5, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 		
 		def result = captchaService.sendTextMail(email, captcha)
 		def hospitalCaptchaLog = new HospitalCaptchaLog(
@@ -193,6 +172,73 @@ public class HospitalService {
 		} else {
 			hospitalCaptcha = new HospitalCaptcha(
 				id : hospital.id,
+				captcha : captcha,
+				lastSentDate : today,
+				sentNum : 1
+			)
+		}
+
+		hospitalCaptchaRepository.save(hospitalCaptcha)
+		[
+			'success' : '1',
+			'hospitalId' : hospital?.id	
+		]
+	
+	}
+	
+	/**
+	 * @param phone
+	 * @param activated
+	 * @return
+	 * 发送验证码
+	 */
+	@Transactional
+	sendCaptcha(String url, long hospitalId, String email) {
+		
+//		def hospital
+//		if (!activated) { //新用户
+//			hospital = hospitalRepository.findByEmail(email)
+//		} else { // 忘记密码发送短信
+//			hospital = hospitalRepository.findByEmailAndActivated(email, activated)
+//			if (!hospital) {
+//				return '{"success" : "0", "message" : "err001"}'
+//			}
+//		}
+//		
+		def hospitalCaptcha = hospitalCaptchaRepository.findOne(hospitalId)
+		def today = new Date()
+		if (hospitalCaptcha) {
+			def lastSentDate = hospitalCaptcha.lastSentDate
+			if ((today.time - lastSentDate.time) < 60000) {
+				return '{"success": "0", "message": "err009"}'
+			}
+
+//			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate) && hospitalCaptcha.sentNum > 10) {
+//				return '{"success": "0", "message": "err010"}'
+//			}
+		}
+		def captcha = DateFormatUtils.format(new Date(), 'yyyyMMdd') + RandomStringUtils.random(22, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+		
+		def result = captchaService.sendTextMail(url, hospitalId, email, captcha),
+			hospitalCaptchaLog = new HospitalCaptchaLog(
+			hospital : new Hospital(id : hospitalId),
+			captcha : captcha,
+			status : result,
+			action : '0'
+		)
+		hospitalCaptchaLogRepository.save(hospitalCaptchaLog)
+		
+		if (hospitalCaptcha) {
+			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate)) {
+				hospitalCaptcha.sentNum ++
+			} else {
+				hospitalCaptcha.sentNum = 1
+			}
+			hospitalCaptcha.captcha = captcha
+			hospitalCaptcha.lastSentDate = today
+		} else {
+			hospitalCaptcha = new HospitalCaptcha(
+				id : hospitalId,
 				captcha : captcha,
 				lastSentDate : today,
 				sentNum : 1
@@ -278,23 +324,14 @@ public class HospitalService {
 	 * @return
 	 */
 	@Transactional
-	resetPassword(Hospital h, String password, String captcha) {
+	resetPassword(Hospital h, String password) {
 
 		if (!h) {
 			return '{"success" : "0", "message": "err001"}'
 		}
 
-		def hospitalCaptcha = hospitalCaptchaRepository.findOne(h.id)
-		if (!hospitalCaptcha) {
-			return '{"success": "0", "message": "err013"}'
-		}
-
-		if (captcha == hospitalCaptcha.captcha) {
-			h.password = DigestUtils.md5Hex(password)
-			hospitalRepository.save(h)
-			return '{"success": "1"}'
-		} else {
-			return '{"success": "0", "message" : "err007"}'
-		}
+		h.password = DigestUtils.md5Hex(password)
+		hospitalRepository.save(h)
+		return '{"success": "1"}'
 	}
 }

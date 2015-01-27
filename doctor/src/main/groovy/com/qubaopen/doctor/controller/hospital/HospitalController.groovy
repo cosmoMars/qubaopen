@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalLogRepository
 import com.qubaopen.doctor.repository.hospital.HospitalRepository
+import com.qubaopen.doctor.service.CaptchaService;
 import com.qubaopen.doctor.service.HospitalService
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.hospital.Hospital
@@ -41,6 +43,11 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	@Autowired
 	HospitalService hospitalService
 	
+	@Autowired
+	HospitalCaptchaRepository hospitalCaptchaRepository
+	
+	@Autowired
+	CaptchaService captchaService
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
 		hospitalRepository
@@ -55,9 +62,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	@RequestMapping(value = 'login', method = RequestMethod.POST)
 	login(@RequestParam(required = false) String email,
 		@RequestParam(required = false) String password,
-		@RequestParam(required = false) String idfa,
-		@RequestParam(required = false) String udid,
-		@RequestParam(required = false) String imei,
+//		@RequestParam(required = false) String idfa,
+//		@RequestParam(required = false) String udid,
+//		@RequestParam(required = false) String imei,
 		Model model, HttpSession session) {
 		
 		logger.trace ' -- 诊所登录 -- '
@@ -70,7 +77,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 
 		if (loginHospital) {
 
-			hospitalService.saveUserCode(loginHospital, udid, idfa, imei)
+//			hospitalService.saveUserCode(loginHospital, udid, idfa, imei)
 			
 			def	hospitalLog = new HospitalLog(
 				hospital : loginHospital,
@@ -122,7 +129,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	@RequestMapping(value = 'register', method = RequestMethod.POST)
 	register(@RequestParam(required = false) String email,
 			@RequestParam(required = false) String password,
-			@RequestParam(required = false) String captcha) {
+			HttpServletRequest request) {
 
 		logger.trace('-- register --')
 		
@@ -134,10 +141,18 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 			return '{"success": "0", "message": "err004"}'
 		}
 		
-		if (!StringUtils.isNotEmpty(captcha)) {
-			return '{"success": "0", "message": "err012"}'
-		}
-		hospitalService.register(email, password, captcha)
+//		if (!StringUtils.isNotEmpty(captcha)) {
+//			return '{"success": "0", "message": "err012"}'
+//		}
+		
+		
+//		def url = "{$request.getServerName()}:{$request.getServerPort()}"
+		
+//		def url = "${request.getServletContext().getRealPath('/')}pic/$filename"
+		
+		def url = "http://" + request.getServerName() + ":" + request.getServerPort() + "/doctor/uHospital/"
+		
+		hospitalService.register(url, email, password)
 	}
 			
 	/**
@@ -147,23 +162,57 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	 * 发送验证码
 	 */
 	@RequestMapping(value = 'sendCaptcha', method = RequestMethod.GET)
-	sendCaptcha(@RequestParam(required = false) String email, @RequestParam(required = false) Boolean activated) {
+	sendCaptcha(@RequestParam(required = false) String email) {
 		
 		logger.trace ' -- 发送验证码 -- '
-		logger.trace "phone := $email"
 
-		if (!validateEmail(email)) {
-			// 验证用户手机号是否无效
+		if (!validateEmail(email)) { // 验证邮箱格式
 			return '{"success" : "0", "message": "err005"}'
 		}
 		
-		// true 忘记密码判断， false 新用户注册判断
-		if (activated == null) {
-			activated = false
+		hospitalService.sendCaptcha(email)
+		
+	}
+	
+	/**
+	 * @param email
+	 * @param captcha
+	 * @return
+	 * 校验验证码
+	 */
+	@RequestMapping(value = 'verifyCaptcha', method = RequestMethod.POST)
+	verifyCaptcha(@RequestParam String email, @RequestParam String captcha) {
+		
+		logger.trace '-- 校验验证码 --'
+		
+		if (!validateEmail(email)) {
+			return '{"success" : "0", "message": "err005"}'
+		}
+		
+		if (StringUtils.isEmpty(captcha)) {
+			return '{"success": "0", "message": "err007"}'
 		}
 
-		hospitalService.sendCaptcha(email, activated)
+		def hospital = hospitalRepository.findByEmailAndActivated(email, true)
 		
+		if (!hospital) {
+			return '{"success" : "0", "message" : "err001"}' // 没有用户
+		}
+		def hCaptcha = hospitalCaptchaRepository.findOne(hospital.id)
+		if (hCaptcha.captcha != captcha) {
+			return '{"success" : "0", "message" : "err007"}' // 验证码不正确
+		}
+		def now = new Date()
+		if ((now.time - hCaptcha.lastSentDate.time) > 900000) {
+			return '{"success" : "0", "message" : "err023"}' // 15mins 超时
+		}
+		
+		hCaptcha.captcha = null
+		hospitalCaptchaRepository.save(hCaptcha)
+		[
+			'success' : '1',
+			'hospitalId' : hospital?.id	
+		]		
 	}
 	
 	/**
@@ -174,31 +223,22 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'resetPassword', method = RequestMethod.POST)
-	resetPassword(@RequestParam(required = false) String email,
-			@RequestParam(required = false) String password,
-			@RequestParam(required = false) String captcha) {
+	resetPassword(@RequestParam long id,
+			@RequestParam(required = false) String password) {
 
 		logger.trace(" -- 忘记密码重置 -- ")
 		
-		def h = hospitalRepository.findByEmail(email)
+		def h = hospitalRepository.findOne(id)
 		
 		if (!h.activated) {
 			return '{"success": "0", "message": "err019"}'
-		}
-		
-		if (StringUtils.isEmpty(captcha)) {
-			return '{"success": "0", "message": "err007"}'
-		}
-
-		if (!validateEmail(email)) {
-			return '{"success" : "0", "message": "err005"}'
 		}
 		
 		if (!validatePwd(password)) {
 			return '{"success": "0", "message": "err004"}'
 		}
 
-		hospitalService.resetPassword(h, password, captcha)
+		hospitalService.resetPassword(h, password)
 	}
 			
 	/**
@@ -240,4 +280,26 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		'{"success" : "1"}'
 	}
 	
+	@RequestMapping(value = 'activateAccount', method = RequestMethod.GET)
+	activateAccount(@RequestParam long id, @RequestParam String captcha) {
+		
+		logger.trace '-- 激活账户 --'
+		def hCaptcha = hospitalCaptchaRepository.findOne(id)
+		
+		if (hCaptcha.captcha != captcha) {
+			return '{"success" : "0", "message" : "err022 验证码过期"}' //验证码过期
+		}
+		def now = new Date()
+		if (now.time - hCaptcha.lastSentDate.time > 900000) {
+			return '{"success : "0", "message" : "err023 该链接已超时"}' // 超时
+		}
+		def hospital = hospitalRepository.findOne(id)
+		
+		hospital.activated = true
+		hCaptcha.captcha = null
+		hospitalRepository.save(hospital)
+		hospitalCaptchaRepository.save(hCaptcha)
+		'{"success" : "1"}'
+	}
+
 }

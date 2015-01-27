@@ -113,7 +113,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'money' : it.money,
 				'userStatus' : it.userStatus,
 				'doctorStatus' : it.doctorStatus,
-				'userSex' : it?.sex,
+				'userSex' : it?.sex?.ordinal(),
 				'avatar' : it?.user?.userInfo?.avatarPath
 			]
 		}
@@ -207,7 +207,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'status' : it?.status?.ordinal(),
 				'money' : it?.money,
 				'userStatus' : it?.userStatus,
-				'doctorStatus' : it?.doctorStatus
+				'doctorStatus' : it?.doctorStatus,
+				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath
 			]
 		}
 		def more = true

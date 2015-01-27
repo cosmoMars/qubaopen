@@ -92,6 +92,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 					'helpTime' : DateFormatUtils.format(it?.time, 'yyyy-MM-dd'),
 					'userName' : it?.user?.userInfo?.nickName,
 					'userAvatar' : it?.user?.userInfo?.avatarPath,
+					'userSex' : it?.user?.userInfo?.sex?.ordinal(),
 					'commentData' : commentData
 				]
 			}

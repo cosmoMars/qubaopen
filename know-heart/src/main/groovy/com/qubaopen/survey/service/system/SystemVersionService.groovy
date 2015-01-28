@@ -10,26 +10,19 @@ import com.qubaopen.survey.repository.system.SystemVersionRepository;
 @Service
 class SystemVersionService {
 	@Autowired
-	SystemVersionRepository systemVersionRepository;
+	SystemVersionRepository systemVersionRepository
 
 	@Transactional
-	SystemVersion getUrl(String type,String version){
-		def systemVersion;
-		def v=Double.parseDouble(version);
-		def path="";
-		if(type.equals("0")){
-			systemVersion=systemVersionRepository.findByType(SystemVersion.Type.ANDROID);
-			if(systemVersion!=null){
-				def va=Double.parseDouble(systemVersion.getVersion());
-				if(va>v)
-					return systemVersion;
-			}
-		}else if(type.equals("1")){
-			systemVersion=systemVersionRepository.findByType(SystemVersion.Type.IOS);
-			if(systemVersion!=null){
-				def va=Double.parseDouble(systemVersion.getVersion());
-				if(va>v)
-					return systemVersion;
+	SystemVersion getUrl(String type, String version){
+		
+		def sv = systemVersionRepository.findByTypeAndObjectIdx(SystemVersion.Type.values()[type as int], SystemVersion.UseObject.User)
+		
+		def v = version as double
+		
+		if (sv) {
+			def sVersion = sv.version as double
+			if (sVersion > v) {
+				return sv
 			}
 		}
 		return null;

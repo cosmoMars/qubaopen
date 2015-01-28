@@ -181,7 +181,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	 * 校验验证码
 	 */
 	@RequestMapping(value = 'verifyCaptcha', method = RequestMethod.POST)
-	verifyCaptcha(@RequestParam String email, @RequestParam String captcha) {
+	verifyCaptcha(@RequestParam(required = false) String email, @RequestParam(required = false) String captcha) {
 		
 		logger.trace '-- 校验验证码 --'
 		
@@ -280,6 +280,12 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		'{"success" : "1"}'
 	}
 	
+	/**
+	 * @param id
+	 * @param captcha
+	 * @return
+	 * 激活账户
+	 */
 	@RequestMapping(value = 'activateAccount', method = RequestMethod.GET)
 	activateAccount(@RequestParam long id, @RequestParam String captcha) {
 		

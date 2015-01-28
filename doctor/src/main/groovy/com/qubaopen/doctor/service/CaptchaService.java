@@ -1,5 +1,6 @@
 package com.qubaopen.doctor.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 import javax.mail.Address;
@@ -7,8 +8,10 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.apache.log4j.net.SMTPAppender;
@@ -22,29 +25,6 @@ public class CaptchaService {
 
 	@Autowired
 	private HostMailRepository hostMailRepository;
-
-	@SuppressWarnings("unused")
-	private String sandCaptcha(String email, String captcha) {
-		// Logger logger = Logger.getLogger(CaptchaService.class);
-		//
-		// SMTPAppender appender = new SMTPAppender();
-		// try {
-		// appender.setSMTPUsername("mars.liu@qudiaoyan.com");
-		// appender.setSMTPPassword("asdfqwer12");
-		// appender.setTo(email);
-		// appender.setFrom("mars.liu@qudiaoyan.com");
-		// appender.setSMTPHost("smtp.mxhichina.com");
-		// appender.setLocationInfo(true);
-		// appender.setSubject("知心团队 验证码");
-		// appender.setLayout(new PatternLayout());
-		// appender.activateOptions();
-		// logger.addAppender(appender);
-		// logger.error("验证码：" + captcha);
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		return "1";
-	}
 
 	public String sendTextMail(String url, long hospitalId, String email, String captcha) {
 
@@ -81,9 +61,20 @@ public class CaptchaService {
 			//发送邮件
 			Transport tran = sendMailSession.getTransport();
 			
-			tran.connect(hostMail.getServerHost(), hostMail.getServerPort(), hostMail.getUserName(), hostMail.getPassword());//连接到邮箱服务器
+			String nickName = "";
+			try {
+				nickName = MimeUtility.encodeText("知心团队");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+			
+			mailMessage.setFrom(new InternetAddress(nickName + " <" + hostMail.getUserName() + ">")); // 设置邮件发送人标题
+			mailMessage.setRecipient(RecipientType.TO, new InternetAddress(email)); // 设置邮件接收人显示
+			
+			tran.connect(hostMail.getServerHost(), hostMail.getServerPort(), hostMail.getUserName(), hostMail.getPassword()); //连接到邮箱服务器
 
-			tran.sendMessage(mailMessage, new Address[]{ new InternetAddress(email)});//设置邮件接收人
+			tran.sendMessage(mailMessage, new Address[]{ new InternetAddress(email)}); //设置邮件接收人
 			tran.close();
 			
 			return "1";
@@ -127,6 +118,17 @@ public class CaptchaService {
 			mailMessage.setText(buffer.toString()); 
 			//发送邮件
 			Transport tran = sendMailSession.getTransport();
+			
+			String nickName = "";
+			try {
+				nickName = MimeUtility.encodeText("知心团队");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}  
+			
+			mailMessage.setFrom(new InternetAddress(nickName + " <" + hostMail.getUserName() + ">")); // 设置邮件发送人标题
+			mailMessage.setRecipient(RecipientType.TO, new InternetAddress(email)); // 设置邮件接收人显示
 			
 			tran.connect(hostMail.getServerHost(), hostMail.getServerPort(), hostMail.getUserName(), hostMail.getPassword());//连接到邮箱服务器
 

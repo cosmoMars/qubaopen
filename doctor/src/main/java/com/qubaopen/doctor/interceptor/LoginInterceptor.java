@@ -23,11 +23,11 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 		logger.info(" =================== request preHandle =========================");
 		
-//		System.out.println(request.getSession().getId() + "-------------------------------");
+//		System.out.println(request.getSession().getId() + "-------------------------------");systemVersions
 
 		System.out.println(request.getRequestURI() + "====================");
 		if (request.getRequestURI().contains("uDoctor") || request.getRequestURI().contains("dweb") || request.getRequestURI().contains("uHospital")
-				|| request.getRequestURI().contains("doctorDir") || request.getRequestURI().contains("recordDir")) {
+				|| request.getRequestURI().contains("doctorDir") || request.getRequestURI().contains("recordDir") || request.getRequestURI().contains("systemVersions")) {
 			return true;
 		}
 

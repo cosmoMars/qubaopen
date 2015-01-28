@@ -1,8 +1,12 @@
 package com.qubaopen.survey.entity.system;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -52,6 +56,16 @@ public class SystemVersion extends AbstractBaseEntity<Long> {
 	 */
 	private String md5Hash;
 
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date publishTime;
+
+	@Enumerated
+	private UseObject useObject;
+	
+	public enum UseObject {
+		User, Doctor
+	}
+
 	public String getVersion() {
 		return version;
 	}
@@ -90,6 +104,22 @@ public class SystemVersion extends AbstractBaseEntity<Long> {
 
 	public void setMd5Hash(String md5Hash) {
 		this.md5Hash = md5Hash;
+	}
+
+	public Date getPublishTime() {
+		return publishTime;
+	}
+
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
+	}
+
+	public UseObject getUseObject() {
+		return useObject;
+	}
+
+	public void setUseObject(UseObject useObject) {
+		this.useObject = useObject;
 	}
 
 }

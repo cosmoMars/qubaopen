@@ -1,4 +1,4 @@
-package com.qubaopen.survey.repository.system;
+package com.qubaopen.doctor.repository.system;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

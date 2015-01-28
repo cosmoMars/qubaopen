@@ -24,7 +24,6 @@ import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.hospital.HospitalCaptcha;
 import com.qubaopen.survey.entity.hospital.HospitalCash;
 import com.qubaopen.survey.entity.hospital.HospitalCashLog;
-import com.qubaopen.survey.entity.hospital.HospitalInfo;
 import com.qubaopen.survey.entity.hospital.HospitalTakeCash;
 
 @RestController

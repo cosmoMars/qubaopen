@@ -189,6 +189,11 @@ public class OrderResources {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		if (booking.isQuick() == true) {
+			booking.setStatus(Booking.Status.Paid);
+		} else {
+			booking.setStatus(Booking.Status.PayAccept);
+		}
 		
 		bookingRepository.save(booking);
 		

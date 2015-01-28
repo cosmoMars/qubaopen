@@ -55,6 +55,7 @@ public class CaptchaService {
 			buffer.append("\n");
 			buffer.append(url + "activateAccount?id=" + hospitalId +"&captcha=" + captcha + "\n");
 			buffer.append("\n");
+			buffer.append("请在15分钟内点击完成注册\n");
 			buffer.append("[知心团队]");
 			//设置邮件内容
 			mailMessage.setText(buffer.toString()); 

@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.SessionAttributes
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository;
+import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository
+import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalLogRepository
 import com.qubaopen.doctor.repository.hospital.HospitalRepository
-import com.qubaopen.doctor.repository.mail.HostMailRepository;
-import com.qubaopen.doctor.repository.url.UrlRepository;
-import com.qubaopen.doctor.service.CaptchaService;
+import com.qubaopen.doctor.repository.url.UrlRepository
+import com.qubaopen.doctor.service.CaptchaService
 import com.qubaopen.doctor.service.HospitalService
-import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.hospital.Hospital
+import com.qubaopen.survey.entity.hospital.HospitalInfo
 import com.qubaopen.survey.entity.hospital.HospitalLog
 import com.qubaopen.survey.entity.user.UserLogType
 
@@ -53,6 +53,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	
 	@Autowired
 	UrlRepository urlRepository
+	
+	@Autowired
+	HospitalInfoRepository hospitalInfoRepository
 	
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
@@ -305,8 +308,14 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		
 		hospital.activated = true
 		hCaptcha.captcha = null
+		
+		def hospitalInfo = new HospitalInfo(
+			id : id,
+			bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
+		)
 		hospitalRepository.save(hospital)
 		hospitalCaptchaRepository.save(hCaptcha)
+		hospitalInfoRepository.save(hospitalInfo)
 		'{"success" : "1"}'
 	}
 

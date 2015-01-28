@@ -4,6 +4,10 @@ import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -11,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -21,6 +26,7 @@ import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
 import com.qubaopen.survey.entity.hospital.Hospital;
+import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord;
 import com.qubaopen.survey.entity.hospital.HospitalInfo;
 
 @RestController
@@ -39,6 +45,44 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 	@Override
 	protected MyRepository<HospitalInfo, Long> getRepository() {
 		return hospitalInfoRepository;
+	}
+	
+	/**
+	 * @param hospital
+	 * @return
+	 * 获取诊所信息
+	 */
+	@RequestMapping(value = "retrieveHospitalInfo", method = RequestMethod.GET)
+	public Map<String, Object> retrieveHospitalInfo(@ModelAttribute("currentHospital") Hospital hospital) {
+		
+		logger.trace("-- 获取诊所信息 --");
+		
+		HospitalInfo hospitalInfo = hospitalInfoRepository.findOne(hospital.getId());
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("success", "1");
+		
+		map.put("hospitalId", hospitalInfo.getId());
+		map.put("name", hospitalInfo.getName() != null ? hospitalInfo.getName() : "");
+		map.put("address", hospitalInfo.getAddress() != null ? hospitalInfo.getAddress() : "");
+		map.put("establishTime", hospitalInfo.getEstablishTime() != null ? hospitalInfo.getEstablishTime() : "");
+		map.put("bookingTime", hospitalInfo.getBookingTime());
+		map.put("phone", hospitalInfo.getPhone());
+		map.put("urgentPhone", hospitalInfo.getUrgentPhone());
+		map.put("qq", hospitalInfo.getQq());
+		map.put("introduce", hospitalInfo.getIntroduce());
+		map.put("wordsConsult", hospitalInfo.isWordsConsult());
+		map.put("minCharge", hospitalInfo.getMinCharge());
+		map.put("maxCharge", hospitalInfo.getMaxCharge());
+		
+		List<String> records = new ArrayList<String>();
+		
+		for (HospitalDoctorRecord doctorRecord : hospitalInfo.getHospitalDoctorRecords()) {
+			records.add(doctorRecord.getDoctorRecordPath());
+		}
+		map.put("records", records.toString());
+		return map;
 	}
 	
 	/**
@@ -116,7 +160,7 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			hi.setMaxCharge(maxCharge);
 		}
 		if (timeJson != null) {
-			String[] models = hi.getBookTime().split(",");
+			String[] models = hi.getBookingTime().split(",");
 			
 			try {
 				JsonNode jsonNodes = objectMapper.readTree(timeJson);
@@ -151,7 +195,7 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 						resultModel.append(",");
 					}
 				}
-				hi.setBookTime(resultModel.toString());
+				hi.setBookingTime(resultModel.toString());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

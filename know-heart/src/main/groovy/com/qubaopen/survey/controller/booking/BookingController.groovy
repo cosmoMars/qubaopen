@@ -414,7 +414,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 获取订单列表
 	 */
 	@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
-	retrieveSelfBooking(@RequestParam(required = false) String ids,
+	retrieveSelfBooking(
+//		@RequestParam(required = false) String ids,
 		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.ASC)
 		Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
@@ -426,9 +427,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		)
 		def bookingContent = bookings.getContent()
 		def data = [], more = true
-		
-		println bookingContent.size()
-		println pageable.pageSize
 		
 		if (bookingContent.size() < pageable.pageSize) {
 			more = false
@@ -508,6 +506,33 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
 			booking.status == Booking.Status.Consulted
 		}
+		
+		bookingRepository.save(booking)
+		'{"success" : "1"}'
+	}
+		
+	/**
+	 * @param id
+	 * @param date
+	 * @param doctor
+	 * @return
+	 * 改约时间
+	 */
+	@RequestMapping(value = 'changeDateForBooking', method = RequestMethod.POST)
+	changeDateForBooking(@RequestParam(required = false) Long id,
+		@RequestParam(required = false) String date,
+		@ModelAttribute('currentUser') User user) {
+		
+		def booking = bookingRepository.findOne(id)
+		
+		if (booking?.quick) {
+			booking.status = Booking.Status.Paid
+		} else {
+			booking.status = Booking.Status.PayAccept
+		}
+		
+		if (date)
+			booking.time = DateUtils.parseDate(date, 'yyyy-MM-dd HH')
 		
 		bookingRepository.save(booking)
 		'{"success" : "1"}'

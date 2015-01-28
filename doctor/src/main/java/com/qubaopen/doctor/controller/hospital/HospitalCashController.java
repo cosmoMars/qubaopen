@@ -1,6 +1,7 @@
 package com.qubaopen.doctor.controller.hospital;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.doctor.repository.cash.BankRepository;
-import com.qubaopen.doctor.repository.cash.HospitalCashRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalCashLogRepository;
+import com.qubaopen.doctor.repository.hospital.HospitalCashRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalTakeCashRepository;
 import com.qubaopen.survey.entity.hospital.Hospital;
@@ -55,6 +56,13 @@ public class HospitalCashController extends AbstractBaseController<HospitalCash,
 	protected MyRepository<HospitalCash, Long> getRepository() {
 		return hospitalCashRepository;
 	}
+	
+	private Map<String, Object> retrieveHospitalCashLog() {
+		
+		return null;
+	}
+	
+	
 
 	@RequestMapping(value = "takeCash", method = RequestMethod.POST)
 	private String takeCash(@RequestParam(required = false) Double curCash, @RequestParam(required = false) Integer type, @RequestParam(required = false) String alipayNum,

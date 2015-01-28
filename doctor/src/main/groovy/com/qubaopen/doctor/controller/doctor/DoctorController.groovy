@@ -290,6 +290,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		
 		'{"success" : "1"}'
 	}
+	
 	/**
 	 * @param index
 	 * @param content

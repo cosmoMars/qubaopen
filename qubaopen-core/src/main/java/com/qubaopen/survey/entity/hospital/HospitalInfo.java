@@ -50,7 +50,7 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 预约时间
 	 */
-	private String bookTime;
+	private String bookingTime;
 
 	/**
 	 * 联系电话
@@ -122,12 +122,12 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 		this.establishTime = establishTime;
 	}
 
-	public String getBookTime() {
-		return bookTime;
+	public String getBookingTime() {
+		return bookingTime;
 	}
 
-	public void setBookTime(String bookTime) {
-		this.bookTime = bookTime;
+	public void setBookingTime(String bookingTime) {
+		this.bookingTime = bookingTime;
 	}
 
 	public String getPhone() {

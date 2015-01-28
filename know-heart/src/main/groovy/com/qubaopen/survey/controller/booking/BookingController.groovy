@@ -423,13 +423,13 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			[
 				user_equal : user
 			], pageable
-			
 		)
+		def bookingContent = bookings.getContent()
 		def data = [], more = true
-		if (bookings && bookings.size < pageable.pageSize) {
+		if (bookingContent && bookingContent.size() < pageable.pageSize) {
 			more = false
 		}
-		bookings.each {
+		bookingContent.each {
 			data << [
 				'bookingId' : it?.id,
 				'doctorId' : it?.doctor?.id,
@@ -457,7 +457,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'status' : it?.status?.ordinal(),
 				'money' : it?.money,
 				'userStatus' : it?.userStatus,
-				'doctorStatus' : it?.doctorStatus
+				'doctorStatus' : it?.doctorStatus,
+				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath
 			]
 		}
 		

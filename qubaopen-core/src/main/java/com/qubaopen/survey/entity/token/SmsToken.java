@@ -3,42 +3,43 @@ package com.qubaopen.survey.entity.token;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.envers.Audited;
-
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
 @Table(name = "sms_token")
-@Audited
-public class SmsToken extends AbstractBaseEntity<Long>{
-	
+public class SmsToken extends AbstractPersistable<Long> {
+
 	private static final long serialVersionUID = 2215767544905001389L;
 
 	/**
-	 * 
+	 * openId
 	 */
 	private String openId;
-	
+
 	/**
 	 * appId
 	 */
 	private String appId;
-	
+
 	/**
 	 * app密码
 	 */
 	private String appSerect;
-	
+
 	/**
 	 * token
 	 */
 	private String token;
-	
+
 	/**
 	 * url
 	 */
 	private String url;
-	
+
+	private String templateId;
+
+	private String templateParam;
+
 	public String getOpenId() {
 		return openId;
 	}
@@ -77,6 +78,22 @@ public class SmsToken extends AbstractBaseEntity<Long>{
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(String templateId) {
+		this.templateId = templateId;
+	}
+
+	public String getTemplateParam() {
+		return templateParam;
+	}
+
+	public void setTemplateParam(String templateParam) {
+		this.templateParam = templateParam;
 	}
 
 }

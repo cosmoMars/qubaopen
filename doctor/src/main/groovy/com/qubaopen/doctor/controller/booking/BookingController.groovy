@@ -455,19 +455,23 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				}
 			}
 			bookingList.each {
-				def cal = Calendar.getInstance()
-				cal.setTime it?.time
-				cal.add(Calendar.HOUR, 1)
-				def endTime = cal.getTime()
-				timeAll << [
-					'type' : 2,
-					'bookingId' : it?.id,
-					'name' : it?.name,
-					'helpReason' : it?.helpReason,
-					'consultType' : it?.consultType?.ordinal(),
-					'startTime' : DateFormatUtils.format(it?.time, 'HH:mm'),
-					'endTime' : DateFormatUtils.format(endTime, 'HH:mm')
-				]
+				if (it.status != Booking.Status.Booking || it.status != Booking.Status.Accept || it.status != Booking.Status.Refusal) {
+					def cal = Calendar.getInstance()
+					cal.setTime it?.time
+					cal.add(Calendar.HOUR, 1)
+					def endTime = cal.getTime()
+					timeAll << [
+						'type' : 2,
+						'bookingId' : it?.id,
+						'name' : it?.name,
+						'helpReason' : it?.helpReason,
+						'consultType' : it?.consultType?.ordinal(),
+						'startTime' : DateFormatUtils.format(it?.time, 'HH:mm'),
+						'endTime' : DateFormatUtils.format(endTime, 'HH:mm'),
+						'quick' : it?.quick,
+						'status' : it?.status?.ordinal()
+					]
+				}
 			}
 			
 			result << [

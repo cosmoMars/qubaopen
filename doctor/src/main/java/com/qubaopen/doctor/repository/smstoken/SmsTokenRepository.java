@@ -1,4 +1,4 @@
-package com.qubaopen.survey.repository.token;
+package com.qubaopen.doctor.repository.smstoken;
 
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.token.SmsToken;

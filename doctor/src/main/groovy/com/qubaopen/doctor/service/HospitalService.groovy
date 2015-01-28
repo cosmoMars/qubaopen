@@ -93,11 +93,6 @@ public class HospitalService {
 		hospital = hospitalRepository.save(hospital)
 		
 		sendCaptcha(url, hospital.id, email)
-		
-		[
-			'success': '1',
-			'hospitalId' : hospital.id
-		]
 				
 //		def h = hospitalRepository.findByEmail(email)
 //		
@@ -246,8 +241,12 @@ public class HospitalService {
 		}
 
 		hospitalCaptchaRepository.save(hospitalCaptcha)
-		'{"success": "1"}'
-	
+		
+		[
+			'success': '1',
+			'hospitalId' : hospitalId
+		]
+		
 	}
 	
 	@Transactional

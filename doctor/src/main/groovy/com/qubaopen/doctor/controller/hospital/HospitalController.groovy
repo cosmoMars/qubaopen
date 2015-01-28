@@ -22,6 +22,8 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalLogRepository
 import com.qubaopen.doctor.repository.hospital.HospitalRepository
+import com.qubaopen.doctor.repository.mail.HostMailRepository;
+import com.qubaopen.doctor.repository.url.UrlRepository;
 import com.qubaopen.doctor.service.CaptchaService;
 import com.qubaopen.doctor.service.HospitalService
 import com.qubaopen.survey.entity.doctor.Doctor
@@ -48,11 +50,14 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	
 	@Autowired
 	CaptchaService captchaService
+	
+	@Autowired
+	UrlRepository urlRepository
+	
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
 		hospitalRepository
 	}
-
 	
 	/**
 	 * 诊所登录
@@ -62,9 +67,6 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	@RequestMapping(value = 'login', method = RequestMethod.POST)
 	login(@RequestParam(required = false) String email,
 		@RequestParam(required = false) String password,
-//		@RequestParam(required = false) String idfa,
-//		@RequestParam(required = false) String udid,
-//		@RequestParam(required = false) String imei,
 		Model model, HttpSession session) {
 		
 		logger.trace ' -- 诊所登录 -- '
@@ -76,8 +78,6 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		def loginHospital = hospitalRepository.login(email,  DigestUtils.md5Hex(password))
 
 		if (loginHospital) {
-
-//			hospitalService.saveUserCode(loginHospital, udid, idfa, imei)
 			
 			def	hospitalLog = new HospitalLog(
 				hospital : loginHospital,
@@ -150,9 +150,11 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		
 //		def url = "${request.getServletContext().getRealPath('/')}pic/$filename"
 		
-		def url = "http://" + request.getServerName() + ":" + request.getServerPort() + "/doctor/uHospital/"
+		def hm = urlRepository.findOne(1l)
 		
-		hospitalService.register(url, email, password)
+//		def url = "http://10.0.0.88:8080/doctor/uHospital/"
+		
+		hospitalService.register(hm.requestUrl, email, password)
 	}
 			
 	/**

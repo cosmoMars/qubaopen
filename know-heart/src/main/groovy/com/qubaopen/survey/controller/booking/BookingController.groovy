@@ -426,7 +426,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		)
 		def bookingContent = bookings.getContent()
 		def data = [], more = true
-		if (bookingContent && bookingContent.size() < pageable.pageSize) {
+		
+		println bookingContent.size()
+		println pageable.pageSize
+		
+		if (bookingContent.size() < pageable.pageSize) {
 			more = false
 		}
 		bookingContent.each {

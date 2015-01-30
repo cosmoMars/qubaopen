@@ -92,6 +92,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 				cash = new DoctorCash(
 					id : doctor.id
 				)
+				cash = doctorCashRepository.save(cash)
 			}
 		}
 		if (typeIdx == null) {

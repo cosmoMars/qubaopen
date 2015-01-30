@@ -107,7 +107,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 				'email' : loginHospital?.email,
 				'address' : hospitalInfo?.address,
 				'establishTime' : hospitalInfo?.establishTime,
-				'bookTime' : hospitalInfo?.bookTime,
+				'bookTime' : hospitalInfo?.bookingTime,
 				'phone' : hospitalInfo?.phone,
 				'urgentPhone' : hospitalInfo?.urgentPhone,
 				'qq' : hospitalInfo?.qq,
@@ -147,11 +147,6 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 //		if (!StringUtils.isNotEmpty(captcha)) {
 //			return '{"success": "0", "message": "err012"}'
 //		}
-		
-		
-//		def url = "{$request.getServerName()}:{$request.getServerPort()}"
-		
-//		def url = "${request.getServletContext().getRealPath('/')}pic/$filename"
 		
 		def hm = urlRepository.findOne(1l)
 		

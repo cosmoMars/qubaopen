@@ -5,10 +5,10 @@ import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -50,15 +50,19 @@ public class CaptchaService {
 			mailMessage.setSubject("知心欢迎您 请立即激活您的账户");
 			
 			StringBuffer buffer = new StringBuffer();
-			buffer.append("感谢您加入知心！\n");
-			buffer.append("请点击以下链接激活您的知心帐户、完成注册。\n");
-			buffer.append("\n");
-			buffer.append(url + "activateAccount?id=" + hospitalId +"&captcha=" + captcha + "\n");
-			buffer.append("\n");
-			buffer.append("请在15分钟内点击完成注册\n");
+			buffer.append("感谢您加入知心！");
+			buffer.append("<br>");
+			buffer.append("请在15分钟内点击以下链接激活您的知心帐户、完成注册。");
+			buffer.append("<br>");
+			buffer.append("<br>");
+			buffer.append("<div><font size =\"3\" face=\"arial\" >" + url + "activateAccount?id=" + hospitalId +"&captcha=" + captcha + "</font></div>");
+			buffer.append("<br>");
+//			buffer.append("请在15分钟内点击完成注册");
+//			buffer.append("<br>");
 			buffer.append("[知心团队]");
 			//设置邮件内容
-			mailMessage.setText(buffer.toString()); 
+//			mailMessage.setText(buffer.toString()); 
+			mailMessage.setContent(buffer.toString(), "text/html;charset=utf-8");
 			//发送邮件
 			Transport tran = sendMailSession.getTransport();
 			
@@ -85,7 +89,7 @@ public class CaptchaService {
 		return "0";
 	}
 	
-	public String sendTextMail(String email, String captcha) {
+	public String sendTextMail(String email, String captcha) throws UnsupportedEncodingException {
 
 		HostMail hostMail = hostMailRepository.findOne(1l);
 		
@@ -106,27 +110,19 @@ public class CaptchaService {
 			mailMessage.setFrom(new InternetAddress(hostMail.getUserName()));
 			
 			// 设置邮件消息的主题
-			mailMessage.setSubject("知心欢迎您 请立即激活您的账户");
+			mailMessage.setSubject("知心欢迎您");
 			
 			StringBuffer buffer = new StringBuffer();
-			buffer.append("尊敬的知心用户：\n");
-			buffer.append("以下为邮箱验证码：\n");
-			buffer.append("\n");
-			buffer.append(captcha);
-			buffer.append("\n");
+			buffer.append("尊敬的知心用户您的验证码为：");
+			buffer.append("<br>");
+			buffer.append("<div><font size =\"5\" face=\"arial\" >" + captcha + "</font></div>");
 			buffer.append("[知心团队]");
-			//设置邮件内容
-			mailMessage.setText(buffer.toString()); 
+			mailMessage.setContent(buffer.toString(), "text/html;charset=utf-8");
+//			mailMessage.setText(buffer.toString()); 
 			//发送邮件
 			Transport tran = sendMailSession.getTransport();
 			
-			String nickName = "";
-			try {
-				nickName = MimeUtility.encodeText("知心团队");
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}  
+			String nickName = MimeUtility.encodeText("知心团队");
 			
 			mailMessage.setFrom(new InternetAddress(nickName + " <" + hostMail.getUserName() + ">")); // 设置邮件发送人标题
 			mailMessage.setRecipient(RecipientType.TO, new InternetAddress(email)); // 设置邮件接收人显示

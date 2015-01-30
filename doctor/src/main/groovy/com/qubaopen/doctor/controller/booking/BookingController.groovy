@@ -77,24 +77,24 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				ids << Long.valueOf(it.trim())
 			}
 		}
-		def bookingList, nowDate = new Date(), age
+		def bookingList, nowDate = new Date(), ago
 		def c = Calendar.getInstance()
 		c.setTime(nowDate)
 		c.add(Calendar.DATE, -7)
-		age = c.getTime() as Date
+		ago = c.getTime() as Date
 		
 		if (index != null) {
 			def status = Booking.Status.values()[index]
 			if (idsStr) {
-				bookingList = bookingRepository.findBookingList(doctor, status, age, ids, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, status, ago, ids, pageable)
 			} else {
-				bookingList = bookingRepository.findBookingList(doctor, status, age, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, status, ago, pageable)
 			}
 		} else {
 			if (idsStr) {
-				bookingList = bookingRepository.findBookingList(doctor, age, ids, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, ago, ids, pageable)
 			} else {
-				bookingList = bookingRepository.findBookingList(doctor, age, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, ago, pageable)
 			}
 		}
 		

@@ -1,5 +1,7 @@
 package com.qubaopen.survey.controller.booking;
 
+import javax.xml.ws.RequestWrapper;
+
 import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
@@ -27,6 +29,14 @@ import com.qubaopen.survey.repository.booking.BookingTimeRepository
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
 
 import static com.qubaopen.survey.utils.ValidateUtil.*
+/**
+ * @author mars
+ *
+ */
+/**
+ * @author mars
+ *
+ */
 @RestController
 @RequestMapping('booking')
 @SessionAttributes('currentUser')
@@ -536,5 +546,52 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
+	}
+		
+	/**
+	 * @return
+	 * 已约下次
+	 */
+	@RequestMapping(value = 'bookingNext', method = RequestMethod.POST)
+	bookingNext(@RequestParam long bookingId,
+		@ModelAttribute('currentUser') User user) {
+		
+		logger.trace '-- 已约下次 --'
+		
+		def booking = bookingRepository.findOne(bookingId)
+		
+		def nextBooking = new Booking(
+			user : booking.user,
+			tradeNo : "${user.id}_${doctorId}_${System.currentTimeMillis()}",
+			name : booking.name,
+			phone : booking.phone,
+			sex : booking.sex,
+			birthday : booking.birthday,
+			profession : booking.profession,
+			city : booking.city,
+			married : booking.married,
+			haveChildren : booking.haveChildren,
+			helpReason : booking.helpReason,
+			otherProblem : booking.otherProblem,
+			treatmented : booking.treatmented,
+			haveConsulted : booking.haveConsulted,
+			refusalReason : booking.refusalReason,
+			time : new Date(),
+			quick : booking.quick,
+			consultType : booking.consultType,
+			status : Booking.Status.Accept,
+			money : booking.money
+		)
+		if (booking.doctor != null) {
+			nextBooking.doctor = booking.doctor
+		}
+		if (booking.hospital != null) {
+			nextBooking.hospital = booking.hospital
+		}
+		nextBooking = bookingRepository.save(nextBooking)
+		[
+			'success' : '1',
+			'bookingId' : nextBooking.id
+		]
 	}
 }

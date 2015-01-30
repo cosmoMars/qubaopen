@@ -139,10 +139,10 @@ public class Booking extends AbstractBaseEntity<Long> {
 	private Status status;
 
 	/**
-	 * 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次, 6 已付款， 7 付款接受，8 医师改约, 9 订单完成
+	 * 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次, 6 已付款， 7 付款接受，8 医师改约, 9 退款中，10 已退款
 	 */
 	public enum Status {
-		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate, Completed
+		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate, Refunding, Refunded
 	}
 
 	private double money;
@@ -172,6 +172,12 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "booking", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
 	private Set<DoctorDiagnosis> doctorDiagnosis;
+	
+	/**
+	 * 上一次预约时间
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastBookingTime;
 
 	public void setTradeNo(String tradeNo) {
 		this.tradeNo = tradeNo;
@@ -375,6 +381,14 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setDoctorDiagnosis(Set<DoctorDiagnosis> doctorDiagnosis) {
 		this.doctorDiagnosis = doctorDiagnosis;
+	}
+
+	public Date getLastBookingTime() {
+		return lastBookingTime;
+	}
+
+	public void setLastBookingTime(Date lastBookingTime) {
+		this.lastBookingTime = lastBookingTime;
 	}
 
 }

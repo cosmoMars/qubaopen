@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -89,6 +90,21 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "hospitalInfo", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
 	private Set<HospitalDoctorRecord> hospitalDoctorRecords;
+
+	/**
+	 * 审计状态
+	 */
+	@Enumerated
+	private LoginStatus loginStatus;
+
+	public enum LoginStatus {
+		Unaudited, Auditing, Refusal, Audited
+	}
+
+	/**
+	 * 拒绝理由
+	 */
+	private String refusalReason;
 
 	public Hospital getHospital() {
 		return hospital;
@@ -192,6 +208,22 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 
 	public void setHospitalDoctorRecords(Set<HospitalDoctorRecord> hospitalDoctorRecords) {
 		this.hospitalDoctorRecords = hospitalDoctorRecords;
+	}
+
+	public LoginStatus getLoginStatus() {
+		return loginStatus;
+	}
+
+	public void setLoginStatus(LoginStatus loginStatus) {
+		this.loginStatus = loginStatus;
+	}
+
+	public String getRefusalReason() {
+		return refusalReason;
+	}
+
+	public void setRefusalReason(String refusalReason) {
+		this.refusalReason = refusalReason;
 	}
 
 }

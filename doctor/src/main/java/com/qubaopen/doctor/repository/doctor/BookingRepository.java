@@ -14,16 +14,16 @@ import com.qubaopen.survey.entity.user.User;
 
 public interface BookingRepository extends MyRepository<Booking, Long> {
 
-	@Query("from Booking b where b.doctor = :doctor and b.status = :status and b.time >= :time and b.id not in (:ids)")
+	@Query("from Booking b where b.doctor = :doctor and b.status = :status and b.createdDate >= :time and b.id not in (:ids)")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("status") Booking.Status status, @Param("time") Date time, @Param("ids") List<Long> ids, Pageable pageable);
 	
-	@Query("from Booking b where b.doctor = :doctor and b.time >= :time and b.id not in (:ids)")
+	@Query("from Booking b where b.doctor = :doctor and b.createdDate >= :time and b.id not in (:ids)")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("time") Date time, @Param("ids") List<Long> ids, Pageable pageable);
 	
-	@Query("from Booking b where b.doctor = :doctor and b.status = :status and b.time >= :time")
+	@Query("from Booking b where b.doctor = :doctor and b.status = :status and b.createdDate >= :time")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("status") Booking.Status status, @Param("time") Date time, Pageable pageable);
 	
-	@Query("from Booking b where b.doctor = :doctor and b.time >= :time")
+	@Query("from Booking b where b.doctor = :doctor and b.createdDate >= :time")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("time") Date time, Pageable pageable);
 	
 	@Query("from Booking b where b.doctor = :doctor and b.time in (select max(d.time) from Booking d where d.doctor = :doctor and month(d.time) = :month group by dayofmonth(d.time))")

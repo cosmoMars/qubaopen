@@ -45,7 +45,7 @@ public class HospitalCashLog extends AbstractBaseEntity<Long> {
 	 * 金币变化类型
 	 */
 	@Enumerated
-	private Type type;
+	public Type type;
 
 	public enum Type {
 		In, Out
@@ -61,6 +61,16 @@ public class HospitalCashLog extends AbstractBaseEntity<Long> {
 	}
 
 	private String detail;
+	
+	/**
+	 * 交易状态
+	 */
+	@Enumerated
+	private PayStatus payStatus;
+	
+	public enum PayStatus {
+		Processing, Completed, Failure
+	}
 
 	public Hospital getHospital() {
 		return hospital;
@@ -124,6 +134,14 @@ public class HospitalCashLog extends AbstractBaseEntity<Long> {
 
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+
+	public PayStatus getPayStatus() {
+		return payStatus;
+	}
+
+	public void setPayStatus(PayStatus payStatus) {
+		this.payStatus = payStatus;
 	}
 
 }

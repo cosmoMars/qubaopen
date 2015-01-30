@@ -69,13 +69,7 @@ public class DoctorUdidController extends AbstractBaseController<DoctorUdid, Lon
 		) {
 
 		logger.trace(" -- 修改推送信息 -- ")
-		
-		def di = doctorInfoRepository.findOne(doctor.id)
-		
-		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
-			return '{"success" : "0", "message" : "err916"}'
-		}
-		
+
 		def doctorUdid = doctorUdidRepository.findOne(doctor.id)
 		if (push != null) {
 			doctorUdid.push = push

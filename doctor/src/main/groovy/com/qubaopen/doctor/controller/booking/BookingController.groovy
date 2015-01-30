@@ -455,7 +455,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				}
 			}
 			bookingList.each {
-				if (it.status != Booking.Status.Booking || it.status != Booking.Status.Accept || it.status != Booking.Status.Refusal) {
+				if (it.status == Booking.Status.Consulted || it.status == Booking.Status.Next
+					|| it.status == Booking.Status.PayAccept || it.status == Booking.Status.ChangeDate) {
 					def cal = Calendar.getInstance()
 					cal.setTime it?.time
 					cal.add(Calendar.HOUR, 1)
@@ -561,7 +562,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (!qBooking?.time) {
 			return '{"success" : "1"}'
 		}
-		def aBookings = bookingRepository.findAllByFormatTimeAndQuickWithExist(DateFormatUtils.format(qBooking?.time, 'yyyy-MM-dd HH'), doctor, true, qBookingId)
+		def aBookings = bookingRepository.findAllByFormatTimeAndQuick(DateFormatUtils.format(qBooking?.time, 'yyyy-MM-dd HH'), doctor, true, qBookingId)
 		
 		if (aBookings) {
 			return '{"success" : "0", "message" : "err805"}'
@@ -572,6 +573,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		fbookings.each {
 			if (it?.time?.time - now < 4 * 60 * 60 * 1000) {
 				return '{"success" : "0", "message" : "err806"}'
+			}
+			if (it?.status == Booking.Status.ChangeDate) {
+				return  '{"success" : "0", "message" : "err918"}'
 			}
 			
 			data << [

@@ -49,7 +49,8 @@ public class HospitalBookingController extends AbstractBaseController<Booking, L
 	 */
 	@RequestMapping(value = "retrieveHospitalBooking", method = RequestMethod.POST)
 	private Map<String, Object> retrieveHospitalBooking(@RequestParam(required = false) Integer idx,
-			@PageableDefault(page = 0, size = 20, sort = "createdDate", direction = Direction.DESC) Pageable pageable, @ModelAttribute("currentHospital") Hospital hospital) {
+			@PageableDefault(page = 0, size = 20, sort = "createdDate", direction = Direction.DESC) Pageable pageable,
+			@ModelAttribute("currentHospital") Hospital hospital) {
 
 		logger.trace("-- 获取诊所订单 --");
 

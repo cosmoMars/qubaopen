@@ -46,13 +46,9 @@ public interface BookingRepository extends MyRepository<Booking, Long> {
 	@Query("from Booking b where b.doctor = :doctor and DATE_FORMAT(b.time,'%Y-%m-%d') = :time and b.quick = true and b.id != :bookingId")
 	List<Booking> findAllByTimeAndQuickWithExist(@Param("time") String time, @Param("doctor") Doctor doctor, @Param("bookingId") long bookingId);
 	
-	@Query("from Booking b where b.doctor = :doctor and DATE_FORMAT(b.time,'%Y-%m-%d %H') = :time and b.quick = :quick and b.status != 2 and b.id != :bookingId")
+	@Query("from Booking b where b.doctor = :doctor and DATE_FORMAT(b.time,'%Y-%m-%d %H') = :time and b.quick = :quick and (b.status = 7 or b.status = 8) and b.id != :bookingId")
 	List<Booking> findAllByFormatTimeAndQuick(@Param("time") String time, @Param("doctor") Doctor doctor, @Param("quick") boolean quick, @Param("bookingId") long bookingId);
 
-	@Query("from Booking b where b.doctor = :doctor and DATE_FORMAT(b.time,'%Y-%m-%d %H') = :time and b.quick = :quick and b.id != :bookingId and b.status != 2")
-	List<Booking> findAllByFormatTimeAndQuickWithExist(@Param("time") String time, @Param("doctor") Doctor doctor, @Param("quick") boolean quick, @Param("bookingId") long bookingId);
-
-	//	%Y-%m-%d %H:%M:%S
 	@Query("from Booking b where date_format(b.time, '%Y-%m-%d %H:%M') >= :startTime and date_format(b.time, '%Y-%m-%d %H:%M') <= :endTime")
 	List<Booking> findByTime(@Param("startTime") String startTime, @Param("endTime") String endTime);
 	

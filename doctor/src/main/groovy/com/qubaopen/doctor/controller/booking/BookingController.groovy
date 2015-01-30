@@ -78,23 +78,23 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			}
 		}
 		def bookingList, nowDate = new Date(), ago
-		def c = Calendar.getInstance()
-		c.setTime(nowDate)
-		c.add(Calendar.DATE, -7)
-		ago = c.getTime() as Date
+//		def c = Calendar.getInstance()
+//		c.setTime(nowDate)
+//		c.add(Calendar.DATE, -7)
+//		ago = c.getTime() as Date
 		
 		if (index != null) {
 			def status = Booking.Status.values()[index]
 			if (idsStr) {
-				bookingList = bookingRepository.findBookingList(doctor, status, ago, ids, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, status, ids, pageable)
 			} else {
-				bookingList = bookingRepository.findBookingList(doctor, status, ago, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, status, pageable)
 			}
 		} else {
 			if (idsStr) {
-				bookingList = bookingRepository.findBookingList(doctor, ago, ids, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, ids, pageable)
 			} else {
-				bookingList = bookingRepository.findBookingList(doctor, ago, pageable)
+				bookingList = bookingRepository.findBookingList(doctor, pageable)
 			}
 		}
 		
@@ -566,7 +566,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (aBookings) {
 			return '{"success" : "0", "message" : "err805"}'
 		}
-		def fbookings = bookingRepository.findAllByFormatTimeAndQuick(DateFormatUtils.format(qBooking?.time, 'yyyy-MM-dd HH'), doctor, false),
+		def fbookings = bookingRepository.findAllByFormatTimeAndQuick(DateFormatUtils.format(qBooking?.time, 'yyyy-MM-dd HH'), doctor, false, qBookingId),
 		data = [], now = System.currentTimeMillis()
 		
 		fbookings.each {

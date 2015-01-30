@@ -312,11 +312,12 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 				id : doctor.id
 			)
 		}
+		if (record) {
+			dr.recordPath = "/$recordDir/$fileName"
+		}
 		if (recordJson != null) {
 			
-			if (record) {
-				dr.recordPath = "/$recordDir/$fileName"
-			}
+			
 			def jsonNode = objectMapper.readTree(recordJson)
 			
 			if (jsonNode.get('school') != null) {
@@ -389,8 +390,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			if (dr.selfStart && dr.selfEnd && dr.selfEnd.before(dr.selfStart)) {
 				return '{"success" : "0", "message" : "err922"}' // 自我学习结束时间不能小于自我学习开始时间
 			}
-			doctorRecordRepository.save(dr)
+			
 		}
+		doctorRecordRepository.save(dr)
 		doctorRepository.save(doctor)
 		doctorInfoRepository.save(doctorInfo)
 		'{"success": "1"}'

@@ -306,13 +306,14 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
 		}
 		
+		def dr = doctorRecordRepository.findOne(doctor.id)
+		if (!dr) {
+			dr = new DoctorRecord(
+				id : doctor.id
+			)
+		}
 		if (recordJson != null) {
-			def dr = doctorRecordRepository.findOne(doctor.id)
-			if (!dr) {
-				dr = new DoctorRecord(
-					id : doctor.id
-				)
-			}
+			
 			if (record) {
 				dr.recordPath = "/$recordDir/$fileName"
 			}

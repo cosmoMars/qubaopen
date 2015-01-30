@@ -101,8 +101,13 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (!validatePhone(phone)) {
 			return '{"success" : "0", "message": "err003"}'
 		}
-		
-		def tradeNo = "${user.id}_${doctorId}_${System.currentTimeMillis()}"
+		def tradeNo
+		if (doctorId != null) {
+			tradeNo = "${user.id}_D${doctorId}_${System.currentTimeMillis()}"
+		}
+		if (hospitalId != null) {
+			tradeNo = "${user.id}_H${hospitalId}_${System.currentTimeMillis()}"
+		}
 		
 		def sex, consultType, birthday
 		def booking = new Booking(

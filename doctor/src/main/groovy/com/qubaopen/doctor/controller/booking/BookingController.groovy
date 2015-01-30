@@ -134,7 +134,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 获取详细信息
 	 */
 	@RequestMapping(value = 'retrieveDetailInfo/{id}', method = RequestMethod.GET)
-	retrieveDetailInfo(@PathVariable('id') Long id) {
+	retrieveDetailInfo(@PathVariable('id') Long id, @ModelAttribute('currentDoctor') Doctor doctor) {
 		
 		logger.trace('-- 查看单个信息 --')
 		

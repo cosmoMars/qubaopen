@@ -117,8 +117,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			helpReason : helpReason,
 			otherProblem : otherProblem,
 			treatmented : treatmented,
-			haveConsulted : haveConsulted,
-			time : new Date()
+			haveConsulted : haveConsulted
+//			time : new Date()
 		)
 		if (doctorId != null) {
 			booking.doctor = new Doctor(id : doctorId)
@@ -576,11 +576,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			treatmented : booking.treatmented,
 			haveConsulted : booking.haveConsulted,
 			refusalReason : booking.refusalReason,
-			time : new Date(),
+//			time : new Date(),
 			quick : booking.quick,
 			consultType : booking.consultType,
 			status : Booking.Status.Accept,
-			money : booking.money
+			money : booking.money,
+			lastBookingTime : booking.time
 		)
 		if (booking.doctor != null) {
 			nextBooking.doctor = booking.doctor

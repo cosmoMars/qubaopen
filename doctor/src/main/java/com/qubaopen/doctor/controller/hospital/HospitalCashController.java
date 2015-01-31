@@ -1,7 +1,6 @@
 package com.qubaopen.doctor.controller.hospital;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +74,13 @@ public class HospitalCashController extends AbstractBaseController<HospitalCash,
 		return hospitalCashRepository;
 	}
 
+	/**
+	 * @param index
+	 * @param pageable
+	 * @param hospital
+	 * @return
+	 * 获取诊所取现日志
+	 */
 	@RequestMapping(value = "retrieveHospitalCashLog", method = RequestMethod.POST)
 	private Map<String, Object> retrieveHospitalCashLog(@RequestParam(required = false) Integer index,
 			@PageableDefault(page = 0, size = 20, sort = "createdDate", direction = Direction.DESC)
@@ -84,11 +90,11 @@ public class HospitalCashController extends AbstractBaseController<HospitalCash,
 		logger.trace("-- 获取取款日志 --");
 		
 		// 取7天前开始的数据
-		Date now = new Date();
-		Calendar c = Calendar.getInstance();
-		c.setTime(now);
-		c.add(Calendar.DATE, -7);
-		Date before = c.getTime();
+//		Date now = new Date();
+//		Calendar c = Calendar.getInstance();
+//		c.setTime(now);
+//		c.add(Calendar.DATE, -7);
+//		Date before = c.getTime();
 		
 		Map<String, Object> filters = new HashMap<String, Object>();
 	
@@ -111,7 +117,7 @@ public class HospitalCashController extends AbstractBaseController<HospitalCash,
 		}
 
 		filters.put("type_equal", type);
-		filters.put("time_greaterThanOrEqualTo", before);
+//		filters.put("time_greaterThanOrEqualTo", before);
 
 		Page<HospitalCashLog> page = hospitalCashLogRepository.findAll(filters, pageable);
 		

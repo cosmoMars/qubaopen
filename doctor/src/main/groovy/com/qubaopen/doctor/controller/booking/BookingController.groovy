@@ -455,24 +455,21 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				}
 			}
 			bookingList.each {
-				if (it.status == Booking.Status.Consulted || it.status == Booking.Status.Next
-					|| it.status == Booking.Status.PayAccept || it.status == Booking.Status.ChangeDate) {
-					def cal = Calendar.getInstance()
-					cal.setTime it?.time
-					cal.add(Calendar.HOUR, 1)
-					def endTime = cal.getTime()
-					timeAll << [
-						'type' : 2,
-						'bookingId' : it?.id,
-						'name' : it?.name,
-						'helpReason' : it?.helpReason,
-						'consultType' : it?.consultType?.ordinal(),
-						'startTime' : DateFormatUtils.format(it?.time, 'HH:mm'),
-						'endTime' : DateFormatUtils.format(endTime, 'HH:mm'),
-						'quick' : it?.quick,
-						'status' : it?.status?.ordinal()
-					]
-				}
+				def cal = Calendar.getInstance()
+				cal.setTime it?.time
+				cal.add(Calendar.HOUR, 1)
+				def endTime = cal.getTime()
+				timeAll << [
+					'type' : 2,
+					'bookingId' : it?.id,
+					'name' : it?.name,
+					'helpReason' : it?.helpReason,
+					'consultType' : it?.consultType?.ordinal(),
+					'startTime' : DateFormatUtils.format(it?.time, 'HH:mm'),
+					'endTime' : DateFormatUtils.format(endTime, 'HH:mm'),
+					'quick' : it?.quick,
+					'status' : it?.status?.ordinal()
+				]
 			}
 			
 			result << [

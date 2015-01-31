@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-import com.qubaopen.doctor.repository.cash.DoctorCashLogRepository;
-import com.qubaopen.doctor.repository.cash.DoctorCashRepository;
+import com.qubaopen.doctor.repository.cash.DoctorCashLogRepository
+import com.qubaopen.doctor.repository.cash.DoctorCashRepository
 import com.qubaopen.doctor.repository.cash.DoctorTakeCashRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.cash.DoctorTakeCash
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 
 @RestController
 @RequestMapping('backend')
@@ -24,6 +26,9 @@ public class BackendController {
 	
 	@Autowired
 	DoctorCashRepository doctorCashRepository
+	
+	@Autowired
+	DoctorInfoRepository doctorInfoRepository
 	
 	
 	/**
@@ -68,4 +73,26 @@ public class BackendController {
 		}
 	}
 		
+		
+	/**
+	 * @param index
+	 * @param content
+	 * @param doctor
+	 * @return
+	 * 修改状态
+	 */
+	@RequestMapping(value = 'modifyLoginStatus', method = RequestMethod.POST)
+	modifyLoginStatus(@RequestParam Long id, @RequestParam Integer index, @RequestParam(required = false) String content) {
+		
+		def doctorInfo = doctorInfoRepository.findOne(id),
+			loginStatus = DoctorInfo.LoginStatus.values()[index]
+		
+		if (loginStatus == DoctorInfo.LoginStatus.Refusal) {
+			doctorInfo.refusalReason = content
+		}
+		doctorInfo.loginStatus = loginStatus
+		doctorInfoRepository.save(doctorInfo)
+		'{"success" : "1"}'
+		
+	}
 }

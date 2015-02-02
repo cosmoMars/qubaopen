@@ -169,8 +169,12 @@ public class HospitalCashController extends AbstractBaseController<HospitalCash,
 	}
 
 	@RequestMapping(value = "takeCash", method = RequestMethod.POST)
-	private String takeCash(@RequestParam(required = false) Double curCash, @RequestParam(required = false) Integer type, @RequestParam(required = false) String alipayNum,
-			@RequestParam(required = false) Long bankId, @RequestParam(required = false) String bankCard, @RequestParam(required = false) String captcha,
+	private String takeCash(@RequestParam(required = false) Double curCash,
+			@RequestParam(required = false) Integer type,
+			@RequestParam(required = false) String alipayNum,
+			@RequestParam(required = false) Long bankId,
+			@RequestParam(required = false) String bankCard,
+			@RequestParam(required = false) String captcha,
 			@ModelAttribute("currentHospital") Hospital hospital) {
 
 		logger.trace("-- 医院取现 --");

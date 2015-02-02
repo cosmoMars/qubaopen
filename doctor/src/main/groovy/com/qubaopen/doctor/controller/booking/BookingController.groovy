@@ -264,7 +264,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				bTime = bookingTimeRepository.findByFormatTime(doctor, DateFormatUtils.format(day, 'yyyy-MM-dd')),
 				bookingSelfTimes = bookingSelfTimeRepository.findByDoctorAndTime(doctor, day),
 //				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
-				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
+				bookingList = bookingRepository.findAllByTimeAndDoctor(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 				self = [], other = []
 				
 			dayData << [
@@ -390,7 +390,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				bTime = bookingTimeRepository.findByFormatTime(doctor, DateFormatUtils.format(day, 'yyyy-MM-dd')),
 				bookingSelfTimes = bookingSelfTimeRepository.findByDoctorAndTime(doctor, day),
 //				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
-				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
+				bookingList = bookingRepository.findAllByTimeAndDoctor(DateFormatUtils.format(day, 'yyyy-MM-dd'), doctor),
 //				self = [], other = []
 				timeAll = []
 				

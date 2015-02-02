@@ -205,11 +205,12 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		
 		def todayQuestionnaires = selfUserQuestionnaireRepository.findByTimeAndTypeIdWithOutSpecial(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), typeId, specialSelf, user)
 		
-		if (todayQuestionnaires?.size() >= 2) {
-			return '{"success" : "0", "message" : "亲，该类别每日2题上线你已经答满咯～"}' // err603
-		}
+//		if (todayQuestionnaires?.size() >= 2) {
+//			return '{"success" : "0", "message" : "亲，该类别每日2题上线你已经答满咯～"}' // err603
+//		}
 		
-		def data = []
+		def data = [],
+			remainCount = 2 - todayQuestionnaires?.size() ?: 0
 		def selfs = selfService.retrieveSelfByTypeId(user, typeId, specialSelf)
 		selfs.each {
 			data <<	[
@@ -221,7 +222,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		[
 			'success' : '1',
 			'message' : '成功',
-			'data' : data
+			'data' : data,
+			'remainCount' : remainCount
 		]
 	}
 

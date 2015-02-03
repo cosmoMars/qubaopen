@@ -431,7 +431,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
 	retrieveSelfBooking(
 //		@RequestParam(required = false) String ids,
-		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.ASC)
+		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 		
@@ -566,6 +566,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		logger.trace '-- 已约下次 --'
 		
 		def booking = bookingRepository.findOne(bookingId)
+		booking.status = Booking.Status.Next
 		
 		def nextBooking = new Booking(
 			user : booking.user,
@@ -600,6 +601,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			nextBooking.tradeNo = "${user.id}_H${hospitalId}_${System.currentTimeMillis()}"
 		}
 		nextBooking = bookingRepository.save(nextBooking)
+		bookingRepository.save(booking)
 		[
 			'success' : '1',
 			'bookingId' : nextBooking?.id,

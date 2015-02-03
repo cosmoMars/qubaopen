@@ -31,29 +31,12 @@ public class Self extends AbstractBaseEntity<Long> {
 	private QuestionnaireType questionnaireType;
 
 	/**
-	 * 问卷分组类型
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "self_type_id")
-	private SelfType selfType;
-
-//	/**
-//	 * 自测类型 Character性格分析, Emotional 情绪管理, Personal个人发展
-//	 */
-//	@Enumerated
-//	private ManagementType managementType;
-//
-//	public enum ManagementType {
-//		Character, Emotional, Personal
-//	}
-
-	/**
 	 * 自测管理类型
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "self_management_type_id")
 	private SelfManagementType selfManagementType;
-	
+
 	/**
 	 * 得分系数
 	 */
@@ -130,24 +113,28 @@ public class Self extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "graphics_type_id")
 	private GraphicsType graphicsType;
-	
+
 	/**
 	 * 问卷组
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "self_group_id")
 	private SelfGroup selfGroup;
-	
+
 	/**
 	 * 提示
 	 */
 	private String tips;
-	
+
 	/**
 	 * 是否性格解析度 必做
 	 */
 	private boolean analysis;
 	
+	/**
+	 * 问卷版本
+	 */
+	private String version = "1";
 
 	public QuestionnaireType getQuestionnaireType() {
 		return questionnaireType;
@@ -155,30 +142,6 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setQuestionnaireType(QuestionnaireType questionnaireType) {
 		this.questionnaireType = questionnaireType;
-	}
-
-//	public SelfType getSelfType() {
-//		return selfType;
-//	}
-//
-//	public void setSelfType(SelfType selfType) {
-//		this.selfType = selfType;
-//	}
-//
-//	public ManagementType getManagementType() {
-//		return managementType;
-//	}
-//
-//	public void setManagementType(ManagementType managementType) {
-//		this.managementType = managementType;
-//	}
-
-	public SelfType getSelfType() {
-		return selfType;
-	}
-
-	public void setSelfType(SelfType selfType) {
-		this.selfType = selfType;
 	}
 
 	public int getCoefficient() {
@@ -315,5 +278,13 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setAnalysis(boolean analysis) {
 		this.analysis = analysis;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 }

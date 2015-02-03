@@ -133,28 +133,6 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 		]
 	}
 
-
-	//	/**
-	//	 * 上传图片
-	//	 * @param interestId
-	//	 * @param pic
-	//	 */
-	//	@RequestMapping(value = 'uploadPic', method = RequestMethod.POST, consumes = 'multipart/form-data')
-	//	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic) {
-	//
-	//		logger.trace(' -- 上传图片 -- ')
-	//
-	//		def interest = interestRepository.findOne(interestId)
-	//		interest.pic = pic.bytes
-	//		try {
-	//			interestRepository.save(interest)
-	//			'{"success": "1"}'
-	//		} catch (Exception e) {
-	//			'{"success": "0", "message": "上传失败"}'
-	//		}
-	//
-	//	}
-	
 	/**
 	 * 上传兴趣问卷图片
 	 * @param userId

@@ -153,9 +153,9 @@ public class InterestService {
 				'totalRespondentsCount' : it.totalRespondentsCount,
 				'recommendedValue' : it.recommendedValue,
 				'friendCount' : friendCount,
-				'picPath' :it.picPath
+				'picPath' : it?.picPath,
+				'version' : it?.version
 //				'guidanceSentence' : it.guidanceSentence,
-				
 			]
 			data << interest
 		}

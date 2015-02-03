@@ -216,7 +216,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			data <<	[
 				'selfId' : it?.id,
 				'managementType' : it?.selfManagementType?.id,
-				'title' : it?.title
+				'title' : it?.title,
+				'version' : it?.version
 			]
 		}
 		[

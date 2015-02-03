@@ -108,6 +108,11 @@ public class Interest extends AbstractBaseEntity<Long> {
 	 * 图片路径
 	 */
 	private String picPath;
+	
+	/**
+	 * 兴趣问卷版本
+	 */
+	private String version = "1";
 
 	public Set<QuestionnaireTagType> getQuestionnaireTagTypes() {
 		return questionnaireTagTypes;
@@ -211,6 +216,14 @@ public class Interest extends AbstractBaseEntity<Long> {
 
 	public void setQuestionnaireType(QuestionnaireType questionnaireType) {
 		this.questionnaireType = questionnaireType;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }

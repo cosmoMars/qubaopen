@@ -451,6 +451,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'bookingId' : it?.id,
 				'doctorId' : it?.doctor?.id,
 				'doctorName' : it?.doctor?.doctorInfo?.name,
+				'doctorPhone' : it?.doctor?.doctorInfo?.phone,
+				'lastBookingTime' : it?.lastBookingTime,
 				'hospitalId' :	it?.hospital?.id,
 				'hospitalName' : it?.hospital?.hospitalInfo?.name,
 				'name' : it?.name,
@@ -567,7 +569,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		def nextBooking = new Booking(
 			user : booking.user,
-			tradeNo : "${user.id}_${doctorId}_${System.currentTimeMillis()}",
 			name : booking.name,
 			phone : booking.phone,
 			sex : booking.sex,
@@ -590,14 +591,47 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		)
 		if (booking.doctor != null) {
 			nextBooking.doctor = booking.doctor
+			def doctorId = booking.doctor.id
+			nextBooking.tradeNo = "${user.id}_D${doctorId}_${System.currentTimeMillis()}"
 		}
 		if (booking.hospital != null) {
 			nextBooking.hospital = booking.hospital
+			def hospitalId = booking.hospital.id
+			nextBooking.tradeNo = "${user.id}_H${hospitalId}_${System.currentTimeMillis()}"
 		}
 		nextBooking = bookingRepository.save(nextBooking)
 		[
 			'success' : '1',
-			'bookingId' : nextBooking.id
+			'bookingId' : nextBooking?.id,
+			'doctorId' : nextBooking?.doctor?.id,
+			'doctorName' : nextBooking?.doctor?.doctorInfo?.name,
+			'doctorPhone' : nextBooking?.doctor?.doctorInfo?.phone,
+			'lastBookingTime' : nextBooking?.lastBookingTime,
+			'hospitalId' :	nextBooking?.hospital?.id,
+			'hospitalName' : nextBooking?.hospital?.hospitalInfo?.name,
+			'name' : nextBooking?.name,
+			'phone' : nextBooking?.phone,
+			'sex' : nextBooking?.sex?.ordinal(),
+			'birthday' : nextBooking?.birthday,
+			'profession' : nextBooking?.profession,
+			'onlineFee' : nextBooking?.doctor?.doctorInfo?.onlineFee,
+			'offlineFee' : nextBooking?.doctor?.doctorInfo?.offlineFee,
+			'city' : nextBooking?.city,
+			'married' : nextBooking?.married,
+			'haveChildren' : nextBooking?.haveChildren,
+			'helpReason' : nextBooking?.helpReason,
+			'otherProblem' : nextBooking?.otherProblem,
+			'treatmented' : nextBooking?.treatmented,
+			'haveConsulted' : nextBooking?.haveConsulted,
+			'refusalReason' : nextBooking?.refusalReason,
+			'time' : nextBooking?.time,
+			'quick' : nextBooking?.quick,
+			'consultType' : nextBooking?.consultType?.ordinal(),
+			'status' : nextBooking?.status?.ordinal(),
+			'money' : nextBooking?.money,
+			'userStatus' : nextBooking?.userStatus,
+			'doctorStatus' : nextBooking?.doctorStatus,
+			'doctorAvatar' : nextBooking?.doctor?.doctorInfo?.avatarPath
 		]
 	}
 }

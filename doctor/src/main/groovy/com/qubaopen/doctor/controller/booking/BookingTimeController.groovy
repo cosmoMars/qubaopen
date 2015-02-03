@@ -1,5 +1,6 @@
 package com.qubaopen.doctor.controller.booking;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -73,7 +74,7 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			if (dateTime == null) {
 				return '{"success" : "0", "message" : "err907"}' // 时间不正确
 			}
-			def dbTime = bookingTimeRepository.findByFormatTime(doctor, dateTime)
+			def dbTime = bookingTimeRepository.findByFormatTime(doctor, DateFormatUtils.format(DateUtils.parseDate(dateTime, 'yyyy-MM-dd'), 'yyyy-MM-dd'))
 			def strTime
 			if (dbTime) {
 				strTime = dbTime.bookingModel
@@ -182,8 +183,8 @@ public class BookingTimeController extends AbstractBaseController<BookingTime, L
 			return '{"success" : "0", "message" : "err916"}'
 		}
 		
-		def bookings = bookingRepository.findByTime(startTime, endTime),
-			selfTimes = bookingSelfTimeRepository.findByTime(startTime, endTime)
+		def bookings = bookingRepository.findByTime(DateUtils.parseDate(startTime, 'yyyy-MM-dd HH:mm'), DateUtils.parseDate(endTime, 'yyyy-MM-dd HH:mm')),
+			selfTimes = bookingSelfTimeRepository.findByTime(DateUtils.parseDate(startTime, 'yyyy-MM-dd HH:mm'), DateUtils.parseDate(endTime, 'yyyy-MM-dd HH:mm'))
 		 
 		if ((bookings && bookings.size() > 0) || (selfTimes && selfTimes?.size() > 0)) {
 			return '{"success" : "0", "message" : "err917"}'

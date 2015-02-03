@@ -172,7 +172,6 @@ public class HospitalBookingController extends AbstractBaseController<Booking, L
 			Date day = c.getTime();
 			int	idx = dayForWeek(day);
 			String timeModel = times[idx - 1];
-//			List<Booking> bookingList = bookingRepository.findAllByTimeAndHospital(DateFormatUtils.format(day, "yyyy-MM-dd"), hospital);
 			
 			// 默认占用的时间
 			for (int j = 0; j < timeModel.length(); j++) {

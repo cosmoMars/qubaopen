@@ -144,10 +144,6 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 			return '{"success": "0", "message": "err004"}'
 		}
 		
-//		if (!StringUtils.isNotEmpty(captcha)) {
-//			return '{"success": "0", "message": "err012"}'
-//		}
-		
 		def hm = urlRepository.findOne(1l)
 		
 //		def url = "http://10.0.0.88:8080/doctor/uHospital/"
@@ -306,7 +302,8 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		
 		def hospitalInfo = new HospitalInfo(
 			id : id,
-			bookingTime : '111111110000000000001111,111111110000000000001111,111111110000000000001111,111111110000000000001111,111111110000000000001111,111111111111111111111111,111111111111111111111111'
+			bookingTime : '111111110000000000001111,111111110000000000001111,111111110000000000001111,111111110000000000001111,111111110000000000001111,111111111111111111111111,111111111111111111111111',
+			loginStatus : HospitalInfo.LoginStatus.Unaudited
 		)
 		hospitalRepository.save(hospital)
 		hospitalCaptchaRepository.save(hCaptcha)

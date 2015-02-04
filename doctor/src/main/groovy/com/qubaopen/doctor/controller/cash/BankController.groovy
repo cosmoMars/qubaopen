@@ -33,7 +33,7 @@ public class BankController extends AbstractBaseController<Bank, Long> {
 	 * 获取银行
 	 */
 	@RequestMapping(value = 'retrieveBank', method = RequestMethod.GET)
-	retrieveBank(@ModelAttribute('currentDoctor') Doctor doctor) {
+	retrieveBank() {
 		
 		def banks = bankRepository.findAll(),
 			result = []

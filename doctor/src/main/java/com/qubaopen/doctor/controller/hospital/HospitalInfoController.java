@@ -138,11 +138,13 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			if (!validatePhone(phone)) {
 				return "{\"success\": \"0\", \"message\" : \"err003\"}";
 			}
+			hi.setPhone(phone);
 		}
 		if (urgentPhone != null) {
 			if (!validatePhone(urgentPhone)) {
 				return "{\"success\": \"0\", \"message\" : \"err003\"}";
 			}
+			hi.setUrgentPhone(urgentPhone);
 		}
 		if (qq != null) {
 			hi.setQq(qq);
@@ -201,6 +203,7 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 				e.printStackTrace();
 			}
 		}
+		hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
 		hospitalInfoRepository.save(hi);
 		
 		return "{\"success\": \"1\"}";

@@ -249,11 +249,10 @@ public class HospitalCashController extends AbstractBaseController<HospitalCash,
 		logger.trace("-- 诊所获取验证码 --");
 		HospitalInfo hospitalInfo = hospitalInfoRepository.findOne(hospital.getId());
 		
-		
 		Map<String, Object> result = new HashMap<String, Object>();
 		if (hospitalInfo.getLoginStatus() != HospitalInfo.LoginStatus.Audited) {
 			result.put("success", "1");
-			result.put("message", "err916");
+			result.put("message", "err1000");
 			return result;
 		}
 		 

@@ -31,37 +31,8 @@ public class HospitalService {
 	@Autowired
 	HospitalCaptchaLogRepository hospitalCaptchaLogRepository
 	
-//	@Autowired
-//	HospitalUdidRepository hospitalUdidRepository
-	
 	@Autowired
 	CaptchaService captchaService
-	
-//	/**
-//	 * @param user
-//	 * @param udid
-//	 * @param idfa
-//	 * @return
-//	 */
-//	@Transactional
-//	saveUserCode(Hospital hospital, String udid, String idfa, String imei) {
-//		
-//		def code = hospitalUdidRepository.findOne(hospital.id)
-//		
-//		if (udid) {
-//			code.udid = udid
-//		}
-//		if (idfa) {
-//			code.idfa = idfa
-//		}
-//		if (imei) {
-//			code.imei = imei
-//		}
-//		if (!udid && !idfa && !imei) {
-//			return
-//		}
-//		hospitalUdidRepository.save(code)
-//	}
 	
 	/**
 	 * @param phone
@@ -94,29 +65,6 @@ public class HospitalService {
 		
 		sendCaptcha(url, hospital.id, email)
 				
-//		def h = hospitalRepository.findByEmail(email)
-//		
-//		if (h) {
-//			if (h.activated) {
-//				return '{"success": "0", "message": "err006"}'
-//			}
-//			h.password = DigestUtils.md5Hex(password)
-//			h.activated = true
-//			
-//			h = hospitalRepository.save(h)
-//			
-//			def hospitalInfo = new HospitalInfo(
-//				id : h.id,
-//				bookingTime : '000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000,000000000000000000000000'
-//			)
-//			hospitalInfoRepository.save(hospitalInfo)
-//			return [
-//				'success': '1',
-//				'hospitalId' : h.id
-//			]
-//		}
-//
-//		'{"success": "0", "message": "err008"}'
 	}
 	
 	/**

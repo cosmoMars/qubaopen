@@ -1,4 +1,4 @@
-package com.qubaopen.survey.service.user;
+package com.qubaopen.survey.controller.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.survey.controller.user.UserFeedBackController;
 import com.qubaopen.survey.entity.user.User;
 import com.qubaopen.survey.entity.user.UserFeedBackType;
 import com.qubaopen.survey.repository.user.UserFeedBackTypeRepository;

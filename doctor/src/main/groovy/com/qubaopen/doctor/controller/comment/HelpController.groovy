@@ -149,7 +149,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	@RequestMapping(value = 'retrieveDetailHelp', method = RequestMethod.POST)
 	retrieveDetailHelp(@RequestParam long helpId,
 		@RequestParam(required = false) String ids,
-		@PageableDefault(page = 0, size = 20,  sort = 'createdDate', direction = Direction.ASC)
+		@PageableDefault(page = 0, size = 20,  sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 	

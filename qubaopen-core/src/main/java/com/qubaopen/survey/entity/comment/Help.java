@@ -14,6 +14,10 @@ import org.hibernate.envers.Audited;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.user.User;
 
+/**
+ * @author mars
+ * 求助主题
+ */
 @Entity
 @Table(name = "help")
 @Audited
@@ -24,9 +28,15 @@ public class Help extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private User user;
 
+	/**
+	 * 发布时间
+	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
 
+	/**
+	 * 内容
+	 */
 	private String content;
 
 	public User getUser() {

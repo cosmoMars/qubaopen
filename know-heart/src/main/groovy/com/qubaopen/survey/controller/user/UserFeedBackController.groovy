@@ -16,7 +16,7 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserFeedBack
-import com.qubaopen.survey.entity.user.UserReceiveAddress;
+import com.qubaopen.survey.entity.user.UserFeedBackType
 import com.qubaopen.survey.repository.user.UserFeedBackRepository
 
 @RestController
@@ -72,5 +72,33 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 	modify(@RequestBody UserFeedBack userFeedBack) {
 		userFeedBackRepository.modify(userFeedBack)
 		'{"success": "1"}'
+	}
+	
+	/**
+	 * @param typeId
+	 * @param content
+	 * @param user
+	 * @return
+	 * 提交意见反馈
+	 */
+	@RequestMapping(value = 'submitFeedBack', method = RequestMethod.POST)
+	submitFeedBack(@RequestParam long typeId,
+		@RequestParam(required = false) String content,
+		@RequestParam(required = false) String title,
+		@ModelAttribute('currentUser') User user) {
+		
+		logger.trace '-- 提交意见反馈 --'
+		
+		def userFeedBack = new UserFeedBack(
+			content : content,
+			title : title,
+			feedBackTime : new Date(),
+			user : user,
+			backType : new UserFeedBackType(id : typeId)
+		)
+		
+		userFeedBackRepository.save(userFeedBack)
+		'{"success" : "1"}'
+		
 	}
 }

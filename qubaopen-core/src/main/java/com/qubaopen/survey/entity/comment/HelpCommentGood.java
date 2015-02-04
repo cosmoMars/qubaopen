@@ -10,6 +10,10 @@ import org.hibernate.envers.Audited;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.user.User;
 
+/**
+ * @author mars
+ * 求助点赞
+ */
 @Entity
 @Table(name = "help_comment_good")
 @Audited

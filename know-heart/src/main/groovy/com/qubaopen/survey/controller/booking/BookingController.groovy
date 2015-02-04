@@ -584,7 +584,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			haveConsulted : booking.haveConsulted,
 			refusalReason : booking.refusalReason,
 //			time : new Date(),
-			quick : booking.quick,
+			quick : false,
 			consultType : booking.consultType,
 			status : Booking.Status.Accept,
 			money : booking.money,

@@ -884,7 +884,7 @@ public class MapStatisticsService {
 				}
 				
 				//计算 正负情感趋势 上升 下降
-				def time=System.currentTimeMillis(),
+				def time = System.currentTimeMillis(),
 					timeBefore = time - 60 * 60 * 24 * 1000 * 2,
 					timeAfter = time + 60 * 60 * 24 * 1000 * 2
 				
@@ -902,13 +902,13 @@ public class MapStatisticsService {
 					}
 				}	
 			
-				if( resultBefore <= resultToday  && resultToday<resultAfter){ // 上升
+				if(resultBefore <= resultToday && resultToday<resultAfter){ // 上升
 					resultContent = MapContent.lowToHighTitle + MapContent.lowToHighContent + moodContent + MapContent.lowToHighMethod
-				}else if( resultBefore > resultToday  && resultToday >=resultAfter){ // 下降
+				}else if (resultBefore > resultToday && resultToday >= resultAfter){ // 下降
 					resultContent = MapContent.highToLowTitle + MapContent.highToLowContent + moodContent + MapContent.highToLowMethod
-				}else if( resultBefore <= resultToday  && resultToday >=resultAfter){ // 最高处
+				}else if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
 					resultContent = MapContent.highTideTitle + MapContent.highTideContent + moodContent
-				}else if( resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
+				}else if (resultBefore > resultToday && resultToday < resultAfter){ // 最底处
 					resultContent = MapContent.lowTideTitle + MapContent.lowTideContent + moodContent + MapContent.lowTideMethod
 				}
 				

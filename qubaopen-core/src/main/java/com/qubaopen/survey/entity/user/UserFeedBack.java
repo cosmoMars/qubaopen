@@ -30,6 +30,11 @@ public class UserFeedBack extends AbstractBaseEntity<Long> {
 	 * 内容
 	 */
 	private String content;
+	
+	/**
+	 * 页面标签
+	 */
+	private String title;
 
 	/**
 	 * 反馈时间
@@ -62,13 +67,27 @@ public class UserFeedBack extends AbstractBaseEntity<Long> {
 	public enum FeedBackType {
 		ORDINARY, ENTERPRISE
 	}
-
+	
+	/**
+	 * 反馈类型
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	private UserFeedBackType backType;
+	
 	public String getContent() {
 		return content;
 	}
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public Date getFeedBackTime() {
@@ -101,6 +120,14 @@ public class UserFeedBack extends AbstractBaseEntity<Long> {
 
 	public void setFeedBackType(FeedBackType feedBackType) {
 		this.feedBackType = feedBackType;
+	}
+
+	public UserFeedBackType getBackType() {
+		return backType;
+	}
+
+	public void setBackType(UserFeedBackType backType) {
+		this.backType = backType;
 	}
 
 }

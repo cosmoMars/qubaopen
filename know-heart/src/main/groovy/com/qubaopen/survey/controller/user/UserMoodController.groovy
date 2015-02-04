@@ -1,31 +1,40 @@
 package com.qubaopen.survey.controller.user
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.SessionAttributes
-import org.springframework.web.bind.annotation.RestController;
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.survey.entity.user.User;
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserMood
 import com.qubaopen.survey.entity.user.UserMood.MoodType
-import com.qubaopen.survey.repository.user.UserMoodRepository;
-import com.qubaopen.survey.service.user.UserMoodService;
+import com.qubaopen.survey.repository.mindmap.MapCoefficientRepository;
+import com.qubaopen.survey.repository.user.UserMoodRepository
+import com.qubaopen.survey.service.mindmap.MapContent
+import com.qubaopen.survey.service.user.UserMoodService
 
 @RestController
 @RequestMapping('userMood')
 @SessionAttributes('currentUser')
 public class UserMoodController extends AbstractBaseController<UserMood, Long>{
+	
+	static Logger logger = LoggerFactory.getLogger(UserMoodController.class)
+	
 	@Autowired
-	UserMoodRepository userMoodRepository;
+	UserMoodRepository userMoodRepository
+	
+	@Autowired
+	MapCoefficientRepository mapCoefficientRepository
 
 	@Autowired
-	UserMoodService userMoodService;
+	UserMoodService userMoodService
+	
 
 	@Override
 	protected MyRepository<UserMood, Long> getRepository() {
@@ -74,4 +83,51 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		@ModelAttribute('currentUser') User user) {
 		userMoodService.getUserMood(user,month);
 	}
+		
+	
+	/**
+	 * @param month
+	 * @param user
+	 * @return
+	 * 获取每月用户心里列表
+	 */
+	@RequestMapping(value = 'retrieveMoodList', method = RequestMethod.GET)
+	retrieveMoodList(@RequestParam String month, @ModelAttribute('currentUser') User user) {
+		
+		logger.trace '-- 获取每月用户心里列表 --'
+		
+		def coefficient = mapCoefficientRepository.findOne(user.id)
+		
+		def moodContent = ''
+		if (coefficient) {
+			//计算 正负情感趋势 上升 下降
+			def time = System.currentTimeMillis(),
+				timeBefore = time - 60 * 60 * 24 * 1000 * 2,
+				timeAfter = time + 60 * 60 * 24 * 1000 * 2
+			
+			def resultToday = coefficient.mid1 + coefficient.mid2 * Math.cos(time * coefficient.mid4) + coefficient.mid3 * Math.sin(time * coefficient.mid4)
+			def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
+			def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
+			
+			if(resultBefore <= resultToday && resultToday < resultAfter){ // 上升
+				moodContent = MapContent.lowToHighTitle + MapContent.lowToHighContent + moodContent + MapContent.lowToHighMethod
+			}else if (resultBefore > resultToday && resultToday >= resultAfter){ // 下降
+				moodContent = MapContent.highToLowTitle + MapContent.highToLowContent + moodContent + MapContent.highToLowMethod
+			}else if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
+				moodContent = MapContent.highTideTitle + MapContent.highTideContent + moodContent
+			}else if (resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
+				moodContent = MapContent.lowTideTitle + MapContent.lowTideContent + moodContent + MapContent.lowTideMethod
+			}
+		}
+		
+		def result = userMoodService.retrieveMoodList(month, user, coefficient)
+		
+		[
+			'success' : '1',
+			'moodContent' : moodContent,
+			'monthData' : result
+		]
+	}
+	
+
 }

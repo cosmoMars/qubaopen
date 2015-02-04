@@ -14,6 +14,10 @@ import org.hibernate.envers.Audited;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
 
+/**
+ * @author mars
+ * 求助评论
+ */
 @Entity
 @Table(name = "help_comment")
 @Audited

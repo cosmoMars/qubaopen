@@ -20,7 +20,7 @@ import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
 
 @RestController
-@RequestMapping('helpCommnet')
+@RequestMapping('helpComment')
 @SessionAttributes('currentDoctor')
 public class HelpCommentController extends AbstractBaseController<HelpComment, Long> {
 

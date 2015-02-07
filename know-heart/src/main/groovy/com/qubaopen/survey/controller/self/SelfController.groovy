@@ -81,7 +81,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			def self = [
 				'selfId' : it?.id,
 				'managementType' : it?.selfManagementType?.id,
-				'title' : it?.title
+				'title' : it?.title,
+				'version' : it?.version
 			]
 			data << self
 		}

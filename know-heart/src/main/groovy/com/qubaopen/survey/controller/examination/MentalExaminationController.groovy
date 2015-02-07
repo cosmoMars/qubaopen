@@ -146,15 +146,17 @@ public class MentalExaminationController {
 				
 			if (selfMap.get(single.selfManagementType)) {
 				selfMap.get(single.selfManagementType) << [
-					'selfId' : single.id,
-					'selfName' : single.title,
+					'selfId' : single?.id,
+					'selfName' : single?.title,
+					'version' : single?.version,
 					'done' : done
 				]
 			} else {
 				def list = []
 				list << [
-					'selfId' : single.id,
-					'selfName' : single.title,
+					'selfId' : single?.id,
+					'selfName' : single?.title,
+					'version' : single?.version,
 					'done' : done
 				]
 				selfMap.put(single.selfManagementType, list)
@@ -206,7 +208,8 @@ public class MentalExaminationController {
 			'success' : "1",
 			'selfId' : self?.id,
 			'managementType' : self?.selfManagementType?.id,
-			'title' : self?.title
+			'title' : self?.title,
+			'version' : self?.version
 		]
 		
 	}

@@ -1,11 +1,11 @@
 package com.qubaopen.doctor.controller.cash;
 
-import javax.management.modelmbean.RequiredModelMBean;
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.web.PageableDefault
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -79,8 +79,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 	 */
 	@Transactional
 	@RequestMapping(value = 'retrieveCashInfo', method = RequestMethod.GET)
-	retrieveCashInfo(@RequestParam(required = false) Integer typeIdx,
-		@PageableDefault(page = 0, size = 20) Pageable pageable,
+	retrieveCashInfo(@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC) Pageable pageable,
 		@ModelAttribute('currentDoctor') Doctor doctor) {
 
 		logger.trace '--  获取医师现金信息 --'
@@ -95,34 +94,21 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 				cash = doctorCashRepository.save(cash)
 			}
 		}
-		if (typeIdx == null) {
-			cashLogs = doctorCashLogRepository.findByDoctorAndTypeOrderOrderByTimeDesc(doctor, DoctorCashLog.Type.In, pageable)
-		} else {
-			cashLogs = doctorCashLogRepository.findByDoctorAndTypeOrderOrderByTimeDesc(doctor, DoctorCashLog.Type.values()[typeIdx], pageable)
-		}
-			
-		def inDetail = [], outDetail = []
+		cashLogs = doctorCashLogRepository.findAll(pageable)
+		
+		def data = []
 		
 		cashLogs.each {
-			if (DoctorCashLog.Type.In == it.type) {
-				inDetail << [
-					'userName' : it?.userName,
-					'cash' : it?.cash,
-					'payType' : it?.payType?.ordinal(),
-					'time' : it?.time,
-					'payStatus' : it?.payStatus
-				]
-			} else if (DoctorCashLog.Type.Out == it.type) {
-				outDetail << [
-					'cash' : it?.cash,
-					'payType' : it?.payType?.ordinal(),
-					'time' : it?.time,
-					'payStatus' : it?.payStatus
-				]
-			}
+			data << [
+				'userName' : it?.userName,
+				'cash' : it?.cash,
+				'payType' : it?.payType?.ordinal(),
+				'time' : it?.time,
+				'payStatus' : it?.payStatus
+			]
 		}
 		def more = true
-		if (cashLogs.size() < 20) {
+		if (data.size() < 20) {
 			more = false
 		}
 		if (pageable.pageNumber == 0) {
@@ -132,15 +118,13 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 				'outCash' : cash?.outCash,
 				'currentCash' : cash?.currentCash,
 				'more' : more,
-				'inDetail' : inDetail,
-				'outDetail' : outDetail
+				'data' : data
 			]
 		} else {
 			return [
 				"success" : "1",
 				'more' : more,
-				'inDetail' : inDetail,
-				'outDetail' : outDetail
+				'data' : data
 			]
 		}
 		

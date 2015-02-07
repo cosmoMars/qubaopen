@@ -106,8 +106,12 @@ class UserMoodService {
 	def retrieveMoodList(String month, User user, MapCoefficient coefficient) {
 		
 		// 获取月数据
-		def nowMonth = DateUtils.parseDate(month, 'yyyy-MM'),
-			moods = userMoodRepository.findMonthMood(nowMonth, user)
+		def nowMonth
+		if (month == null) {
+			nowMonth = new Date()
+		}
+		nowMonth = DateUtils.parseDate(month, 'yyyy-MM')
+		def moods = userMoodRepository.findMonthMood(nowMonth, user)
 		
 		def dayMoods = [:]
 		moods.each {

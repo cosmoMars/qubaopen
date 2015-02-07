@@ -131,6 +131,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		
 	@RequestMapping(value = 'modifyMood', method = RequestMethod.POST)
 	modifyMood(@RequestParam long id,
+		@RequestParam(required = false) Integer type,
 		@RequestParam(required = false) String message,
 		@ModelAttribute('currentUser') User user) {
 		
@@ -142,6 +143,8 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		
 		def mood = userMoodRepository.findOne(id)
 		mood.message = message
+		if (type != null) 
+			mood.moodType = UserMood.MoodType.values[type]
 		userMoodRepository.save(mood)
 
 		'{"success" : "1"}'		

@@ -18,6 +18,9 @@ public interface MapRecordRepository extends MyRepository<MapRecord, Long> {
 	@Query("from MapRecord m where m.mapStatistics = :mapStatistics and m.createdDate in (select max(createdDate) from MapRecord mr where mr.mapStatistics = :mapStatistics group by DATE_FORMAT(mr.createdDate,'%Y-%m-%d'))")
 	List<MapRecord> findEveryDayMapRecords(@Param("mapStatistics") MapStatistics mapStatistics);
 	
+	@Query("select count(*) from MapRecord m where m.mapStatistics = :mapStatistics and m.createdDate in (select max(createdDate) from MapRecord mr where mr.mapStatistics = :mapStatistics group by DATE_FORMAT(mr.createdDate,'%Y-%m-%d'))")
+	int countEveryDayMapRecords(@Param("mapStatistics") MapStatistics mapStatistics);
+	
 	@Query("from MapRecord m where m.createdDate = (select max(mr.createdDate) from MapRecord mr where mr.mapStatistics.user = :user and mr.mapStatistics.self = :self)")
 	MapRecord findMaxRecordBySpecialSelf(@Param("self") Self self, @Param("user") User user);
 

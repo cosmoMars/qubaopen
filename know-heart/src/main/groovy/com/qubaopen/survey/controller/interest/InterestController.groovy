@@ -24,6 +24,8 @@ import com.qubaopen.survey.entity.interest.Interest
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.interest.InterestRepository
 import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository
+import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository;
+import com.qubaopen.survey.repository.user.UserInfoRepository;
 import com.qubaopen.survey.service.interest.InterestService
 
 @RestController
@@ -42,6 +44,12 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	
 	@Autowired
 	FileUtils fileUtils
+	
+	@Autowired
+	UserInfoRepository userInfoRepository
+	
+	@Autowired
+	SelfUserQuestionnaireRepository selfUserQuestionnaireRepository
 
 	@Override
 	protected MyRepository<Interest, Long> getRepository() {
@@ -121,6 +129,17 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 
 		if (!result) {
 			return '{"success" : "0", "message" : "err601"}' // 没有结果
+		}
+		def userInfo = userInfoRepository.findOne(user.id),
+		gradeHint = false
+		if (!userInfo.evaluate) {
+			def selfCount = selfUserQuestionnaireRepository.countByUser(user),
+				interestCount = interestUserQuestionnaireRepository.countByUser(user)
+			def allCount = selfCount + interestCount
+			
+			if (allCount == 10 || allCount == 30 || allCount == 100) {
+				gradeHint = true
+			}
 		}
 		[
 			'success' : '1',

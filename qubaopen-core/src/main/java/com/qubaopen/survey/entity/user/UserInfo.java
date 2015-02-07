@@ -172,6 +172,11 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 	 * 职业
 	 */
 	private String profession;
+	
+	/**
+	 * 评估
+	 */
+	private boolean evaluate;
 
 	public User getUser() {
 		return user;
@@ -363,6 +368,14 @@ public class UserInfo extends AbstractBaseEntity2<Long> {
 
 	public void setProfession(String profession) {
 		this.profession = profession;
+	}
+
+	public boolean isEvaluate() {
+		return evaluate;
+	}
+
+	public void setEvaluate(boolean evaluate) {
+		this.evaluate = evaluate;
 	}
 
 }

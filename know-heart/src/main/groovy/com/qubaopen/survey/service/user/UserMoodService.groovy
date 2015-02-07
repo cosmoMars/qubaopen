@@ -152,7 +152,7 @@ class UserMoodService {
 				ms.each {
 					dayData << [
 						'id' : it?.id,
-						'day' : it?.lastTime,
+						'moodDay' : it?.lastTime,
 						'message' : it?.message,
 						'moodType' : it?.moodType?.ordinal()
 					]
@@ -170,9 +170,9 @@ class UserMoodService {
 				def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
 			
 				if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
-					status = '0' as int
-				}else if (resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
 					status = '1' as int
+				}else if (resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
+					status = '2' as int
 				}
 			}
 			

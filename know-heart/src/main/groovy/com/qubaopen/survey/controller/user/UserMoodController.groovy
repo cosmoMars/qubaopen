@@ -1,4 +1,5 @@
 package com.qubaopen.survey.controller.user
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,7 +62,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 
 		userMoodService.saveUserMood(user, MoodType.values()[type], message);
 	}
-
+			
 	/**
 	 * 获取用户心情 停用并 已并入登录接口
 	 * @param user
@@ -83,7 +84,69 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		@ModelAttribute('currentUser') User user) {
 		userMoodService.getUserMood(user,month);
 	}
+	
+	/**
+	 * @param type
+	 * @param time
+	 * @param message
+	 * @param user
+	 * @return
+	 * 添加心情
+	 */
+	@RequestMapping(value = 'addMood', method = RequestMethod.POST)
+	addMood(@RequestParam int type,
+		@RequestParam(required = false) String time,
+		@RequestParam(required = false) String message,
+		@ModelAttribute('currentUser') User user) {
 		
+		logger.trace '-- 添加心情 --'
+		
+		def date = null
+		// 判断时间空否
+		if (time != null) {
+			date = DateUtils.parseDate(time, 'yyyy-MM-dd HH:mm')
+		}
+		
+		def userMood = new UserMood(
+			user : user,
+			moodType : UserMood.MoodType.values[type],
+			message : message
+		)
+		if (date) {
+			userMood.lastTime = date
+		} else {
+			userMood.lastTime = new Date()
+		}
+		
+		userMoodRepository.save(userMood);
+		
+		[
+			'success' : '1',
+			'moodType' : userMood?.moodType?.ordinal(),
+			'lastTime' : userMood?.lastTime,
+			'message' : message
+		]
+		
+	}
+		
+	@RequestMapping(value = 'modifyMood', method = RequestMethod.POST)
+	modifyMood(@RequestParam long id,
+		@RequestParam(required = false) String message,
+		@ModelAttribute('currentUser') User user) {
+		
+		logger.trace '-- 修改心情 --'
+		
+		if (message == null) {
+			return '{"success" : "0", "message" : "没有填写心情"}'
+		}
+		
+		def mood = userMoodRepository.findOne(id)
+		mood.message = message
+		userMoodRepository.save(mood)
+
+		'{"success" : "1"}'		
+		
+	}
 	
 	/**
 	 * @param month

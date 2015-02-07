@@ -40,5 +40,6 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	@Query("from SelfUserQuestionnaire suq where DATE_FORMAT(suq.time,'%Y-%m-%d') = :time and suq.self.selfManagementType.id = :typeId and suq.self != :self and suq.used = true and suq.user = :user")
 	List<SelfUserQuestionnaire> findByTimeAndTypeIdWithOutSpecial(@Param("time") String time, @Param("typeId") long typeId, @Param("self") Self self, @Param("user") User user);
 	
+	int countByUser(User user);
 	
 }

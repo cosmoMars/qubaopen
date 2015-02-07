@@ -1,5 +1,7 @@
 package com.qubaopen.survey.controller.self
 
+import groovy.transform.AutoClone;
+
 import java.net.Authenticator.RequestorType;
 
 import javax.servlet.http.HttpServletRequest
@@ -21,9 +23,11 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.controller.FileUtils;
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository;
 import com.qubaopen.survey.repository.self.SelfGroupRepository;
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
+import com.qubaopen.survey.repository.user.UserInfoRepository;
 import com.qubaopen.survey.service.self.SelfService
 
 @RestController
@@ -45,6 +49,12 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 	
 	@Autowired
 	SelfGroupRepository selfGroupRepository
+	
+	@Autowired
+	UserInfoRepository userInfoRepository
+	
+	@Autowired
+	InterestUserQuestionnaireRepository interestUserQuestionnaireRepository
 
 	@Override
 	protected MyRepository<Self, Long> getRepository() {
@@ -134,6 +144,18 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		if (!result) {
 			return '{"success" : "0", "message" : "err601"}'
 		}
+		
+		def userInfo = userInfoRepository.findOne(user.id),
+			gradeHint = false
+		if (!userInfo.evaluate) {
+			def selfCount = selfUserQuestionnaireRepository.countByUser(user),
+				interestCount = interestUserQuestionnaireRepository.countByUser(user)
+			def allCount = selfCount + interestCount
+			
+			if (allCount == 10 || allCount == 30 || allCount == 100) {
+				gradeHint = true
+			}
+		}
 		[
 			'success' : '1',
 			'message' : '成功',
@@ -142,7 +164,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'content' : result?.content,
 			'optionTitle' : result?.title,
 			'resultRemark' : result?.selfResult?.remark,
-			'optionNum' : result?.resultNum
+			'optionNum' : result?.resultNum,
+			'gradeHint' : gradeHint
 		]
 	}
 

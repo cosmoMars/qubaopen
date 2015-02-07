@@ -26,4 +26,5 @@ public interface InterestUserQuestionnaireRepository extends MyRepository<Intere
 	@Query("from InterestUserQuestionnaire i where i.user = :user and i.interest.interestType.id = :typeId and i.interest.id not in (:ids)")
 	List<InterestUserQuestionnaire> findQuestionnaireByFilter(@Param("user") User user, @Param("typeId") long typeId, @Param("ids") List<Long> ids, Pageable pageable);
 
+	int countByUser(User user);
 }

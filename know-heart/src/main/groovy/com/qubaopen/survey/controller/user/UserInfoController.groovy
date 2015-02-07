@@ -5,7 +5,8 @@ import static com.qubaopen.survey.utils.ValidateUtil.*
 import javax.servlet.http.HttpServletRequest
 
 import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -30,7 +31,7 @@ import com.qubaopen.survey.service.user.UserService
 @RequestMapping('userInfos')
 @SessionAttributes('currentUser')
 public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
-
+	
 	@Autowired
 	UserInfoRepository userInfoRepository
 
@@ -242,5 +243,22 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		@RequestMapping(value = 'test', method = RequestMethod.GET)
 		test(Pageable pageable) {
 			userRepository.findAllUsers(pageable)
+		}
+		
+		
+		/**
+		 * @param user
+		 * @return
+		 * 确认评估
+		 */
+		@RequestMapping(value = 'confirmUsertEvaluate', method = RequestMethod.POST)
+		confirmUsertEvaluate(@ModelAttribute('currentUser') User user) {
+			
+			def userInfo = userInfoRepository.findOne(user.id)
+			
+			userInfo.evaluate = true
+			
+			userInfoRepository.save(userInfo)
+			'{"success" : "1"}'
 		}
 }

@@ -202,7 +202,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		if (bookingTime) {
 			doctorInfo.bookingTime = bookingTime
 		}
-		if (quick) {
+		if (quick != null) {
 			doctorInfo.quick = quick
 		}
 		if (introduce) {

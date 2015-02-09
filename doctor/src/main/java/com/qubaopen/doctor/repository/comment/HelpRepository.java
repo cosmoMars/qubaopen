@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.comment.Help;
 import com.qubaopen.survey.entity.doctor.Doctor;
+import com.qubaopen.survey.entity.hospital.Hospital;
 
 public interface HelpRepository extends MyRepository<Help, Long> {
 
@@ -24,4 +25,7 @@ public interface HelpRepository extends MyRepository<Help, Long> {
 	
 	@Query("from Help h")
 	List<Help> findAllByPageable(Pageable pageable);
+	
+	@Query("from Help h where h.id in (select hc.help.id from HelpComment hc where hc.hospital = :hospital)")
+	List<Help> findByHospital(@Param("hospital") Hospital hospital, Pageable pageable);
 }

@@ -129,9 +129,10 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 						'commentId' : cit?.id,
 						'doctorId' : cit?.doctor?.id,
 						'doctorName' : cit?.doctor?.doctorInfo?.name,
+						'hospitalName' : cit?.hospital?.hospitalInfo?.name,
 						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-						'doctorContent' : cit?.content,
-						'doctorTime' : DateFormatUtils.format(cit?.time, 'yyyy-MM-dd'),
+						'content' : cit?.content,
+						'time' : DateFormatUtils.format(cit?.time, 'yyyy-MM-dd'),
 						'goods' : gSize,
 						'isGood' : isGood
 					]

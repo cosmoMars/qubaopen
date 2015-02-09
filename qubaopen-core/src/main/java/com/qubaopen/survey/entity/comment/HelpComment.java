@@ -13,6 +13,7 @@ import org.hibernate.envers.Audited;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
+import com.qubaopen.survey.entity.hospital.Hospital;
 
 /**
  * @author mars
@@ -30,6 +31,12 @@ public class HelpComment extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
+	
+	/**
+	 * 诊所
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Hospital hospital;
 
 	private String content;
 

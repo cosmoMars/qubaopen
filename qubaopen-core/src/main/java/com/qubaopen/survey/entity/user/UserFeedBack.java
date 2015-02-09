@@ -1,11 +1,14 @@
 package com.qubaopen.survey.entity.user;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -30,7 +33,7 @@ public class UserFeedBack extends AbstractBaseEntity<Long> {
 	 * 内容
 	 */
 	private String content;
-	
+
 	/**
 	 * 页面标签
 	 */
@@ -67,13 +70,21 @@ public class UserFeedBack extends AbstractBaseEntity<Long> {
 	public enum FeedBackType {
 		ORDINARY, ENTERPRISE
 	}
-	
+
+	@Enumerated
+	private Type type;
+
+	private enum Type {
+		Good, Evaluate
+	}
+
 	/**
 	 * 反馈类型
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	private UserFeedBackType backType;
-	
+	@ManyToMany
+	@JoinTable(name = "back_type_relation", joinColumns = @JoinColumn(name = "back_id"), inverseJoinColumns = @JoinColumn(name = "type_id"))
+	private Set<UserFeedBackType> backTypes;
+
 	public String getContent() {
 		return content;
 	}
@@ -122,12 +133,20 @@ public class UserFeedBack extends AbstractBaseEntity<Long> {
 		this.feedBackType = feedBackType;
 	}
 
-	public UserFeedBackType getBackType() {
-		return backType;
+	public Type getType() {
+		return type;
 	}
 
-	public void setBackType(UserFeedBackType backType) {
-		this.backType = backType;
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public Set<UserFeedBackType> getBackTypes() {
+		return backTypes;
+	}
+
+	public void setBackTypes(Set<UserFeedBackType> backTypes) {
+		this.backTypes = backTypes;
 	}
 
 }

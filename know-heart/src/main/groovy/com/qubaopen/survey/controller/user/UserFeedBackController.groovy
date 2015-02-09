@@ -82,20 +82,36 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 	 * 提交意见反馈
 	 */
 	@RequestMapping(value = 'submitFeedBack', method = RequestMethod.POST)
-	submitFeedBack(@RequestParam long typeId,
+	submitFeedBack(@RequestParam int idx,
+		@RequestParam(required = false) String ids,
 		@RequestParam(required = false) String content,
 		@RequestParam(required = false) String title,
 		@ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 提交意见反馈 --'
 		
+		def type = UserFeedBack.Type.values()[idx]
+		
 		def userFeedBack = new UserFeedBack(
-			content : content,
-			title : title,
 			feedBackTime : new Date(),
 			user : user,
-			backType : new UserFeedBackType(id : typeId)
+			type : type
 		)
+		
+		if (content != null) {
+			userFeedBack.content = content
+		}
+		if (title !=  null) {
+			userFeedBack.title = title
+		}
+		if (type == UserFeedBack.Type.Evaluate) {
+			def strIds = ids.split(','),
+				backTypes = [] as Set
+				strIds.each {
+					backTypes << new UserFeedBackType(id : it.trim() as long)
+				}
+			userFeedBack.setBackTypes(backTypes)
+		}
 		
 		userFeedBackRepository.save(userFeedBack)
 		'{"success" : "1"}'

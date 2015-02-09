@@ -106,10 +106,9 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		if (time != null) {
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd HH:mm')
 		}
-		
 		def userMood = new UserMood(
 			user : user,
-			moodType : UserMood.MoodType.values[type],
+			moodType : UserMood.MoodType.values()[type],
 			message : message
 		)
 		if (date) {
@@ -122,6 +121,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		
 		[
 			'success' : '1',
+			'moodId' : userMood?.id,
 			'moodType' : userMood?.moodType?.ordinal(),
 			'lastTime' : userMood?.lastTime,
 			'message' : message
@@ -144,7 +144,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		def mood = userMoodRepository.findOne(id)
 		mood.message = message
 		if (type != null) 
-			mood.moodType = UserMood.MoodType.values[type]
+			mood.moodType = UserMood.MoodType.values()[type]
 		userMoodRepository.save(mood)
 
 		'{"success" : "1"}'		

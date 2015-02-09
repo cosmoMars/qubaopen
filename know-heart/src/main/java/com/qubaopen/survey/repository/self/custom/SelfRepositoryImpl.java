@@ -33,7 +33,7 @@ public class SelfRepositoryImpl implements SelfRepositoryCustom {
 //		Query query = entityManager.createNativeQuery(sql.toString(), Self.class);
 //		query.setParameter("ids", ids)
 //			.setParameter("limit", limit);
-		sql.append("from Self s where s not in (:exists) order by rand()");
+		sql.append("from Self s where s.status = 1 and s not in (:exists) order by rand()");
 		Query query = entityManager.createQuery(sql.toString())
 				.setParameter("exists", exists)
 				.setMaxResults(limit);
@@ -58,7 +58,7 @@ public class SelfRepositoryImpl implements SelfRepositoryCustom {
 	@Override
 	public Self findRandomSelfWithoutExist(long id) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("from Self s where s.id != :exist order by rand()");
+		sql.append("from Self s where s.status = 1 s.id != :exist order by rand()");
 		Query query = entityManager.createQuery(sql.toString())
 				.setParameter("exist", id)
 				.setMaxResults(1);
@@ -69,7 +69,7 @@ public class SelfRepositoryImpl implements SelfRepositoryCustom {
 	@Override
 	public Self findRandomSelf() {
 		StringBuilder sql = new StringBuilder();
-		sql.append("from Self s order by rand()");
+		sql.append("from Self s where s.status = 1 order by rand()");
 		Query query = entityManager.createQuery(sql.toString())
 				.setMaxResults(1);
 

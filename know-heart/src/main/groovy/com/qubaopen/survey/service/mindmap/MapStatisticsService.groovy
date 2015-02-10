@@ -902,7 +902,7 @@ public class MapStatisticsService {
 					}
 				}	
 			
-				if(resultBefore <= resultToday && resultToday<resultAfter){ // 上升
+				if(resultBefore <= resultToday && resultToday < resultAfter){ // 上升
 					resultContent = MapContent.lowToHighTitle + MapContent.lowToHighContent + moodContent + MapContent.lowToHighMethod
 				}else if (resultBefore > resultToday && resultToday >= resultAfter){ // 下降
 					resultContent = MapContent.highToLowTitle + MapContent.highToLowContent + moodContent + MapContent.highToLowMethod

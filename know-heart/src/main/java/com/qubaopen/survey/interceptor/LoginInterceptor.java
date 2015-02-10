@@ -25,7 +25,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		System.out.println(request.getRequestURI() + " *******************");
 
 		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic") || request.getRequestURI().contains("systemVersions") || request.getRequestURI().contains("notify")
-				|| request.getRequestURI().contains("breakTalk")) {
+				|| request.getRequestURI().contains("doctorDir") || request.getRequestURI().contains("breakTalk")) {
 			return true;
 		}
 

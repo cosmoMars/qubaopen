@@ -166,7 +166,7 @@ public class MentalExaminationController {
 		selfMap.each { k, v ->
 			mapResult << [
 				'managementId' : k?.id,
-				'manageMentName' : k?.name,
+				'managementName' : k?.name,
 				'manageData' : v
 			]
 		}

@@ -175,7 +175,7 @@ class UserMoodService {
 			
 				if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
 					status = '1' as int
-				}else if (resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
+				} else if (resultBefore > resultToday && resultToday < resultAfter){ // 最底处
 					status = '2' as int
 				}
 			}

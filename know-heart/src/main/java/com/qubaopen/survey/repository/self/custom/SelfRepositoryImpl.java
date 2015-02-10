@@ -58,7 +58,7 @@ public class SelfRepositoryImpl implements SelfRepositoryCustom {
 	@Override
 	public Self findRandomSelfWithoutExist(long id) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("from Self s where s.status = 1 s.id != :exist order by rand()");
+		sql.append("from Self s where s.status = 1 and s.id != :exist order by rand()");
 		Query query = entityManager.createQuery(sql.toString())
 				.setParameter("exist", id)
 				.setMaxResults(1);

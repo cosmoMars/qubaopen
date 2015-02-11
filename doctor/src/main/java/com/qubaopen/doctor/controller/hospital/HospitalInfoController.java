@@ -113,6 +113,7 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			@RequestParam(required = false) Integer minCharge,
 			@RequestParam(required = false) Integer maxCharge,
 			@RequestParam(required = false) String timeJson,
+			@RequestParam(required = false) String timeExp,
 			@ModelAttribute("currentHospital") Hospital hospital
 			) {
 		
@@ -160,6 +161,9 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		}
 		if (maxCharge != null) {
 			hi.setMaxCharge(maxCharge);
+		}
+		if (timeExp != null) {
+			hi.setBookingTime(timeExp);
 		}
 		if (timeJson != null) {
 			String[] models = hi.getBookingTime().split(",");

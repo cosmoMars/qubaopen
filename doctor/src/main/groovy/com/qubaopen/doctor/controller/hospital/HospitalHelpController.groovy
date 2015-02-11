@@ -60,7 +60,8 @@ public class HospitalHelpController extends AbstractBaseController<Help, Long>{
 			helps = helpRepository.findAllByPageable(pageable)
 		}
 		helps.each {
-			def comments = helpCommentRepository.findLimitComment(it)
+			def comments = helpCommentRepository.findLimitComment(it),
+				commentSize =  helpCommentRepository.countCommentByHelp(it)
 			def commentData = []
 			comments.each { cit ->
 				def goods = helpCommentGoodRepository.countByHelpComment(cit)
@@ -83,6 +84,7 @@ public class HospitalHelpController extends AbstractBaseController<Help, Long>{
 				'userName' : it?.user?.userInfo?.nickName,
 				'userAvatar' : it?.user?.userInfo?.avatarPath,
 				'userSex' : it?.user?.userInfo?.sex?.ordinal(),
+				'commentSize' : commentSize,
 				'commentData' : commentData
 			]
 		}

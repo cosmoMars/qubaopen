@@ -25,4 +25,7 @@ public interface HelpCommentRepository extends MyRepository<HelpComment, Long>, 
 	
 	@Query("from HelpComment hc where hc.help = :help and hc.doctor = :doctor order by hc.createdDate asc")
 	List<HelpComment> findByHelpAndDoctor(@Param("help") Help help, @Param("doctor") Doctor doctor);
+	
+	@Query("select count(*) from HelpComment hc where hc.help = :help")
+	int countCommentByHelp(@Param("help") Help help);
 }

@@ -115,7 +115,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 				'wordsConsult' : hospitalInfo?.wordsConsult,
 				'minCharge' : hospitalInfo?.minCharge,
 				'maxCharge' : hospitalInfo?.maxCharge,
-				'loginStatus' : hospitalInfo?.loginStatus,
+				'loginStatus' : hospitalInfo?.loginStatus?.ordinal(),
 				'recordPaths' : recordPaths
 			]
 		}

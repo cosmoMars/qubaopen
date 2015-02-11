@@ -100,7 +100,7 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 	 * @param hospital
 	 * @return 修改诊所信息
 	 */
-	@RequestMapping(value = "modifyHosptialInfo")	
+	@RequestMapping(value = "modifyHosptialInfo", method = RequestMethod.POST)	
 	private String modifyHosptialInfo(
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String address,

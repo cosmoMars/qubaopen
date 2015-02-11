@@ -179,7 +179,11 @@ public class HospitalCashController extends AbstractBaseController<HospitalCash,
 
 		logger.trace("-- 医院取现 --");
 
-		// HospitalInfo hi = hospitalInfoRepository.findOne(hospital.getId());
+		HospitalInfo hi = hospitalInfoRepository.findOne(hospital.getId());
+		
+		if (hi != null && hi.getLoginStatus() != HospitalInfo.LoginStatus.Audited) {
+			return "{\"success\" : \"0\", \"message\" : \"err1000\"}";
+		}
 
 		HospitalCaptcha hCaptcha = hospitalCaptchaRepository.findOne(hospital.getId());
 

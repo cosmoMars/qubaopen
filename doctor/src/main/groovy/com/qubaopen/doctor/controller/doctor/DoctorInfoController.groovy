@@ -67,8 +67,8 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		logger.trace ' -- 获得用户个人信息 -- '
 		
 		def doctorInfo = doctorInfoRepository.findOne(doctor.id),
-			doctorIdCardBind = doctorIdCardBindRepository.findOne(doctor.id),
-			address = doctorAddressRepository.findByDoctorAndUsed(doctor, true)
+			doctorIdCardBind = doctorIdCardBindRepository.findOne(doctor.id)
+//			address = doctorAddressRepository.findByDoctorAndUsed(doctor, true)
 
 		[
 			'success' : '1',
@@ -90,7 +90,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			'introduce' : doctorInfo?.introduce,
 			'quick' : doctorInfo.quick,
 			'email' : doctorInfo?.doctor?.email,
-			'address' : address?.address,
+			'address' : doctorInfo?.address,
 			'idCard' : doctorIdCardBind?.userIDCard?.IDCard,
 			'recordPath' : doctorInfo?.recordPath, 
 			'avatarPath' : doctorInfo?.avatarPath,

@@ -91,8 +91,14 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 //		if (time != null && time.matches('/^\\d{4}\\-\\d{2}-\\d{2}\\s\\d{2}\\:\\d{2}$')) {
 //			
 //		}
+		def date
+		if (time == null) {
+			date = new Date()
+		} else {
+			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
+		}
 		
-		def result = mapStatisticsService.retrieveMoodRecord(user, DateUtils.parseDate(time, 'yyyy-MM-dd'))
+		def result = mapStatisticsService.retrieveMoodRecord(user, date)
 		
 		result
 	}

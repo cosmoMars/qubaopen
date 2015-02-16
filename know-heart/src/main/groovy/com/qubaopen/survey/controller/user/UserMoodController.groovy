@@ -167,6 +167,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		def moodContent = ''
 		if (coefficient) {
 			//计算 正负情感趋势 上升 下降
+			def c = Calendar.getInstance()
 			def time = System.currentTimeMillis(),
 				timeBefore = time - 60 * 60 * 24 * 1000 * 2,
 				timeAfter = time + 60 * 60 * 24 * 1000 * 2
@@ -175,13 +176,13 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 			def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
 			def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
 			
-			if(resultBefore <= resultToday && resultToday < resultAfter){ // 上升
+			if (resultBefore <= resultToday && resultToday < resultAfter){ // 上升
 				moodContent = MapContent.lowToHighTitle + MapContent.lowToHighContent + moodContent + MapContent.lowToHighMethod
-			}else if (resultBefore > resultToday && resultToday >= resultAfter){ // 下降
+			} else if (resultBefore > resultToday && resultToday >= resultAfter){ // 下降
 				moodContent = MapContent.highToLowTitle + MapContent.highToLowContent + moodContent + MapContent.highToLowMethod
-			}else if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
+			} else if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
 				moodContent = MapContent.highTideTitle + MapContent.highTideContent + moodContent
-			}else if (resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
+			} else if (resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
 				moodContent = MapContent.lowTideTitle + MapContent.lowTideContent + moodContent + MapContent.lowTideMethod
 			}
 		}

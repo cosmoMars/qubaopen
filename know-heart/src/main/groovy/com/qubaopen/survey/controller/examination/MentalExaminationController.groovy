@@ -71,13 +71,10 @@ public class MentalExaminationController {
 		
 		def activityRecords = rewardActivityRecordRepository.findByUserWithActivity(user, rewardActivitys)
 		rewardActivitys.each { ra ->
-			def isExchange = false
+			def isExchange
 			if (activityRecords) {
-				def completeRecord = activityRecords.find { ar ->
+				isExchange = activityRecords.any { ar ->
 					ra.id == ar.rewardActivity.id
-				}
-				if (completeRecord) {
-					isExchange = true
 				}
 			}
 			rewardData << [
@@ -88,7 +85,6 @@ public class MentalExaminationController {
 			]
 			
 		}
-		
 		
 		def specialSelf = selfRepository.findSpecialSelf(),
 			specialData = [:]
@@ -101,16 +97,12 @@ public class MentalExaminationController {
 		)// 4小时题目
 		def specialRecords = mapRecordRepository.findEveryDayMapRecords(specialMaps)
 		
-		
-		def todayWork = false
+		def todayWork
 		// 检索今天做题
 		if (specialRecords != null) {
-			def todayRecord = specialRecords.find{ sr ->
+			todayWork = specialRecords.any { sr ->
 				def today = sr.createdDate.toString().split('T')
 				DateUtils.isSameDay(new Date(), DateUtils.parseDate(today[0], 'yyyy-MM-dd'))
-			}
-			if (todayRecord != null) {
-				todayWork = true
 			}
 		}
 		
@@ -120,7 +112,7 @@ public class MentalExaminationController {
 			'done' : todayWork
 		]
 		
-		// 上线比做题
+		// 上线可做题
 		def allSelf = selfRepository.findAll(
 			status_equal : Self.Status.ONLINE,
 			analysis_equal : true,
@@ -136,13 +128,9 @@ public class MentalExaminationController {
 		def selfMap = [:]
 		
 		allSelf.each { single ->// 分组
-			def done = false,
-				doneSelf = questionnaires.find {
-						it.self.id == single.id
-					}
-				if (doneSelf) {
-					done = true
-				}
+			def done = questionnaires.any {
+				it.self.id == single.id
+			}
 				
 			if (selfMap.get(single.selfManagementType)) {
 				selfMap.get(single.selfManagementType) << [

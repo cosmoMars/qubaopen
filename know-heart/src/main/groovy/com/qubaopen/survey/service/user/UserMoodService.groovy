@@ -138,10 +138,11 @@ class UserMoodService {
 		
 		def c = Calendar.getInstance()
 		c.set(Calendar.YEAR, y)
-		c.set(Calendar.MONTH, m-1)
+		c.set(Calendar.MONTH, m - 1)
 		c.set(Calendar.DAY_OF_MONTH, 1)
-		c.set(Calendar.HOUR_OF_DAY, h)
-		c.set(Calendar.MINUTE, min)
+		c.set(Calendar.HOUR_OF_DAY, 0)
+		c.set(Calendar.MINUTE, 0)
+		c.set(Calendar.SECOND, 0)
 		
 		println c.getTime()
 		

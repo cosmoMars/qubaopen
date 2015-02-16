@@ -12,6 +12,7 @@ import com.qubaopen.survey.entity.mindmap.MapRecord
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.self.SelfManagementType
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.entity.user.UserMoodRecord
 import com.qubaopen.survey.repository.EPQBasicRepository
 import com.qubaopen.survey.repository.mindmap.MapCoefficientRepository
 import com.qubaopen.survey.repository.mindmap.MapRecordRepository
@@ -21,6 +22,7 @@ import com.qubaopen.survey.repository.self.SelfGroupRepository
 import com.qubaopen.survey.repository.self.SelfRepository
 import com.qubaopen.survey.repository.self.SelfResultOptionRepository
 import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
+import com.qubaopen.survey.repository.user.UserMoodRecordRepository
 import com.qubaopen.survey.service.user.UserIDCardBindService
 
 @Service
@@ -64,6 +66,9 @@ public class MapStatisticsService {
 	
 	@Autowired
 	SelfUserQuestionnaireRepository selfUserQuestionnaireRepository
+	
+	@Autowired
+	UserMoodRecordRepository userMoodRecordRepository
 	
 	/**
 	 * 获取心理地图
@@ -804,7 +809,6 @@ public class MapStatisticsService {
 	@Transactional
 	retrieveSpecialMap(User user) {
 		
-		
 		def data = [], tip
 		def specialSelf = selfRepository.findSpecialSelf()
 		def specialMap = mapStatisticsRepository.findOneByFilters(
@@ -1525,6 +1529,177 @@ public class MapStatisticsService {
 			'message' : '成功',
 			'userId' : user.id,
 			'data' : data
+		]
+	}
+	
+	@Transactional
+	def retrieveMoodRecord(User user, Date date) {
+		
+		def c = Calendar.getInstance()
+		
+		c.set(Calendar.HOUR_OF_DAY, 0)
+		c.set(Calendar.MINUTE, 0)
+		c.set(Calendar.SECOND, 0)
+		def lastDate
+		if (!DateUtils.isSameDay(date, c.getTime()) && date > c.getTime()) {
+			date = c.getTime()
+			c.add(Calendar.DATE, -1)
+			
+			lastDate = c.getTime()
+		}
+		
+		// 查找最后一条纪录
+		def maxMoodRecord = userMoodRecordRepository.findByMaxTime(user)
+		def mr = userMoodRecordRepository.findByUserAndTime(user, lastDate),
+			
+			timeChart = [], paChart = [], naChart = [], midChart = [], statusChart = []
+			
+		def coefficient = mapCoefficientRepository.findOne(user.id)
+		
+		def moodRecords = [], showRecords = []
+		
+		if (mr != null && mr.size() == 0 && maxMoodRecord == null) {
+			def specialSelf = selfRepository.findSpecialSelf()
+			def specialMap = mapStatisticsRepository.findOneByFilters(
+				[
+					self_equal : specialSelf,
+					user_equal : user
+				]
+			)// 4小时题目
+			def specialMapRecords
+			if (specialMap) {
+				specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
+			}
+			
+			if (specialMapRecords && specialMapRecords.size() >= 7) {
+				c.setTime new Date()
+				
+				c.set(Calendar.HOUR_OF_DAY, 12)
+				c.set(Calendar.MINUTE, 0)
+				c.set(Calendar.SECOND, 0)
+				
+				if (coefficient) {
+				
+					for (i in 1..2) {
+						if (i > 1)
+							c.add(Calendar.DATE, -1)
+						def cTime = c.getTimeInMillis(),
+							paValue = coefficient.pa1 + coefficient.pa2 * Math.cos(cTime * coefficient.pa4) + coefficient.pa3 * Math.sin(cTime * coefficient.pa4),
+							naValue = coefficient.na1 + coefficient.na2 * Math.cos(cTime * coefficient.na4) + coefficient.na3 * Math.sin(cTime * coefficient.na4)
+				
+						def userMoodRecord = new UserMoodRecord(
+							user : user,
+							time : c.getTime(),
+							pa : paValue,
+							na : naValue
+						)
+						
+						def timeBefore = cTime - 60 * 60 * 24 * 1000 * 2,
+						timeAfter = cTime + 60 * 60 * 24 * 1000 * 2
+					
+						def now = coefficient.mid1 + coefficient.mid2 * Math.cos(cTime * coefficient.mid4) + coefficient.mid3 * Math.sin(cTime * coefficient.mid4)
+						def before = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
+						def after = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
+						
+						if (before <= now && now < after){ // 上升
+							userMoodRecord.status = UserMoodRecord.Status.LowToHigh
+						} else if (before > now && now >= after){ // 下降
+							userMoodRecord.status = UserMoodRecord.Status.HighToLow
+						} else if (before <= now && now >= after){ // 最高处
+							userMoodRecord.status = UserMoodRecord.Status.HighTide
+						} else if (before > now  && now < after){ // 最底处
+							userMoodRecord.status = UserMoodRecord.Status.LowTide
+						}
+						if (i > 1) {
+							moodRecords << userMoodRecord
+						}
+						if (userMoodRecord.time >= date) {
+							showRecords << userMoodRecord
+						}
+					
+					}
+					userMoodRecordRepository.save(moodRecords)
+				}
+			}
+		} else {
+		
+			// 日期后的数据
+			def eMoodRecords = userMoodRecordRepository.findByUserAndTime(user, date)
+			
+			eMoodRecords.each {
+				timeChart << it.time.getTime()
+				paChart << it.pa
+				naChart << -it.na
+				midChart << (it.pa - it.na)
+				statusChart << it?.status?.ordinal()
+			}
+			
+			def nowTime = new Date()
+			if (maxMoodRecord && !DateUtils.isSameDay(maxMoodRecord.time, nowTime)) {
+				def days = (nowTime.getTime() - maxMoodRecord.time.getTime()) / 1000 / 60 / 60 / 24 as int
+				
+				c.setTime maxMoodRecord.time
+				// 循环天数设置纪录
+				for (i in 1..days) {
+					c.add(Calendar.DATE, 1)
+					c.set(Calendar.HOUR_OF_DAY, 12)
+					c.set(Calendar.MINUTE, 0)
+					c.set(Calendar.SECOND, 0)
+					
+					// 计算pa，na
+					def cTime = c.getTimeInMillis(),
+						paValue = coefficient.pa1 + coefficient.pa2 * Math.cos(cTime * coefficient.pa4) + coefficient.pa3 * Math.sin(cTime * coefficient.pa4),
+						naValue = coefficient.na1 + coefficient.na2 * Math.cos(cTime * coefficient.na4) + coefficient.na3 * Math.sin(cTime * coefficient.na4)
+			
+					def userMoodRecord = new UserMoodRecord(
+						user : user,
+						time : c.getTime(),
+						pa : paValue,
+						na : naValue
+					)
+					
+					def timeBefore = cTime - 60 * 60 * 24 * 1000 * 2,
+						timeAfter = cTime + 60 * 60 * 24 * 1000 * 2
+				
+					def now = coefficient.mid1 + coefficient.mid2 * Math.cos(cTime * coefficient.mid4) + coefficient.mid3 * Math.sin(cTime * coefficient.mid4)
+					def before = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
+					def after = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
+					
+					// 计算状态
+					if (before <= now && now < after){ // 上升
+						userMoodRecord.status = UserMoodRecord.Status.LowToHigh
+					} else if (before > now && now >= after){ // 下降
+						userMoodRecord.status = UserMoodRecord.Status.HighToLow
+					} else if (before <= now && now >= after){ // 最高处
+						userMoodRecord.status = UserMoodRecord.Status.HighTide
+					} else if (before > now  && now < after){ // 最底处
+						userMoodRecord.status = UserMoodRecord.Status.LowTide
+					}
+					if (userMoodRecord.time >= date) {
+						showRecords << userMoodRecord
+					}
+					
+					if (i < days) {
+						moodRecords << userMoodRecord
+					}
+				}
+				userMoodRecordRepository.save(moodRecords)
+			}
+		}
+		showRecords.reverse().each {
+			timeChart << it.time.getTime()
+			paChart << it.pa
+			naChart << -it.na
+			midChart << (it.pa - it.na)
+			statusChart << it.status?.ordinal()
+		}
+		[
+			'success' : '1',
+			'timeChart' : timeChart,
+			'paChart' : paChart,
+			'naChart' : naChart,
+			'midChart' : midChart,
+			'statusChart' : statusChart
 		]
 	}
 }

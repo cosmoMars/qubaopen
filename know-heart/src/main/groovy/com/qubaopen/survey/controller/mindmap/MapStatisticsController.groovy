@@ -1,5 +1,9 @@
 package com.qubaopen.survey.controller.mindmap
 
+import javax.xml.ws.RequestWrapper;
+
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +18,7 @@ import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.mindmap.MapStatistics
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.mindmap.MapStatisticsRepository
+import com.qubaopen.survey.repository.user.UserMoodRecordRepository;
 import com.qubaopen.survey.service.mindmap.MapStatisticsService
 
 @RestController
@@ -26,6 +31,9 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 
 	@Autowired
 	MapStatisticsService mapStatisticsService
+	
+	@Autowired
+	UserMoodRecordRepository userMoodRecordRepository
 
 	@Override
 	protected MyRepository<MapStatistics, Long> getRepository() {
@@ -68,4 +76,24 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 		mapStatisticsService.retrieveSpecialMap(user)
 	}
 	
+	/**
+	 * @param time
+	 * @param user
+	 * @return
+	 * 获取心情列表
+	 */
+	@RequestMapping(value = 'retrieveMoodRecord', method = RequestMethod.POST)
+	retrieveMoodRecord(@RequestParam(required = false) String time,
+		@ModelAttribute('currentUser') User user) {
+		
+		logger.trace '-- 获取心情列表 --'
+		
+//		if (time != null && time.matches('/^\\d{4}\\-\\d{2}-\\d{2}\\s\\d{2}\\:\\d{2}$')) {
+//			
+//		}
+		
+		def result = mapStatisticsService.retrieveMoodRecord(user, DateUtils.parseDate(time, 'yyyy-MM-dd'))
+		
+		result
+	}
 }

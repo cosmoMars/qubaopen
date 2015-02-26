@@ -10,6 +10,7 @@ import com.qubaopen.survey.entity.reward.RewardActivityRecord
 import com.qubaopen.survey.entity.reward.RewardAssignRecord
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserGold
+import com.qubaopen.survey.entity.user.UserInfo
 import com.qubaopen.survey.entity.user.UserReceiveAddress
 import com.qubaopen.survey.repository.reward.RewardActivityRecordRepository
 import com.qubaopen.survey.repository.reward.RewardActivityRepository
@@ -17,7 +18,7 @@ import com.qubaopen.survey.repository.reward.RewardAssignRecordRepository
 import com.qubaopen.survey.repository.reward.RewardRepository
 import com.qubaopen.survey.repository.user.UserGoldRepository
 import com.qubaopen.survey.repository.user.UserReceiveAddressRepository
-import com.qubaopen.survey.service.self.SelfService;
+import com.qubaopen.survey.service.self.SelfService
 import com.qubaopen.survey.utils.DateCommons
 
 @Service
@@ -253,11 +254,11 @@ public class RewardActivityRecordService {
 	@Transactional
 	selfReportReward(User user, long addressId) {
 
-		Map result=selfService.calcUserAnalysisRadio(user);
+		Map result=selfService.calcUserAnalysisRadio(new UserInfo(id : user.id));
 		
 		def s=result.get("analysis");
 		
-		if(Double.parseDouble(s)<100){ 
+		if(Double.parseDouble(s.toString()) < 100){ 
 			return '{"success": "0", "message": "性格解析度没有到达100%"}'
 		}
 		

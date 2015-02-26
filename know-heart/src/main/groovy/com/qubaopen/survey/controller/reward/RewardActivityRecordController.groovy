@@ -53,6 +53,7 @@ public class RewardActivityRecordController extends AbstractBaseController<Rewar
 
 		rewardActivityRecordService.exchangeReward(user.id, activityId, addressId)
 	}
+	
 
 	/**
 	 * 修改用户参与活动记录，改变状态为confirming时，创建奖品分发记录

@@ -55,7 +55,7 @@ public class SystemVersion extends AbstractBaseEntity<Long> {
 	 * md5
 	 */
 	private String md5Hash;
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date publishTime;
 

@@ -15,7 +15,7 @@
     <!--<module>know-heart2</module>-->
     <module>doctor</module>
     <!--<module>doctor2</module>-->
-    <!--<module>knowheart3</module>-->
+    <module>knowheart3</module>
   </modules>
 
 </project>

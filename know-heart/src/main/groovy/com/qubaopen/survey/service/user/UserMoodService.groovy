@@ -144,7 +144,7 @@ class UserMoodService {
 		c.set(Calendar.MINUTE, 0)
 		c.set(Calendar.SECOND, 0)
 		
-		println c.getTime()
+//		println c.getTime()
 		
 		def monthData = []
 		for(i in 1..day) {

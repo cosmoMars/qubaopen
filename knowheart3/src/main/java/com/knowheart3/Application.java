@@ -1,4 +1,4 @@
-package com.qubaopen.backend;
+package com.knowheart3;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -7,9 +7,9 @@ import javax.servlet.Filter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -24,9 +24,9 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @ComponentScan
 @EnableAutoConfiguration
-@EntityScan("com.qubaopen.survey.entity")
-public class Application {
-	
+@EnableTransactionManagement(proxyTargetClass = true)
+public final class Application {
+
 	@Bean
 	public Filter characterEncodingFilter() {
 		CharacterEncodingFilter filter = new CharacterEncodingFilter();

@@ -24,7 +24,7 @@ import com.qubaopen.survey.entity.topic.Topic;
 
 
 @RestController
-@RequestMapping("dailyTask")
+@RequestMapping("dailyDiscovery")
 public class DailyDiscoveryController {
 	
 	@Autowired

@@ -25,39 +25,43 @@ $(document).ready(function () {
 
 
     $(".menu-item").on("click",function(){
-        switch ($(this).attr("id")){
-            case "help":
-                self.location="helpSquare.html";
-                break;
-            case "order":
-                self.location="orderList.html";
-                break;
-            case "schedule":
-                self.location="knightScheduler.html";
-                break;
-            case "cash":
-                self.location="cashAccount.html";
-                //alert("即将开放!");
-                break;
-            case "profile":
-                self.location="profile.html";
-                break;
-            /*诊所*/
-            case "help_clinic":
-                self.location="helpSquare.html";
-                break;
-            case "order_clinic":
-                self.location="orderList.html";
-                break;
-            case "cash_clinic":
-                self.location="cashAccount.html";
-                break;
-            case "profile_clinic":
-                self.location="profile.html";
-                break;
-            default :
-                break;
-        }
+        var _this=this;
+        setTimeout(function(){
+            switch ($(_this).attr("id")){
+                case "help":
+                    self.location="helpSquare.html";
+                    break;
+                case "order":
+                    self.location="orderList.html";
+                    break;
+                case "schedule":
+                    self.location="knightScheduler.html";
+                    break;
+                case "cash":
+                    self.location="cashAccount.html";
+                    //alert("即将开放!");
+                    break;
+                case "profile":
+                    self.location="profile.html";
+                    break;
+                /*诊所*/
+                case "help_clinic":
+                    self.location="helpSquare.html";
+                    break;
+                case "order_clinic":
+                    self.location="orderList.html";
+                    break;
+                case "cash_clinic":
+                    self.location="cashAccount.html";
+                    break;
+                case "profile_clinic":
+                    self.location="profile.html";
+                    break;
+                default :
+                    break;
+            }
+        },500);
+
     });
 
 });
@@ -90,7 +94,7 @@ function logout(){
         },
         error: function(xhr,status,error){
             if(xhr.status=="500"){
-                self.location = "signin.html";
+                backToSignIn();
             }
         }
     });

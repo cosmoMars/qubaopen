@@ -68,7 +68,7 @@ body{
 
 .main-table td:nth-child(n+2){
   width: 13.3%;
-  border: 1px solid #a3a3a3;
+  border: 1px solid #ccc;
   height: 75px;
   cursor: pointer;
   max-width: 50px;
@@ -87,26 +87,27 @@ body{
 
 .main-table .time{
   background-color: #e3e3e3;
-  border: 1px solid #a3a3a3;
+  border: 1px solid #ccc;
 }
 
-.color-over{
-  background-color: #e3e3e3;
-}
+
 
 .color-work{
   color: #fff;
-  background-color: #6365CC;
+  background-color: #58b2ff;
 }
 
 .color-self{
   color: #fff;
-  background-color: #6365CC;
+  background-color: #fedb71;
 }
 
 .color-default{
   color: #fff;
-  background-color: #e3e3e3;
+  background-color: #f4f4f4;
+}
+.color-over{
+  background-color: #e7e7e7;
 }
 
 .color-weekend{
@@ -123,7 +124,7 @@ body{
   height: 100%;
   color: #fff;
   font-size: 16px;
-  background-color: #47BCE7;
+  background-color: #FEA28B;
   opacity: 0.8;
   display: table;
   text-align: center;

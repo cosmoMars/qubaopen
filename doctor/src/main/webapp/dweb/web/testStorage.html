@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <title>测试缓存</title>
+</head>
+<body>
+<button id="save">保存</button>
+<input type="text" id="text"/>
+
+</body>
+<script src="../jquery/jquery-1.11.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        if(localStorage.myName){
+            $("#text").val(localStorage.myName);
+        }
+
+
+        $("#save").on("click",function(){
+                localStorage.myName= $("#text").val();
+        });
+
+    });
+</script>
+</html>

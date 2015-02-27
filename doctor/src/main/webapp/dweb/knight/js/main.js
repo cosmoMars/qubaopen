@@ -3,7 +3,7 @@
  */
 
 
-ContextUrl="http://10.0.0.2:8080";
+ContextUrl="http://10.0.0.10:8080";
 //ContextUrl="http://zhixin.me:8080/doctor";
 //ContextUrl="http://10.0.0.88:8080/know-heart";
 //
@@ -65,6 +65,10 @@ function getParam(param){
 
 /*回到登录页*/
 function backToSignIn(){
+    if(location.pathname.indexOf("clinic")>-1){
+        self.location="../signin.html";
+        return;
+    }
     self.location = "signin.html";
 }
 

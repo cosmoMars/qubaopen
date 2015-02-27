@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <link rel="icon" href="../../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap.css" rel="stylesheet">
+    <title>人hong际bao关shu系liang诊断</title>
+    <style>
+        .qTitle{
+            width: 72%;
+            float:left;
+            padding: 7px 20px;
+        }
+        .qContent{
+            width: 28%;
+            float:left;
+        }
+
+        .btn-c1.active{
+            color: #fff;
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+        }
+        .btn-c2.active{
+            color: #fff;
+            background-color: #d9534f;
+            border-color: #d43f3a;
+        }
+        .dl{
+            width: 70%;
+            max-width: 300px;
+            cursor: pointer;
+        }
+        .share{
+            width: 70%;
+            max-width: 300px;
+            cursor: pointer;
+        }
+        table tr td{
+            text-align:center;//水平居中
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mainView" style="margin-top: 30px;padding-bottom: 30px">
+
+    <!--<div class="row">-->
+        <!--<div class="qTitle">1、对于自己的烦恼常常有口难言</div>-->
+        <!--<div class="qContent">-->
+            <!--<div class="btn-group" role="group" aria-label="...">-->
+                <!--<button type="button" class="btn btn-default">是</button>-->
+                <!--<button type="button" class="btn btn-default">否</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+
+    <!--<hr class="featurette-divider">-->
+
+    <!--<div class="row">-->
+        <!--<div class="qTitle">2、当不熟悉的人对自己倾诉他的生平遭遇以求同情时，自己常感到不自在</div>-->
+        <!--<div class="qContent">-->
+            <!--<div class="btn-group" role="group" aria-label="...">-->
+                <!--<button type="button" class="btn btn-default">是</button>-->
+                <!--<button type="button" class="btn btn-default">否</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <!--<hr class="featurette-divider">-->
+
+    <!--<div class="row">-->
+        <!--<div class="qTitle">3、会过分的羡慕和妒忌别人</div>-->
+        <!--<div class="qContent">-->
+            <!--<div class="btn-group" role="group" aria-label="...">-->
+                <!--<button type="button" class="btn btn-default">是</button>-->
+                <!--<button type="button" class="btn btn-default">否</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+
+</div>
+
+<div class="container answerView" style="margin-top: 30px;padding-bottom: 30px;display: none;">
+    <!--<p class="lead">您的人际关系较好。</p>-->
+    <!--<p class="">你善于交谈，性格开朗，关心别人，你对周围的朋友相处得不错。</p>-->
+    <!--<p class="">同时，你对人真诚和热情。你的人际关系较和谐，在交际方面上，你不存在较明显持久的行为困扰。</p>-->
+</div>
+<div class="container btnView" style="display: none;">
+    <table style="width: 100%" ><tr><td><img class="share" src="share.png"/></td><td><img class="dl" src="dl.png"/></td> </tr></table>
+</div>
+
+
+<img id="view" style="top:0;height:100%;width:100%;position:absolute;display: none;z-index: 999;" src="view.png">
+
+<script src="jquery-1.11.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var qList=[
+            "对于自己的烦恼常常有口难言"
+            ,"与生人见面感觉不自然"
+            ,"会过分的羡慕和妒忌别人"
+            ,"与异性交往太少"
+            ,"对连续不断地会谈感到困难"
+            ,"在社交场合，经常感到紧张"
+            ,"时常伤害别人"
+            ,"与异性来往感觉不自然"
+            ,"与一大群朋友在一起，常感到孤寂或失落"
+            ,"极易感到窘迫"
+            ,"与别人不能和睦相处"
+            ,"不知道与异性相处如何适可而止"
+            ,"当不熟悉的人对自己倾诉他的生平遭遇以求同情时，自己常感到不自在"
+            ,"担心别人对自己有坏印象"
+            ,"总是尽力使别人赏识自己"
+            ,"暗自思慕异性"
+            ,"时常避免表达自己的感受"
+            ,"对自己的仪表（容貌）缺乏信心"
+            ,"讨厌某人或被某人所讨厌"
+            ,"瞧不起异性"
+            ,"不能专注地倾听"
+            ,"自己的烦恼无人可倾诉"
+            ,"受别人排斥与冷漠"
+            ,"被异性瞧不起"
+            ,"不能广泛地听取各种各样意见、看法"
+            ,"自己常因受伤害而暗自伤心"
+            ,"常被别人谈论、愚弄"
+            ,"与异性交往不知如何更好相处"
+        ];
+        var aTitleList=["壕，你应该收了很多红包吧！","亲，你收的红包还不够多，明年还需努力呦！","骚年，你收到的红包不多吧~"];
+        var aContentList=["你善于交谈，性格开朗，关心别人，你对周围的朋友相处得不错。","你的人缘很一般，也许你有几个不错的朋友，但也有朋友不喜欢你。","你可能不善于言谈，可能性格有些孤僻，不开朗，又或是有些自高自大、讨人嫌的行为。"];
+
+        var a1List=[
+            "你善于言谈，有较高的交谈能力和技巧，善于利用恰当地谈话方式来交流思想感情，因此在人际关系上获得更多的成功。"
+            ,"你交谈能力一般，会诉说自己的感受，但不能讲得条理清晰；你努力成为好的倾听者，但还做得不够。建议你可以更主动与人交谈，在交谈时，你的语气尽量要有活力和热情，同时要和对方的交谈风格相适应。"
+            ,"你不善于交谈，只在必须时才同别人交谈，总难于表达自己的感受；你也不是个很好的倾诉者，往往无法专心听别人说话。建议你尝试主动与人交谈，同时，要清楚双方见面的目的，说话有的放矢；说话要有停顿，给对方说话的机会。"
+        ];
+
+        var a2List=[
+            "同时，你对人真诚和热情。你的人际关系较和谐，在交际方面上，你不存在较明显持久的行为困扰。"
+            ,"同时，你交际能力一般。你不喜欢独处，但又不太善于积极主动地寻找知心朋友。建议你需要明确交朋友的益处，清楚主动交友的场合和时机；同时，向身边的交际达人学习一些具体的交友技巧。"
+            ,"同时，你不善交际，比较拘谨；说话常感到紧张，往往过多地考虑自己的形象而处于被动和孤独的境地。建议你在社交活动前，要了解自己紧张、拘谨的原因。如果是性格的原因，这需较长时间地改变；如果是某个人造成的，就尽量避免与之多接触。"
+        ];
+
+        var a3List=[
+            "在待人接物方面，你较尊重别人，敢于承担责任，对环境的适应性强。你常常以你的真诚、宽容、责任心强等个性获得众多的好感与赞同。"
+            ,"在待人接物方面，对待不同的人，你有不同的态度，而不同的人对你也有不同的评价。你会讨厌某人或被某人所讨厌。希望你能以真诚、宽容对待身边的人，这样你能获得大多数人的好感和赞同。"
+            ,"在待人接物方面，你缺乏一定的机智与技巧。你也许常有意无意地伤害到别人，因此，你的交往对象可能对你有些冷漠、排斥，甚至是愚弄。建议你在与人交往中，需要学会察言观色，清楚自己的言行举止对别人的影响。"
+        ];
+
+        var a4List=[
+            "此外，你能自如地与异性交往。你懂得如何准确地处理与异性之间的关系。你可能是一个较受欢迎的人，无论是同学、同事还是异性朋友，多数人都较喜欢或者赞赏你。"
+            ,"此外，你与异性交往尚可，有时会存在困扰。你不懂得如何与异性交往最适宜。建议你在某些场合里，能与周围的异性进行适当地交往。你可以找一位亲密的异性朋友，让TA来评价你在异性交往中的表现，从而进一步提高你的异性交往能力。"
+            ,"此外，你与异性交往存在困难。也许你过分思慕异性或对异性持有偏见，也许是你不知如何把握好与异性交往的分寸而陷入困扰之中。建议你与有经验的同性朋友多交流，请TA指点迷津，查找自己与异性往的问题根源和对策。"
+        ];
+
+        var mainView=$(".mainView");
+        var appendHTML="";
+        mainView.empty();
+        mainView.append('<p>人际关系包括同事、朋友、同学、师生、领导等，良好的人际关系对于生(hong)活(bao)幸(shu)福(liang)有着重要影响。本量表由北京师范大学知名教授郑日昌编制。</p>');
+        mainView.append('<hr class="featurette-divider">');
+        for(var i=0;i<qList.length;i++){
+            appendHTML='<div class="question row">' +
+            '<div class="qTitle">'+(i+1)+'、'+qList[i]+'</div>' +
+            '<div class="qContent">' +
+            '<div class="btn-group" role="group" aria-label="...">' +
+            '<button type="button" class="btn btn-default btn-c1 ">是</button>' +
+            '<button type="button" class="btn btn-default btn-c2 active">否</button>' +
+            '</div></div></div><hr class="featurette-divider">';
+            mainView.append(appendHTML);
+
+        }
+        mainView.append('<button type="button" class="btn btn-default btn-block checkAnswer">查看答案</button>');
+
+
+        $(".btn-c1,.btn-c2").on("click",function(){
+            $(this).siblings().removeClass("active");
+            $(this).addClass("active");
+        });
+
+        $(".checkAnswer").on("click",function(){
+
+            calcAnswer();
+        });
+
+
+
+
+        function calcAnswer(){
+            var a1= 0,a2= 0,a3= 0,a4=0;
+            var isDone=true;
+
+            $(".question").each(function(i,e){
+
+                var isChecked;
+
+                //计算分数 判断有没有做完题目
+                if($(this).find(".btn-c1").hasClass("active")){
+                    isChecked=true;
+
+                    if(i%4==0){
+//                    console.log("交谈");
+                        a1++;
+                    }else if(i%4==1){
+//                    console.log("交际");
+                        a2++;
+                    }else if(i%4==2){
+//                    console.log("待人");
+                        a3++;
+                    }else if(i%4==3){
+//                    console.log("异性");
+                        a4++;
+                    }
+                }else if($(this).find(".btn-c2").hasClass("active")){
+                    isChecked=false;
+                    return true;
+                }else{
+                    isDone=false;
+                    alert("还有题目还没完成哟~~比如第"+(i+1)+"题");
+                    return false;
+                }
+
+            });
+
+            if(!isDone){
+                return;
+            }
+            //得出答案部分
+            var total=a1+a2+a3+a4;
+
+            console.log(total);
+            console.log(a1);
+            console.log(a2);
+            console.log(a3);
+            console.log(a4);
+            var answerHTML="";
+            if(total<=8){
+                answerHTML='<p class="lead">'+aTitleList[0]+'</p>';
+                answerHTML+='<p class="">　　'+aContentList[0]+'</p>';
+            }else if(total>=9 && total<=14){
+                answerHTML='<p class="lead">'+aTitleList[1]+'</p>';
+                answerHTML+='<p class="">　　'+aContentList[1]+'</p>';
+            }else if(total>=15 && total<=28){
+                answerHTML='<p class="lead">'+aTitleList[2]+'</p>';
+                answerHTML+='<p class="">　　'+aContentList[2]+'</p>';
+            }
+
+            if(a1<=2){
+                answerHTML+='<p class="">　　'+a1List[0]+'</p>';
+            }else if(a1>=3 && a1<=5){
+                answerHTML+='<p class="">　　'+a1List[1]+'</p>';
+            }else if(a1>=6 && a1<=7){
+                answerHTML+='<p class="">　　'+a1List[2]+'</p>';
+            }
+
+            if(a2<=2){
+                answerHTML+='<p class="">　　'+a2List[0]+'</p>';
+            }else if(a2>=3 && a2<=5){
+                answerHTML+='<p class="">　　'+a2List[1]+'</p>';
+            }else if(a2>=6 && a2<=7){
+                answerHTML+='<p class="">　　'+a2List[2]+'</p>';
+            }
+
+            if(a3<=2){
+                answerHTML+='<p class="">　　'+a3List[0]+'</p>';
+            }else if(a3>=3 && a3<=5){
+                answerHTML+='<p class="">　　'+a3List[1]+'</p>';
+            }else if(a3>=6 && a3<=7){
+                answerHTML+='<p class="">　　'+a3List[2]+'</p>';
+            }
+
+            if(a4<=2){
+                answerHTML+='<p class="">　　'+a4List[0]+'</p>';
+            }else if(a4>=3 && a4<=4){
+                answerHTML+='<p class="">　　'+a4List[2]+'</p>';
+            }else if(a4>=5 && a4<=7){
+                answerHTML+='<p class="">　　'+a4List[2]+'</p>';
+            }
+            $(".mainView").hide();
+            $(".answerView").empty().append(answerHTML).show();
+
+            var sUserAgent = navigator.userAgent.toLowerCase();
+            var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+            var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+            var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+            var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+            var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+            var bIsAndroid = sUserAgent.match(/android/i) == "android";
+            var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+            var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+            var bIsWX = sUserAgent.match(/windows mobile/i) == "micromessenger";
+
+            if (!(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM || bIsWX) ){
+                //$(".share").hide();
+            }
+            $(".btnView").show();
+            $(".share").on("click",function(){
+                $(document).scrollTop(0);
+                $("#view").show();
+            });
+
+            $("#view").on("click",function(){
+                $("#view").hide();
+            });
+            $(".dl").on("click",function(){
+                self.location="http://zhixin.me/dl";
+            });
+        }
+    });
+
+</script>
+</body>
+</html>

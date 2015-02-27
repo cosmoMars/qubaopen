@@ -61,12 +61,12 @@ function updateHelpListView(aData){
 //    </div>
 
     var oMainView=$("#main-view");
-    var data={helpId:"",helpContent:"",commentData:[]};
+    var data={helpId:"",helpContent:"",commentData:[],commentSize:""};
     oMainView.empty();
     for(var i=0;i<aData.length;i++){
         data=aData[i];
 
-        var answerHtml=data.commentData.length>=1? '已经有'+data.commentData.length+'人回答':'没有人回答' ;
+        var answerHtml=data.commentData.length>=1? '已经有'+data.commentSize+'人回答':'没有人回答' ;
 
         var appendHtml='<div class="panel panel-default child-view" help-id="'+data.helpId+'">' +
             '<div class="panel-body helpContent"><p>'+data.helpContent+'</p>' +

@@ -49,9 +49,9 @@
     <div class="marketing">
 
         <div class="row well">
-            <div class="col-xs-12"><p><span>账户余额:￥</span><span id="currentCash">300</span></p></div>
-            <div class="col-xs-6"><p><span>总收入:￥</span><span id="inCash">400</span></p></div>
-            <div class="col-xs-6"><p><span>总支出:￥</span><span id="outCash">100</span></p></div>
+            <div class="col-xs-12"><p><span>账户余额:￥</span><span id="currentCash"></span></p></div>
+            <div class="col-xs-6"><p><span>总收入:￥</span><span id="inCash"></span></p></div>
+            <div class="col-xs-6"><p><span>总支出:￥</span><span id="outCash"></span></p></div>
 
         </div>
 
@@ -70,8 +70,8 @@
 
         <div class="row">
             <ul class="nav nav-tabs nav-justified" role="tablist">
-                <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">收入</a></li>
-                <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">支出</a></li>
+                <li role="presentation" id="btn-inCash" class="active"><a href="#home" role="tab" data-toggle="tab">收入</a></li>
+                <li role="presentation" id="btn-outCash"><a href="#profile" role="tab" data-toggle="tab">支出</a></li>
             </ul>
         </div>
 
@@ -86,24 +86,19 @@
                             <th width="20%">金额</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>2015-01-04 05:22:00</td>
-                            <td>完成预约</td>
-                            <td>320</td>
-                        </tr>
-                        <tr>
-                            <td>2015-01-04 05:22:00</td>
-                            <td>完成预约</td>
-                            <td>320</td>
-                        </tr>
-                        <tr>
-                            <td>2015-01-04 05:22:00</td>
-                            <td>完成预约</td>
-                            <td>320</td>
-                        </tr>
+                        <tbody id="inCashList">
+                        <!--<tr>-->
+                            <!--<td>2015-01-04 05:22:00</td>-->
+                            <!--<td>完成预约</td>-->
+                            <!--<td>320</td>-->
+                        <!--</tr>-->
                         </tbody>
                     </table>
+                    <nav>
+                        <ul class="pager">
+                            <li id="btn-more-in"><a href="javascript:;">加载更多 &darr;</a></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
 
@@ -117,26 +112,23 @@
                             <th width="20%">金额</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td>2015-01-04 05:22:00</td>
-                            <td>完成预约</td>
-                            <td>320</td>
-                        </tr>
-                        <tr>
-                            <td>2015-01-04 05:22:00</td>
-                            <td>完成预约</td>
-                            <td>320</td>
-                        </tr>
-                        <tr>
-                            <td>2015-01-04 05:22:00</td>
-                            <td>完成预约</td>
-                            <td>320</td>
-                        </tr>
+                        <tbody id="outCashList">
+                        <!--<tr>-->
+                            <!--<td>2015-01-04 05:22:00</td>-->
+                            <!--<td>完成预约</td>-->
+                            <!--<td>320</td>-->
+                        <!--</tr>-->
                         </tbody>
                     </table>
+
+                    <nav>
+                        <ul class="pager">
+                            <li id="btn-more-out"><a href="javascript:;">加载更多 &darr;</a></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
+
 
         </div>
 
@@ -168,6 +160,8 @@
 <script>
     $(document).ready(function () {
         retrieveCashInfo(0,0);
+
+        retrieveCashInfo(0,1);
     });
 </script>
 </body>

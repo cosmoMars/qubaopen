@@ -18,8 +18,9 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    .
     <link href="../knight/css/zhixin.css" rel="stylesheet">
+    <link href="../plugin/waves/waves.css" rel="stylesheet">
     <style>
 
         body{
@@ -64,12 +65,12 @@
         .navbar-brand{
             font-size: 22px;
             color:#fff;
-            font-family: SketchRockwell;
+            font-family: SketchRockwell,'microsoft yahei',sans-serif;
         }
 
         .navbar-zhixin{
-            background: url("../img/titlebar.png")  repeat-x;
-            background-size: 100% 100%;
+            /*background: url("../img/titlebar.png")  repeat-x;*/
+            /*background-size: 100% 100%;*/
         }
 
         .menu1{
@@ -143,15 +144,15 @@
 
 
 
-
     <div class="container marketing">
+
         <div class="row">
             <div class="col-md-offset-3 col-md-6 col-xs-12 col-xs-offset-0 menu-parent invisfcv ible">
-                <div id="help" class="menu-item menu1"><div><span class="glyphicon glyphicon-heart-empty"></span><p>求助中心</p></div></div>
-                <div id="order" class="menu-item menu2"><div><span class="glyphicon glyphicon-th-list"></span><p>预约列表</p></div></div>
-                <div id="schedule" class="menu-item menu3"><div><span class="glyphicon glyphicon-calendar"></span><p>日程表</p></div></div>
-                <div id="cash" class="menu-item menu4"><div><span class="glyphicon glyphicon-usd"></span><p>现金账户</p></div></div>
-                <div id="profile" class="menu-item menu-bottom menu5"><div><span class="glyphicon glyphicon-user"></span><p>个人资料</p></div></div>
+                <div id="help" class="menu-item menu1 waves-effect"><div><span class="glyphicon glyphicon-heart-empty"></span><p>求助中心</p></div></div>
+                <div id="order" class="menu-item menu2  waves-effect"><div><span class="glyphicon glyphicon-th-list"></span><p>预约列表</p></div></div>
+                <div id="schedule" class="menu-item menu3 waves-effect"><div><span class="glyphicon glyphicon-calendar"></span><p>日程表</p></div></div>
+                <div id="cash" class="menu-item menu4 waves-effect"><div><span class="glyphicon glyphicon-usd"></span><p>现金账户</p></div></div>
+                <div id="profile" class="menu-item menu-bottom menu5 waves-effect"><div><span class="glyphicon glyphicon-user"></span><p>个人资料</p></div></div>
             </div>
         </div>
     </div>
@@ -168,6 +169,12 @@
 
 <script src="../knight/js/main.js"></script>
 <script src="../knight/js/menu.js"></script>
+<script src="../plugin/waves/waves.js"></script>
+<script>
+    $(document).ready(function () {
+        Waves.displayEffect();
+    });
+</script>
 
 
 </body>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <title>面包新语</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/exchange.js"></script>
+    <style>
+
+        *{
+            letter-spacing: 1px;
+            font-family: "microsoft yahei";
+        }
+        body {
+
+            background: url("bigbg2.jpg");
+            background-size:100%;
+        }
+
+
+        .label1{
+            width: 200px;
+            float: left;
+        }
+        .myLabel{
+            font: bold 12em #000;
+            font-size: 30px;
+            padding-top: 2px;
+        }
+        #code{
+            font-size: 20px;
+            height: 44px;
+        }
+
+        #btn-submit{
+            font-size: 20px;
+            height: 44px;
+        }
+
+        #message{
+           margin-left: 210px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="">
+    <div class="row" style="margin-left:10%;margin-top: 10%;">
+        <div class="myLabel label1">输入兑换券</div>
+        <div class="col-md-3"><input type="text" class="form-control" id="code"/></div>
+        <div class="col-md-1"><button type="button" class="btn btn-success" id="btn-submit">查看并使用</button></div>
+    </div>
+    <div style="margin-left:10%;margin-top: 10px;">
+        <div class="col-md-3 myLabel" id="message"></div>
+    </div>
+
+</div>
+
+</body>
+</html>

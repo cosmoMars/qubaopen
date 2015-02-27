@@ -6,6 +6,9 @@
 /**
  * 事件
  * */
+
+var more=false;
+var page=0;
 $(document).ready(function () {
 
     //获取详细信息 没有则返回列表
@@ -13,9 +16,21 @@ $(document).ready(function () {
     if(!help){
         self.location="helpSquare.html"
     }else{
-        getHelpDetail(help);
+        getHelpDetail(help,page);
     }
 
+
+
+
+
+
+    $(document).on("scroll",function(){
+        if(getScrollTop() + getClientHeight() == getScrollHeight() && more){
+            console.log("到达底部");
+            page++;
+            getHelpDetail(help,page);
+        }
+    });
 });
 
 
@@ -23,10 +38,10 @@ $(document).ready(function () {
  * 请求
  */
 /*获取订单详情*/
-function getHelpDetail(help){
+function getHelpDetail(help,page){
     var jsonSent={};
     jsonSent.helpId=help;
-    jsonSent.page=0;
+    jsonSent.page=page;
 
     $.ajax({
         url: ContextUrl+"/help/retrieveDetailHelp",
@@ -42,7 +57,8 @@ function getHelpDetail(help){
             if (result == 1) {
                 //setCookie("cookie1",JSON.stringify(data),new Date() );
                 //self.location = location;
-                updateHelpDetailView(data);
+                more=data.more;
+                updateHelpDetailView(data,page);
             }else if (result == 0) {
                 if(data.message=="err000"){
                     backToSignIn();
@@ -91,9 +107,21 @@ function commentHelp(help){
  * 更新页面
  * */
 
-function updateHelpDetailView(data){
+function updateHelpDetailView(data,page){
+
 
     var oMainView=$("#main-view");
+
+    //加载更多
+    if(page>0){
+        var oLastView=oMainView.find(".panel").last();
+        var aData=data.data;
+        for(var i=0;i<aData.length;i++){
+            oLastView.before(replyView(aData[i]));
+        }
+
+        return;
+    }
 
     var appendHTML='<div class="panel panel-default "><div class="panel-body"><p>'+data.helpContent+'</p></div></div>';
 
@@ -101,24 +129,36 @@ function updateHelpDetailView(data){
 
     var aData=data.data;
     for(var i=0;i<aData.length;i++){
-        appendHTML='<div class="panel panel-default "><div class="panel-body"><p><img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 40px; height: 40px;">' +
-        ' '+aData[i].doctorName +
-        ' 心理咨询师' +
-        '</p><p>'+aData[i].doctorContent+'</p>' +
-        '<p>回答于'+aData[i].doctorTime+'</p></div></div>';
-        oMainView.append(appendHTML);
+
+        oMainView.append(replyView(aData[i]));
     }
     addReplyView();
 }
 
 
-/* 添加回复框*/
+/* 追加评论框*/
 function addReplyView(){
     var oMainView=$("#main-view");
     var appendHTML='<div class="panel panel-default "><div class="panel-body"><textarea id="txt-reply" class="form-control" rows="4" style="max-width: 100%;"></textarea>' +
         '<button type="button" style="margin-top: 10px;" id="btn-commit" class="btn btn-zhixin btn-block">提交</button></div></div>';
     oMainView.append(appendHTML);
     autoResizeReplyView();
+}
+
+/* 已有评论框*/
+function replyView(aData){
+    var nameHTML="";
+    if(aData.doctorName){
+        nameHTML=aData.doctorName + ' 心理咨询师';
+    }else{
+        nameHTML=aData.hospitalName + ' 心理诊所';
+    }
+    var appendHTML='<div class="panel panel-default "><div class="panel-body"><p><img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 40px; height: 40px;">' +
+        ' '+nameHTML +
+        '</p><p>'+aData.content+'</p>' +
+        '<p class="label-time">回答于 '+aData.time+'<span class="pull-right"><span>'+aData.goods+' </span><span class="color-orange glyphicon glyphicon-thumbs-up"></span></span></p></div></div>';
+
+    return appendHTML;
 }
 
 /**
@@ -158,6 +198,35 @@ function autoResizeReplyView(){
     $("#btn-commit").on("click",function(){
         commentHelp(help);
     });
+}
+
+//获取滚动条当前的位置
+function getScrollTop() {
+    var scrollTop = 0;
+    if (document.documentElement && document.documentElement.scrollTop) {
+        scrollTop = document.documentElement.scrollTop;
+    }
+    else if (document.body) {
+        scrollTop = document.body.scrollTop;
+    }
+    return scrollTop;
+}
+
+//获取当前可是范围的高度
+function getClientHeight() {
+    var clientHeight = 0;
+    if (document.body.clientHeight && document.documentElement.clientHeight) {
+        clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+    }
+    else {
+        clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+    }
+    return clientHeight;
+}
+
+//获取文档完整的高度
+function getScrollHeight() {
+    return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
 }
 
 

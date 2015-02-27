@@ -137,9 +137,7 @@
         });
 
         $("#btn-commit").on("click",function(){
-
-            alert($("#type").val());
-
+            takeCash();
         });
 
 
@@ -185,6 +183,38 @@
                     console.log(data);
                     if (result == 1) {
                         updateView(data.data);
+
+                    }else if (result == 0) {
+                        if(data.message=="err000"){
+                            backToSignIn();
+                        }
+                    }
+                }
+            });
+        }
+
+
+        /* 提交提现请求 */
+        function takeCash(){
+            var jsonSent={};
+            jsonSent.curCash=$("#curCash").val();
+            jsonSent.type=1;
+            jsonSent.bankCard=$("#bankCard").val();
+            jsonSent.bankId=$("#type").val();
+            jsonSent.captcha=$("#captcha").val();
+            console.log(jsonSent);
+            $.ajax({
+                url: ContextUrl+"/hospitalCash/takeCash",
+                type: "POST",
+                async:false,
+                dataType: "json",
+                data: jsonSent,
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+
+                    console.log(data);
+                    if (result == 1) {
 
                     }else if (result == 0) {
                         if(data.message=="err000"){

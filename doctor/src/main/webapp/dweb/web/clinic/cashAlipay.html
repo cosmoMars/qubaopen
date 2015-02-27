@@ -60,15 +60,8 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="name" class="col-sm-3 control-label">公司名称</label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" id="name" disabled
-                       placeholder="请输入姓名">
-            </div>
-        </div>
-        <div class="form-group">
             <label for="captcha" class="col-sm-3 control-label">验证邮箱</label>
-            <span class="col-sm-6 control-label" id="phone"></span>
+            <span class="col-sm-6 control-label" id="email"></span>
             <div class="col-sm-3">
                 <button type="button" id="btn-captcha" class="btn btn-zhixin btn-block">获取验证码</button>
             </div>
@@ -109,7 +102,7 @@
 <script>
     $(document).ready(function () {
 
-        $("#phone").append(getCookie("phone"));
+        $("#email").append(getCookie("email"));
 
         /* 获取验证码 */
         $("#btn-captcha").on("click",function(){
@@ -124,37 +117,10 @@
 
 
         /*获取提现验证码*/
-        function retrieveIdCard(){
-
-            $.ajax({
-                url: ContextUrl+"/doctorIdCardBind/retrieveIdCard",
-                type: "GET",
-                async:false,
-                dataType: "json",
-                success: function (data, textStatus, jqXHR) {
-
-                    var result = data.success;
-
-                    console.log(data);
-                    if (result == 1 && data.exist) {
-                        $("#name").val(data.name);
-                        $("#idCard").val(data.idCard);
-
-                    }else if (result == 0) {
-                        if(data.message=="err000"){
-                            backToSignIn();
-                        }
-                    }
-                }
-            });
-        }
-
-
-        /*获取提现验证码*/
         function getCaptcha(){
 
             $.ajax({
-                url: ContextUrl+"/doctorCash/retireveCashCaptcha",
+                url: ContextUrl+"/hospitalCash/retireveCashCaptcha",
                 type: "GET",
                 async:false,
                 dataType: "json",
@@ -181,14 +147,10 @@
             jsonSent.curCash=$("#curCash").val();
             jsonSent.type=0;
             jsonSent.alipayNum=$("#alipayNum").val();
-//            jsonSent.bankId="";
-//            jsonSent.bankCard="";
-//            jsonSent.name=$("#contactPhone").val();
-//            jsonSent.idCard=$("#sex label:eq(0)").hasClass("active")?"0":"1";
             jsonSent.captcha=$("#captcha").val();
             console.log(jsonSent);
             $.ajax({
-                url: ContextUrl+"/doctorCash/takeCash",
+                url: ContextUrl+"/hospitalCash/takeCash",
                 type: "POST",
                 async:false,
                 dataType: "json",

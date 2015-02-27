@@ -534,7 +534,7 @@
      * aDate：一周时间 数组
      * */
     function getTitleWeekDayTableHTML(aDate,iPage){
-        var appendHTML='<table class="title-week title-week-day item" data-page="'+(iPage)+'">';
+        var appendHTML='<table class="title-week title-week-day item" data-page="'+iPage+'">';
         if(iPage==0){
             /*当前日期页  第0页显示*/
             appendHTML='<table class="title-week title-week-day item active"  data-page="'+iPage+'">';
@@ -620,9 +620,10 @@
 
     /* 更新表头元素 */
     function updateTitleWeekDayTable(isFirst){
-        var oTable=$("#title-week-day");
+        var oTable;
         if(isFirst){
             //初始化
+            oTable=$("#title-week-day");
             oTable.empty();
             oTable.append(getTitleWeekDayTableHTML(getDayOfOneWeek(0),0));
             oTable.prepend(getTitleWeekDayTableHTML(getDayOfOneWeek(-1),-1));
@@ -631,12 +632,13 @@
             oTable.find(".active").find("tr").children().eq(new Date().getDay()+1).addClass("color-today");
 
         }else{
+            oTable=$(".title-week-day.active");
             var iPage=parseInt(oTable.attr("data-page"));
             if(oTable.prevAll().size()<2){
-                oTable.prepend(getTitleWeekDayTableHTML(getDayOfOneWeek(iPage-2),iPage-2));
+                $("#title-week-day").prepend(getTitleWeekDayTableHTML(getDayOfOneWeek(iPage-2),iPage-2));
             }
             if(oTable.nextAll().size()<2){
-                oTable.append(getTitleWeekDayTableHTML(getDayOfOneWeek(iPage+2),iPage+2));
+                $("#title-week-day").append(getTitleWeekDayTableHTML(getDayOfOneWeek(iPage+2),iPage+2));
             }
 
         }
@@ -685,8 +687,8 @@
         if(iTitlePage!=iMainPage){
 
             //同步过程.. setinternal
-            console.log("itp:"+iTitlePage);
-            console.log("imp:"+iMainPage);
+//            console.log("itp:"+iTitlePage);
+//            console.log("imp:"+iMainPage);
 
         }
 

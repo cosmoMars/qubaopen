@@ -95,24 +95,24 @@
 
     <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
         <div class="form-group">
-            <label for="realname" class="col-sm-2 control-label">诊所名称</label>
+            <label for="clinicName" class="col-sm-2 control-label">诊所名称</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" id="realname" autocomplete="off"
-                       placeholder="请输入姓名" required>
+                <input type="text" class="form-control" id="clinicName" autocomplete="off"
+                       placeholder="请输入名称" required>
             </div>
         </div>
         <div class="form-group">
-            <label for="contactPhone" class="col-sm-2 control-label">联系电话</label>
+            <label for="contactPhone" class="col-sm-2 control-label">预约电话</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="contactPhone" autocomplete="off"
                        placeholder="请输入电话号">
             </div>
         </div>
         <div class="form-group">
-            <label for="email" class="col-sm-2 control-label">电子邮箱</label>
+            <label for="urgentPhone" class="col-sm-2 control-label">紧急电话</label>
             <div class="col-sm-10">
-                <input type="email" class="form-control" id="email"
-                       placeholder="请输入邮箱">
+                <input type="text" class="form-control" id="urgentPhone" autocomplete="off"
+                       placeholder="请输入电话号">
             </div>
         </div>
         <div class="form-group">
@@ -129,13 +129,7 @@
                        placeholder="请输入详细地址">
             </div>
         </div>
-        <div class="form-group">
-            <label for="quality" class="col-sm-2 control-label">专业资质</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="quality"
-                       placeholder="请输入">
-            </div>
-        </div>
+
         <div class="form-group">
             <label for="record" class="col-sm-2 control-label">资质证明</label>
             <div class="col-sm-10">
@@ -143,27 +137,7 @@
                        placeholder="请上传">
             </div>
         </div>
-        <div class="form-group">
-            <label for="goodArea" class="col-sm-2 control-label">擅长领域</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="goodArea"
-                       placeholder="请说明">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="goodObject" class="col-sm-2 control-label">擅长对象</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="goodObject"
-                       placeholder="请说明">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="cureMethod" class="col-sm-2 control-label">所用流派</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="cureMethod"
-                       placeholder="请说明">
-            </div>
-        </div>
+
         <div class="form-group">
             <label for="btn-pick" class="col-sm-2 control-label">可预约时间</label>
             <div class="col-sm-10">
@@ -171,35 +145,23 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="commentConsult" class="col-sm-8 control-label">是否接受免费在线文字咨询</label>
-            <div class="col-sm-4">
-                <div class="btn-group" data-toggle="buttons" id="commentConsult" style="float: right;">
-                    <label class="btn btn-default active">
-                        <input type="radio" name="options" autocomplete="off">是
-                    </label>
-                    <label class="btn btn-default">
-                        <input type="radio" name="options"  autocomplete="off">否
-                    </label>
-                </div>
+            <label for="minCharge" class="col-sm-2 control-label">最小费用</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="minCharge"
+                       placeholder="请输入金额">
             </div>
         </div>
         <div class="form-group">
-            <label for="phoneConsult" class="col-sm-8 control-label">是否接受免费20分钟电话咨询</label>
-            <div class="col-sm-4">
-                <div class="btn-group" data-toggle="buttons" id="phoneConsult" style="float: right;">
-                    <label class="btn btn-default active">
-                        <input type="radio" name="options" autocomplete="off">是
-                    </label>
-                    <label class="btn btn-default">
-                        <input type="radio" name="options"  autocomplete="off">否
-                    </label>
-                </div>
+            <label for="maxCharge" class="col-sm-2 control-label">最大费用</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="maxCharge"
+                       placeholder="请输入金额">
             </div>
         </div>
         <div class="form-group">
-            <label for="urgentConsult" class="col-sm-8 control-label">是否接受加急预约</label>
+            <label for="wordsConsult" class="col-sm-8 control-label">是否接受免费在线文字咨询</label>
             <div class="col-sm-4">
-                <div class="btn-group" data-toggle="buttons" id="urgentConsult" style="float: right;">
+                <div class="btn-group" data-toggle="buttons" id="wordsConsult" style="float: right;">
                     <label class="btn btn-default active">
                         <input type="radio" name="options" autocomplete="off">是
                     </label>
@@ -209,6 +171,19 @@
                 </div>
             </div>
         </div>
+        <!--<div class="form-group">-->
+            <!--<label for="phoneConsult" class="col-sm-8 control-label">是否接受免费20分钟电话咨询</label>-->
+            <!--<div class="col-sm-4">-->
+                <!--<div class="btn-group" data-toggle="buttons" id="phoneConsult" style="float: right;">-->
+                    <!--<label class="btn btn-default active">-->
+                        <!--<input type="radio" name="options" autocomplete="off">是-->
+                    <!--</label>-->
+                    <!--<label class="btn btn-default">-->
+                        <!--<input type="radio" name="options"  autocomplete="off">否-->
+                    <!--</label>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
         <div class="form-group">
             <label for="introduction" class="col-sm-2 control-label">诊所介绍</label>
             <div class="col-sm-10">
@@ -320,14 +295,14 @@
 
 <script src="../../jquery/jquery.form.js"></script>
 <script src="../../knight/js/main.js"></script>
-<script src="../../knight/js/profile.js"></script>
+<script src="../../knight/js/clinic/profile.js"></script>
 <script src="../../jquery/jquery-ui.js"></script>
 <script>
     $(document).ready(function () {
 
 
 
-
+        getInfo();
 
         $("#btn-pick").on("click",function(){
             $("#myModal").modal("show");

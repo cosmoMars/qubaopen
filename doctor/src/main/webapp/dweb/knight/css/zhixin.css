@@ -10,9 +10,9 @@ body {
 }
 
 /*修改浏览器内容选中颜色 如果有部分没改变  就把内容方在<p>里 */
-/*::selection{*/
-    /*background-color : #f3542d*/
-/*}*/
+::selection{
+    background-color : #fa6c1b
+}
 
 /* navbar 自定义导航栏 */
 .navbar-zhixin-title{
@@ -29,7 +29,7 @@ body {
 /*颜色样式*/
 
 .navbar-zhixin{
-    background-color: #3194f3;
+    background-color: #fa6c1b;
 }
 
 .navbar-zhixin .navbar-toggle:hover,
@@ -38,7 +38,7 @@ body {
 }
 
 .navbar-zhixin li a:hover{
-    color: #3194f3;
+    color: #fa6c1b;
     background-color: #fff;
 }
 
@@ -46,7 +46,7 @@ body {
 .nav .open > a:hover,
 .nav .open > a:focus {
     background-color: #fff;
-    color: #3194f3;
+    color: #fa6c1b;
     border-color: #fff;
 }
 
@@ -68,8 +68,8 @@ body {
 /*button 自定义按钮*/
 .btn-zhixin {
     color: #fff;
-    background-color: #3194f3;
-    border-color: #2e8be4;
+    background-color: #fa6c1b;
+    border-color: #be5215;
 }
 .btn-zhixin:hover,
 .btn-zhixin:focus,
@@ -78,8 +78,8 @@ body {
 .btn-zhixin.active,
 .open > .dropdown-toggle.btn-zhixin {
     color: #fff;
-    background-color: #2d88e0;
-    border-color: #236aae;
+    background-color: #d15a17;
+    border-color: #be5215;
 }
 .btn-zhixin:active,
 .btn-zhixin.active,
@@ -104,11 +104,11 @@ fieldset[disabled] .btn-zhixin:active,
 .btn-zhixin.disabled.active,
 .btn-zhixin[disabled].active,
 fieldset[disabled] .btn-zhixin.active {
-    background-color: #3194f3;
-    border-color: #2e8be4;
+    background-color: #fa6c1b;
+    border-color: #be5215;
 }
 .btn-zhixin .badge {
-    color: #3194f3;
+    color: #fa6c1b;
     background-color: #fff;
 }
 
@@ -117,10 +117,16 @@ fieldset[disabled] .btn-zhixin.active {
 .list-group-item.active:focus {
     z-index: 2;
     color: #fff;
-    background-color: #3194f3;
-    border-color: #2e8be4;
+    background-color: #fa6c1b;
+    border-color: #be5215;
 }
 
+.form-control:focus {
+    border-color: #fa6c1b;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(250, 108, 27, 0.60);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(250, 108, 27, 0.60);
+}
 
 
 
@@ -133,9 +139,20 @@ fieldset[disabled] .btn-zhixin.active {
 /*background-color: #e24e2a;*/
 /*border-color: #c94525;*/
 
+/*蓝色*/
+/*background-color: #3194f3;*/
+/*border-color: #2e8be4;*/
 
+/*hover*/
+/*background-color: #2d88e0;*/
+/*border-color: #236aae;*/
 
 /* 求助中心 */
 .help-list{
     max-width: 800px;
+}
+
+.label-time{
+    color:#999;
+    font-size: 12px;
 }

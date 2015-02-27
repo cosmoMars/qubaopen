@@ -17,7 +17,6 @@ $(document).ready(function () {
 
     });
 
-
     $("#btn-info").click(function(){
         //$("#sign-form2").submit();
         getInfo();
@@ -35,7 +34,7 @@ $(document).ready(function () {
 
     //诊所注册
     $("#btn-signup-clinic").click(function(){
-
+        signupClinic();
     });
 });
 
@@ -47,35 +46,75 @@ $(document).ready(function () {
 function signin(){
     var jsonSent={};
     /*13621673989*/
-    jsonSent.phone=$("#phone").val();
     jsonSent.password=$("#password").val();
-    $.ajax({
-        url: ContextUrl+"/uDoctor/login",
-        type: "POST",
-        dataType: "json",
-        data: jsonSent,
-        success: function (data, textStatus, jqXHR) {
+    var name=$("#phone").val();
 
-            var result = data.success;
+    if(isPhone(name)){
+        jsonSent.phone=name;
+        $.ajax({
+            url: ContextUrl+"/uDoctor/login",
+            type: "POST",
+            dataType: "json",
+            data: jsonSent,
+            success: function (data, textStatus, jqXHR) {
 
-            console.log(data);
+                var result = data.success;
 
-            if (result == 1) {
-                //setCookie("cookie1",JSON.stringify(data),new Date() );
+                console.log(data);
 
-                if(data.loginStatus==3){
-                    setCookie("phone",data.phone);
-                    self.location = "menu.html";
-                }else{
-                    self.location = "profile.html";
+                if (result == 1) {
+                    //setCookie("cookie1",JSON.stringify(data),new Date() );
+
+                    if(data.loginStatus==3){
+                        setCookie("phone",data.phone);
+                        self.location = "menu.html";
+                    }else{
+                        self.location = "profile.html";
+                    }
+                }
+                if (result == 0) {
+                    //msg = data.message;
+
                 }
             }
-            if (result == 0) {
-                //msg = data.message;
+        });
+    }else if(isEmail(name)){
+        jsonSent.email  =name;
+        console.log(jsonSent);
 
+        $.ajax({
+            url: ContextUrl+"/uHospital/login",
+            type: "POST",
+            dataType: "json",
+            data: jsonSent,
+            success: function (data, textStatus, jqXHR) {
+
+                var result = data.success;
+
+                console.log(data);
+
+                if (result == 1) {
+                    //setCookie("cookie1",JSON.stringify(data),new Date() );
+                    setCookie("email",data.email);
+                    if(data.loginStatus==3){
+                        setCookie("email",data.email);
+                        self.location = "clinic/menu.html";
+                    }else{
+                        self.location = "clinic/profile.html";
+                    }
+                    return;
+                }
+                if (result == 0) {
+                    //msg = data.message;
+
+                }
             }
-        }
-    });
+        });
+    }else{
+        alert("请填写正确的手机号码或邮箱");
+    }
+
+
 }
 
 
@@ -146,9 +185,33 @@ function signupDoctor(){
 }
 
 
-/*诊所登陆*/
-function clinicSignIn(){
-    self.location="clinic/menu.html"
-}
 
 /*诊所注册*/
+function signupClinic(){
+    var jsonSent={};
+    /*13621673989*/
+    jsonSent.email=$("#email").val();
+    jsonSent.password=$("#password2").val();
+    console.log(jsonSent);
+    $.ajax({
+        url: ContextUrl+"/uHospital/register",
+        type: "POST",
+        dataType: "json",
+        data: jsonSent,
+        success: function (data, textStatus, jqXHR) {
+
+            var result = data.success;
+
+            console.log(data);
+
+            if (result == 1) {
+                //setCookie("cookie1",JSON.stringify(data),new Date() );
+                self.location = "clinic/profile.html";
+            }
+            if (result == 0) {
+                //msg = data.message;
+
+            }
+        }
+    });
+}

@@ -142,6 +142,8 @@ function modifyInfo(){
         jsonSent.quick=$("#urgentConsult label:eq(0)").hasClass("active");
         jsonSent.commentConsult=$("#commentConsult label:eq(0)").hasClass("active");
         jsonSent.phoneConsult=$("#phoneConsult label:eq(0)").hasClass("active");
+        jsonSent.video=$("#video").hasClass("active");
+        jsonSent.faceToFace=$("#faceToFace").hasClass("active");
         jsonSent.introduce=$("#introduction").val();
         jsonSent.bookingTime=$("#btn-pick").attr("data-time");
 
@@ -281,6 +283,14 @@ function updateProfileView(obj){
         $("#phoneConsult label").eq(0).click();
     }else{
         $("#phoneConsult label").eq(1).click();
+    }
+
+    if(data.video){
+        $("#video").addClass("active");
+    }
+
+    if(data.faceToFace){
+        $("#faceToFace").addClass("active");
     }
 
     $("#introduction").val(data.introduce);

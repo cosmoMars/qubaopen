@@ -10,6 +10,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,7 +40,9 @@ public class DailyDiscoveryController {
 	private SelfRepository selfRepository;
 	
 	@RequestMapping(value = "retrieveTopic", method = RequestMethod.GET)
-	private Object retrieveTopic(@RequestParam(required = false) Boolean join) {
+	private Object retrieveTopic(@PageableDefault(page = 0, size = 20, sort = "createdDate", direction = Direction.DESC)
+			Pageable pageable,
+			@RequestParam(required = false) Boolean join) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -78,7 +83,9 @@ public class DailyDiscoveryController {
 	 * 获取测评
 	 */
 	@RequestMapping(value = "retrieveSelf", method = RequestMethod.GET)
-	private Object retrieveSelf(@RequestParam(required = false) Boolean join) {
+	private Object retrieveSelf(@PageableDefault(page = 0, size = 20, sort = "createdDate", direction = Direction.DESC)
+			Pageable pageable,
+			@RequestParam(required = false) Boolean join) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();

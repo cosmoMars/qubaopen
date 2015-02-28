@@ -72,6 +72,11 @@ public class DailyDiscoveryController {
 		return result;
 	}
 	
+	/**
+	 * @param join
+	 * @return
+	 * 获取测评
+	 */
 	@RequestMapping(value = "retrieveSelf", method = RequestMethod.GET)
 	private Object retrieveSelf(@RequestParam(required = false) Boolean join) {
 		
@@ -107,6 +112,14 @@ public class DailyDiscoveryController {
 	}
 	
 	
+	/**
+	 * @param id
+	 * @param time
+	 * @param selfId
+	 * @param topicId
+	 * @return
+	 * 新增修改发现
+	 */
 	@RequestMapping(value = "generateDailyDiscovery", method = RequestMethod.POST)
 	private Object generateDailyDiscovery(@RequestParam(required = false) Long id,
 			@RequestParam(required = false) String time,
@@ -130,14 +143,13 @@ public class DailyDiscoveryController {
 			dd.setTopic(t);
 		}
 		
-		if (dd.getSelf() != null || dd.getTopic() != null) { //存在一个保存
+		if (dd.getSelf() != null || dd.getTopic() != null) { //存在一个就保存
 			
 			if (time == null) {
 				DailyDiscovery exist = dailyDiscoveryRepository.findByMaxTime();
-				
 				Date date = new Date();
 				// 多一天
-				if (DateUtils.isSameDay(exist.getTime(), date)) {
+				if (exist != null && DateUtils.isSameDay(exist.getTime(), date)) {
 					Calendar c = Calendar.getInstance();
 					c.setTime(date);
 					c.add(Calendar.DATE, 1);
@@ -145,7 +157,7 @@ public class DailyDiscoveryController {
 					dd.setTime(c.getTime());
 				}
 				// 设置当天
-				if (!DateUtils.isSameDay(exist.getTime(), date) && exist.getTime().getTime() < date.getTime()) {
+				if (exist == null || (!DateUtils.isSameDay(exist.getTime(), date) && exist.getTime().getTime() < date.getTime())) {
 					dd.setTime(date);
 				}
 			} else {
@@ -158,9 +170,12 @@ public class DailyDiscoveryController {
 			dailyDiscoveryRepository.save(dd);
 		}
 		
-		return "{\"success\" : \"1\"}";
+		return "{\"success\" : \"1\",  \"discoveryId\" : " + dd.getId() + "}";
 	}
 	
+	/**
+	 * @return
+	 */
 	@RequestMapping(value = "retrieveDailyDiscoverys", method = RequestMethod.GET)
 	private Object retrieveDailyDiscoverys() {
 		
@@ -180,7 +195,6 @@ public class DailyDiscoveryController {
 			map.put("topicId", dailyDiscovery.getTopic().getId());
 			map.put("topicName", dailyDiscovery.getTopic().getName());
 			list.add(map);
-			
 			
 		}
 		result.put("success", "1");

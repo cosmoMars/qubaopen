@@ -23,6 +23,8 @@ import com.qubaopen.backend.repository.self.SelfQuestionRepository;
 import com.qubaopen.backend.repository.self.SelfRepository;
 import com.qubaopen.backend.repository.self.SelfResultOptionRepository;
 import com.qubaopen.backend.repository.self.SelfResultRepository;
+import com.qubaopen.core.controller.AbstractBaseController;
+import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.QuestionnaireType;
 import com.qubaopen.survey.entity.self.GraphicsType;
 import com.qubaopen.survey.entity.self.Self;
@@ -34,7 +36,7 @@ import com.qubaopen.survey.entity.self.SelfResultOption;
 
 @RestController
 @RequestMapping("backendSelf")
-public class SelfController {
+public class SelfController extends AbstractBaseController<Self, Long> {
 
 	private static final Logger logger = LoggerFactory.getLogger(SelfController.class);
 
@@ -64,6 +66,12 @@ public class SelfController {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Override
+	protected MyRepository<Self, Long> getRepository() {
+		return selfRepository;
+	}
+
 
 	@Transactional
 	@RequestMapping(value = "saveSelf", method = RequestMethod.POST)
@@ -185,4 +193,5 @@ public class SelfController {
 		return "{\"success\" : \"0\"}";
 
 	}
+
 }

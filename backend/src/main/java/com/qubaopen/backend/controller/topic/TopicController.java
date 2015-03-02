@@ -8,17 +8,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qubaopen.backend.repository.topic.DailyDiscoveryRepository;
 import com.qubaopen.backend.repository.topic.TopicRepository;
+import com.qubaopen.core.controller.AbstractBaseController;
+import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.topic.Topic;
 
 @RestController
 @RequestMapping("topic")
-public class TopicController {
+public class TopicController extends AbstractBaseController<Topic, Long> {
 	
 	@Autowired
 	private TopicRepository topicRepository;
-
+	
 	@Autowired
 	private DailyDiscoveryRepository dailyTaskRepository;
+	
+	@Override
+	protected MyRepository<Topic, Long> getRepository() {
+		return topicRepository;
+	}
+
 	
 	/**
 	 * @param id
@@ -29,10 +37,8 @@ public class TopicController {
 	 */
 	@RequestMapping(value = "generateTopic", method = RequestMethod.POST)
 	private Object generateTopic(@RequestParam(required = false) Long id,
-			@RequestParam(required = false) String name,
-			@RequestParam(required = false) String content
-			) {
-		
+			@RequestParam(required = false) String name, @RequestParam(required = false) String content) {
+
 		Topic topic = null;
 		if (id != null) {
 			topic = topicRepository.findOne(id);
@@ -43,10 +49,10 @@ public class TopicController {
 			topic.setName(name);
 		if (content != null)
 			topic.setContent(content);
-		
+
 		topicRepository.save(topic);
-		
+
 		return "{\"success\" : \"1\"}";
 	}
-	
+
 }

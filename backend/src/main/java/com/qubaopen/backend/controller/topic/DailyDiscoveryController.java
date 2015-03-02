@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qubaopen.backend.repository.self.SelfRepository;
 import com.qubaopen.backend.repository.topic.DailyDiscoveryRepository;
+import com.qubaopen.backend.repository.topic.UserFavoriteRepository;
 import com.qubaopen.backend.repository.topic.TopicRepository;
+import com.qubaopen.backend.vo.FavoriteVo;
 import com.qubaopen.survey.entity.self.Self;
 import com.qubaopen.survey.entity.topic.DailyDiscovery;
 import com.qubaopen.survey.entity.topic.Topic;
@@ -39,15 +41,18 @@ public class DailyDiscoveryController {
 	@Autowired
 	private SelfRepository selfRepository;
 	
+	@Autowired
+	private UserFavoriteRepository favoriteRepository;
+	
 	@RequestMapping(value = "retrieveTopic", method = RequestMethod.GET)
-	private Object retrieveTopic(@PageableDefault(page = 0, size = 20, sort = "createdDate", direction = Direction.DESC)
+	private Object retrieveTopic(@PageableDefault(page = 0, size = 20)
 			Pageable pageable,
 			@RequestParam(required = false) Boolean join) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		if (join != null && true == join) {
-			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc();
+			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
 			
 			for (DailyDiscovery dailyDiscovery : dailyDiscoveries) {
 				
@@ -56,18 +61,23 @@ public class DailyDiscoveryController {
 				map.put("name", dailyDiscovery.getTopic().getName());
 				map.put("content", dailyDiscovery.getTopic().getContent());
 				map.put("dailyTime", dailyDiscovery.getTime());
-				map.put("createdDate", dailyDiscovery.getTopic().getCreatedDate() != null ? dailyDiscovery.getTopic().getCreatedDate(): "");
+				Date time = null;
+				if (null != dailyDiscovery.getTopic().getCreatedDate()) {
+					DateTime sqlTime = dailyDiscovery.getTopic().getCreatedDate();
+					time = new Date(sqlTime.getMillis());
+				}
+				map.put("createdDate", time);
 				list.add(map);
-				
 			}
 		} else {
-			List<Topic> topics = topicRepository.findTopicOrderBycreatedDateDesc();
-			for (Topic topic : topics) {
+			List<FavoriteVo> topicVos = favoriteRepository.findTopicVos(pageable);
+			for (FavoriteVo vo : topicVos) {
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("id", topic.getId());
-				map.put("name", topic.getName());
-				map.put("content", topic.getContent());
-				map.put("createdDate", topic.getCreatedDate() != null ? topic.getCreatedDate(): "");
+				map.put("id", vo.getId());
+				map.put("name", vo.getName());
+				map.put("content", vo.getContent());
+				map.put("dailyTime", vo.getFavoriteCreateDate());
+				map.put("createdDate", vo.getCreateDate());
 				list.add(map);
 			}
 		}
@@ -83,14 +93,14 @@ public class DailyDiscoveryController {
 	 * 获取测评
 	 */
 	@RequestMapping(value = "retrieveSelf", method = RequestMethod.GET)
-	private Object retrieveSelf(@PageableDefault(page = 0, size = 20, sort = "createdDate", direction = Direction.DESC)
+	private Object retrieveSelf(@PageableDefault(page = 0, size = 20)
 			Pageable pageable,
 			@RequestParam(required = false) Boolean join) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		if (join != null && true == join) {
-			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc();
+			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
 			for (DailyDiscovery dailyDiscovery : dailyDiscoveries) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("id", dailyDiscovery.getSelf().getId());
@@ -101,14 +111,15 @@ public class DailyDiscoveryController {
 				list.add(map);
 			}
 		} else {
-			List<Self> selfs = selfRepository.findSelfOrderByCreatedDateDesc();
+			List<FavoriteVo> favoriteVos = favoriteRepository.findSelfVos(pageable);
 			
-			for (Self self : selfs) {
+			for (FavoriteVo favoriteVo : favoriteVos) {
 				Map<String, Object> map =  new HashMap<String, Object>();
-				map.put("id", self.getId());
-				map.put("name", self.getTitle());
-				map.put("content", self.getRemark());
-				map.put("createdDate", self.getCreatedDate() != null ? self.getCreatedDate(): "");
+				map.put("id", favoriteVo.getId());
+				map.put("name", favoriteVo.getName());
+				map.put("content", favoriteVo.getContent());
+				map.put("dailyTime", favoriteVo.getFavoriteCreateDate());
+				map.put("createdDate", favoriteVo.getCreateDate());
 				list.add(map);
 			}
 		}

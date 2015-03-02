@@ -10,5 +10,5 @@ import com.qubaopen.survey.entity.topic.Topic;
 public interface TopicRepository extends MyRepository<Topic, Long> {
 
 	@Query("from Topic t where t.id not in (select dd.topic.id from DailyDiscovery dd) order by t.createdDate desc")
-	List<Topic>	findTopicOrderBycreatedDateDesc();
+	List<Topic> findTopicOrderBycreatedDateDesc();
 }

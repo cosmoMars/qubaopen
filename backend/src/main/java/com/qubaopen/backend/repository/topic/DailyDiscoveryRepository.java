@@ -2,6 +2,7 @@ package com.qubaopen.backend.repository.topic;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
 import com.qubaopen.core.repository.MyRepository;
@@ -10,7 +11,7 @@ import com.qubaopen.survey.entity.topic.DailyDiscovery;
 public interface DailyDiscoveryRepository extends MyRepository<DailyDiscovery, Long> {
 
 	@Query("from DailyDiscovery dd order by dd.time asc")
-	List<DailyDiscovery> findDailyDiscoveryOrderByTimeAsc();
+	List<DailyDiscovery> findDailyDiscoveryOrderByTimeAsc(Pageable pageable);
 	
 	@Query("from DailyDiscovery dd order by dd.time desc")
 	List<DailyDiscovery> findDailyDiscoveryOrderByTimeDesc();

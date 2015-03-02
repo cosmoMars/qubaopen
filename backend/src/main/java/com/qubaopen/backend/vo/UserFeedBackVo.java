@@ -1,7 +1,6 @@
 package com.qubaopen.backend.vo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class UserFeedBackVo implements Serializable {
 

@@ -1,5 +1,7 @@
 package com.qubaopen.survey.entity.topic;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -31,7 +33,7 @@ public class Topic extends AbstractBaseEntity<Long> {
 	 * 图片url
 	 */
 	private String picUrl;
-
+	
 	public String getName() {
 		return name;
 	}

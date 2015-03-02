@@ -52,18 +52,20 @@ public class DailyDiscoveryController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		if (join != null && true == join) {
-			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
+//			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
 			
-			for (DailyDiscovery dailyDiscovery : dailyDiscoveries) {
+			List<Topic> topics = topicRepository.findTopicOrderBycreatedDateDesc();
+			
+			for (Topic topic : topics) {
 				
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("id", dailyDiscovery.getTopic().getId());
-				map.put("name", dailyDiscovery.getTopic().getName());
-				map.put("content", dailyDiscovery.getTopic().getContent());
-				map.put("dailyTime", dailyDiscovery.getTime());
+				map.put("id", topic.getId());
+				map.put("name", topic.getName());
+				map.put("content", topic.getContent());
+				map.put("dailyTime", "");
 				Date time = null;
-				if (null != dailyDiscovery.getTopic().getCreatedDate()) {
-					DateTime sqlTime = dailyDiscovery.getTopic().getCreatedDate();
+				if (null != topic.getCreatedDate()) {
+					DateTime sqlTime = topic.getCreatedDate();
 					time = new Date(sqlTime.getMillis());
 				}
 				map.put("createdDate", time);
@@ -100,14 +102,21 @@ public class DailyDiscoveryController {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		if (join != null && true == join) {
-			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
-			for (DailyDiscovery dailyDiscovery : dailyDiscoveries) {
+//			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
+			List<Self> selfs = selfRepository.findSelfOrderByCreatedDateDesc();
+			
+			for (Self self : selfs) {
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("id", dailyDiscovery.getSelf().getId());
-				map.put("name", dailyDiscovery.getSelf().getTitle());
-				map.put("content", dailyDiscovery.getSelf().getRemark());
-				map.put("dailyTime", dailyDiscovery.getTime());
-				map.put("createdDate", dailyDiscovery.getSelf().getCreatedDate() != null ? dailyDiscovery.getSelf().getCreatedDate(): "");
+				map.put("id", self.getId());
+				map.put("name", self.getTitle());
+				map.put("content", self.getRemark());
+				map.put("dailyTime", "");
+				Date time = null;
+				if (null != self.getCreatedDate()) {
+					DateTime sqlTime = self.getCreatedDate();
+					time = new Date(sqlTime.getMillis());
+				}
+				map.put("createdDate", time);
 				list.add(map);
 			}
 		} else {

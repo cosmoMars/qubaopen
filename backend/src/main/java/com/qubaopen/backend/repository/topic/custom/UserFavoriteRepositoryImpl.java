@@ -21,10 +21,10 @@ public class UserFavoriteRepositoryImpl implements UserFavoriteRepositoryCustom 
 	public List<FavoriteVo> findTopicVos(Pageable pageable) {
 
 		StringBuilder sql = new StringBuilder();
-		sql.append("select t.id topicId ,t.name, t.content,t.created_date topicCreateDate, u.created_date favoriteCreateDate ");
+		sql.append("select t.id topicId ,t.name, t.content,t.created_date topicCreateDate, dd.time ");
 		sql.append("from topic t ");
-		sql.append("left join user_favorite u on t.id = u.topic_id ");
-		sql.append("order by u.created_date asc, t.created_date desc ");
+		sql.append("left join daily_discovery dd on t.id = dd.topic_id ");
+		sql.append("order by dd.time asc, t.created_date desc ");
 
 		Query query = entityManager.createNativeQuery(sql.toString());
 
@@ -54,9 +54,9 @@ public class UserFavoriteRepositoryImpl implements UserFavoriteRepositoryCustom 
 		
 		StringBuilder sql = new StringBuilder();
 	
-		sql.append("select s.id, s.title, s.remark, s.created_date selfCreateDate, u.created_date favoriteCreateDate from self s ");
-		sql.append("left join user_favorite u on s.id = u.self_id ");
-		sql.append("order by u.created_date asc, s.created_date desc ");
+		sql.append("select s.id, s.title, s.remark, s.created_date selfCreateDate, dd.time from self s ");
+		sql.append("left join daily_discovery dd on s.id = dd.self_id ");
+		sql.append("order by dd.time asc, s.created_date desc ");
 		
 		Query query = entityManager.createNativeQuery(sql.toString());
 		

@@ -37,7 +37,7 @@ public class ConnectionTest {
 	// out.close();
 	// }
 
-	public static void main(String[] args) {
+	public void doMain(String[] args) {
 
 //		JSONObject json = new JSONObject();
 //		json.put("userName", "18021012486");

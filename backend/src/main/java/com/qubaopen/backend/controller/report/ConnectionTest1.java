@@ -3,14 +3,13 @@ package com.qubaopen.backend.controller.report;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 
 public class ConnectionTest1 {
 
-	public static void main(String[] args) {
+	public void doMain(String[] args) {
 
 		String loginUrl = "https://oauth.api.189.cn:443/emp/oauth2/v3/udblogin/26012302";
 		String dataUrl = "https://oauth.api.189.cn/emp/oauth2/v3/authorize?app_id=178348250000035560&app_secret=abd2d041cb8613e0fee922ac7d7dbdff&redirect_uri=http://115.28.176.74/189sms/auth.htm&response_type=token";

@@ -176,15 +176,15 @@ public class DailyDiscoveryController {
 				DailyDiscovery exist = dailyDiscoveryRepository.findByMaxTime();
 				Date date = new Date();
 				// 多一天
-				if (exist != null && DateUtils.isSameDay(exist.getTime(), date)) {
+				if (exist != null) {
 					Calendar c = Calendar.getInstance();
-					c.setTime(date);
+					c.setTime(exist.getTime());
 					c.add(Calendar.DATE, 1);
 					
 					dd.setTime(c.getTime());
 				}
 				// 设置当天
-				if (exist == null || (!DateUtils.isSameDay(exist.getTime(), date) && exist.getTime().getTime() < date.getTime())) {
+				if (exist == null) {
 					dd.setTime(date);
 				}
 			} else {

@@ -189,6 +189,10 @@ public class DailyDiscoveryController {
 				}
 			} else {
 				try {
+					DailyDiscovery exist = dailyDiscoveryRepository.findByTime(DateUtils.parseDate(time, "yyyy-MM-dd"));
+					if (exist != null) {
+						return  "该日期已经被使用";
+					}
 					dd.setTime(DateUtils.parseDate(time, "yyyy-MM-dd"));
 				} catch (ParseException e) {
 					e.printStackTrace();

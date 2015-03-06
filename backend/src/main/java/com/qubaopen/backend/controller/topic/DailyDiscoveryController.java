@@ -54,7 +54,7 @@ public class DailyDiscoveryController {
 		if (join != null && true == join) {
 //			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
 			
-			List<Topic> topics = topicRepository.findTopicOrderBycreatedDateDesc();
+			List<Topic> topics = topicRepository.findTopicOrderBycreatedDateDesc(pageable);
 			
 			for (Topic topic : topics) {
 				

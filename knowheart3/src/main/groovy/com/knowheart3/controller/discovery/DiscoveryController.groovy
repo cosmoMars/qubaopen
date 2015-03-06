@@ -56,7 +56,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	retrieveDiscoveryContent(@RequestParam(required = false) String time,
 		@ModelAttribute('currentUser') User user) {
 		
-		def exercise, number, exerciseCount, userExercise
+		def exercise, number, exerciseCount, userExercise, breakTime, mession = false
 		if (null == user.id) {
 			exercise = exerciseRepository.findRandomExercise()
 			number = 0
@@ -66,18 +66,23 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 				user_equal : user,
 				complete_isFalse : null
 			])
-			exercise = userExercise.exercise
-			number = userExercise.number as int
+            if (userExercise == null) {
+                exercise = exerciseRepository.findRandomExercise()
+                number = 0
+            } else {
+                exercise = userExercise.exercise
+                number = userExercise.number as int
+                breakTime = ((new Date()).getTime() - userExercise.time.getTime()) / 1000 / 60 / 60 / 24 as int
+                if (breakTime == 1) {
+                    userExercise.time = new Date()
+                    userExercise.completeCount += 1
+                    mession = true
+                } else if (breakTime > 1) {
+                    userExercise.completeCount = 0
+                }
+                userExerciseRepository.save(userExercise)
+            }
 			exerciseCount = exerciseInfoRepository.countByExercise(exercise)
-			
-			def uTime = userExercise.time
-			def breakTime = ((new Date()).getTime() - userExercise.time.getTime()) / 1000 / 60 / 60 / 24 as int
-			if (breakTime == 1) {
-				userExercise.time = new Date()
-				userExercise.completeCount += 1
-			} else if (breakTime > 1) {
-				userExercise.completeCount = 0
-			}
 		}
 		def dailyDiscovery
 		if (time != null) {
@@ -94,12 +99,16 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 			'exerciseNumber' : number,
 			'exerciseCount' : exerciseCount,
 			'exerciseComplete' : userExercise?.completeCount,
+            'messionComplete' : mession,
+            'exercisePic' : exercise.url,
 			'selfId' : dailyDiscovery?.self?.id,
 			'selfName' : dailyDiscovery?.self?.title,
 			'selfContent' : dailyDiscovery?.self?.remark,
+            'selfPic' : dailyDiscovery.self.picPath,
 			'topicId' : dailyDiscovery?.topic?.id,
 			'topicName' : dailyDiscovery?.topic?.name,
-			'topicContent' : dailyDiscovery?.topic?.content
+			'topicContent' : dailyDiscovery?.topic?.content,
+            'topicPic' : dailyDiscovery.topic.picUrl
 		]
 		
 	}

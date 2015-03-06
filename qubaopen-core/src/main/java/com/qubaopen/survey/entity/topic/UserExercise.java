@@ -47,14 +47,14 @@ public class UserExercise extends AbstractBaseEntity<Long> {
 	 * 连续天数
 	 */
 	private int completeCount;
-	
+
 	/**
 	 * 修改时间
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
-	
-	public User getUser() {
+
+    public User getUser() {
 		return user;
 	}
 

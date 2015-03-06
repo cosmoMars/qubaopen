@@ -1,5 +1,7 @@
-package com.knowheart3.controller.topic;
+package com.knowheart3.controller.topic
 
+import com.knowheart3.repository.topic.DailyDiscoveryRepository
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
@@ -25,6 +27,9 @@ public class TopicController extends AbstractBaseController<Topic, Long> {
 	
 	@Autowired
 	UserFavoriteRepository userFavoriteRepository
+
+    @Autowired
+    DailyDiscoveryRepository  dailyDiscoveryRepository
 	
 	@Override
 	MyRepository<Topic, Long> getRepository() {
@@ -41,10 +46,17 @@ public class TopicController extends AbstractBaseController<Topic, Long> {
 	 */
 	@RequestMapping(value = 'retrieveTopicContent', method = RequestMethod.POST)
 	retrieveTopicContent(@RequestParam(required = false) Long id,
+        @RequestParam(required = false) String time,
 		@ModelAttribute('currentUser') User user) {
 		
-		def favorite
-		def topic = topicRepository.findOne(id)
+		def favorite, topic
+
+        if (id == null) {
+            def dailyDiscovery = dailyDiscoveryRepository.findByTime(DateUtils.parseDate(time, 'yyyy-MM-dd'))
+            topic = dailyDiscovery.topic
+        } else {
+            topic = topicRepository.findOne(id)
+        }
 		if (null != user.id) {
 			favorite = userFavoriteRepository.findOneByFilters([
 				user_equal : user,

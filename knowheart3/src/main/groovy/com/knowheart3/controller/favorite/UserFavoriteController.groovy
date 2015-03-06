@@ -44,17 +44,31 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 	@RequestMapping(value = 'retrieveFavoriteList', method = RequestMethod.GET)
 	retrieveFavoriteList(@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable,
+        @RequestParam(required = false) String type,
 		@ModelAttribute('currentUser') User user) {
 		
 		if (null == user.id) {
 			return '请先注册'
 		}
-		
-		def favorites = userFavoriteRepository.findAll(
-			[
-				user_equal : user
-			], pageable
-		)
+
+        def favorites
+        // 0 自测， 1 专题
+        if ('0' == type) {
+            favorites = userFavoriteRepository.findAll(
+                [
+                    user_equal : user,
+                    topic_isNull : null
+                ], pageable
+            )
+        } else {
+            favorites = userFavoriteRepository.findAll(
+                [
+                    user_equal : user,
+                    self_isNull : null
+                ], pageable
+            )
+        }
+
 		
 		def list = []
 		favorites.each {

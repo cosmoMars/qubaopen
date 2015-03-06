@@ -59,7 +59,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 		def exercise, number, exerciseCount, userExercise, breakTime, mession = false
 		if (null == user.id) {
 			exercise = exerciseRepository.findRandomExercise()
-			number = 0
+			number = 1
 			exerciseCount = exerciseInfoRepository.countByExercise(exercise)
 		} else {
 			userExercise = userExerciseRepository.findOneByFilters([
@@ -68,12 +68,12 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 			])
             if (userExercise == null) {
                 exercise = exerciseRepository.findRandomExercise()
-                number = 0
+                number = 1
             } else {
                 exercise = userExercise.exercise
                 number = userExercise.number as int
                 breakTime = ((new Date()).getTime() - userExercise.time.getTime()) / 1000 / 60 / 60 / 24 as int
-                if (breakTime == 1) {
+                if (breakTime <= 1) {
                     userExercise.time = new Date()
                     userExercise.completeCount += 1
                     mession = true

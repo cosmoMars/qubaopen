@@ -103,7 +103,7 @@ public class DailyDiscoveryController {
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		if (join != null && true == join) {
 //			List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeAsc(pageable);
-			List<Self> selfs = selfRepository.findSelfOrderByCreatedDateDesc();
+			List<Self> selfs = selfRepository.findSelfOrderByCreatedDateDesc(pageable);
 			
 			for (Self self : selfs) {
 				Map<String, Object> map = new HashMap<String, Object>();

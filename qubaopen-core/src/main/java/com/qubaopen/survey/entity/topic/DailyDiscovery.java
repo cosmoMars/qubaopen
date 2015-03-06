@@ -2,6 +2,7 @@ package com.qubaopen.survey.entity.topic;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -28,6 +29,7 @@ public class DailyDiscovery extends AbstractBaseEntity<Long> {
 	 * 日期
 	 */
 	@Temporal(TemporalType.DATE)
+	@Column(unique = true)
 	private Date time;
 
 	/**

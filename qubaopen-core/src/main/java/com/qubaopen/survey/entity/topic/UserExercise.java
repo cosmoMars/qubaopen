@@ -1,9 +1,13 @@
 package com.qubaopen.survey.entity.topic;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.envers.Audited;
 
@@ -38,7 +42,18 @@ public class UserExercise extends AbstractBaseEntity<Long> {
 	 * 是否已完成
 	 */
 	private boolean complete;
-
+	
+	/**
+	 * 连续天数
+	 */
+	private int completeCount;
+	
+	/**
+	 * 修改时间
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date time;
+	
 	public User getUser() {
 		return user;
 	}
@@ -69,6 +84,22 @@ public class UserExercise extends AbstractBaseEntity<Long> {
 
 	public void setComplete(boolean complete) {
 		this.complete = complete;
+	}
+
+	public int getCompleteCount() {
+		return completeCount;
+	}
+
+	public void setCompleteCount(int completeCount) {
+		this.completeCount = completeCount;
+	}
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
 	}
 
 }

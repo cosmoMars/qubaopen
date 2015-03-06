@@ -1,7 +1,5 @@
 package com.qubaopen.survey.entity.topic;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 

@@ -7,6 +7,7 @@ import javax.servlet.Filter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 @ComponentScan
 @EnableAutoConfiguration
 @EnableTransactionManagement(proxyTargetClass = true)
+@EntityScan("com.qubaopen.survey.entity")
 public final class Application {
 
 	@Bean

@@ -9,7 +9,7 @@ import com.qubaopen.core.repository.MyRepositoryFactoryBean;
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(
-	basePackages = "com.repository.**.repository",
+	basePackages = "com.knowheart3.**.repository",
 	repositoryFactoryBeanClass = MyRepositoryFactoryBean.class
 )
 public class RepoConfiguration {

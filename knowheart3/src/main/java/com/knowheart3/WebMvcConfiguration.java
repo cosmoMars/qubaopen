@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.knowheart3.interceptor.LoginInterceptor;
 
 @Configuration
 public class WebMvcConfiguration {
@@ -49,7 +50,7 @@ public class WebMvcConfiguration {
 
 			@Override
 			public void addInterceptors(InterceptorRegistry registry) {
-//				registry.addInterceptor(new LoginInterceptor());
+				registry.addInterceptor(new LoginInterceptor());
 			}
 
 		};

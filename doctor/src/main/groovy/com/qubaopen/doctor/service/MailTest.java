@@ -17,7 +17,7 @@ import javax.mail.internet.MimeUtility;
 public class MailTest {
 	
 	//javax mail 测试
-	public static void main(String[] args) throws AddressException, MessagingException, UnsupportedEncodingException {
+	public void domain(String[] args) throws AddressException, MessagingException, UnsupportedEncodingException {
 		Properties properties = new Properties();
 		properties.setProperty("mail.transport.protocol", "smtp");//发送邮件协议
 		properties.setProperty("mail.smtp.auth", "true");//需要验证

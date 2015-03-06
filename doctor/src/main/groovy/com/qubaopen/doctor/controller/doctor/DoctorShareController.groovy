@@ -51,11 +51,11 @@ public class DoctorShareController extends AbstractBaseController<DoctorShare, L
 		
 		logger.trace('-- 医师分享 --')
 		
-		def di = doctorInfoRepository.findOne(doctor.id)
-		
-		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
-			return '{"success" : "0", "message" : "err916"}'
-		}
+//		def di = doctorInfoRepository.findOne(doctor.id)
+//		
+//		if (di.loginStatus != DoctorInfo.LoginStatus.Audited) {
+//			return '{"success" : "0", "message" : "err916"}'
+//		}
 		if (target == null) {
 			return '{"success" : "0", "message" : "err500"}'
 		}

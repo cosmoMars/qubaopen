@@ -16,7 +16,7 @@ public interface DailyDiscoveryRepository extends MyRepository<DailyDiscovery, L
 	List<DailyDiscovery> findDailyDiscoveryOrderByTimeAsc(Pageable pageable);
 	
 	@Query("from DailyDiscovery dd order by dd.time desc")
-	List<DailyDiscovery> findDailyDiscoveryOrderByTimeDesc();
+	List<DailyDiscovery> findDailyDiscoveryOrderByTimeDesc(Pageable pageable);
 	
 	@Query("from DailyDiscovery dd where dd.time = (select max(d.time) from DailyDiscovery d)")
 	DailyDiscovery findByMaxTime();

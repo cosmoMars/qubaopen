@@ -208,13 +208,13 @@ public class DailyDiscoveryController {
 	 * @return
 	 */
 	@RequestMapping(value = "retrieveDailyDiscoverys", method = RequestMethod.GET)
-	private Object retrieveDailyDiscoverys() {
+	private Object retrieveDailyDiscoverys(@PageableDefault(size = 20, page =  0) Pageable pageable) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		
-		List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeDesc();
+		List<DailyDiscovery> dailyDiscoveries = dailyDiscoveryRepository.findDailyDiscoveryOrderByTimeDesc(pageable);
 		
 		for (DailyDiscovery dailyDiscovery : dailyDiscoveries) {
 			

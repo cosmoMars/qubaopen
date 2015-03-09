@@ -1,8 +1,5 @@
 package com.knowheart3.controller.favorite;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
@@ -48,7 +45,7 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 		@ModelAttribute('currentUser') User user) {
 		
 		if (null == user.id) {
-			return '请先注册'
+			return '{"success" : "0", "message" : "err000"}'
 		}
 
         def favorites
@@ -69,7 +66,6 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
             )
         }
 
-		
 		def list = []
 		favorites.each {
 			if (it.self) {
@@ -77,12 +73,14 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 					'favoriteId' : it.id,
 					'selfId' : it?.self?.id,
 					'selfName' : it?.self?.title,
+                    'more' :  favorites.hasNext()
 				]
 			} else if (it.topic) {
 				list << [
 					'favoriteId' : it.id,
 					'topicId' : it?.topic?.id,
-					'topicName' : it?.topic?.name
+					'topicName' : it?.topic?.name,
+                    'more' : favorites.hasNext()
 				]
 			}
 		}
@@ -105,7 +103,7 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 		@ModelAttribute('currentUser') User user) {
 		
 		if (user.id == null) {
-			return '请先注册'
+			return '{"success" : "0", "message" : "err000"}'
 		}
 		
 		def favorite

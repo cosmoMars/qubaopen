@@ -82,7 +82,7 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
 		@ModelAttribute('currentUser') User user) {
 		
 		if (null == user.id) {
-			return '请先注册'
+			return '{"success" : "0", "message" : "err000"}'
 		}
 		def eInfo = exerciseInfoRepository.findOne(id),
 			infoSize = exerciseInfoRepository.countByExercise(eInfo.exercise)

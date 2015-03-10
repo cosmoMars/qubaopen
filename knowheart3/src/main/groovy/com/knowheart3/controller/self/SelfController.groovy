@@ -9,15 +9,8 @@ import com.knowheart3.repository.user.UserInfoRepository
 import com.knowheart3.service.self.SelfService
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.controller.FileUtils
 import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.repository.interest.InterestUserQuestionnaireRepository
-import com.qubaopen.survey.repository.self.SelfGroupRepository
-import com.qubaopen.survey.repository.self.SelfRepository
-import com.qubaopen.survey.repository.self.SelfUserQuestionnaireRepository
-import com.qubaopen.survey.repository.user.UserInfoRepository
-import com.qubaopen.survey.service.self.SelfService
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.tomcat.util.http.fileupload.FileUtils

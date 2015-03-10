@@ -16,7 +16,7 @@ import com.knowheart3.repository.self.SelfGroupRepository
 import com.knowheart3.repository.self.SelfRepository
 import com.knowheart3.repository.self.SelfResultOptionRepository
 import com.knowheart3.repository.self.SelfUserQuestionnaireRepository
-import com.knowheart3.repository.user.UserMoodRecordRepository;
+import com.knowheart3.repository.user.UserMoodRecordRepository
 import com.knowheart3.service.user.UserIDCardBindService
 import com.qubaopen.survey.entity.mindmap.MapCoefficient
 import com.qubaopen.survey.entity.mindmap.MapRecord

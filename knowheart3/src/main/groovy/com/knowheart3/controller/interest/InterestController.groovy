@@ -1,5 +1,17 @@
 package com.knowheart3.controller.interest
 
+import javax.servlet.http.HttpServletRequest
+
+import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+
+import com.knowheart3.controller.FileUtils
 import com.knowheart3.repository.interest.InterestRepository
 import com.knowheart3.repository.interest.InterestUserQuestionnaireRepository
 import com.knowheart3.repository.self.SelfUserQuestionnaireRepository
@@ -9,17 +21,6 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.interest.Interest
 import com.qubaopen.survey.entity.user.User
-import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.tomcat.util.http.fileupload.FileUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort.Direction
-import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-
-import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping('interests')
@@ -166,9 +167,6 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 	uploadPic(@RequestParam long interestId, @RequestParam(required = false) MultipartFile pic, HttpServletRequest request) {
 
 		logger.trace(' -- 上传兴趣问卷图片 -- ')
-        if (null == user.id) {
-            return '{"success" : "0", "message" : "err000"}'
-        }
 		
 		def interest = interestRepository.findOne(interestId)
 
@@ -177,7 +175,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 			def filename = "i_${interestId}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
 				interestPath = "${request.getServletContext().getRealPath('/')}pic/$filename"
 
-			fileUtils.saveFile(pic.bytes, interestPath)
+            fileUtils.saveFile(pic.bytes, interestPath)
 
 			interest.picPath = "/pic/$filename"
 			interestRepository.save(interest)

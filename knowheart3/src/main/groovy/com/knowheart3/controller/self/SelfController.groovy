@@ -1,5 +1,6 @@
 package com.knowheart3.controller.self
 
+import com.knowheart3.controller.FileUtils
 import com.knowheart3.repository.favorite.UserFavoriteRepository
 import com.knowheart3.repository.interest.InterestUserQuestionnaireRepository
 import com.knowheart3.repository.self.SelfGroupRepository
@@ -13,7 +14,6 @@ import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.tomcat.util.http.fileupload.FileUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile

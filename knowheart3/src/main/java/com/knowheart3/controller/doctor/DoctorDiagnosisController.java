@@ -47,6 +47,12 @@ public class DoctorDiagnosisController extends AbstractBaseController<DoctorDiag
 			@ModelAttribute("currentUser") User user) {
 		
 		logger.trace("-- 获取医师诊断 --");
+        Map<String, Object> result = new HashMap<String, Object>();
+        if (null == user.getId()) {
+            result.put("success", "0");
+            result.put("message", "err000");
+            return result;
+        }
 		
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		List<DoctorDiagnosis> doctorDiagnosis = doctorDiagnosisRepository.findByBookingIdOrderByTimeDesc(bookingId);
@@ -58,7 +64,7 @@ public class DoctorDiagnosisController extends AbstractBaseController<DoctorDiag
 			map.put("time", dd.getTime());
 			list.add(map);
 		}
-		Map<String, Object> result = new HashMap<String, Object>();
+
 		result.put("success", "1");
 		result.put("data", list);
 		return result;

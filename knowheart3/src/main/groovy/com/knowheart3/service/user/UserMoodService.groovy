@@ -203,8 +203,9 @@ class UserMoodService {
         def nowMonth
         if (month == null) {
             nowMonth = new Date()
+        } else {
+            nowMonth = DateUtils.parseDate(month, 'yyyy-MM')
         }
-        nowMonth = DateUtils.parseDate(month, 'yyyy-MM')
         def moods = userMoodRepository.findMonthMood(nowMonth, user)
 
         def dayMoods = [:]
@@ -250,9 +251,8 @@ class UserMoodService {
                 def ms = dayMoods.get(todayTime)
                 ms.each {
                     dayData << [
-                            'moodDay' : it?.lastTime,
-                            'haveMood' : true,
-                            'id' : it?.id
+                        'moodDay' : it?.lastTime,
+                        'haveMood' : true
                     ]
                 }
             }
@@ -275,9 +275,9 @@ class UserMoodService {
             }
 
             monthData << [
-                    'day' : todayTime,
-                    'dayData' : dayData,
-                    'status' : status
+                'day' : todayTime,
+                'dayData' : dayData,
+                'status' : status
             ]
         }
 

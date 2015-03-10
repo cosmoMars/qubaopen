@@ -55,6 +55,10 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	@RequestMapping(value = 'retrieveDiscoveryContent', method = RequestMethod.GET)
 	retrieveDiscoveryContent(@RequestParam(required = false) String time,
 		@ModelAttribute('currentUser') User user) {
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		def exercise, number, exerciseCount, userExercise, breakTime, mession = false
 		if (null == user.id) {
@@ -108,15 +112,15 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 			'exerciseCount' : exerciseCount,
 			'exerciseComplete' : userExercise?.completeCount,
             'messionComplete' : mession,
-            'exercisePic' : exercise.url,
+            'exercisePic' : exercise?.url,
 			'selfId' : dailyDiscovery?.self?.id,
 			'selfName' : dailyDiscovery?.self?.title,
 			'selfContent' : dailyDiscovery?.self?.remark,
-            'selfPic' : dailyDiscovery.self.picPath,
+            'selfPic' : dailyDiscovery?.self?.picPath,
 			'topicId' : dailyDiscovery?.topic?.id,
 			'topicName' : dailyDiscovery?.topic?.name,
 			'topicContent' : dailyDiscovery?.topic?.content,
-            'topicPic' : dailyDiscovery.topic.picUrl
+            'topicPic' : dailyDiscovery?.topic?.picUrl
 		]
 		
 	}

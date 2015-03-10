@@ -43,6 +43,9 @@ public class UserUDIDController extends AbstractBaseController<UserUDID, Long> {
 	retrieveUserUDID(@ModelAttribute('currentUser') User user) {
 
 		logger.trace(" -- 获取用户UDID信息 -- ")
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 
 		userUDIDService.retrieveUserUDID(user.id)
 	}
@@ -73,8 +76,10 @@ public class UserUDIDController extends AbstractBaseController<UserUDID, Long> {
 	modifyUDID(@RequestParam(required = false) Boolean isPush,
 		@RequestParam(required = false) String startTime,
 		@RequestParam(required = false) String endTime,
-		@ModelAttribute('currentUser') User user
-		) {
+		@ModelAttribute('currentUser') User user) {
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 
 		def userUDID = userUDIDRepository.findOne(user.id)
 		if (isPush != null) {

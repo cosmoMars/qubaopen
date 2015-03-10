@@ -82,6 +82,9 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 	@RequestMapping(value = 'getMoodList', method = RequestMethod.POST)
 	getMoodList(@RequestParam int month,
 		@ModelAttribute('currentUser') User user) {
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		userMoodService.getUserMood(user,month);
 	}
 	
@@ -100,6 +103,9 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		@ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 添加心情 --'
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		def date = null
 		// 判断时间空否
@@ -136,6 +142,10 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		@ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 修改心情 --'
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		if (message == null) {
 			return '{"success" : "0", "message" : "没有填写心情"}'
@@ -161,6 +171,10 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 	retrieveMoodList(@RequestParam String month, @ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 获取每月用户心里列表 --'
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		def coefficient = mapCoefficientRepository.findOne(user.id)
 		
@@ -196,11 +210,44 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 		]
 	}
 
+    /**
+     *
+     * @param month
+     * @param user
+     * @return
+     * 获取每月心情概况
+     */
     @RequestMapping(value = 'retrieveMonthMoodList', method = RequestMethod.POST)
-    retrieveMonthMoodList(@RequestParam(required = false) String month, @ModelAttribute('currentUser') User user) {
+    retrieveMonthMood(@RequestParam(required = false) String month, @ModelAttribute('currentUser') User user) {
 
+        logger.trace '-- 获取每月心情概况 --'
 
-        logger.trace '-- 获取每月用户心里列表 --'
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
+
+        def coefficient = mapCoefficientRepository.findOne(user.id)
+
+        def result = userMoodService.retrieveMonthMood(month, user, coefficient)
+
+        [
+            'success' : '1',
+            'monthData' : result
+        ]
+    }
+
+    /**
+     * @param time
+     * @param user
+     * @return
+     * 获取当日心情详细
+     */
+    @RequestMapping(value = 'retrieveTimeMood', method = RequestMethod.POST)
+    retrieveTimeMood(@RequestParam(required = false) String time, @ModelAttribute('currentUser') User user) {
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 
         def coefficient = mapCoefficientRepository.findOne(user.id)
 
@@ -208,11 +255,15 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
         if (coefficient) {
             //计算 正负情感趋势 上升 下降
             def c = Calendar.getInstance()
-            def time = System.currentTimeMillis(),
-                timeBefore = time - 60 * 60 * 24 * 1000 * 2,
-                timeAfter = time + 60 * 60 * 24 * 1000 * 2
+            c.setTime(new Date())
+            c.set(Calendar.HOUR_OF_DAY, 12)
+            c.set(Calendar.MINUTE, 0)
+            c.set(Calendar.SECOND, 0)
+            def todayTime = c.getTime().getTime(),
+                timeBefore = todayTime - 60 * 60 * 24 * 1000 * 2,
+                timeAfter = todayTime + 60 * 60 * 24 * 1000 * 2
 
-            def resultToday = coefficient.mid1 + coefficient.mid2 * Math.cos(time * coefficient.mid4) + coefficient.mid3 * Math.sin(time * coefficient.mid4)
+            def resultToday = coefficient.mid1 + coefficient.mid2 * Math.cos(todayTime * coefficient.mid4) + coefficient.mid3 * Math.sin(todayTime * coefficient.mid4)
             def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
             def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
 
@@ -226,18 +277,6 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
                 moodContent = MapContent.lowTideTitle + MapContent.lowTideContent + moodContent + MapContent.lowTideMethod
             }
         }
-        def result = userMoodService.retrieveMonthMood(month, user, coefficient)
-
-        [
-                'success' : '1',
-                'moodContent' : moodContent,
-                'monthData' : result
-        ]
-    }
-
-    @RequestMapping(value = 'retrieveTimeMood', method = RequestMethod.POST)
-    retrieveTimeMood(@RequestParam(required = false) String time, @ModelAttribute('currentUser') User user) {
-
 
         def date = DateUtils.parseDate(time, 'yyyy-MM-dd')
 
@@ -246,15 +285,16 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
         def data = []
         moods.each {
             data << [
-                    'id' : it?.id,
-                    'moodDay' : it?.lastTime,
-                    'message' : it?.message,
-                    'moodType' : it?.moodType?.ordinal()
+                'id' : it?.id,
+                'moodDay' : it?.lastTime,
+                'message' : it?.message,
+                'moodType' : it?.moodType?.ordinal()
             ]
         }
         [
-                'success' : '1',
-                'data' : data
+            'success' : '1',
+            'data' : data,
+            'moodContent' : moodContent
         ]
 
     }

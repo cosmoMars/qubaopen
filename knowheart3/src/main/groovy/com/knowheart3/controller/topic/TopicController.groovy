@@ -48,6 +48,10 @@ public class TopicController extends AbstractBaseController<Topic, Long> {
 	retrieveTopicContent(@RequestParam(required = false) Long id,
         @RequestParam(required = false) String time,
 		@ModelAttribute('currentUser') User user) {
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		def favorite, topic
 

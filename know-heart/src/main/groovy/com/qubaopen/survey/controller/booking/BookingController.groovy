@@ -29,10 +29,7 @@ import com.qubaopen.survey.repository.booking.BookingTimeRepository
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
 
 import static com.qubaopen.survey.utils.ValidateUtil.*
-/**
- * @author mars
- *
- */
+
 /**
  * @author mars
  *

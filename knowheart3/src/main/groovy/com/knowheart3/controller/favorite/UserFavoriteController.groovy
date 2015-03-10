@@ -38,7 +38,7 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 	 * @return
 	 * 获取收藏列表
 	 */
-	@RequestMapping(value = 'retrieveFavoriteList', method = RequestMethod.GET)
+	@RequestMapping(value = 'retrieveFavoriteList', method = RequestMethod.POST)
 	retrieveFavoriteList(@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable,
         @RequestParam(required = false) String type,

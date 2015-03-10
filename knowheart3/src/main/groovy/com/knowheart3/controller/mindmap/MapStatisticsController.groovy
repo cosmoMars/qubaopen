@@ -46,6 +46,9 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 	newRetrieveMapStatistics(@RequestParam(required = false) Long typeId, @ModelAttribute('currentUser') User user) {
 
 		logger.trace(' -- 获取心理地图信息 -- ')
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 
 		mapStatisticsService.newRetrieveMapStatistics(user, typeId)
 	}
@@ -54,6 +57,9 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 	retrieveMapStatistics(@RequestParam(required = false) Long typeId, @ModelAttribute('currentUser') User user) {
 
 		logger.trace(' -- 获取心理地图信息 -- ')
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 
 		mapStatisticsService.retrieveMapStatistics(user, typeId)
 	}
@@ -68,6 +74,9 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 	retrieveSpecialMap(@ModelAttribute('currentUser') User user) {
 
 		logger.trace(' -- 获取心理地图信息 -- ')
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		mapStatisticsService.retrieveSpecialMap(user)
 	}
@@ -83,6 +92,9 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 		@ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 获取心情列表 --'
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 //		if (time != null && time.matches('/^\\d{4}\\-\\d{2}-\\d{2}\\s\\d{2}\\:\\d{2}$')) {
 //			

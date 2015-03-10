@@ -62,6 +62,10 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		@PageableDefault(page = 0, size = 20) Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 		logger.trace '-- 医师列表 --'
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		def list = [], doctorInfos, data = [], filters = [:]
 		if (ids) {
@@ -123,6 +127,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	retrieveDoctorDetail(@PathVariable long id, @ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 获取医师详细 --'
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
 		
 		def doctorInfo = doctorInfoRepository.findOne(id),
 			infoTime = doctorInfo.bookingTime,

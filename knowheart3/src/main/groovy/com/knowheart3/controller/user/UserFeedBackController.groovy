@@ -1,5 +1,7 @@
 package com.knowheart3.controller.user
 
+import com.knowheart3.service.CaptchaService
+
 import javax.validation.Valid
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,6 +29,9 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 
 	@Autowired
 	UserFeedBackRepository userFeedBackRepository
+
+    @Autowired
+    CaptchaService captchaService
 
 	@Override
 	protected MyRepository<UserFeedBack, Long> getRepository() {
@@ -127,4 +132,35 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 		'{"success" : "1"}'
 		
 	}
+
+    /**
+     *
+     * @param area
+     * @param content
+     * @param contactMethod
+     * @return
+     * 提交没有医师反馈
+     */
+    @RequestMapping(value = 'submitNoDoctor', method = RequestMethod.POST)
+    submitNoDoctor(@RequestParam(required = false) String area,
+        @RequestParam(required = false) String content,
+        @RequestParam(required = false) String contactMethod) {
+
+        def message,
+            feedback = new UserFeedBack()
+        if (null != area) {
+            feedback.title = area
+            message += (area + " ： ")
+        }
+        if (null != content) {
+            message += content
+            feedback.content = message
+        }
+        if (null != contactMethod) {
+            feedback.contactMethod = contactMethod
+        }
+        captchaService.sendTextMail(message, contactMethod)
+        userFeedBackRepository.save(feedback)
+        '{"success" : "1"}'
+    }
 }

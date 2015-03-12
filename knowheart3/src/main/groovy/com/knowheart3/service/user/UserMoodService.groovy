@@ -243,18 +243,12 @@ class UserMoodService {
 
         def monthData = []
         for(i in 1..day) {
-            def dayData = []
+            def haveMood = false
             if (i > 1)
                 c.add(Calendar.DATE, 1)
             def todayTime = DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
-            if (dayMoods.get(todayTime)) {
-                def ms = dayMoods.get(todayTime)
-                ms.each {
-                    dayData << [
-                        'moodDay' : it?.lastTime,
-                        'haveMood' : true
-                    ]
-                }
+            if (null != dayMoods.get(todayTime)) {
+                haveMood = true
             }
             def status = ''
             if (coefficient) {
@@ -276,7 +270,7 @@ class UserMoodService {
 
             monthData << [
                 'day' : todayTime,
-                'dayData' : dayData,
+                'haveMood' : haveMood,
                 'status' : status
             ]
         }

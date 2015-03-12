@@ -1,5 +1,7 @@
-package com.qubaopen.doctor.controller.hospital;
+package com.qubaopen.doctor.controller.hospital
 
+import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord
+import org.apache.commons.lang3.time.DateFormatUtils
 
 import static com.qubaopen.doctor.utils.ValidateUtil.*
 
@@ -16,11 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.SessionAttributes
+import org.springframework.web.multipart.MultipartFile
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository
-import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
+import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository
 import com.qubaopen.doctor.repository.hospital.HospitalLogRepository
 import com.qubaopen.doctor.repository.hospital.HospitalRepository
 import com.qubaopen.doctor.repository.url.UrlRepository
@@ -56,7 +59,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	
 	@Autowired
 	HospitalInfoRepository hospitalInfoRepository
-	
+
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
 		hospitalRepository
@@ -312,4 +315,67 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		'{"success" : "1"}'
 	}
 
+
+    @RequestMapping(value = 'uploadHospitalDoctor', method = RequestMethod.POST)
+    uploadHospitalDoctor(@ModelAttribute('currentHospital') Hospital hospital,
+            HttpServletRequest request) {
+
+        def hospitalInfo = hospitalInfoRepository.findOne(hospital.id)
+
+        def pNames = request.getParameterNames()
+        def records = [] as Set
+        if (hospitalInfo.hospitalDoctorRecords) {
+            records = hospitalInfo.hospitalDoctorRecords
+        }
+
+        def longTime = new Date().getTime()
+        while (pNames.hasMoreElements()) {
+            longTime += 1000
+            def now = new Date(longTime)
+            def name = pNames.nextElement() as String
+            if ('certificate' == name) {
+                def certificatePath = 'certificatePic',
+                    file = new File("${request.getServletContext().getRealPath('/')}$certificatePath")
+                if (!file.exists() && !file.isDirectory()) {
+                    file.mkdir()
+                }
+                def fileName = "${hospitalInfo.id}_${DateFormatUtils.format(now, 'yyyyMMdd-HHmmss')}.png",
+                    cerPath = "${request.getServletContext().getRealPath('/')}$certificatePath/$fileName"
+
+                def cerPic = pNames.nextElement() as MultipartFile
+                saveFile(cerPic.bytes, cerPath)
+                hospitalInfo.hospitalRecordPath = "/$certificatePath/$fileName"
+            } else {
+                def hospitalDoctorPath = 'hospitalDoctorPic',
+                    file = new File("${request.getServletContext().getRealPath('/')}$hospitalDoctorPath")
+                if (!file.exists() && !file.isDirectory()) {
+                    file.mkdir()
+                }
+                def fileName = "${hospitalInfo.id}_${DateFormatUtils.format(now, 'yyyyMMdd-HHmmss')}.png",
+                    hdPath = "${request.getServletContext().getRealPath('/')}$hospitalDoctorPath/$fileName"
+
+                def cerPic = pNames.nextElement() as MultipartFile
+                saveFile(cerPic.bytes, hdPath)
+
+                hospitalInfo.hospitalRecordPath = "/$hospitalDoctorPath/$fileName"
+
+                def hdRecord = new HospitalDoctorRecord(
+                    hospitalInfo : hospitalInfo,
+                    doctorRecordPath : hospitalDoctorPath
+                )
+                records.add(hdRecord)
+            }
+            if (records.size() > 0) {
+                hospitalInfo.hospitalDoctorRecords = records
+            }
+        }
+        hospitalInfoRepository.save(hospitalInfo)
+        '{"success" : "1"}'
+    }
+
+    def saveFile(byte[] bytes, String fileName) {
+        def fos = new FileOutputStream(fileName)
+        fos.write(bytes)
+        fos.close()
+    }
 }

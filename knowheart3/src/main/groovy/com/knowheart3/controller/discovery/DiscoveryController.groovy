@@ -55,20 +55,18 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	@RequestMapping(value = 'retrieveDiscoveryContent', method = RequestMethod.GET)
 	retrieveDiscoveryContent(@RequestParam(required = false) String time,
 		@ModelAttribute('currentUser') User user) {
-
-        if (null == user.id) {
-            return '{"success" : "0", "message" : "err000"}'
-        }
 		
-		def exercise, number, exerciseCount, userExercise, breakTime, mession = false
+		def exercise, number, exerciseCount, userExercise, breakTime, mession = false, isLogin = false
 		if (null == user.id) {
 			exercise = exerciseRepository.findRandomExercise()
 			number = 1
 		} else {
+            isLogin = true
 			userExercise = userExerciseRepository.findOneByFilters([
 				user_equal : user,
 				complete_isFalse : null
 			])
+
             if (userExercise == null) {
 
                 def existExercise = userExerciseRepository.findCompleteExerciseByUserAndTime(user, DateUtils.parseDate(time, 'yyyy-MM-dd'))
@@ -94,8 +92,8 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                 }
                 userExerciseRepository.save(userExercise)
             }
-			exerciseCount = exerciseInfoRepository.countByExercise(exercise)
 		}
+		exerciseCount = exerciseInfoRepository.countByExercise(exercise)
 		def dailyDiscovery
 		if (time != null) {
 			dailyDiscovery = dailyDiscoveryRepository.findByTime(DateUtils.parseDate(time, 'yyyy-MM-dd'))
@@ -120,7 +118,8 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 			'topicId' : dailyDiscovery?.topic?.id,
 			'topicName' : dailyDiscovery?.topic?.name,
 			'topicContent' : dailyDiscovery?.topic?.content,
-            'topicPic' : dailyDiscovery?.topic?.picUrl
+            'topicPic' : dailyDiscovery?.topic?.picUrl,
+            'isLogin' : isLogin
 		]
 		
 	}

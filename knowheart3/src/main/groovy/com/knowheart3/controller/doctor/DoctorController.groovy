@@ -63,10 +63,6 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		@ModelAttribute('currentUser') User user) {
 		logger.trace '-- 医师列表 --'
 
-        if (null == user.id) {
-            return '{"success" : "0", "message" : "err000"}'
-        }
-		
 		def list = [], doctorInfos, data = [], filters = [:]
 		if (ids) {
 			def strIds = ids.split(',')

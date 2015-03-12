@@ -64,10 +64,6 @@ public class SelfController extends AbstractBaseController<Self, Long> {
     retrieveSelfContent(@RequestParam(required = false) Long id,
         @ModelAttribute('currentUser') User user) {
 
-        if (null == user.id) {
-            return '{"success" : "0", "message" : "err000"}'
-        }
-
         def favorite
         def self = selfRepository.findOne(id)
         if (null != user.id) {

@@ -26,6 +26,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 //		System.out.println(request.getSession().getId() + "-------------------------------");systemVersions
 
 		System.out.println(request.getRequestURI() + "====================");
+
 		if (request.getRequestURI().contains("uDoctor") || request.getRequestURI().contains("dweb") || request.getRequestURI().contains("uHospital")
 				|| request.getRequestURI().contains("pic") || request.getRequestURI().contains("doctorDir") || request.getRequestURI().contains("recordDir") || request.getRequestURI().contains("systemVersions")) {
 			return true;

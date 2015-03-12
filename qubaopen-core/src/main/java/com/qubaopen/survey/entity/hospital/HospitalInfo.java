@@ -91,6 +91,11 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "hospitalInfo", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
 	private Set<HospitalDoctorRecord> hospitalDoctorRecords;
 
+    /**
+     * 诊所证书
+     */
+    private String hospitalRecordPath;
+
 	/**
 	 * 审计状态
 	 */
@@ -226,4 +231,11 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 		this.refusalReason = refusalReason;
 	}
 
+    public String getHospitalRecordPath() {
+        return hospitalRecordPath;
+    }
+
+    public void setHospitalRecordPath(String hospitalRecordPath) {
+        this.hospitalRecordPath = hospitalRecordPath;
+    }
 }

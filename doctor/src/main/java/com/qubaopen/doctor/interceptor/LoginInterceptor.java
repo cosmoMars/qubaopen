@@ -27,9 +27,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 //		System.out.println(request.getRequestURI() + "====================");
 //		System.out.println(request.getSession().getServletContext().getRealPath("/"));
-//		System.out.println(System.getProperty("user.dir"));
 //		String[] property = System.getProperty("user.dir").split("/");
-//		property[property.length - 1] =null;
 //		System.out.println(org.apache.commons.lang3.StringUtils.join(property,"/"));
 		if (request.getRequestURI().contains("uDoctor") || request.getRequestURI().contains("dweb") || request.getRequestURI().contains("uHospital")
 				|| request.getRequestURI().contains("pic") || request.getRequestURI().contains("doctorDir") || request.getRequestURI().contains("recordDir") || request.getRequestURI().contains("systemVersions")) {

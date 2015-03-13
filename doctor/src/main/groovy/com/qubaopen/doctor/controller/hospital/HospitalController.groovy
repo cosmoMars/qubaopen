@@ -338,9 +338,8 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 
         def longTime = new Date().getTime()
 		
-		System.getProperty('user.dir')
-		
-		def property = System.getProperty('user.dir').split('/')
+//		def property = System.getProperty('user.dir').split('/')
+        def property = request.getSession().getServletContext().getRealPath("/").split("/")
 		property[property.length - 1] = null;
 		def systemPath = StringUtils.join(property, '/')
 		fileMap.each { k, v ->

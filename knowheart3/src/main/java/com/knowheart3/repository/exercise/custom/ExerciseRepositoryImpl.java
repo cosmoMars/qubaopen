@@ -1,5 +1,7 @@
 package com.knowheart3.repository.exercise.custom;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -18,7 +20,13 @@ public class ExerciseRepositoryImpl implements ExerciseRepositoryCustom {
 		sql.append("from Exercise e order by rand()");
 		Query query = entityManager.createQuery(sql.toString())
 				.setMaxResults(1);
-		return (Exercise) query.getSingleResult();
+        @SuppressWarnings("unchecked")
+		List<Exercise> object = query.getResultList();
+        if (null != object && object.size() > 0) {
+            return object.get(0);
+        } else {
+            return null;
+        }
 	}
 
 }

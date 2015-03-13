@@ -93,7 +93,11 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                 userExerciseRepository.save(userExercise)
             }
 		}
-		exerciseCount = exerciseInfoRepository.countByExercise(exercise)
+        if (exercise) {
+		    exerciseCount = exerciseInfoRepository.countByExercise(exercise)
+        } else {
+            exerciseCount = 0
+        }
 		def dailyDiscovery
 		if (time != null) {
 			dailyDiscovery = dailyDiscoveryRepository.findByTime(DateUtils.parseDate(time, 'yyyy-MM-dd'))

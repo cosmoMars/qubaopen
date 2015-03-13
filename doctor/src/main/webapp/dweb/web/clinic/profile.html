@@ -70,6 +70,11 @@
             color:#4aaa4a;
         }
 
+        .doctor{
+            max-width: 200px;
+            max-height: 120px;
+        }
+
     </style>
 </head>
 <body>
@@ -131,10 +136,33 @@
         </div>
 
         <div class="form-group">
-            <label for="record" class="col-sm-2 control-label">资质证明</label>
+            <label for="certificate" class="col-sm-2 control-label">营业执照</label>
             <div class="col-sm-10">
-                <input type="file" class="form-control" id="record" name="record"
+                <input type="file" class="form-control" id="certificate" name="certificate"
                        placeholder="请上传">
+            </div>
+        </div>
+
+        <div class="form-group" data-num="1">
+            <label for="doctor1" class="col-sm-2 control-label">医师证书1</label>
+            <div class="col-sm-10">
+                <input type="file" class="form-control file" id="doctor1" name="doctor1"
+                       placeholder="请上传">
+            </div>
+        </div>
+
+        <div class="form-group" data-num="2">
+            <label for="doctor2" class="col-sm-2 control-label">医师证书2</label>
+            <div class="col-sm-10">
+                <input type="file" class="form-control file" id="doctor2" name="doctor2"
+                       placeholder="请上传">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="btn-addDoctor" class="col-sm-2 control-label"></label>
+            <div class="col-sm-10">
+                <button type="button" id="btn-addDoctor" class="btn btn-default"><span class="glyphicon glyphicon-plus-sign"></span><span>添加</span></button>
             </div>
         </div>
 
@@ -373,6 +401,32 @@
             calcAll();
         });
 
+
+
+        $("#btn-addDoctor").on("click",function(){
+            var oView=$(this).closest(".form-group");
+            var number= parseInt(oView.prev().attr("data-num"))+1;
+            var appendHTML='<div class="form-group" data-num="'+number+'">' +
+                    '<label for="doctor'+number+'" class="col-sm-2 control-label">医师证书'+number+'</label>' +
+                    '<div class="col-sm-10">' +
+                    '<input type="file" class="form-control file" id="doctor2" name="doctor'+number+'" placeholder="请上传">' +
+                    '</div></div>';
+
+            oView.before(appendHTML);
+
+        });
+
+        $(document).on("change",".file",function(e){
+            var _this=this;
+            var file = e.target.files||e.dataTransfer.files;
+            if(file){
+                var reader = new FileReader();
+                reader.onload=function(){
+                    $(_this).after("<img class='doctor' src='"+this.result+"'/>");
+                }
+                reader.readAsDataURL(file[0]);
+            }
+        });
 
 
         //开关是否显示所有日期, 切换到工作日期时，隐藏的日期会设置关闭

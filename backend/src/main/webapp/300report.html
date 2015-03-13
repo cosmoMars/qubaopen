@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title></title>
+    <style>
+        .gone{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" style="margin-top: 100px;">
+    <form class="form-inline">
+        <!--<div class="form-group">-->
+            <!--<label class="sr-only" for="name">Email address</label>-->
+            <!--<input type="text" class="form-control" id="" placeholder="输入召唤师名">-->
+        <!--</div>-->
+
+        <span>杂技团:</span>
+        <select id="circusName" class="form-control team">
+            <option></option>
+            <option>杂技团大哥風騎</option>
+            <option>杂技团团长同人</option>
+            <option>杂技团副团疾劍</option>
+            <option>杂技团乘客加洛</option>
+            <option>杂技团指导员零</option>
+            <option>杂技团萌宠cc</option>
+            <option value="杂技团锅王光年">光娘</option>
+            <option>杂技团导演卷毛</option>
+            <option>杂技团伙夫残星</option>
+            <option>杂技团小弟莲火</option>
+            <option>杂技团公主小豆</option>
+            <option>杂技团喵娘幼空</option>
+            <option>坂井さんと奏</option>
+            <option>野山野梨花</option>
+            <option>杂技团欧提梦二</option>
+            <option>杂技团少爷阳光</option>
+            <option>纯正休闲玩家</option>
+        </select>
+
+        <span>瞳:</span>
+        <select id="hitomiName" class="form-control team">
+            <option></option>
+            <option>博丽灵梦ペ</option>
+            <option>白纯里绪ペ</option>
+        </select>
+
+        <span>白:</span>
+        <select id="whiteName" class="form-control team">
+            <option></option>
+            <option>战场原荡漾し</option>
+            <option>一骑绝千尘し</option>
+            <option>神宫司语夜</option>
+            <option>狮子果敢</option>
+            <option>可啪の永琳</option>
+            <option>白誑</option>
+            <option>紫苑寺未有</option>
+            <option>月见里穹未</option>
+            <option>Hへsenna</option>
+            <option>月岛青葉</option>
+
+
+        </select>
+
+        <span>士道组:</span>
+        <select id="dateName" class="form-control team">
+            <option></option>
+            <option value="梅利奥达斯ぃ罪">士道</option>
+            <option>班ぃ罪</option>
+            <option>艾斯卡诺ぃ罪</option>
+            <option>黛安ぃ罪</option>
+            <option>刺客丶Emp</option>
+            <option>しろ白</option>
+            <option>静月玲</option>
+        </select>
+
+        <span>幻想乡:</span>
+        <select id="illusionName" class="form-control team">
+            <option></option>
+            <!--<option>幻想乡☆小五</option>-->
+            <option></option>
+        </select>
+
+        <br>
+
+        <span>黑:</span>
+        <select id="blackName" class="form-control team">
+            <option></option>
+            <option>黑劍</option>
+            <option>黑祈</option>
+            <option>黑涟</option>
+
+        </select>
+
+        <span>墨:</span>
+        <select id="inkName" class="form-control team">
+            <option></option>
+        </select>
+
+        <span>祈:</span>
+        <select id="prayName" class="form-control team">
+            <option></option>
+            <option>祈空</option>
+            <option>祈弦</option>
+            <option>祈琴</option>
+            <option>祈痕</option>
+            <option>祈墨</option>
+            <option>祈烬</option>
+
+
+        </select>
+
+        <span>伊幽:</span>
+        <select id="yyName" class="form-control team">
+            <option></option>
+            <option></option>
+        </select>
+
+
+        <span>威风学院:</span>
+        <select id="otherName" class="form-control team">
+            <option></option>
+            <option>★园神凜祢★</option>
+            <option>就干最骚的</option>
+            <option>杰尔夫う</option>
+            <option>子夕艾露露°</option>
+            <option>子夕羽濑姬°</option>
+            <option>你也想起舞吗</option>
+
+
+
+
+        </select>
+
+
+        <button id="check" type="button" class="btn btn-default">查询</button>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>名前</th>
+            <th>节操</th>
+            <th>竞技场</th>
+            <th>胜率</th>
+            <th>更新时间</th>
+        </tr>
+        </thead>
+        <tbody id="tableView">
+
+        </tbody>
+
+    </table>
+
+
+    <div id="webView1" class="gone" style="width: 1200px; height: 800px; overflow: auto;">
+        <iframe id="webView" src="" width="1200" height="1300" scrolling="no"></iframe>
+    </div>
+</div>
+
+
+
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/jsonp.jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+
+        $("body").append('');
+
+        $(".team").on("change",function(){
+            var name= $(this).val();
+
+            if(name==""){
+                return;
+            }
+
+            $("#webView").attr("src","http://300report.jumpw.com/list.html?name="+name);
+
+        });
+
+//        //点击刷新
+//        $("#btn-refresh").on("click",function(){
+//            var bChecked=$("#checkboxWarning").is(":checked");
+//
+//            getList(bChecked);
+//
+//        });
+
+        $("#webView").on("load",function(){
+
+            $("#webView1").scrollTop(480);
+            return false;
+
+
+        });
+        //点击刷新
+        $("#check").on("click",function(){
+
+
+        });
+
+        var aListCircus=["杂技团大哥風騎","杂技团团长同人","杂技团副团疾劍","杂技团乘客加洛",
+            "杂技团指导员零","杂技团萌宠cc","杂技团锅王光年","杂技团导演卷毛",
+            "杂技团伙夫残星","杂技团小弟莲火","杂技团公主小豆","杂技团喵娘幼空",
+            "坂井さんと奏","野山野梨花","杂技团欧提梦二","杂技团少爷阳光","纯正休闲玩家"];
+        var iList=0;
+
+        var date=new Date().getTime();
+
+        var aDateList=[];
+        getAllMember(aListCircus);
+        function getAllMember(){
+            getInfo(aListCircus[iList]);
+        }
+
+
+        /*获取专栏列表*/
+        function getInfo(name){
+
+//            $.jsonp({
+//                url: "http://300report.jumpw.com/api/getrole?name=纯正休闲玩家&jsonp=GetRole",
+//                context: document.body,
+//                complete: function(data) {
+//                    console.log(data)
+//                }
+//            });
+
+            $.ajax({
+                url:"http://300report.jumpw.com/api/getrole?name="+name+"&jsonp=GetRole",
+                type: "GET",
+                crossDomain:true,
+                dataType: "jsonp", jsonp: false, jsonpCallback: "GetRole" ,
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.Result;
+                    console.log(data);
+                    console.log(data.Role);
+//                    console.log(data.Rank);
+
+                    if (result == "OK") {
+//                        updateList(data.Role);
+                        addToList(data.Role);
+                        if(++iList<aListCircus.length){
+                            getInfo(aListCircus[iList]);
+                        }else{
+                            console.log(new Date().getTime()-date);
+                            updateList(aDateList);
+
+                        }
+                    }else if (result == 0) {
+
+                        alert("请求错误");
+                    }
+                }
+            });
+
+
+        }
+
+        function addToList(ddd){
+            aDateList.push(ddd);
+        }
+
+
+
+        function updateList(data){
+            console.log(data.length);
+
+            var oTableView=$("#tableView");
+            //oTableView.empty();
+            var appendHTML;
+            var rate;
+            for(var i=0;i<data.length;i++){
+                appendHTML="";
+                rate=(data[i].WinCount/data[i].MatchCount)*100;
+                appendHTML+=
+                        '<tr>' +
+                        '<td>Lv.'+data[i].RoleLevel+' '+data[i].RoleName+'</td>' +
+                        '<td>'+data[i].JumpValue+'</td>' +
+                        '<td>胜'+data[i].WinCount+' 负'+(data[i].MatchCount-data[i].WinCount) +'</td>' +
+                        '<td>'+rate.toFixed(2) +'%</td>' +
+                        '<td>'+data[i].UpdateTime+'</td>' +
+                        '</tr>';
+                oTableView.append(appendHTML);
+            }
+
+        }
+    });
+</script>
+</body>
+</html>

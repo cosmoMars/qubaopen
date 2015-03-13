@@ -123,6 +123,37 @@ function modifyInfo(){
         });
 
     });
+
+    $('#uploadPhotoForm').submit(function () {
+
+        var jsonSent={};
+
+
+        $(this).ajaxSubmit({
+            url: ContextUrl+"/uHospital/uploadHospitalDoctor",
+            type: "POST",
+            async:false,
+            dataType: "json",
+            data: jsonSent,
+            success: function (data, textStatus, jqXHR) {
+
+                var result = data.success;
+
+                console.log(data);
+
+                if (result == 1) {
+                    //setCookie("cookie1",JSON.stringify(data),new Date() );
+                    //self.location = "index.html";
+
+                }else if (result == 0) {
+                    if(data.message=="err000"){
+                        backToSignIn();
+                    }
+                }
+            }
+        });
+
+    });
 }
 
 

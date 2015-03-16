@@ -104,7 +104,8 @@ public class PingppResources {
         }
 
         chargeMap.put("channel", channel);
-        chargeMap.put("client_ip", "101.231.124.8");
+//        chargeMap.put("client_ip", "101.231.124.8");
+        chargeMap.put("client_ip", req.getRemoteAddr());
         //115.28.176.74
         Map<String, String> app = new HashMap<String, String>();
         app.put("id", "app_KavHuL08GO8O4Wbn");

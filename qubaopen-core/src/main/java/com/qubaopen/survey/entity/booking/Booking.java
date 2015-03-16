@@ -163,6 +163,8 @@ public class Booking extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private BookStatus doctorStatus;
 
+    private String chargeId;
+
 	public String getTradeNo() {
 		return tradeNo;
 	}
@@ -391,4 +393,11 @@ public class Booking extends AbstractBaseEntity<Long> {
 		this.lastBookingTime = lastBookingTime;
 	}
 
+    public String getChargeId() {
+        return chargeId;
+    }
+
+    public void setChargeId(String chargeId) {
+        this.chargeId = chargeId;
+    }
 }

@@ -1,32 +1,9 @@
 package com.qubaopen.doctor.controller.hospital
 
-import static com.qubaopen.doctor.utils.ValidateUtil.*
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpSession
-
-import org.apache.commons.codec.digest.DigestUtils
-import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.multipart.MultipartHttpServletRequest
-
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.hospital.HospitalCaptchaRepository
-import com.qubaopen.doctor.repository.hospital.HospitalDoctorRecordRepository;
-import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository
-import com.qubaopen.doctor.repository.hospital.HospitalLogRepository
-import com.qubaopen.doctor.repository.hospital.HospitalRepository
+import com.qubaopen.doctor.FileUtils
+import com.qubaopen.doctor.repository.hospital.*
 import com.qubaopen.doctor.repository.url.UrlRepository
 import com.qubaopen.doctor.service.CaptchaService
 import com.qubaopen.doctor.service.HospitalService
@@ -35,6 +12,20 @@ import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord
 import com.qubaopen.survey.entity.hospital.HospitalInfo
 import com.qubaopen.survey.entity.hospital.HospitalLog
 import com.qubaopen.survey.entity.user.UserLogType
+import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartHttpServletRequest
+
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpSession
+
+import static com.qubaopen.doctor.utils.ValidateUtil.validateEmail
+import static com.qubaopen.doctor.utils.ValidateUtil.validatePwd
 
 @RestController
 @RequestMapping('uHospital')
@@ -64,6 +55,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	
 	@Autowired
 	HospitalDoctorRecordRepository hospitalDoctorRecordRepository
+
+    @Autowired
+    FileUtils fileUtils
 
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
@@ -359,7 +353,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 					cerPath = "$systemPath$certificatePath/$fileName"
 //					cerPath = "${request.getServletContext().getRealPath('/')}$certificatePath/$fileName"
 				def cerPic = v
-				saveFile(cerPic.bytes, cerPath)
+                fileUtils.saveFile(cerPic.bytes, cerPath)
 				hospitalInfo.hospitalRecordPath = "/$certificatePath/$fileName"
 			} else {
 				def hospitalDoctorPath = 'hospitalDoctorPic',
@@ -371,7 +365,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 					hdPath = "$systemPath$hospitalDoctorPath/$fileName"
 		
 				def cerPic = v
-				saveFile(cerPic.bytes, hdPath)
+                fileUtils.saveFile(cerPic.bytes, hdPath)
 		
 				def docPic = "/$hospitalDoctorPath/$fileName"
 				def hdRecord = new HospitalDoctorRecord(
@@ -390,9 +384,4 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
         '{"success" : "1"}'
     }
 
-    def saveFile(byte[] bytes, String fileName) {
-        def fos = new FileOutputStream(fileName)
-        fos.write(bytes)
-        fos.close()
-    }
 }

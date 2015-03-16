@@ -101,7 +101,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			tradeNo = "${user.id}_H${hospitalId}_${System.currentTimeMillis()}"
 		}
 		
-		def sex, consultType, birthday
+		def sex
 		def booking = new Booking(
 			tradeNo : tradeNo,
 			user : user,

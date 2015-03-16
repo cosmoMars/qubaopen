@@ -25,4 +25,6 @@ public interface BookingRepository extends MyRepository<Booking, Long> {
 	Booking findMaxBooking(@Param("user") User user);
 	
 	Booking findByTradeNo(String tradeNo);
+
+    Booking findByChargeId(String chargeId);
 }

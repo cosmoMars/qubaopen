@@ -1,24 +1,17 @@
-package com.qubaopen.survey.controller.hospital;
+package com.knowheart3.controller.hospital
 
+import com.knowheart3.repository.booking.BookingRepository
+import com.knowheart3.repository.hospital.HospitalInfoRepository
+import com.knowheart3.repository.hospital.HospitalRepository
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.hospital.Hospital
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
-import com.qubaopen.core.controller.AbstractBaseController
-import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.hospital.Hospital
-import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.repository.hospital.HospitalInfoRepository;
-import com.qubaopen.survey.repository.hospital.HospitalRepository
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('hospital')
@@ -32,6 +25,10 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	
 	@Autowired
 	HospitalInfoRepository hospitalInfoRepository
+
+    @Autowired
+    BookingRepository bookingRepository
+
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
 		hospitalRepository
@@ -46,8 +43,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	 */
 	@RequestMapping(value = 'retrieveHospitalList', method = RequestMethod.POST)
 	retrieveHospitalList(@RequestParam(required = false) String ids,
-		@PageableDefault(page = 0, size = 0) Pageable pageable,
-		@ModelAttribute('currentUser') User user) {
+		@PageableDefault(page = 0, size = 20) Pageable pageable) {
 		
 		logger.trace '-- 诊所列表 --'
 		
@@ -75,7 +71,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	}
 		
 	@RequestMapping(value = 'retrieveHosptialDetial/{id}', method = RequestMethod.GET)
-	retrieveHosptialDetial(@PathVariable long id, @ModelAttribute('currentUser') User user) {
+	retrieveHosptialDetial(@PathVariable long id) {
 		
 		logger.trace '-- 获取诊所详细 --'
 		
@@ -93,8 +89,8 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 			'wordsConsult' : hospital?.wordsConsult,
 			'minCharge' : hospital?.minCharge,
 			'maxCharge' : hospital?.maxCharge,
-			'records' : hospital?.hospitalDoctorRecords.size()
+			'records' : hospital?.hospitalDoctorRecords?.size()
 		]
 	}
-	
+
 }

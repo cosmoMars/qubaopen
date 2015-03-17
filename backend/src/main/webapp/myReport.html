@@ -8,9 +8,35 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <title></title>
     <style>
+
+        *{
+            font-family: "微软雅黑", serif;
+        }
         .gone{
             display: none;
         }
+
+        .name:hover{
+            cursor: pointer;
+            color: #ce1813;
+        }
+
+        .hero{
+            width: 30px;
+            height: 30px;
+        }
+
+        .winColor{
+            color: #00ff00;
+        }
+        .loseColor{
+            color: #ff0000;
+        }
+        .runColor{
+            color: #ffa500;
+
+        }
+
     </style>
 </head>
 <body>
@@ -153,10 +179,24 @@
         </tr>
         </thead>
         <tbody id="tableView">
-
         </tbody>
-
     </table>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="matchView">
+        </tbody>
+    </table>
+
+    <div id="heroIconList"></div>
 
 
     <div id="webView1" class="gone" style="width: 1200px; height: 800px; overflow: auto;">
@@ -205,8 +245,13 @@
         //点击刷新
         $("#check").on("click",function(){
 
-
         });
+
+        $(document).on("click",".name",function(){
+
+            getMatch($(this).html(),0);
+        });
+
 
         var aListCircus=["杂技团大哥風騎","杂技团团长同人","杂技团副团疾劍","杂技团乘客加洛",
             "杂技团指导员零","杂技团萌宠cc","杂技团锅王光年","杂技团导演卷毛",
@@ -217,22 +262,15 @@
         var date=new Date().getTime();
 
         var aDateList=[];
-        getAllMember(aListCircus);
         function getAllMember(){
             getInfo(aListCircus[iList]);
         }
 
 
-        /*获取专栏列表*/
-        function getInfo(name){
+        var imgUrl='http://300report.jumpw.com/static/images/';
 
-//            $.jsonp({
-//                url: "http://300report.jumpw.com/api/getrole?name=纯正休闲玩家&jsonp=GetRole",
-//                context: document.body,
-//                complete: function(data) {
-//                    console.log(data)
-//                }
-//            });
+        /*获取战绩*/
+        function getInfo(name){
 
             $.ajax({
                 url:"http://300report.jumpw.com/api/getrole?name="+name+"&jsonp=GetRole",
@@ -262,16 +300,15 @@
                     }
                 }
             });
-
-
         }
 
+
+        //添加进列表中
         function addToList(ddd){
             aDateList.push(ddd);
         }
 
-
-
+        //统一显示
         function updateList(data){
             console.log(data.length);
 
@@ -284,7 +321,7 @@
                 rate=(data[i].WinCount/data[i].MatchCount)*100;
                 appendHTML+=
                         '<tr>' +
-                        '<td>Lv.'+data[i].RoleLevel+' '+data[i].RoleName+'</td>' +
+                        '<td><span>Lv.'+data[i].RoleLevel+'</span> <span class="name">'+data[i].RoleName+'</span></td>' +
                         '<td>'+data[i].JumpValue+'</td>' +
                         '<td>胜'+data[i].WinCount+' 负'+(data[i].MatchCount-data[i].WinCount) +'</td>' +
                         '<td>'+rate.toFixed(2) +'%</td>' +
@@ -292,8 +329,108 @@
                         '</tr>';
                 oTableView.append(appendHTML);
             }
+        }
+
+
+        //获取某人的战绩
+        function getMatch(name,page){
+            var p=0;
+            if(page){
+                p=page;
+            }
+            $.ajax({
+                url:"http://300report.jumpw.com/api/getlist?name="+name+"&index="+p+"&jsonp=GetList",
+                type: "GET",
+                crossDomain:true,
+                dataType: "jsonp", jsonp: false, jsonpCallback: "GetList" ,
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.Result;
+                    console.log(data);
+                    console.log(data.Role);
+
+                    if (result == "OK") {
+//
+                        updateMatch(data.List);
+
+                    }else if (result == 0) {
+
+                    }
+                }
+            });
+        }
+
+        function updateMatch(data){
+            var oTableView=$("#matchView");
+            oTableView.empty();
+            var appendHTML;
+            var result=["","胜利","败北","逃跑"];
+            var resultClass=["","winColor","loseColor","runColor"];
+            var type=["","竞技场","战场"];
+            for(var i=0;i<data.length;i++){
+                appendHTML="";
+                appendHTML+=
+                        '<tr>' +
+                        '<td>'+type[data[i].MatchType]+'</td>' +
+                        '<td class="'+resultClass[data[i].Result]+'">'+result[data[i].Result]+'</td>' +
+                        '<td><img class="hero" src="'+(imgUrl+data[i].Hero.IconFile)+'"/><span>Lv.'+data[i].HeroLevel+'</span> <span>'+data[i].Hero.Name+'</span></td>' +
+                        '<td></td>' +
+                        '<td>'+data[i].MatchDate+'</td>' +
+                        '</tr>';
+                oTableView.append(appendHTML);
+            }
+        }
+
+
+
+        function showAllHeroIcon(){
+
+            var view=$("#heroIconList");
+
+            var s;
+            for(var i=0;i<=200;i++){
+                s=i+10000+"";
+                s= s.substring(1,5);
+
+                view.append('<img class="hero" src="'+(imgUrl+"herohead/chara_"+s+".png")+'"/>');
+            }
 
         }
+
+
+        getAllMember(aListCircus);
+//        showAllHeroIcon();
+//        test();
+
+        function test(){
+            //268725594 葱瞳id    公主 268725594
+
+//
+//                    http://300report.jumpw.com/api/getlist?name=纯正休闲玩家&jsonp=GetList
+//                            h
+//                                    http://300report.jumpw.com/api/getrank?type=0&jsonp=GetRank
+            $.ajax({
+//                url:"http://300report.jumpw.com/api/getrole?name=杂技团公主小豆&jsonp=GetRole",
+//                url:"http://300report.jumpw.com/api/getlist?name=杂技团公主小豆&jsonp=GetList",
+                url:"http://300report.jumpw.com/api/getmatch?id=18041410&jsonp=GetMatc",
+                type: "GET",
+                crossDomain:true,
+                dataType: "jsonp", jsonp: false, jsonpCallback: "GetMatc" ,
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.Result;
+                    console.log(data);
+                    console.log(data.Role);
+
+                    if (result == "OK") {
+//
+                    }else if (result == 0) {
+
+                    }
+                }
+            });
+        }
+
     });
 </script>
 </body>

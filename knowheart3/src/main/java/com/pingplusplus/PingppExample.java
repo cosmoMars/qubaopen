@@ -12,11 +12,11 @@ public class PingppExample {
 
     private String chargeID;
 
-    public static void main(String[] args) {
-        Pingpp.apiKey = "app_KavHuL08GO8O4Wbn";
-        PingppExample example = new PingppExample();
-        example.charge();
-    }
+//    public static void main(String[] args) {
+//        Pingpp.apiKey = "app_KavHuL08GO8O4Wbn";
+//        PingppExample example = new PingppExample();
+//        example.charge();
+//    }
 
     public void charge() {
         Map<String, Object> chargeMap = new HashMap<String, Object>();

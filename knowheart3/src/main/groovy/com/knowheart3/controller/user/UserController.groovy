@@ -1,45 +1,28 @@
 package com.knowheart3.controller.user
 
-import static com.knowheart3.utils.ValidateUtil.*
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpSession
-
+import com.knowheart3.repository.user.*
+import com.knowheart3.service.SmsService
+import com.knowheart3.service.user.UserService
+import com.knowheart3.utils.DateCommons
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.user.*
+import com.qubaopen.survey.entity.user.User.ThirdType
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
-import com.knowheart3.repository.user.UserGoldRepository
-import com.knowheart3.repository.user.UserInfoRepository
-import com.knowheart3.repository.user.UserLogRepository
-import com.knowheart3.repository.user.UserReceiveAddressRepository
-import com.knowheart3.repository.user.UserRepository
-import com.knowheart3.repository.user.UserThirdRepository
-import com.knowheart3.repository.user.UserUDIDRepository
-import com.knowheart3.service.SmsService
-import com.knowheart3.service.user.UserService
-import com.qubaopen.core.controller.AbstractBaseController
-import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.entity.user.UserGold
-import com.qubaopen.survey.entity.user.UserInfo
-import com.qubaopen.survey.entity.user.UserLog
-import com.qubaopen.survey.entity.user.UserLogType
-import com.qubaopen.survey.entity.user.UserThird
-import com.qubaopen.survey.entity.user.UserUDID
-import com.qubaopen.survey.entity.user.User.ThirdType
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpSession
+
+import static com.knowheart3.utils.ValidateUtil.validatePhone
+import static com.knowheart3.utils.ValidateUtil.validatePwd
 
 /**
  * @author mars 用户表
@@ -414,5 +397,5 @@ class UserController extends AbstractBaseController<User, Long> {
 		
 		'{"success" : "1"}'
 	}
-	
+
 }

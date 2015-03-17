@@ -1,4 +1,9 @@
-package com.qubaopen.doctor.controller.doctor;
+package com.qubaopen.doctor.controller.doctor
+
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
+import com.qubaopen.doctor.utils.UploadUtils
+import com.qubaopen.survey.entity.doctor.DoctorInfo
+import org.joda.time.DateTime;
 
 import javax.servlet.http.HttpServletRequest
 
@@ -27,6 +32,12 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 
 	@Autowired
 	DoctorRecordRepository doctorRecordRepository
+
+    @Autowired
+    DoctorInfoRepository doctorInfoRepository
+
+    @Autowired
+    UploadUtils uploadUtils
 	
 	@Override
 	MyRepository<DoctorRecord, Long> getRepository() {
@@ -42,6 +53,10 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 	retrieveDoctorRecord(@ModelAttribute('currentDoctor') Doctor doctor) {
 		
 		def dr = doctorRecordRepository.findOne(doctor.id)
+        def recUrl
+        if (dr) {
+            recUrl = uploadUtils.retrievePriavteUrl(dr.recordPath)
+        }
 		[
 			'success' : '1',
 			'educationalStart' : dr?.educationalStart,
@@ -64,7 +79,7 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 			'selfEnd' : dr?.selfEnd,
 			'totalHour' : dr?.totalHour,
 			'selfIntroduction' : dr?.selfIntroduction,
-			'record' : dr?.recordPath
+			'record' : recUrl
 		]
 	}
 	
@@ -212,16 +227,24 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 			dr.totalHour = totalHour
 		}
 		if (record) {
-			def recordDir = 'recordDir'
-			def file = new File("${request.getServletContext().getRealPath('/')}$recordDir");
-			if (!file.exists() && !file.isDirectory()) {
-				file.mkdir()
-			}
-			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
-				recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
-			
-			saveFile(record.bytes, recordPath)
-			dr.recordPath = "/$recordDir/$fileName"
+//			def recordDir = 'recordDir'
+//			def file = new File("${request.getServletContext().getRealPath('/')}$recordDir");
+//			if (!file.exists() && !file.isDirectory()) {
+//				file.mkdir()
+//			}
+//			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
+//				recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
+//
+//			saveFile(record.bytes, recordPath)
+//			dr.recordPath = "/$recordDir/$fileName"
+
+            def doctorInfo = doctorInfoRepository.findOne(dr.id)
+
+            def recordPath = uploadUtils.uploadDoctorRecord(doctorInfo.id, record)
+            doctorInfo.recordPath = recordPath
+            doctorInfo.lastModifiedDate = new DateTime()
+            doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
+            doctorInfoRepository.save(doctorInfo)
 		}
 		
 		doctorRecordRepository.save(dr)

@@ -7,6 +7,7 @@ import com.qubaopen.doctor.repository.hospital.*
 import com.qubaopen.doctor.repository.url.UrlRepository
 import com.qubaopen.doctor.service.CaptchaService
 import com.qubaopen.doctor.service.HospitalService
+import com.qubaopen.doctor.utils.UploadUtils
 import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord
 import com.qubaopen.survey.entity.hospital.HospitalInfo
@@ -58,6 +59,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 
     @Autowired
     FileUtils fileUtils
+
+    @Autowired
+    UploadUtils uploadUtils
 
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
@@ -315,71 +319,37 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	}
 
 
-	@Transactional
+    @Transactional
     @RequestMapping(value = 'uploadHospitalDoctor', method = RequestMethod.POST)
     uploadHospitalDoctor(@ModelAttribute('currentHospital') Hospital hospital,
-            HttpServletRequest request) {
-
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request
+            MultipartHttpServletRequest request){
         def hospitalInfo = hospitalInfoRepository.findOne(hospital.id)
 
-        def fileMap = multipartRequest.getFileMap()
+        def fileMap = request.getFileMap()
         def records = [] as Set
-		
+
         if (hospitalInfo.hospitalDoctorRecords) {
             records = hospitalInfo.hospitalDoctorRecords
         }
 
-        def longTime = new Date().getTime()
-		
-//		def property = System.getProperty('user.dir').split('/')
-        def property = request.getSession().getServletContext().getRealPath("/").split("/")
-		property[property.length - 1] = null;
-		def systemPath = StringUtils.join(property, '/')
-		fileMap.each { k, v ->
-			longTime += 1000
-			def now = new Date(longTime)
-			
-			if ('certificate' == k) {
-				def certificatePath = 'certificatePic'
-				println "${systemPath}$certificatePath"
-				println "$systemPath$certificatePath"
-//					file = new File("${request.getServletContext().getRealPath('/')}$certificatePath")
-				def	file = new File("${systemPath}$certificatePath")
-				if (!file.exists() && !file.isDirectory()) {
-					file.mkdir()
-				}
-				def fileName = "${hospitalInfo.id}_${DateFormatUtils.format(now, 'yyyyMMdd-HHmmss')}.png",
-					cerPath = "$systemPath$certificatePath/$fileName"
-//					cerPath = "${request.getServletContext().getRealPath('/')}$certificatePath/$fileName"
-				def cerPic = v
-                fileUtils.saveFile(cerPic.bytes, cerPath)
-				hospitalInfo.hospitalRecordPath = "/$certificatePath/$fileName"
-			} else {
-				def hospitalDoctorPath = 'hospitalDoctorPic',
-					file = new File("$systemPath$hospitalDoctorPath")
-				if (!file.exists() && !file.isDirectory()) {
-					file.mkdir()
-				}
-				def fileName = "${hospitalInfo.id}_${DateFormatUtils.format(now, 'yyyyMMdd-HHmmss')}.png",
-					hdPath = "$systemPath$hospitalDoctorPath/$fileName"
-		
-				def cerPic = v
-                fileUtils.saveFile(cerPic.bytes, hdPath)
-		
-				def docPic = "/$hospitalDoctorPath/$fileName"
-				def hdRecord = new HospitalDoctorRecord(
-					hospitalInfo : hospitalInfo,
-					doctorRecordPath : docPic
-				)
-				hospitalDoctorRecordRepository.save(hdRecord)
-				records.add(hdRecord)
-			}
-		}
-		if (records.size() > 0) {
-			hospitalInfo.hospitalDoctorRecords = records
-		}
-		
+        fileMap.each { k, v ->
+            if ('certificate' == k) {
+                def hospitalUrl = uploadUtils.uploadHospital(hospital.id, v)
+                hospitalInfo.hospitalRecordPath = hospitalUrl
+            } else {
+                def hospitalDoctorPath = uploadUtils.uploadHospitalDoctor(hospital.id, v)
+                def hdRecord = new HospitalDoctorRecord(
+                        hospitalInfo : hospitalInfo,
+                        doctorRecordPath : hospitalDoctorPath
+                )
+                hospitalDoctorRecordRepository.save(hdRecord)
+                records.add(hdRecord)
+            }
+        }
+        if (records.size() > 0) {
+            hospitalInfo.hospitalDoctorRecords = records
+        }
+
         hospitalInfoRepository.save(hospitalInfo)
         '{"success" : "1"}'
     }

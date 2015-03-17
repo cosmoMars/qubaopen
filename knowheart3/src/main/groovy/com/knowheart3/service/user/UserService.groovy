@@ -1,6 +1,6 @@
 package com.knowheart3.service.user
 
-import static com.knowheart3.utils.ValidateUtil.*
+
 
 import javax.servlet.http.HttpServletRequest
 
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
+import com.knowheart3.repository.reward.RewardActivityRecordRepository
 import com.knowheart3.repository.user.UserCaptchaLogRepository
 import com.knowheart3.repository.user.UserCaptchaRepository
 import com.knowheart3.repository.user.UserGoldRepository
@@ -23,6 +24,9 @@ import com.knowheart3.repository.user.UserReceiveAddressRepository
 import com.knowheart3.repository.user.UserRepository
 import com.knowheart3.repository.user.UserUDIDRepository
 import com.knowheart3.service.SmsService
+import com.knowheart3.service.self.SelfService
+import com.knowheart3.utils.DateCommons
+import static com.knowheart3.utils.ValidateUtil.*;
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserCaptcha
 import com.qubaopen.survey.entity.user.UserCaptchaLog
@@ -61,10 +65,13 @@ public class UserService {
 	SmsService smsService
 	
 	@Autowired
+	SelfService selfService
+	
+	@Autowired
 	UserMoodRepository userMoodRepository
 	
-//	@Autowired
-//	RewardActivityRecordRepository rewardActivityRecordRepository
+	@Autowired
+	RewardActivityRecordRepository rewardActivityRecordRepository
 
 	/** 用户登录
 	 * @param user
@@ -363,44 +370,44 @@ public class UserService {
 		userUDIDRepository.save(code)
 	}
 
-//	/**
-//	 * 获取用户首页数据，心情、性格解析度、心理指数 
-//	 * @param user
-//	 * @return
-//	 */
-//	@Transactional
-//	getIndexInfo(User user) {
-//		def userInfo = userInfoRepository.findOne(user.id)
-//		selfService.calcUserAnalysisRadio(userInfo)
-//		selfService.calcUserMentalStatus(userInfo)
-//		
-//		def userMood = userMoodRepository.findLastByTime(user)
-//		
-//		def userRewards = rewardActivityRecordRepository.findAll(
-//			[
-//				user_equal : user,
-//				'rewardActivity.rewardType.rewardLevel.id_equal' : 100
-//			]	
-//		)
-//		userInfo = userInfoRepository.findOne(user.id)
-//		def reslut = [
-//			'success' : '1',
-//			'moodType' : userMood?.moodType?.ordinal(),
-//			'lastTime' : userMood?.lastTime,
-//			'userSelfTitle' : userInfo?.userSelfTitle?.name,
-//			'deduction' : userInfo?.deduction,
-//			'resolution' : userInfo?.resolution,
-//			'message' : userMood?.message,
-//			'userSelfTitleId' : userInfo?.userSelfTitle?.id
-//			]
-//		
-//		if (userRewards != null && userRewards.size() > 0) {
-//			reslut << ['isJoined' : true]
-//		} else {
-//			reslut << ['isJoined' : false]
-//		}
-//		return reslut
-//	}
+	/**
+	 * 获取用户首页数据，心情、性格解析度、心理指数 
+	 * @param user
+	 * @return
+	 */
+	@Transactional
+	getIndexInfo(User user) {
+		def userInfo = userInfoRepository.findOne(user.id)
+		selfService.calcUserAnalysisRadio(userInfo)
+		selfService.calcUserMentalStatus(userInfo)
+		
+		def userMood = userMoodRepository.findLastByTime(user)
+		
+		def userRewards = rewardActivityRecordRepository.findAll(
+			[
+				user_equal : user,
+				'rewardActivity.rewardType.rewardLevel.id_equal' : 100
+			]	
+		)
+		userInfo = userInfoRepository.findOne(user.id)
+		def reslut = [
+			'success' : '1',
+			'moodType' : userMood?.moodType?.ordinal(),
+			'lastTime' : userMood?.lastTime,
+			'userSelfTitle' : userInfo?.userSelfTitle?.name,
+			'deduction' : userInfo?.deduction,
+			'resolution' : userInfo?.resolution,
+			'message' : userMood?.message,
+			'userSelfTitleId' : userInfo?.userSelfTitle?.id
+			]
+		
+		if (userRewards != null && userRewards.size() > 0) {
+			reslut << ['isJoined' : true]
+		} else {
+			reslut << ['isJoined' : false]
+		}
+		return reslut
+	}
 	
 	private void saveFile(byte[] bytes, String filename) {
 		def fos = new FileOutputStream(filename)

@@ -1,4 +1,6 @@
-package com.qubaopen.doctor.controller.doctor;
+package com.qubaopen.doctor.controller.doctor
+
+import com.qubaopen.doctor.utils.UploadUtils;
 
 import static com.qubaopen.doctor.utils.ValidateUtil.*
 
@@ -58,8 +60,10 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	
 	@Autowired
 	DoctorRecordRepository doctorRecordRepository
-	
 
+    @Autowired
+    UploadUtils uploadUtils
+	
 	@Override
 	protected MyRepository<Doctor, Long> getRepository() {
 		return doctorRepository
@@ -124,6 +128,11 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				}
 			}
 
+            def recUrl
+            if (dr) {
+                recUrl = uploadUtils.retrievePriavteUrl(dr.recordPath)
+            }
+
 			return  [
 				'success' : '1',
 				'message' : '登录成功',
@@ -147,7 +156,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'email' : loginDoctor?.email,
 				'address' : doctorInfo?.address,
 				'idCard' : doctorIdCardBind?.userIDCard?.IDCard,
-				'recordPath' : dr?.recordPath,
+				'recordPath' : recUrl,
 				'avatarPath' : doctorInfo?.avatarPath,
 				'loginStatus' : doctorInfo?.loginStatus?.ordinal(),
 				'refauslReason' : doctorInfo?.refusalReason,

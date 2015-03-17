@@ -1,4 +1,7 @@
-package com.qubaopen.doctor.controller.doctor;
+package com.qubaopen.doctor.controller.doctor
+
+import com.qubaopen.doctor.utils.UploadUtils
+import org.joda.time.DateTime;
 
 import static com.qubaopen.doctor.utils.ValidateUtil.*
 
@@ -49,6 +52,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 	
 	@Autowired
 	DoctorRecordRepository doctorRecordRepository
+
+    @Autowired
+    UploadUtils uploadUtils
 	
 	@Override
 	protected MyRepository<DoctorInfo, Long> getRepository() {
@@ -278,33 +284,47 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			doctorInfo.bookingTime = resultModel.join(',')
 		}
 		
-		if (avatar) {
-			def doctorDir = 'doctorDir'
-			def file = new File("${request.getServletContext().getRealPath('/')}$doctorDir");
-			if (!file.exists() && !file.isDirectory()) {
-				file.mkdir()
-			}
-			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
-				avatarPath = "${request.getServletContext().getRealPath('/')}$doctorDir/$fileName"
-			
-			saveFile(avatar.bytes, avatarPath)
-			doctorInfo.avatarPath = "/$doctorDir/$fileName"
-		}
-		def recordDir, fileName
-		if (record) {
-			recordDir = 'recordDir'
-			def file = new File("${request.getServletContext().getRealPath('/')}$recordDir");
-			if (!file.exists() && !file.isDirectory()) {
-				file.mkdir()
-			}
-			fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png"
-			def	recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
-			
-			saveFile(record.bytes, recordPath)
-			doctorInfo.recordPath = "/$recordDir/$fileName"
-			
-			doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
-		}
+//		if (avatar) {
+//			def doctorDir = 'doctorDir'
+//			def file = new File("${request.getServletContext().getRealPath('/')}$doctorDir");
+//			if (!file.exists() && !file.isDirectory()) {
+//				file.mkdir()
+//			}
+//			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
+//				avatarPath = "${request.getServletContext().getRealPath('/')}$doctorDir/$fileName"
+//
+//			saveFile(avatar.bytes, avatarPath)
+//			doctorInfo.avatarPath = "/$doctorDir/$fileName"
+//		}
+//		def recordDir, fileName
+//		if (record) {
+//			recordDir = 'recordDir'
+//			def file = new File("${request.getServletContext().getRealPath('/')}$recordDir");
+//			if (!file.exists() && !file.isDirectory()) {
+//				file.mkdir()
+//			}
+//			fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png"
+//			def	recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
+//
+//			saveFile(record.bytes, recordPath)
+//			doctorInfo.recordPath = "/$recordDir/$fileName"
+//
+//			doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
+//		}
+        if (avatar) {
+
+            def path = uploadUtils.uploadDoctorAvatar(doctorInfo.id, avatar)
+
+            doctorInfo.avatarPath = path
+            doctorInfo.lastModifiedDate = new DateTime()
+        }
+        def recordPath
+        if (record) {
+            recordPath = uploadUtils.uploadDoctorRecord(doctorInfo.id, record)
+            doctorInfo.recordPath = recordPath
+            doctorInfo.lastModifiedDate = new DateTime()
+            doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
+        }
 		
 		def dr = doctorRecordRepository.findOne(doctor.id)
 		if (!dr) {
@@ -313,10 +333,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			)
 		}
 		if (record) {
-			dr.recordPath = "/$recordDir/$fileName"
+			dr.recordPath = recordPath
 		}
 		if (recordJson != null) {
-			
 			
 			def jsonNode = objectMapper.readTree(recordJson)
 			

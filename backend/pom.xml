@@ -64,6 +64,18 @@
       <version>3.1</version>
     </dependency>
 
+    <!-- 七牛依赖 -->
+    <dependency>
+      <groupId>com.qiniu</groupId>
+      <artifactId>sdk</artifactId>
+      <version>[6.1.7, 6.999]</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>4.3.2</version>
+    </dependency>
+
   </dependencies>
 
 </project>

@@ -66,7 +66,9 @@ public class CaptchaService {
 			
 			tran.connect(hostMail.getServerHost(), hostMail.getServerPort(), hostMail.getUserName(), hostMail.getPassword());//连接到邮箱服务器
 
-			tran.sendMessage(mailMessage, new Address[]{ new InternetAddress("349280576@qq.com"), new InternetAddress("361714571@qq.com")});//设置邮件接收人
+//            Address address = new InternetAddress();
+
+            tran.sendMessage(mailMessage, new Address[]{ new InternetAddress("349280576@qq.com"), new InternetAddress("361714571@qq.com")});//设置邮件接收人
 			tran.close();
 			
 			return "1";

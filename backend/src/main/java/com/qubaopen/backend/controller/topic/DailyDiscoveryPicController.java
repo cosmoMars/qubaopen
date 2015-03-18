@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.qubaopen.backend.utils.UploadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.qubaopen.backend.repository.topic.DailyDiscoveryPicRepository;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.topic.DailyDiscoveryPic;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("dailyDiscoveryPic")
@@ -28,6 +30,9 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
 	
 	@Autowired
 	private DailyDiscoveryPicRepository dailyDiscoveryPicRepository;
+
+    @Autowired
+    UploadUtils uploadUtils;
 	
 	@Override
 	protected MyRepository<DailyDiscoveryPic, Long> getRepository() {
@@ -77,7 +82,9 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
 	@RequestMapping(value = "generateDailyDiscoveryPic", method = RequestMethod.POST)
 	private Object generateDailyDiscoveryPic(@RequestParam(required = false) Long id,
 			@RequestParam(required = false) String startTime,
-			@RequestParam(required = false) String name) {
+			@RequestParam(required = false) String name,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) MultipartFile multipartFile) {
 		
 		DailyDiscoveryPic ddp = null;
 		
@@ -98,9 +105,17 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		//TODO 保存图片
-		//ddp.setPicUrl(picUrl);
+        if (null != multipartFile) {
+            String uname = null;
+            if (null == ddp.getId()) {
+                uname = "pdd";
+            } else {
+                uname = "pdd" + ddp.getId().toString();
+            }
+
+            String picUrl = uploadUtils.uploadTo7niu(type, uname, multipartFile);
+            ddp.setPicUrl(picUrl);
+        }
 
 		dailyDiscoveryPicRepository.save(ddp);
 		

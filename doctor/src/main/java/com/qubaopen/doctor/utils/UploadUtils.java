@@ -199,25 +199,27 @@ public class UploadUtils {
 
     public String retrievePriavteUrl(String url) {
 
+        if (!url.startsWith("http://")) {
+            return "";
+        }
+
         String[] str = url.split("/");
 
         Config.ACCESS_KEY = "NdVj6TB7C78u0PhPenlU1kzgwWvBV1mazFeBk9ma";
         Config.SECRET_KEY = "PGgA48fZfELgr-IjpboBjvLXskOp94rgF66ed__X";
         Mac mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
-        String baseUrl = null;
-        try {
-            baseUrl = URLUtils.makeBaseUrl(str[2], str[3]);
-        } catch (EncoderException e) {
-            e.printStackTrace();
-        }
-        GetPolicy getPolicy = new GetPolicy();
         String downloadUrl = null;
         try {
-            downloadUrl = getPolicy.makeRequest(baseUrl, mac);
+            if (null != str[2] && null != str[3]) {
+                String baseUrl = URLUtils.makeBaseUrl(str[2], str[3]);
+                GetPolicy getPolicy = new GetPolicy();
+                downloadUrl = getPolicy.makeRequest(baseUrl, mac);
+            }
+        } catch (EncoderException e) {
+            e.printStackTrace();
         } catch (AuthException e) {
             e.printStackTrace();
         }
-
         return downloadUrl;
     }
 }

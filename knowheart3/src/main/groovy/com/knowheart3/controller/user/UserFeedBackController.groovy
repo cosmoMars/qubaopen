@@ -159,7 +159,7 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
         if (null != contactMethod) {
             feedback.contactMethod = contactMethod
         }
-        captchaService.sendTextMail(message, contactMethod)
+//        captchaService.sendTextMail(message, contactMethod)
         userFeedBackRepository.save(feedback)
         '{"success" : "1"}'
     }

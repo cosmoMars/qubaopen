@@ -1,22 +1,14 @@
 package com.qubaopen.survey.entity.hospital;
 
-import java.util.Date;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import com.qubaopen.core.entity.AbstractBaseEntity2;
+import com.qubaopen.survey.entity.base.AreaCode;
+import com.qubaopen.survey.entity.doctor.Genre;
+import com.qubaopen.survey.entity.doctor.TargetUser;
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity2;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "hospital_info")
@@ -77,6 +69,11 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 	 * 文字咨询
 	 */
 	private boolean wordsConsult;
+	
+	/**
+	 * 电话咨询
+	 */
+	private boolean phoneConsult;
 
 	/**
 	 * 最低收费
@@ -110,8 +107,46 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 	 * 拒绝理由
 	 */
 	private String refusalReason;
+	
 
-	public Hospital getHospital() {
+	/**
+	 * 对象
+	 */
+	private String targetUser;
+
+	/**
+	 * 流派
+	 */
+	private String genre;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private AreaCode areaCode;
+	
+	/**
+	 * 擅长人群
+	 */
+	@ManyToMany
+	@JoinTable(name = "hospital_target_relation", joinColumns = @JoinColumn(name = "hospital_id"), inverseJoinColumns = @JoinColumn(name = "target_id"))
+	private Set<TargetUser> targetUsers;
+
+	/**
+	 * 流派
+	 */
+	@ManyToMany
+	@JoinTable(name = "hospital_genre_relation", joinColumns = @JoinColumn(name = "hospital_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+	private Set<Genre> genres;
+
+    /**
+     * 面对面
+     */
+    private boolean faceToFace;
+
+    /**
+     * 视频
+     */
+    private boolean video;
+
+    public Hospital getHospital() {
 		return hospital;
 	}
 
@@ -191,6 +226,14 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 		this.wordsConsult = wordsConsult;
 	}
 
+	public boolean isPhoneConsult() {
+		return phoneConsult;
+	}
+
+	public void setPhoneConsult(boolean phoneConsult) {
+		this.phoneConsult = phoneConsult;
+	}
+
 	public int getMinCharge() {
 		return minCharge;
 	}
@@ -215,6 +258,14 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 		this.hospitalDoctorRecords = hospitalDoctorRecords;
 	}
 
+	public String getHospitalRecordPath() {
+		return hospitalRecordPath;
+	}
+
+	public void setHospitalRecordPath(String hospitalRecordPath) {
+		this.hospitalRecordPath = hospitalRecordPath;
+	}
+
 	public LoginStatus getLoginStatus() {
 		return loginStatus;
 	}
@@ -231,11 +282,59 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 		this.refusalReason = refusalReason;
 	}
 
-    public String getHospitalRecordPath() {
-        return hospitalRecordPath;
+	public String getTargetUser() {
+		return targetUser;
+	}
+
+	public void setTargetUser(String targetUser) {
+		this.targetUser = targetUser;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+	public AreaCode getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(AreaCode areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	public Set<TargetUser> getTargetUsers() {
+		return targetUsers;
+	}
+
+	public void setTargetUsers(Set<TargetUser> targetUsers) {
+		this.targetUsers = targetUsers;
+	}
+
+	public Set<Genre> getGenres() {
+		return genres;
+	}
+
+	public void setGenres(Set<Genre> genres) {
+		this.genres = genres;
+	}
+
+    public boolean isFaceToFace() {
+        return faceToFace;
     }
 
-    public void setHospitalRecordPath(String hospitalRecordPath) {
-        this.hospitalRecordPath = hospitalRecordPath;
+    public void setFaceToFace(boolean faceToFace) {
+        this.faceToFace = faceToFace;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
     }
 }

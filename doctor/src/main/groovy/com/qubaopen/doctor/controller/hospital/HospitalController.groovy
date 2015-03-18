@@ -319,6 +319,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	}
 
 
+
     @Transactional
     @RequestMapping(value = 'uploadHospitalDoctor', method = RequestMethod.POST)
     uploadHospitalDoctor(@ModelAttribute('currentHospital') Hospital hospital,

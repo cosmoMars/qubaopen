@@ -44,9 +44,7 @@ public class UploadUtils {
     private HospitalInfoRepository hospitalInfoRepository;
 
     @Transactional
-    public String uploadUser(User user, MultipartFile multipartFile) {
-
-        UserInfo userInfo = userInfoRepository.findOne(user.getId());
+    public String uploadUser(Long userId, MultipartFile multipartFile) {
 
         Config.ACCESS_KEY = "NdVj6TB7C78u0PhPenlU1kzgwWvBV1mazFeBk9ma";
         Config.SECRET_KEY = "PGgA48fZfELgr-IjpboBjvLXskOp94rgF66ed__X";
@@ -64,19 +62,15 @@ public class UploadUtils {
         }
         PutExtra extra = new PutExtra();
 
-        String key = "U" + user.getId() + "_" + System.currentTimeMillis();
+        String key = "U" + userId + "_" + System.currentTimeMillis();
         String url = "http://7xi46o.com2.z0.glb.qiniucdn.com/" + key;
-        userInfo.setAvatarPath(url);
-        userInfo.setLastModifiedDate(new DateTime());
-        userInfoRepository.save(userInfo);
-//        String localFile = "/Users/mars/ME/7fd3a3e1jw1dq7sp5j1qzj.jpg";
         try {
             IoApi.Put(uptoken, key, multipartFile.getInputStream(), extra);
         } catch (IOException e) {
             e.printStackTrace();
         }
 //        PutRet ret = IoApi.putFile(uptoken, key, localFile, extra);
-        return "success";
+        return url;
     }
 
     @Transactional
@@ -176,20 +170,18 @@ public class UploadUtils {
         Config.ACCESS_KEY = "NdVj6TB7C78u0PhPenlU1kzgwWvBV1mazFeBk9ma";
         Config.SECRET_KEY = "PGgA48fZfELgr-IjpboBjvLXskOp94rgF66ed__X";
         Mac mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
-        String baseUrl = null;
-        try {
-            baseUrl = URLUtils.makeBaseUrl(str[2], str[3]);
-        } catch (EncoderException e) {
-            e.printStackTrace();
-        }
-        GetPolicy getPolicy = new GetPolicy();
         String downloadUrl = null;
         try {
-            downloadUrl = getPolicy.makeRequest(baseUrl, mac);
+            if (null != str[2] && null != str[3]) {
+                String baseUrl = URLUtils.makeBaseUrl(str[2], str[3]);
+                GetPolicy getPolicy = new GetPolicy();
+                downloadUrl = getPolicy.makeRequest(baseUrl, mac);
+            }
+        } catch (EncoderException e) {
+            e.printStackTrace();
         } catch (AuthException e) {
             e.printStackTrace();
         }
-
         return downloadUrl;
     }
 

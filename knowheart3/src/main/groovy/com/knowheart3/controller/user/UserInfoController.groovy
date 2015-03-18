@@ -262,17 +262,25 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 			'{"success" : "1"}'
 		}
 
+    /**
+     * 上传用户头像
+     * @param avatar
+     * @param user
+     * @return
+     */
     @RequestMapping(value = 'uploadUserAvatar', method = RequestMethod.POST, consumes = 'multipart/form-data')
     uploadUserAvatar(@RequestParam(required = false) MultipartFile avatar, @ModelAttribute('currentUser') User user) {
 
         logger.trace(' -- 上传头像 -- ')
 
         if (avatar) {
-            def str = uploadUtils.uploadUser(user, avatar)
-            if ('success' == str) {
-                return '{"success": "1"}'
-            }
-            return '{"success": "0"}'
+            def userInfo = userInfoRepository.findOne(user.id)
+            def url = uploadUtils.uploadUser(user.id, avatar)
+
+            userInfo.avatarPath = url
+            userInfoRepository.save(userInfo)
+
+            return '{"success": "1"}'
         }
         '{"success": "0", "message" : "err102"}'
     }

@@ -275,7 +275,9 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
         if (avatar) {
             def userInfo = userInfoRepository.findOne(user.id)
-            def url = uploadUtils.uploadUser(user.id, avatar)
+            String name = 'u' + user.id
+            def url = uploadUtils.uploadTo7niu('7', name, avatar)
+//            def url = uploadUtils.uploadUser(user.id, avatar)
 
             userInfo.avatarPath = url
             userInfoRepository.save(userInfo)

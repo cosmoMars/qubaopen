@@ -1,25 +1,14 @@
 package com.qubaopen.survey.entity.booking;
 
-import java.util.Date;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.envers.Audited;
-
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.user.User;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * @author mars 订单详情
@@ -125,6 +114,9 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date payTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date outDated;
 
 	private boolean quick;
 
@@ -399,5 +391,13 @@ public class Booking extends AbstractBaseEntity<Long> {
 
     public void setChargeId(String chargeId) {
         this.chargeId = chargeId;
+    }
+
+    public Date getOutDated() {
+        return outDated;
+    }
+
+    public void setOutDated(Date outDated) {
+        this.outDated = outDated;
     }
 }

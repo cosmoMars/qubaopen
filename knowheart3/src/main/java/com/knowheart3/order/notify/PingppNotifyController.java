@@ -47,7 +47,17 @@ public class PingppNotifyController {
             // 开发者在此处加入对支付异步通知的处理代码
             if (true == charge.getPaid()) {
                 Booking booking = bookingRepository.findByChargeId(charge.getId());
-                booking.setStatus(Booking.Status.Paid);
+
+                if (null != booking.getHospital()) {
+                    booking.setStatus(Booking.Status.PayAccept);
+                } else if (null != booking.getDoctor()) {
+                    if (false == booking.isQuick()) {
+                        booking.setStatus(Booking.Status.PayAccept);
+                    } else {
+                        booking.setStatus(Booking.Status.Paid);
+                    }
+                }
+                booking.setOutDated(null);
                 bookingRepository.save(booking);
             }
             // 处理成功返回success

@@ -1,7 +1,5 @@
 package com.knowheart3.order;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.knowheart3.repository.booking.BookingRepository;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.exception.*;
@@ -16,13 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Type;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by mars on 15/3/13.
@@ -59,6 +54,36 @@ public class PingppResources {
 //        }
 
         Booking booking = bookingRepository.findOne(bookingId);
+        resp.setContentType("application/json; charset=utf-8");
+        PrintWriter out = null;
+        if (null != booking.getDoctor() && booking.getStatus() == Booking.Status.Accept) {
+
+            if (null == booking.getOutDated() || ((new Date()).getTime() > booking.getOutDated().getTime())) {
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.add(Calendar.HOUR_OF_DAY, 1);
+                booking.setOutDated(c.getTime());
+            }
+        }
+        if (null != booking.getDoctor()) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("user.id_equal", user.getId());
+            map.put("doctor.id_equal", booking.getDoctor().getId());
+//            map.put("status_equal", Booking.Status.Paying);
+            List<Booking> exist = bookingRepository.findAll(map);
+
+            if (null != exist && exist.size() > 0) {
+                try {
+                    out = resp.getWriter();
+                    out.print("{\"success\" : \"0\", \"message\" : \"err809\"}");
+                    out.close();
+                    return;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         if (null != quick) {
             booking.setQuick(quick);
         }
@@ -108,11 +133,11 @@ public class PingppResources {
         } catch (PingppException e) {
             e.printStackTrace();
         }
-        resp.setContentType("application/json; charset=utf-8");
+
 
         booking.setChargeId(ch.getId());
         bookingRepository.save(booking);
-        PrintWriter out = null;
+
         try {
             out = resp.getWriter();
             out.print(ch);
@@ -120,64 +145,6 @@ public class PingppResources {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-//        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
-//        Map<String, Object> chargeMap = new HashMap<String, Object>();
-//        int amount = (int)(booking.getMoney() * 100);
-//        chargeMap.put("amount", amount);
-//        chargeMap.put("currency", "cny");
-//        chargeMap.put("subject", "知心心理咨询");
-//        StringBuffer content = new StringBuffer();
-//        content.append("下单时间：").append(DateFormatUtils.format(booking.getTime(), "yyyy-MM-dd"));
-//        content.append("，订单号：").append(booking.getTradeNo());
-////
-//        chargeMap.put("body", content.toString());
-//        chargeMap.put("order_no", booking.getTradeNo()); // 商户系统自己生成的订单号
-//
-//        String channel = null;
-//        switch (type) {
-//            case "1" :
-//                channel = Channel.ALIPAY;
-//                break;
-//            case "2" :
-//                channel = Channel.ALIPAY;
-//                break;
-//            case "3" :
-//                channel = Channel.UPMP;
-//                break;
-//        }
-//
-//        chargeMap.put("channel", channel);
-////        chargeMap.put("client_ip", "101.231.124.8");
-//        chargeMap.put("client_ip", req.getRemoteAddr());
-//        //115.28.176.74
-//        Map<String, String> app = new HashMap<String, String>();
-//        app.put("id", "app_KavHuL08GO8O4Wbn");
-//        chargeMap.put("app", app);
-//        Map<String, String> extra = new HashMap<String, String>();
-//
-//        chargeMap.put("extra", extra);
-//
-//        try {
-//            ch = Charge.create(chargeMap);
-//        } catch (PingppException e) {
-//            e.printStackTrace();
-//        }
-
-//        booking.setChargeId(ch.getId());
-//        bookingRepository.save(booking);
-
-//        resp.setContentType("application/json; charset=utf-8");
-//
-//        PrintWriter out = null;
-//        try {
-//            out = resp.getWriter();
-//            out.print(ch);
-//            out.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return ch;
     }
 
     /**
@@ -221,7 +188,6 @@ public class PingppResources {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        return ch;
     }
 
 }

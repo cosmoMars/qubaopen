@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.web.PageableDefault
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -93,14 +94,33 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (!validatePhone(phone)) {
 			return '{"success" : "0", "message": "err003"}'
 		}
+        if (!doctorId && !hospitalId) {
+            return '{"success" : "0", "message" : "err810"}'
+        }
+
 		def tradeNo
 		if (doctorId != null) {
-			tradeNo = "U${user.id}D${doctorId}S${System.currentTimeMillis()}"
+			tradeNo = "u${user.id}d${doctorId}s${System.currentTimeMillis()}"
+            /*def exist = bookingRepository.findAll([
+                'user.id_equal' : user.id,
+                'doctor.id_equal' : doctorId,
+                'status_equal' : Booking.Status.Paying
+            ])
+
+            if (exist && exist.size() > 0) {
+                return '{"success" : "0", "message" : "err809"}'
+            }*/
 		}
 		if (hospitalId != null) {
-			tradeNo = "U${user.id}H${hospitalId}S${System.currentTimeMillis()}"
+			tradeNo = "u${user.id}h${hospitalId}s${System.currentTimeMillis()}"
+
+            def exist = bookingRepository.findExistHospitalBooking(user.id, hospitalId)
+
+            if (exist && exist.size() > 0) {
+                return '{"success" : "0", "message" : "err809"}'
+            }
 		}
-		
+
 		def sex
 		def booking = new Booking(
 			tradeNo : tradeNo,
@@ -148,6 +168,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @return
 	 * 用户获取医师每月列表
 	 */
+	@Transactional
 	@RequestMapping(value = 'retrieveMonthBooking', method = RequestMethod.GET)
 	retrieveMonthBooking(@RequestParam(required = false) String time,
 		@RequestParam long doctorId,
@@ -169,7 +190,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def c = Calendar.getInstance()
 		c.setTime date
 		
-		def dayData = [], timeData = []
+		def dayData = [], timeData = [], outDateBooking = []
 		for (i in 0..6) {
 			if (i > 0)
 				c.add(Calendar.DATE, 1)
@@ -223,12 +244,20 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					}
 				}
 			}
+			
 			bookingList.each {
-				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
-					occupy = timeModel.substring(index, index + 1)
-				if ("1" != occupy || !"1".equals(occupy)) {
-					timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
+				if (it.outDated && (new Date()).getTime() > it.outDated.getTime()) {
+					it.outDated = null
+					it.time = null
+					outDateBooking << it
 				}
+				if (it.time) {
+					def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
+					occupy = timeModel.substring(index, index + 1)
+					if ("1" != occupy || !"1".equals(occupy)) {
+						timeModel = timeModel.substring(0, index) + '1' + timeModel.substring(index + 1)
+					}
+				} 
 			}
 			for (k in 0..timeModel.length() - 1) {
 				if ('0' == timeModel[k] || '0'.equals(timeModel[k])) {
@@ -240,6 +269,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				}
 			}
 		}
+
+		bookingRepository.save(outDateBooking)
 		[
 			'success' : '1',
 			'dayData' : dayData,
@@ -585,12 +616,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (booking.doctor != null) {
 			nextBooking.doctor = booking.doctor
 			def doctorId = booking.doctor.id
-			nextBooking.tradeNo = "${user.id}_D${doctorId}_${System.currentTimeMillis()}"
+			nextBooking.tradeNo = "u${user.id}d${doctorId}s${System.currentTimeMillis()}"
 		}
 		if (booking.hospital != null) {
 			nextBooking.hospital = booking.hospital
 			def hospitalId = booking.hospital.id
-			nextBooking.tradeNo = "${user.id}_H${hospitalId}_${System.currentTimeMillis()}"
+			nextBooking.tradeNo = "u${user.id}h${hospitalId}s${System.currentTimeMillis()}"
 		}
 		nextBooking = bookingRepository.save(nextBooking)
 		bookingRepository.save(booking)

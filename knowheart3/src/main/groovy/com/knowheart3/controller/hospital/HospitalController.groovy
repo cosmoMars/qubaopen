@@ -77,7 +77,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		]
 	}
 		
-	@RequestMapping(value = 'retrieveHosptialDetial/{id}', method = RequestMethod.GET)
+	@RequestMapping(value = 'retrieveHospitalDetail/{id}', method = RequestMethod.GET)
 	retrieveHosptialDetial(@PathVariable long id) {
 		
 		logger.trace '-- 获取诊所详细 --'

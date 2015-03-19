@@ -1,4 +1,4 @@
-package com.qubaopen.backend.repository.topic;
+package com.knowheart3.repository.topic;
 
 import java.util.Date;
 import java.util.List;
@@ -20,4 +20,7 @@ public interface DailyDiscoveryPicRepository  extends MyRepository<DailyDiscover
 	
 	@Query("from DailyDiscoveryPic dd where date_format(dd.startTime, '%Y-%m-%d') = date_format(:time, '%Y-%m-%d')")
 	DailyDiscoveryPic findByTime(@Param("time") Date time);
+	
+	@Query("from DailyDiscoveryPic dd where date_format(dd.startTime, '%Y-%m-%d') <= date_format(:time, '%Y-%m-%d') order by dd.startTime desc")
+	List<DailyDiscoveryPic> findTodayPic(@Param("time") Date time,Pageable pageable);
 }

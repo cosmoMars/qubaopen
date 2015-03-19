@@ -108,9 +108,9 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
         if (null != multipartFile) {
             String uname = null;
             if (null == ddp.getId()) {
-                uname = "pdd";
+                uname = "ddp";
             } else {
-                uname = "pdd" + ddp.getId().toString();
+                uname = "ddp" + ddp.getId().toString();
             }
 
             String picUrl = uploadUtils.uploadTo7niu(type, uname, multipartFile);

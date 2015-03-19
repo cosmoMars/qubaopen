@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        (function() {
+            var openUrl = window.location.search;
+            try{
+                openUrl = openUrl.substring(1,openUrl.length);
+            }catch(e){
+            }
+            var isiOS = navigator.userAgent.match('iPad')
+                    || navigator.userAgent.match('iPhone')
+                    || navigator.userAgent.match('iPod'), isAndroid = navigator.userAgent
+                    .match('Android'),isDesktop = !isiOS&&!isAndroid;
+            if (isiOS) {
+                window.location = "zhixin://";
+                setTimeout(function () { window.location = "http://zhixin.me/dl"; },25);
+            }else if(isAndroid){
+                window.location.href  = "knowheart://start";
+            }else{
+                window.location.href = "http://zhixin.me";
+            }
+        })();
+    </script>
+</head>
+
+<body>
+
+</body>
+</html>

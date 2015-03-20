@@ -83,7 +83,6 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
 	private Object generateDailyDiscoveryPic(@RequestParam(required = false) Long id,
 			@RequestParam(required = false) String startTime,
 			@RequestParam(required = false) String name,
-            @RequestParam(required = false) String type,
             @RequestParam(required = false) MultipartFile multipartFile) {
 		
 		DailyDiscoveryPic ddp = null;
@@ -113,7 +112,7 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
                 uname = "ddp" + ddp.getId().toString();
             }
 
-            String picUrl = uploadUtils.uploadTo7niu(type, uname, multipartFile);
+            String picUrl = uploadUtils.uploadTo7niu(5, uname, multipartFile);
             ddp.setPicUrl(picUrl);
         }
 

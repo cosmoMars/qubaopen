@@ -146,6 +146,11 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
      */
     private boolean video;
 
+    /**
+     * 诊所头像
+     */
+    private String hospitalAvatar;
+
     public Hospital getHospital() {
 		return hospital;
 	}
@@ -336,5 +341,13 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 
     public void setVideo(boolean video) {
         this.video = video;
+    }
+
+    public String getHospitalAvatar() {
+        return hospitalAvatar;
+    }
+
+    public void setHospitalAvatar(String hospitalAvatar) {
+        this.hospitalAvatar = hospitalAvatar;
     }
 }

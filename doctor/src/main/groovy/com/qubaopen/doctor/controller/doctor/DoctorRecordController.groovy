@@ -1,29 +1,20 @@
 package com.qubaopen.doctor.controller.doctor
-
-import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
-import com.qubaopen.doctor.utils.UploadUtils
-import com.qubaopen.survey.entity.doctor.DoctorInfo
-import org.joda.time.DateTime;
-
-import javax.servlet.http.HttpServletRequest
-
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-import org.springframework.web.multipart.MultipartFile
-
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.doctor.DoctorRecordRepository
+import com.qubaopen.doctor.utils.UploadUtils
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.doctor.DoctorRecord
+import org.apache.commons.lang3.time.DateUtils
+import org.joda.time.DateTime
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping('doctorRecord')
@@ -227,20 +218,11 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 			dr.totalHour = totalHour
 		}
 		if (record) {
-//			def recordDir = 'recordDir'
-//			def file = new File("${request.getServletContext().getRealPath('/')}$recordDir");
-//			if (!file.exists() && !file.isDirectory()) {
-//				file.mkdir()
-//			}
-//			def fileName = "${doctor.id}_${DateFormatUtils.format(new Date(), 'yyyyMMdd-HHmmss')}.png",
-//				recordPath = "${request.getServletContext().getRealPath('/')}$recordDir/$fileName"
-//
-//			saveFile(record.bytes, recordPath)
-//			dr.recordPath = "/$recordDir/$fileName"
 
             def doctorInfo = doctorInfoRepository.findOne(dr.id)
 
-            def recordPath = uploadUtils.uploadDoctorRecord(doctorInfo.id, record)
+            def drName = 'dr' + doctorInfo.id
+            def recordPath = uploadUtils.uploadTo7niu(2, drName, record)
             doctorInfo.recordPath = recordPath
             doctorInfo.lastModifiedDate = new DateTime()
             doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
@@ -251,10 +233,4 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 		'{"success" : "1"}'
 	}
 		
-	def saveFile(byte[] bytes, String fileName) {
-		def fos = new FileOutputStream(fileName)
-		fos.write(bytes)
-		fos.close()
-	}
-
 }

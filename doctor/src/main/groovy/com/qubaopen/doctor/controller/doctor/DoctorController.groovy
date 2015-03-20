@@ -164,6 +164,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				'phoneConsult' : doctorInfo?.phoneConsult,
 				'onlineFee' : doctorInfo?.onlineFee,
 				'offlineFee' : doctorInfo?.offlineFee,
+                'assistantName' : "徐先生",
+                'assistantContact' : "13611845993",
 				'timeData' : timeData
 			]
 		}

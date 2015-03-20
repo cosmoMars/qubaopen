@@ -129,7 +129,8 @@ class UserController extends AbstractBaseController<User, Long> {
 				'idCard' : userIdCardBind?.userIDCard?.IDCard,
 				'birthday' : userInfo?.birthday,
 				'avatarPath' : userInfo?.avatarPath,
-				'signature' : userInfo?.signature
+				'signature' : userInfo?.signature,
+                'systemTime' : new Date()
 			]
 		}
 

@@ -151,6 +151,11 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
      */
     private String hospitalAvatar;
 
+    /**
+     * 复审
+     */
+    private boolean review;
+
     public Hospital getHospital() {
 		return hospital;
 	}
@@ -349,5 +354,13 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 
     public void setHospitalAvatar(String hospitalAvatar) {
         this.hospitalAvatar = hospitalAvatar;
+    }
+
+    public boolean isReview() {
+        return review;
+    }
+
+    public void setReview(boolean review) {
+        this.review = review;
     }
 }

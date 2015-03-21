@@ -212,7 +212,12 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
             String url = uploadUtils.uploadTo7niu(3, hName, avatar);
             hi.setHospitalAvatar(url);
         }
-        hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
+        if (hi.getLoginStatus() == HospitalInfo.LoginStatus.Unaudited) {
+            hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
+        }
+        if (hi.getLoginStatus() == HospitalInfo.LoginStatus.Auditing) {
+            hi.setReview(true);
+        }
 		hospitalInfoRepository.save(hi);
 		
 		return "{\"success\": \"1\"}";

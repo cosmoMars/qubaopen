@@ -281,7 +281,6 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
             recordPath = uploadUtils.uploadTo7niu(2, rName, record)
             doctorInfo.recordPath = recordPath
             doctorInfo.lastModifiedDate = new DateTime()
-            doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
         }
 		
 		def dr = doctorRecordRepository.findOne(doctor.id)
@@ -369,6 +368,13 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			}
 			
 		}
+
+        if (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Unaudited) {
+            doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
+        }
+        if (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Audited) {
+            doctorInfo.setReview(true)
+        }
 		doctorRecordRepository.save(dr)
 		doctorRepository.save(doctor)
 		doctorInfoRepository.save(doctorInfo)

@@ -11,6 +11,9 @@ import com.qubaopen.survey.entity.topic.DailyDiscovery
 import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -100,6 +103,15 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 		} else {
 			dailyDiscovery = dailyDiscoveryRepository.findByTime(new Date())
 		}
+
+        def haveDone = false
+        if (dailyDiscovery?.self && null != user.id) {
+            def count = selfUserQuestionnaireRepository.countBySelfAndUser(dailyDiscovery.self, user)
+            if (count > 0) {
+                haveDone = true
+            }
+        }
+
 		
 		[
 			'success' : '1',
@@ -115,6 +127,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 			'selfName' : dailyDiscovery?.self?.title,
 			'selfContent' : dailyDiscovery?.self?.remark,
             'selfPic' : dailyDiscovery?.self?.picPath,
+            'selfDone' : haveDone,
 			'topicId' : dailyDiscovery?.topic?.id,
 			'topicName' : dailyDiscovery?.topic?.name,
 			'topicContent' : dailyDiscovery?.topic?.content,
@@ -124,16 +137,36 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 		
 	}
 
+    /**
+     * 获取自测历史
+     * @param pageable
+     * @param user
+     * @return
+     */
     @RequestMapping(value = 'retrieveSelfResult', method = RequestMethod.POST)
-    retrieveSelfResult(@RequestParam(required = false) Long selfId,
+    retrieveSelfResult(@PageableDefault(page = 0, size = 20, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
                        @ModelAttribute('currentUser') User user) {
 
 //        def count = selfUserQuestionnaireRepository.countBySelfAndUser(new Self(id : selfId), user)
-//        def questionaire = selfUserQuestionnaireRepository.findBySelfAndUserAndUsed(new Self(id : selfId), user, true)
-//
-//        if (questionaire) {
-//
-//        }
+        def questionnaire = selfUserQuestionnaireRepository.findByUserAndUsed(user, true, pageable)
+
+        def data = []
+        if (questionnaire) {
+            questionnaire.each {
+                data << [
+                        'id' : it?.selfResultOption?.id,
+                        'resultTitle' : it?.selfResultOption?.selfResult?.title,
+                        'content' : it?.selfResultOption?.content,
+                        'optionTitle' : it?.selfResultOption?.title,
+                        'resultRemark' : it?.selfResultOption?.selfResult?.remark,
+                        'optionNum' : it?.selfResultOption?.resultNum
+                ]
+            }
+        }
+        [
+                'success' : '1',
+                'data' : data
+        ]
 
     }
 

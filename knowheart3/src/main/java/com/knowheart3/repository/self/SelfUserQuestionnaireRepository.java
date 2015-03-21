@@ -2,6 +2,7 @@ package com.knowheart3.repository.self;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -44,6 +45,6 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 
     int countBySelfAndUser(Self self, User user);
 
-    SelfUserQuestionnaire findByUserAndUsed(User user, Boolean used);
+    List<SelfUserQuestionnaire> findByUserAndUsed(User user, Boolean used, Pageable pageable);
 	
 }

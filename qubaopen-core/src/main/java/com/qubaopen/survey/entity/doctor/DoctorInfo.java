@@ -1,26 +1,13 @@
 package com.qubaopen.survey.entity.doctor;
 
-import java.util.Date;
-import java.util.Set;
-
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.envers.Audited;
-
 import com.qubaopen.core.entity.AbstractBaseEntity2;
 import com.qubaopen.survey.entity.base.AreaCode;
 import com.qubaopen.survey.entity.hospital.Hospital;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * @author mars 医师信息
@@ -180,6 +167,11 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	@ManyToMany
 	@JoinTable(name = "doctor_genre_relation", joinColumns = @JoinColumn(name = "doctor_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
 	private Set<Genre> genres;
+
+    /**
+     * 复审
+     */
+    private boolean review;
 
 	public Doctor getDoctor() {
 		return doctor;
@@ -405,4 +397,11 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 		this.offlineFee = offlineFee;
 	}
 
+    public boolean isReview() {
+        return review;
+    }
+
+    public void setReview(boolean review) {
+        this.review = review;
+    }
 }

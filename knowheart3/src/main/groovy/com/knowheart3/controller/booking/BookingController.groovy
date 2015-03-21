@@ -513,6 +513,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'userStatus' : it?.userStatus,
 				'doctorStatus' : it?.doctorStatus,
 				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
+				'hospitalAvatar' : it?.hospital?.hospitalInfo?.hospitalAvatar,
 				'outSecond' : outSecond
 			]
 		}

@@ -41,7 +41,7 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 */
 	private Sex sex;
 
-	private enum Sex {
+	public enum Sex {
 		Male, Female
 	}
 

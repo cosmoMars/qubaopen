@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <title>咨询对象管理</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .marketing{
+            margin-top: 100px;;
+        }
+
+        .gone{
+            display: none;
+        }
+
+        .tableParent{
+            min-height: 407px;
+        }
+    </style>
+</head>
+<body>
+
+
+<div id="mainView" class="container marketing">
+</div>
+
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.form.js"></script>
+<script src="js/autoTableForm.js"></script>
+<script>
+    $(document).ready(function () {
+
+        tableJson={data:[
+            {tName:"编号",tSize:"33",tClass:"id"},
+            {tName:"标题",tSize:"33",tClass:"name"},
+            {tName:"操作",tSize:"34",tClass:"action"}
+        ]};
+
+        formJson={data:[
+            {},
+            {}
+        ]};
+
+        optionsJson={listName:"targetUsers"};
+
+        initAutoTF(tableJson.data,null);
+
+        var url=window.location.protocol+"//"+window.location.host+"/targetUser/retrieveTargetUser?size=10&page=";
+        getTableList(0,url);
+
+
+
+    });
+</script>
+</body>
+</html>

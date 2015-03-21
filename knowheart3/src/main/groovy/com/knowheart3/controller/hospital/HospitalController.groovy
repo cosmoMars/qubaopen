@@ -150,7 +150,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
         def hospitalInfos = hospitalInfoRepository.findByFilter(filters)
         hospitalInfos.each {
             data << [
-                'hospital' : it?.id,
+                'hospitalId' : it?.id,
                 'hospitalName' : it?.name,
                 'hospitalAddress' : it?.address,
                 'hospitalIntroduce' : it?.introduce,

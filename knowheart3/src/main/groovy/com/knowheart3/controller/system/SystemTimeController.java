@@ -16,6 +16,6 @@ public class SystemTimeController {
 
     @RequestMapping(value = "retrieveSystemDate", method = RequestMethod.GET)
     public Object retrieveSystemDate() {
-        return "systemDate : " + DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+        return "{\"systemDate\" : \"" + DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss") + "\"}";
     }
 }

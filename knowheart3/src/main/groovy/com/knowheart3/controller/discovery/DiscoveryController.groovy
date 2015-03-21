@@ -1,24 +1,18 @@
-package com.knowheart3.controller.discovery;
-
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
-import com.knowheart3.repository.exercise.ExerciseInfoRepository;
-import com.knowheart3.repository.exercise.ExerciseRepository;
-import com.knowheart3.repository.exercise.UserExerciseRepository;
-import com.knowheart3.repository.favorite.UserFavoriteRepository;
+package com.knowheart3.controller.discovery
+import com.knowheart3.repository.exercise.ExerciseInfoRepository
+import com.knowheart3.repository.exercise.ExerciseRepository
+import com.knowheart3.repository.exercise.UserExerciseRepository
+import com.knowheart3.repository.favorite.UserFavoriteRepository
+import com.knowheart3.repository.self.SelfUserQuestionnaireRepository
 import com.knowheart3.repository.topic.DailyDiscoveryRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.topic.DailyDiscovery
 import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('discovery')
@@ -39,6 +33,9 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	
 	@Autowired
 	UserExerciseRepository userExerciseRepository
+
+    @Autowired
+    SelfUserQuestionnaireRepository selfUserQuestionnaireRepository
 	
 	@Override
 	MyRepository<DailyDiscovery, Long> getRepository() {
@@ -127,5 +124,18 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 		]
 		
 	}
+
+    @RequestMapping(value = 'retrieveSelfResult', method = RequestMethod.POST)
+    retrieveSelfResult(@RequestParam(required = false) Long selfId,
+                       @ModelAttribute('currentUser') User user) {
+
+//        def count = selfUserQuestionnaireRepository.countBySelfAndUser(new Self(id : selfId), user)
+        def questionaire = selfUserQuestionnaireRepository.findBySelfAndUserAndUsed(new Self(id : selfId), user, true)
+
+        if (questionaire) {
+
+        }
+
+    }
 		
 }

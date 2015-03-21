@@ -58,7 +58,7 @@ public class PingppResources {
         PrintWriter out = null;
         if (null != booking.getDoctor() && booking.getStatus() == Booking.Status.Accept) {
 
-            if (null == booking.getOutDated() || ((new Date()).getTime() > booking.getOutDated().getTime())) {
+            if (null == booking.getOutDated() || (new Date()).getTime() > booking.getOutDated().getTime()) {
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date());
                 c.add(Calendar.HOUR_OF_DAY, 1);

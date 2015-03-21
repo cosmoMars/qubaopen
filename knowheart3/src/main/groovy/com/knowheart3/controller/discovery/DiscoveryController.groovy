@@ -7,7 +7,6 @@ import com.knowheart3.repository.self.SelfUserQuestionnaireRepository
 import com.knowheart3.repository.topic.DailyDiscoveryRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.self.Self
 import com.qubaopen.survey.entity.topic.DailyDiscovery
 import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.time.DateUtils
@@ -130,12 +129,12 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                        @ModelAttribute('currentUser') User user) {
 
 //        def count = selfUserQuestionnaireRepository.countBySelfAndUser(new Self(id : selfId), user)
-        def questionaire = selfUserQuestionnaireRepository.findBySelfAndUserAndUsed(new Self(id : selfId), user, true)
-
-        if (questionaire) {
-
-        }
+//        def questionaire = selfUserQuestionnaireRepository.findBySelfAndUserAndUsed(new Self(id : selfId), user, true)
+//
+//        if (questionaire) {
+//
+//        }
 
     }
-		
+
 }

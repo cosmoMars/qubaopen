@@ -45,10 +45,6 @@ public class DiscoveryPicController extends AbstractBaseController<DailyDiscover
 				'picUrl' : dailyDiscoveryPic[0]?.picUrl
 			]
 		}
-		
-			
-		
-		
 	}
 		
 }

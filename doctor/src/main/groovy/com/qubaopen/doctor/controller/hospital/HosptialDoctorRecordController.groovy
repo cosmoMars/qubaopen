@@ -83,9 +83,9 @@ class HosptialDoctorRecordController extends AbstractBaseController<HospitalDoct
         @RequestParam(required = false) MultipartFile record,
         @ModelAttribute('currentHospital') Hospital hospital) {
 
-        def hdRecord = hospitalDoctorRecordRepository.findOne(id)
-
-        def url = uploadUtils.uploadHospitalDoctor(hospital.id, record)
+        def hdRecord = hospitalDoctorRecordRepository.findOne(id),
+            hdName = 'hd' + hospital.id
+        def url = uploadUtils.uploadTo7niu(4, hdName, record)
         hdRecord.doctorRecordPath = url
         hospitalDoctorRecordRepository.save(url)
         '{"success" : "1"}'

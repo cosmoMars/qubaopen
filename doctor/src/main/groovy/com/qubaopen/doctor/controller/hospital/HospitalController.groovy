@@ -1,5 +1,4 @@
 package com.qubaopen.doctor.controller.hospital
-
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.FileUtils
@@ -15,7 +14,6 @@ import com.qubaopen.survey.entity.hospital.HospitalLog
 import com.qubaopen.survey.entity.user.UserLogType
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
@@ -335,10 +333,12 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 
         fileMap.each { k, v ->
             if ('certificate' == k) {
-                def hospitalUrl = uploadUtils.uploadHospital(hospital.id, v)
+                def hrName = 'hr' + hospital.id
+                def hospitalUrl = uploadUtils.uploadTo7niu(8, hrName, v)
                 hospitalInfo.hospitalRecordPath = hospitalUrl
             } else {
-                def hospitalDoctorPath = uploadUtils.uploadHospitalDoctor(hospital.id, v)
+                def hdName = 'hd' + hospital.id
+                def hospitalDoctorPath = uploadUtils.uploadTo7niu(4, hdName, v)
                 def hdRecord = new HospitalDoctorRecord(
                         hospitalInfo : hospitalInfo,
                         doctorRecordPath : hospitalDoctorPath

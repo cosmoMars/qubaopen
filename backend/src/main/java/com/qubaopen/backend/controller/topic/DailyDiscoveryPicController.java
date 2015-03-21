@@ -112,7 +112,7 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
                 uname = "ddp" + ddp.getId().toString();
             }
 
-            String picUrl = uploadUtils.uploadTo7niu("5", uname, multipartFile);
+            String picUrl = uploadUtils.uploadTo7niu(5, uname, multipartFile);
             ddp.setPicUrl(picUrl);
         }
 

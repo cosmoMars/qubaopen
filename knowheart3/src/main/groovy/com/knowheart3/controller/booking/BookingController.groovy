@@ -451,6 +451,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @return
 	 * 获取订单列表
 	 */
+	@Transactional
 	@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
 	retrieveSelfBooking(
 //		@RequestParam(required = false) String ids,
@@ -469,7 +470,17 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (bookingContent.size() < pageable.pageSize) {
 			more = false
 		}
+		def outDateBooking = []
 		bookingContent.each {
+		    def outSecond, now = new Date()
+		    if (it.outDated > now) {
+		        it.time = null
+		        it.outDated = null
+		        outDateBooking << it
+		    }
+		    if (it.outDated) {
+		        outSecond = (now.time - it.outDated.time) / 1000
+		    }
 			data << [
 				'bookingId' : it?.id,
 				'doctorId' : it?.doctor?.id,
@@ -478,6 +489,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'lastBookingTime' : it?.lastBookingTime,
 				'hospitalId' :	it?.hospital?.id,
 				'hospitalName' : it?.hospital?.hospitalInfo?.name,
+				'hospitalPhone' : it?.hospital?.hospitalInfo?.phone,
 				'name' : it?.name,
 				'phone' : it?.phone,
 				'sex' : it?.sex?.ordinal(),
@@ -500,8 +512,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'money' : it?.money,
 				'userStatus' : it?.userStatus,
 				'doctorStatus' : it?.doctorStatus,
-				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath
+				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
+				'outSecond' : outSecond
 			]
+		}
+		if (outDateBooking != null && outDateBooking.size() > 0) {
+		    bookingRepository.save(outDateBooking)
 		}
 		
 		[

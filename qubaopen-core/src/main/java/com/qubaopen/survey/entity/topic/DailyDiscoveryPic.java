@@ -1,16 +1,10 @@
 package com.qubaopen.survey.entity.topic;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import com.qubaopen.core.entity.AbstractBaseEntity;
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 每日发现 图片
@@ -18,7 +12,7 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 @Entity
 @Table(name = "daily_discovery_pic")
 @Audited
-public class DailyDiscoveryPic  extends AbstractBaseEntity<Long> {
+public class DailyDiscoveryPic extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 4807764622221457469L;
 	

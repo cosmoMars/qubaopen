@@ -41,5 +41,9 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	List<SelfUserQuestionnaire> findByTimeAndTypeIdWithOutSpecial(@Param("time") String time, @Param("typeId") long typeId, @Param("self") Self self, @Param("user") User user);
 	
 	int countByUser(User user);
+
+    int countBySelfAndUser(Self self, User user);
+
+    SelfUserQuestionnaire findByUserAndUsed(User user, Boolean used);
 	
 }

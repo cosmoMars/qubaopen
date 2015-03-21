@@ -48,13 +48,13 @@ public class UploadUtils {
 
     /**
      * 上传图片至7牛
-     * type 1 医师头像，2 医师资质，3 诊所资质，4 诊所医师资质，5 明日发现，6 每日发现，7 用户头像
+     * type 1 医师头像，2 医师资质，3 诊所头像，4 诊所医师资质，5 明日发现，6 每日发现，7 用户头像，8 诊所资质
      * @param type
      * @param name
      * @param multipartFile
      * @return
      */
-    public String uploadTo7niu(String type, String name, MultipartFile multipartFile) {
+    public String uploadTo7niu(Integer type, String name, MultipartFile multipartFile) {
 
         Config.ACCESS_KEY = "NdVj6TB7C78u0PhPenlU1kzgwWvBV1mazFeBk9ma";
         Config.SECRET_KEY = "PGgA48fZfELgr-IjpboBjvLXskOp94rgF66ed__X";
@@ -66,33 +66,37 @@ public class UploadUtils {
         String key = name + "_" + System.currentTimeMillis();
         String url = null;
         switch (type) {
-            case "1" :
+            case 1 :
                 bucketName = "zhixin-doctor";
                 url = "http://7xi46q.com2.z0.glb.qiniucdn.com/" + key;
                 break;
-            case "2" :
+            case 2 :
                 bucketName = "zhixin-doctorrecord";
                 url = "http://7xi4h0.com2.z0.glb.qiniucdn.com/" + key;
                 break;
-            case "3" :
+            case 3 :
                 bucketName = "zhixin-hospital";
                 url = "http://7xi46r.com2.z0.glb.qiniucdn.com/" + key;
                 break;
-            case "4" :
+            case 4 :
                 bucketName = "zhixin-hospitaldoctor";
                 url = "http://7xi46t.com2.z0.glb.qiniucdn.com/" + key;
                 break;
-            case "5" :
+            case 5 :
                 bucketName = "zhixin-next-discovery";
                 url = "http://7xi5bi.com2.z0.glb.qiniucdn.com/" + key;
                 break;
-            case "6" :
+            case 6 :
                 bucketName = "zhixin-task-discovery";
                 url = "http://7xi5bj.com2.z0.glb.clouddn.com/" + key;
                 break;
-            case "7" :
+            case 7 :
                 bucketName = "zhixin-user";
                 url = "http://7xi46o.com2.z0.glb.clouddn.com/" + key;
+                break;
+            case 8 :
+                bucketName = "zhixin-hospital-record";
+                url = "http://7xi6cw.com2.z0.glb.clouddn.com/" + key;
                 break;
             default:
                 bucketName = "zhixin";

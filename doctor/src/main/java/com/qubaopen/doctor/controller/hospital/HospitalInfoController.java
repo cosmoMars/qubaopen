@@ -1,6 +1,20 @@
 package com.qubaopen.doctor.controller.hospital;
 
-import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qubaopen.core.controller.AbstractBaseController;
+import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
+import com.qubaopen.doctor.utils.UploadUtils;
+import com.qubaopen.survey.entity.hospital.Hospital;
+import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord;
+import com.qubaopen.survey.entity.hospital.HospitalInfo;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -9,25 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
-import com.qubaopen.survey.entity.hospital.Hospital;
-import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord;
-import com.qubaopen.survey.entity.hospital.HospitalInfo;
+import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone;
 
 @RestController
 @RequestMapping("hospitalInfo")
@@ -38,6 +34,9 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 	
 	@Autowired
 	private HospitalInfoRepository hospitalInfoRepository;
+
+    @Autowired
+    private UploadUtils uploadUtils;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -114,6 +113,7 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			@RequestParam(required = false) Integer maxCharge,
 			@RequestParam(required = false) String timeJson,
 			@RequestParam(required = false) String timeExp,
+            @RequestParam(required = false) MultipartFile avatar,
 			@ModelAttribute("currentHospital") Hospital hospital
 			) {
 		
@@ -203,11 +203,16 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 				}
 				hi.setBookingTime(resultModel.toString());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
+
+        if (avatar != null) {
+            String hName = "h" + hospital.getId();
+            String url = uploadUtils.uploadTo7niu(3, hName, avatar);
+            hi.setHospitalAvatar(url);
+        }
+        hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
 		hospitalInfoRepository.save(hi);
 		
 		return "{\"success\": \"1\"}";

@@ -1,5 +1,5 @@
 package com.knowheart3.controller.discovery
-import com.knowheart3.repository.topic.DailyDiscoveryPicRepository
+import com.knowheart3.repository.discovery.DailyDiscoveryPicRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.topic.DailyDiscoveryPic

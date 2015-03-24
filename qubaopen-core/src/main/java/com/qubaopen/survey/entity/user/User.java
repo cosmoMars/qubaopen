@@ -1,16 +1,12 @@
 package com.qubaopen.survey.entity.user;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.Pattern;
-
+import com.qubaopen.core.entity.AbstractBaseEntity;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+import java.util.Date;
 
 /**
  * @author mars 用户表
@@ -69,6 +65,9 @@ public class User extends AbstractBaseEntity<Long> {
 	 * 第三方类型
 	 */
 	private ThirdType thirdType;
+
+    @Temporal(TemporalType.DATE)
+    private Date loginDate;
 	
 	public enum ThirdType {
 		Sina, WeChat, Qzone
@@ -146,4 +145,11 @@ public class User extends AbstractBaseEntity<Long> {
 		this.thirdType = thirdType;
 	}
 
+    public Date getLoginDate() {
+        return loginDate;
+    }
+
+    public void setLoginDate(Date loginDate) {
+        this.loginDate = loginDate;
+    }
 }

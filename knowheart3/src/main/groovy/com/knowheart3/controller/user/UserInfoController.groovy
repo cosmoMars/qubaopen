@@ -1,5 +1,7 @@
 package com.knowheart3.controller.user
 
+import org.springframework.beans.factory.annotation.Value
+
 import javax.servlet.http.HttpServletRequest
 
 import org.apache.commons.lang3.time.DateFormatUtils
@@ -41,8 +43,8 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 	@Autowired
 	UserService userService
 
-    @Autowired
-    UploadUtils uploadUtils
+    @Value('${user_url}')
+    String user_url
 
 	@Override
 	protected MyRepository<UserInfo, Long> getRepository() {
@@ -275,8 +277,8 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
         if (avatar) {
             def userInfo = userInfoRepository.findOne(user.id)
-            String name = 'u' + user.id
-            def url = uploadUtils.uploadTo7niu(7, name, avatar)
+            String name = "$user_url$user.id"
+            def url = UploadUtils.uploadTo7niu(1, name, avatar.inputStream)
 //            def url = uploadUtils.uploadUser(user.id, avatar)
 
             userInfo.avatarPath = url

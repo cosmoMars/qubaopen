@@ -13,6 +13,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +41,9 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 	
 	@Autowired
 	private ObjectMapper objectMapper;
+
+    @Value("${hospital_url}")
+    private String hospital_url;
 	
 	@Override
 	protected MyRepository<HospitalInfo, Long> getRepository() {
@@ -208,8 +212,13 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		}
 
         if (avatar != null) {
-            String hName = "h" + hospital.getId();
-            String url = uploadUtils.uploadTo7niu(3, hName, avatar);
+            String hName = hospital_url + hospital.getId();
+            String url;
+            try {
+                url = uploadUtils.uploadTo7niu(1, hName, avatar.getInputStream());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             hi.setHospitalAvatar(url);
         }
         if (hi.getLoginStatus() == HospitalInfo.LoginStatus.Unaudited) {

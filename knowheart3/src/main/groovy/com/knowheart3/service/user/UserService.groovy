@@ -1,38 +1,25 @@
 package com.knowheart3.service.user
 
-
-
-import javax.servlet.http.HttpServletRequest
-
+import com.knowheart3.repository.reward.RewardActivityRecordRepository
+import com.knowheart3.repository.user.*
+import com.knowheart3.service.SmsService
+import com.knowheart3.service.self.SelfService
+import com.knowheart3.utils.DateCommons
+import com.knowheart3.utils.UploadUtils
+import com.qubaopen.survey.entity.user.*
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
-import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
-import com.knowheart3.repository.reward.RewardActivityRecordRepository
-import com.knowheart3.repository.user.UserCaptchaLogRepository
-import com.knowheart3.repository.user.UserCaptchaRepository
-import com.knowheart3.repository.user.UserGoldRepository
-import com.knowheart3.repository.user.UserIDCardBindRepository
-import com.knowheart3.repository.user.UserInfoRepository
-import com.knowheart3.repository.user.UserMoodRepository
-import com.knowheart3.repository.user.UserReceiveAddressRepository
-import com.knowheart3.repository.user.UserRepository
-import com.knowheart3.repository.user.UserUDIDRepository
-import com.knowheart3.service.SmsService
-import com.knowheart3.service.self.SelfService
-import com.knowheart3.utils.DateCommons
-import static com.knowheart3.utils.ValidateUtil.*;
-import com.qubaopen.survey.entity.user.User
-import com.qubaopen.survey.entity.user.UserCaptcha
-import com.qubaopen.survey.entity.user.UserCaptchaLog
-import com.qubaopen.survey.entity.user.UserGold
-import com.qubaopen.survey.entity.user.UserInfo
-import com.qubaopen.survey.entity.user.UserUDID
+import javax.servlet.http.HttpServletRequest
+
+import static com.knowheart3.utils.ValidateUtil.validateEmail
+import static com.knowheart3.utils.ValidateUtil.validatePwd
 
 @Service
 public class UserService {
@@ -69,6 +56,9 @@ public class UserService {
 	
 	@Autowired
 	UserMoodRepository userMoodRepository
+
+    @Value('${user_url}')
+    String user_url
 	
 	@Autowired
 	RewardActivityRecordRepository rewardActivityRecordRepository
@@ -163,6 +153,7 @@ public class UserService {
 		'{"success": "0", "message": "err008"}'
 	}
 
+
 	/**
 	 * 发送验证码
 	 * @param phone
@@ -211,8 +202,8 @@ public class UserService {
 			// 生成6位数字格式的验证码
 			captcha = RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)
 		}
-		
-		// 给指定的用户手机号发送6位随机数的验证码
+
+        // 给指定的用户手机号发送6位随机数的验证码
 		def result = smsService.sendCaptcha(phone, captcha)
 		
 		def userCaptchaLog = new UserCaptchaLog(
@@ -247,6 +238,103 @@ public class UserService {
 		userCaptchaRepository.save(userCaptcha)
 		'{"success": "1"}'
 	}
+    /**
+     * 发送验证码
+     * @param phone
+     * @return
+     */
+    @Transactional
+    sendLoginCaptcha(String phone) {
+
+        def user = userRepository.findByPhone(phone)
+
+        if (!user) {
+            user = new User(
+                    phone : phone
+            )
+            userRepository.save(user)
+        }
+        def userCaptcha = userCaptchaRepository.findOne(user.id)
+        def today = new Date()
+        if (userCaptcha) {
+            def lastSentDate = userCaptcha.lastSentDate
+            if ((today.time - lastSentDate.time) < 60000) {
+                return '{"success": "0", "message": "err009"}'
+            }
+
+            if (DateUtils.isSameDay(today, userCaptcha.lastSentDate) && userCaptcha.sentNum > 10) {
+                return '{"success": "0", "message": "err010"}'
+            }
+        }
+        def captcha
+
+        if (userCaptcha && userCaptcha.captcha) {
+            captcha = userCaptcha.captcha
+        } else {
+            // 生成6位数字格式的验证码
+            captcha = RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)
+        }
+
+        // 给指定的用户手机号发送6位随机数的验证码
+        def result = smsService.sendCaptcha(phone, captcha)
+
+        def userCaptchaLog = new UserCaptchaLog(
+                user : user,
+                captcha : captcha,
+                status : result.get('resCode'),
+                action : '0'
+        )
+        userCaptchaLogRepository.save(userCaptchaLog)
+
+        if (!result.get('isSuccess')) {
+            return '{"success": "0", "message": "err011"}'
+        }
+
+        user.password = DigestUtils.md5Hex("knowheart$captcha")
+        user.loginDate = today
+
+        if (userCaptcha) {
+            if (DateUtils.isSameDay(today, userCaptcha.lastSentDate)) {
+                userCaptcha.sentNum ++
+            } else {
+                userCaptcha.sentNum = 1
+            }
+            userCaptcha.captcha = captcha
+            userCaptcha.lastSentDate = today
+        } else {
+            userCaptcha = new UserCaptcha(
+                    id : user.id,
+                    captcha : captcha,
+                    lastSentDate : today,
+                    sentNum : 1
+            )
+        }
+		if (!user.activated) {
+			def userInfo = new UserInfo(
+				id : user.id,
+				publicAnswersToFriend : true
+			)
+					
+			def userUdid = new UserUDID(
+				id : user.id,
+				push : true,
+				startTime : DateCommons.String2Date('09:00','HH:mm'),
+				endTime : DateCommons.String2Date('22:00','HH:mm')
+			)
+			def userGold = new UserGold(
+				id : user.id
+			)
+	
+			userInfoRepository.save(userInfo)
+			userUDIDRepository.save(userUdid)
+			userGoldRepository.save(userGold)
+			user.activated = true
+		}
+        userRepository.save(user)
+        userCaptchaRepository.save(userCaptcha)
+		
+        '{"success": "1"}'
+    }
 
 	/**
 	 * 重置密码
@@ -344,6 +432,43 @@ public class UserService {
 		userUDIDRepository.save(userUdid)
 		userGoldRepository.save(userGold)
 	}
+
+    /**
+     * 保存user，新建userInfo，保存头像
+     * @param user
+     * @param avatar
+     * @return
+     */
+    @Transactional
+    void captchaSaveUser(User user, MultipartFile avatar) {
+
+        user = userRepository.save(user)
+
+        if (avatar != null) {
+            def name = "$user_url$user.id"
+            UploadUtils.uploadTo7niu(1, name, avatar.inputStream)
+        }
+        def userInfo = new UserInfo(
+                id : user.id,
+                publicAnswersToFriend : true
+        )
+
+
+        def userUdid = new UserUDID(
+                id : user.id,
+                push : true,
+                startTime : DateCommons.String2Date('09:00','HH:mm'),
+                endTime : DateCommons.String2Date('22:00','HH:mm')
+        )
+        def userGold = new UserGold(
+                id : user.id
+//			currentGold : 10000 //测试使用
+        )
+
+        userInfoRepository.save(userInfo)
+        userUDIDRepository.save(userUdid)
+        userGoldRepository.save(userGold)
+    }
 	
 	/**
 	 * 保存udid idfa

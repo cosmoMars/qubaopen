@@ -9,6 +9,7 @@ import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -32,6 +33,9 @@ class HosptialDoctorRecordController extends AbstractBaseController<HospitalDoct
 
     @Autowired
     UploadUtils uploadUtils
+
+    @Value('${hospital_doctor_url}')
+    String hospital_doctor_url
 
     @Override
     protected MyRepository<HospitalDoctorRecord, Long> getRepository() {
@@ -84,8 +88,8 @@ class HosptialDoctorRecordController extends AbstractBaseController<HospitalDoct
         @ModelAttribute('currentHospital') Hospital hospital) {
 
         def hdRecord = hospitalDoctorRecordRepository.findOne(id),
-            hdName = 'hd' + hospital.id
-        def url = uploadUtils.uploadTo7niu(4, hdName, record)
+            hdName = "$hospital_doctor_url$hospital.id"
+        def url = uploadUtils.uploadTo7niu(2, hdName, record.inputStream)
         hdRecord.doctorRecordPath = url
         hospitalDoctorRecordRepository.save(url)
         '{"success" : "1"}'

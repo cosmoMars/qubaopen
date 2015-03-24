@@ -1,5 +1,6 @@
 package com.qubaopen.backend.controller.topic;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +12,7 @@ import com.qubaopen.backend.utils.UploadUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +33,8 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
 	@Autowired
 	private DailyDiscoveryPicRepository dailyDiscoveryPicRepository;
 
-    @Autowired
-    UploadUtils uploadUtils;
+    @Value("${discovery_next_url}")
+    private String discovery_next_url;
 	
 	@Override
 	protected MyRepository<DailyDiscoveryPic, Long> getRepository() {
@@ -105,14 +107,19 @@ public class DailyDiscoveryPicController  extends AbstractBaseController<DailyDi
 			e.printStackTrace();
 		}
         if (null != multipartFile) {
-            String uname = null;
+            String uname;
             if (null == ddp.getId()) {
-                uname = "ddp";
+                uname = discovery_next_url;
             } else {
-                uname = "ddp" + ddp.getId().toString();
+                uname = discovery_next_url + ddp.getId().toString();
             }
 
-            String picUrl = uploadUtils.uploadTo7niu(5, uname, multipartFile);
+            String picUrl;
+            try {
+                picUrl = UploadUtils.uploadTo7niu(1, uname, multipartFile.getInputStream());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             ddp.setPicUrl(picUrl);
         }
 

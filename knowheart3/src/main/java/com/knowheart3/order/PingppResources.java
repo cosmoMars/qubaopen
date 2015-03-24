@@ -27,6 +27,10 @@ import java.util.*;
 @SessionAttributes("currentUser")
 public class PingppResources {
 
+    static {
+        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+    }
+
     @Autowired
     BookingRepository bookingRepository;
 
@@ -55,7 +59,7 @@ public class PingppResources {
 
         Booking booking = bookingRepository.findOne(bookingId);
         resp.setContentType("application/json; charset=utf-8");
-        PrintWriter out = null;
+        PrintWriter out;
         if (null != booking.getDoctor() && booking.getStatus() == Booking.Status.Accept) {
 
             if (null == booking.getOutDated() || (new Date()).getTime() > booking.getOutDated().getTime()) {
@@ -97,7 +101,6 @@ public class PingppResources {
                 e.printStackTrace();
             }
         }
-        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
 
         Map<String, Object> chargeParams = new HashMap<String, Object>();
         chargeParams.put("order_no",  booking.getTradeNo());
@@ -127,24 +130,17 @@ public class PingppResources {
         content.append("下单时间：").append(DateFormatUtils.format(booking.getTime(), "yyyy-MM-dd"));
         content.append("，订单号：").append(booking.getTradeNo());
         chargeParams.put("body",  content.toString());
-        Charge ch = null;
+        Charge ch;
         try {
             ch = Charge.create(chargeParams);
-        } catch (PingppException e) {
-            e.printStackTrace();
-        }
-
-
-        booking.setChargeId(ch.getId());
-        bookingRepository.save(booking);
-
-        try {
             out = resp.getWriter();
             out.print(ch);
             out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+        booking.setChargeId(ch.getId());
+        bookingRepository.save(booking);
     }
 
     /**

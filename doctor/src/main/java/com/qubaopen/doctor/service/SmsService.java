@@ -1,11 +1,8 @@
 package com.qubaopen.doctor.service;
 
+import com.qubaopen.doctor.repository.smstoken.SmsTokenRepository;
+import com.qubaopen.survey.entity.token.SmsToken;
 import groovy.json.JsonSlurper;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -17,8 +14,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.qubaopen.doctor.repository.smstoken.SmsTokenRepository;
-import com.qubaopen.survey.entity.token.SmsToken;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class SmsService {
@@ -54,7 +52,7 @@ public class SmsService {
 	}
 
 	public Map<String, Object> sendCaptcha(String phone, String captcha) {
-		
+
 		SmsToken st = smsTokenRepository.findOne(1l);
 
 		LOGGER.trace("sms189_url := {}", sms189_url);

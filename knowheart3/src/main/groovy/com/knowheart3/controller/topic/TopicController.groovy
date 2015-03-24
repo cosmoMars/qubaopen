@@ -1,6 +1,6 @@
 package com.knowheart3.controller.topic
 
-import com.knowheart3.repository.topic.DailyDiscoveryRepository
+import com.knowheart3.repository.discovery.DailyDiscoveryRepository
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.ModelAttribute

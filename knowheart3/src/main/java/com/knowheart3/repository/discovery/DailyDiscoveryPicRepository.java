@@ -1,4 +1,4 @@
-package com.knowheart3.repository.topic;
+package com.knowheart3.repository.discovery;
 
 import java.util.Date;
 import java.util.List;

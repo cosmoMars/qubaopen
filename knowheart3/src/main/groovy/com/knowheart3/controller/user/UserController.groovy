@@ -55,6 +55,9 @@ class UserController extends AbstractBaseController<User, Long> {
 	
 	@Autowired
 	UserThirdRepository userThirdRepository
+
+    @Autowired
+    UserCaptchaRepository userCaptchaRepository
 	
 	@Autowired
 	SmsService smsService
@@ -130,12 +133,97 @@ class UserController extends AbstractBaseController<User, Long> {
 				'birthday' : userInfo?.birthday,
 				'avatarPath' : userInfo?.avatarPath,
 				'signature' : userInfo?.signature,
-                'systemTime' : new Date()
+                'time' : userInfo.createdDate
 			]
 		}
 
 		'{"success" : "0", "message": "亲，您输入的帐号或密码有误哟！"}'
 	}
+    /**
+     * 用户登录
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = 'captchaLogin', method = RequestMethod.POST)
+    captchaLogin(@RequestParam(required = false) String phone,
+          @RequestParam(required = false) String captcha,
+          @RequestParam(required = false) Integer loginType,
+          @RequestParam(required = false) String idfa,
+          @RequestParam(required = false) String udid,
+          @RequestParam(required = false) String imei,
+          Model model, HttpSession session) {
+        /*@RequestBody User user,*/
+
+        logger.trace ' -- 用户登录 -- '
+
+        /*if (!user) {
+            return '{"success" : "0", "message": "err014"}'
+        }*/
+
+        if (!validatePhone(phone)) {
+            return '{"success" : "0", "message": "err003"}'
+        }
+//        def loginUser = userRepository.findByPhoneAndActivated(phone, true)
+        def loginUser = userRepository.captchaLogin(phone,  DigestUtils.md5Hex("knowheart$captcha"))
+
+        if (loginUser) {
+
+            def diffDay = (new Date().time - loginUser.loginDate.time) / 24 / 3600 / 1000
+            if (diffDay > 3650) {
+                return '{"success" : "0", "message" : "亲,登陆超时～请重新登陆哦～"}'
+            }
+            def userCaptcha = userCaptchaRepository.findOne(loginUser.id)
+
+            userCaptcha.captcha = null
+            userCaptchaRepository.save(userCaptcha)
+
+            userService.saveUserCode(loginUser, udid, idfa, imei)
+
+            def	userLog = new UserLog(
+                    user : loginUser,
+                    time : new Date()
+            )
+
+            if (null == loginType) {
+                userLog.userLogType = new UserLogType(id : 1l)
+                loginUser.loginDate = new Date()
+            } else {
+                def typeId = loginType as Long
+                userLog.userLogType = new UserLogType(id : typeId)
+            }
+
+            userLogRepository.save(userLog)
+
+            model.addAttribute('currentUser', loginUser)
+
+            def userInfo = loginUser.userInfo,
+                userIdCardBind = loginUser.userIdCardBind,
+                userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
+
+            return  [
+                    'success' : '1',
+                    'message' : '登录成功',
+                    'userId' : loginUser?.id,
+                    'phone' : loginUser?.phone,
+                    'name' : userIdCardBind?.userIDCard?.name,
+                    'sex' : userInfo?.sex?.ordinal(),
+                    'nickName' : userInfo?.nickName,
+                    'bloodType' : userInfo?.bloodType?.ordinal(),
+                    'district' : '',
+                    'email' : loginUser?.email,
+                    'defaultAddress' : userReceiveAddress?.detialAddress,
+                    'defaultAddressId' : userReceiveAddress?.id,
+                    'consignee' : userReceiveAddress?.consignee,
+                    'defaultAddressPhone' : userReceiveAddress?.phone,
+                    'idCard' : userIdCardBind?.userIDCard?.IDCard,
+                    'birthday' : userInfo?.birthday,
+                    'avatarPath' : userInfo?.avatarPath,
+                    'signature' : userInfo?.signature
+            ]
+        }
+
+        '{"success" : "0", "message": "err001"}'
+    }
 
 	/**
 	 * 第三方登陆
@@ -253,8 +341,7 @@ class UserController extends AbstractBaseController<User, Long> {
 			'birthday' : userInfo?.birthday,
 			'avatarPath' : userInfo?.avatarPath,
 			'signature' : userInfo?.signature,
-			'newUser' : newUser,
-            'systemTime' : new Date()
+			'newUser' : newUser
 		]
 		
 	}
@@ -311,6 +398,26 @@ class UserController extends AbstractBaseController<User, Long> {
 
 		userService.sendCaptcha(phone, activated)
 	}
+
+    /**
+     * @param phone 用户手机号
+     * @return 判断手机用户，不存在创建，存在给用户手机发一条验证码短信
+     */
+    @RequestMapping(value = 'sendLoginCaptcha', method = RequestMethod.GET)
+    sendLoginCaptcha(@RequestParam(required = false) String phone) {
+
+        logger.trace ' -- 发送验证码 -- '
+        logger.trace "phone := $phone"
+
+        if (!validatePhone(phone)) {
+            // 验证用户手机号是否无效
+            return '{"success" : "0", "message": "err003"}'
+        }
+
+        userService.sendLoginCaptcha(phone)
+    }
+
+
 	
 	/**
 	 * 忘记密码重置

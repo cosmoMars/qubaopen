@@ -15,6 +15,7 @@ import com.qubaopen.survey.entity.user.UserLogType
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -58,8 +59,11 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
     @Autowired
     FileUtils fileUtils
 
-    @Autowired
-    UploadUtils uploadUtils
+    @Value('${hospital_record_url}')
+    String hospital_record_url
+
+    @Value('${hospital_doctor_url}')
+    String hospital_doctor_url
 
 	@Override
 	MyRepository<Hospital, Long> getRepository() {
@@ -287,9 +291,10 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	 * @return
 	 * 激活账户
 	 */
+    @Transactional
 	@RequestMapping(value = 'activateAccount', method = RequestMethod.GET)
 	activateAccount(@RequestParam long id, @RequestParam String captcha) {
-		
+
 		logger.trace '-- 激活账户 --'
 		def hCaptcha = hospitalCaptchaRepository.findOne(id)
 		
@@ -333,12 +338,12 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 
         fileMap.each { k, v ->
             if ('certificate' == k) {
-                def hrName = 'hr' + hospital.id
-                def hospitalUrl = uploadUtils.uploadTo7niu(8, hrName, v)
+                def hrName = "$hospital_record_url$hospital.id"
+                def hospitalUrl = UploadUtils.uploadTo7niu(2, hrName, v.inputStream)
                 hospitalInfo.hospitalRecordPath = hospitalUrl
             } else {
-                def hdName = 'hd' + hospital.id
-                def hospitalDoctorPath = uploadUtils.uploadTo7niu(4, hdName, v)
+                def hdName = "$hospital_doctor_url$hospital.id"
+                def hospitalDoctorPath = UploadUtils.uploadTo7niu(2, hdName, v.inputStream)
                 def hdRecord = new HospitalDoctorRecord(
                         hospitalInfo : hospitalInfo,
                         doctorRecordPath : hospitalDoctorPath

@@ -10,6 +10,7 @@ import com.qubaopen.survey.entity.doctor.DoctorRecord
 import org.apache.commons.lang3.time.DateUtils
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -39,9 +40,11 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
     @Autowired
     DoctorRecordRepository doctorRecordRepository
 
-    @Autowired
-    UploadUtils uploadUtils
+    @Value('${doctor_record_url}')
+    String doctor_record_url
 
+    @Value('${doctor_url}')
+    String doctor_url
     @Override
     protected MyRepository<DoctorInfo, Long> getRepository() {
         return doctorInfoRepository;
@@ -269,16 +272,16 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		}
 		
         if (avatar) {
-            String aName = 'd' + doctorInfo.id
+            String aName = "$doctor_url$doctorInfo.id"
             // 上传图片
-            def path = uploadUtils.uploadTo7niu(1, aName, avatar)
+            def path = UploadUtils.uploadTo7niu(1, aName, avatar.inputStream)
             doctorInfo.avatarPath = path
             doctorInfo.lastModifiedDate = new DateTime()
         }
         def recordPath
         if (record) {
-            def rName = 'dr' + doctorInfo.id
-            recordPath = uploadUtils.uploadTo7niu(2, rName, record)
+            def rName = "$doctor_record_url$doctorInfo.id"
+            recordPath = UploadUtils.uploadTo7niu(2, rName, record.inputStream)
             doctorInfo.recordPath = recordPath
             doctorInfo.lastModifiedDate = new DateTime()
         }

@@ -15,6 +15,9 @@ import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -48,6 +51,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
     @Autowired
     UserFavoriteRepository userFavoriteRepository
+
 
 	@Override
 	protected MyRepository<Self, Long> getRepository() {
@@ -359,4 +363,60 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'data' : data
 		]
 	}
+
+    /**
+     * 获取自测历史
+     * @param pageable
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = 'retrieveSelfResult', method = RequestMethod.POST)
+    retrieveSelfResult(@PageableDefault(page = 0, size = 20, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
+                       @ModelAttribute('currentUser') User user) {
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
+
+//        def count = selfUserQuestionnaireRepository.countBySelfAndUser(new Self(id : selfId), user)
+        def questionnaires = selfUserQuestionnaireRepository.findByUserAndUsed(user, true, pageable)
+
+        def data = []
+        if (questionnaires) {
+            questionnaires.each {
+                data << [
+                        'id' : it.selfResultOption?.id,
+                        'resultTitle' : it.selfResultOption?.selfResult?.title,
+                        'content' : it.selfResultOption?.content,
+                        'optionTitle' : it.selfResultOption?.title,
+                        'resultRemark' : it.selfResultOption?.selfResult?.remark,
+                        'optionNum' : it.selfResultOption?.resultNum
+                ]
+            }
+        }
+
+        [
+                'success' : '1',
+                'data' : data
+        ]
+
+    }
+
+    @RequestMapping(value = 'retrieveGroupSelf/{id}', method = RequestMethod.GET)
+    retrieveGroupSelf(@PathVariable long id,
+                      @ModelAttribute('currentUser') User user) {
+
+        if (null == user.id) {
+            return '{"success" : "0", "message" : "err000"}'
+        }
+
+        def self = selfRepository.findOne(id),
+            selfGroup = self.selfGroup
+
+//        if ()
+
+
+    }
+
+
 }

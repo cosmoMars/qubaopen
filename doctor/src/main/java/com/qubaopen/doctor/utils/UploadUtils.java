@@ -9,16 +9,24 @@ import com.qiniu.api.rs.GetPolicy;
 import com.qiniu.api.rs.PutPolicy;
 import com.qiniu.api.rs.URLUtils;
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
 
 /**
  * Created by mars on 15/3/17.
  */
 @Service
 public class UploadUtils {
+
+    private static Mac mac;
+    static {
+        Config.ACCESS_KEY = "NdVj6TB7C78u0PhPenlU1kzgwWvBV1mazFeBk9ma";
+        Config.SECRET_KEY = "PGgA48fZfELgr-IjpboBjvLXskOp94rgF66ed__X";
+        mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
+    }
 
     public String retrievePriavteUrl(String url) {
 
@@ -28,9 +36,6 @@ public class UploadUtils {
 
         String[] str = url.split("/");
 
-        Config.ACCESS_KEY = "NdVj6TB7C78u0PhPenlU1kzgwWvBV1mazFeBk9ma";
-        Config.SECRET_KEY = "PGgA48fZfELgr-IjpboBjvLXskOp94rgF66ed__X";
-        Mac mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
         String downloadUrl = null;
         try {
             if (null != str[2] && null != str[3]) {
@@ -51,52 +56,24 @@ public class UploadUtils {
      * type 1 医师头像，2 医师资质，3 诊所头像，4 诊所医师资质，5 明日发现，6 每日发现，7 用户头像，8 诊所资质
      * @param type
      * @param name
-     * @param multipartFile
+     * @param io
      * @return
      */
-    public String uploadTo7niu(int type, String name, MultipartFile multipartFile) {
+    public static String uploadTo7niu(int type, String name, InputStream io) {
 
-        Config.ACCESS_KEY = "NdVj6TB7C78u0PhPenlU1kzgwWvBV1mazFeBk9ma";
-        Config.SECRET_KEY = "PGgA48fZfELgr-IjpboBjvLXskOp94rgF66ed__X";
-
-        Mac mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
         // 请确保该bucket已经存在
 
-        String bucketName = null;
-        String key = name + "_" + System.currentTimeMillis();
-        String url = null;
+        String bucketName;
+        String key = name + "_" + DateFormatUtils.format(new Date(), "yyyyMMddHHmmssssss");
+        String url;
         switch (type) {
             case 1 :
-                bucketName = "zhixin-doctor";
-                url = "http://7xi46q.com2.z0.glb.qiniucdn.com/" + key;
+                bucketName = "zhixin-public";
+                url = "http://7xi893.com2.z0.glb.clouddn.com/" + key;
                 break;
             case 2 :
-                bucketName = "zhixin-doctorrecord";
-                url = "http://7xi4h0.com2.z0.glb.qiniucdn.com/" + key;
-                break;
-            case 3 :
-                bucketName = "zhixin-hospital";
-                url = "http://7xi46r.com2.z0.glb.qiniucdn.com/" + key;
-                break;
-            case 4 :
-                bucketName = "zhixin-hospitaldoctor";
-                url = "http://7xi46t.com2.z0.glb.qiniucdn.com/" + key;
-                break;
-            case 5 :
-                bucketName = "zhixin-next-discovery";
-                url = "http://7xi5bi.com2.z0.glb.qiniucdn.com/" + key;
-                break;
-            case 6 :
-                bucketName = "zhixin-task-discovery";
-                url = "http://7xi5bj.com2.z0.glb.clouddn.com/" + key;
-                break;
-            case 7 :
-                bucketName = "zhixin-user";
-                url = "http://7xi46o.com2.z0.glb.clouddn.com/" + key;
-                break;
-            case 8 :
-                bucketName = "zhixin-hospital-record";
-                url = "http://7xi6cw.com2.z0.glb.clouddn.com/" + key;
+                bucketName = "zhixin-private";
+                url = "http://7xi894.com2.z0.glb.clouddn.com/" + key;
                 break;
             default:
                 bucketName = "zhixin";
@@ -105,18 +82,16 @@ public class UploadUtils {
         }
 
         PutPolicy putPolicy = new PutPolicy(bucketName);
-        String uptoken = null;
+
         try {
-            uptoken = putPolicy.token(mac);
+            String uptoken = putPolicy.token(mac);
+            PutExtra extra = new PutExtra();
+            IoApi.Put(uptoken, key, io, extra);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        PutExtra extra = new PutExtra();
-        try {
-            IoApi.Put(uptoken, key, multipartFile.getInputStream(), extra);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+
         return url;
     }
 }

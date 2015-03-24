@@ -10,6 +10,7 @@ import com.qubaopen.survey.entity.doctor.DoctorRecord
 import org.apache.commons.lang3.time.DateUtils
 import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -27,8 +28,8 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
     @Autowired
     DoctorInfoRepository doctorInfoRepository
 
-    @Autowired
-    UploadUtils uploadUtils
+    @Value('${doctor_record_url}')
+    String doctor_record_url
 	
 	@Override
 	MyRepository<DoctorRecord, Long> getRepository() {
@@ -221,8 +222,8 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 
             def doctorInfo = doctorInfoRepository.findOne(dr.id)
 
-            def drName = 'dr' + doctorInfo.id
-            def recordPath = uploadUtils.uploadTo7niu(2, drName, record)
+            def drName = "$doctor_record_url$doctorInfo.id"
+            def recordPath = UploadUtils.uploadTo7niu(2, drName, record.inputStream)
             doctorInfo.recordPath = recordPath
             doctorInfo.lastModifiedDate = new DateTime()
             doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing

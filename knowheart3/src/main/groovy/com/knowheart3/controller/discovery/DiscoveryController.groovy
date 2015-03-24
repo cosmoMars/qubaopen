@@ -4,7 +4,7 @@ import com.knowheart3.repository.exercise.ExerciseRepository
 import com.knowheart3.repository.exercise.UserExerciseRepository
 import com.knowheart3.repository.favorite.UserFavoriteRepository
 import com.knowheart3.repository.self.SelfUserQuestionnaireRepository
-import com.knowheart3.repository.topic.DailyDiscoveryRepository
+import com.knowheart3.repository.discovery.DailyDiscoveryRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.topic.DailyDiscovery
@@ -52,7 +52,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	 * 获取发现内容
 	 */
 	@RequestMapping(value = 'retrieveDiscoveryContent', method = RequestMethod.GET)
-	retrieveDiscoveryContent(@RequestParam(required = false) String time,
+	retrieveDiscoveryContent(@PageableDefault(page = 0, size = 1, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 		
 		def exercise, number, exerciseCount, userExercise, breakTime, mession = false, isLogin = false
@@ -97,12 +97,8 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
         } else {
             exerciseCount = 0
         }
-		def dailyDiscovery
-		if (time != null) {
-			dailyDiscovery = dailyDiscoveryRepository.findByTime(DateUtils.parseDate(time, 'yyyy-MM-dd'))
-		} else {
-			dailyDiscovery = dailyDiscoveryRepository.findByTime(new Date())
-		}
+		def page = dailyDiscoveryRepository.findAll(pageable)
+        def dailyDiscovery = page.getContent().get(0)
 
         def haveDone = false
         if (dailyDiscovery?.self && null != user.id) {
@@ -132,42 +128,11 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 			'topicName' : dailyDiscovery?.topic?.name,
 			'topicContent' : dailyDiscovery?.topic?.content,
             'topicPic' : dailyDiscovery?.topic?.picUrl,
-            'isLogin' : isLogin
+            'isLogin' : isLogin,
+            'time' : dailyDiscovery.time,
+            'more' : page.hasNext()
 		]
 		
 	}
-
-    /**
-     * 获取自测历史
-     * @param pageable
-     * @param user
-     * @return
-     */
-    @RequestMapping(value = 'retrieveSelfResult', method = RequestMethod.POST)
-    retrieveSelfResult(@PageableDefault(page = 0, size = 20, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
-                       @ModelAttribute('currentUser') User user) {
-
-//        def count = selfUserQuestionnaireRepository.countBySelfAndUser(new Self(id : selfId), user)
-        def questionnaire = selfUserQuestionnaireRepository.findByUserAndUsed(user, true, pageable)
-
-        def data = []
-        if (questionnaire) {
-            questionnaire.each {
-                data << [
-                        'id' : it?.selfResultOption?.id,
-                        'resultTitle' : it?.selfResultOption?.selfResult?.title,
-                        'content' : it?.selfResultOption?.content,
-                        'optionTitle' : it?.selfResultOption?.title,
-                        'resultRemark' : it?.selfResultOption?.selfResult?.remark,
-                        'optionNum' : it?.selfResultOption?.resultNum
-                ]
-            }
-        }
-        [
-                'success' : '1',
-                'data' : data
-        ]
-
-    }
 
 }

@@ -18,8 +18,11 @@ public interface UserRepository extends MyRepository<User, Long> {
 
 	@Query("from User u join fetch u.userInfo left join fetch u.userIdCardBind where phone = :phone and password = :password and activated = true")
 	User login(@Param("phone") String phone, @Param("password") String password);
-	
-	@Query("from User")
+
+    @Query("from User u join fetch u.userInfo left join fetch u.userIdCardBind where phone = :phone and password = :password")
+    User captchaLogin(@Param("phone") String phone, @Param("password") String password);
+
+    @Query("from User")
 	List<User> findAllUsers(Pageable pageable);
 	
 	User findByTokenAndThirdType(String token, ThirdType thirdType);

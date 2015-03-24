@@ -33,7 +33,9 @@ public class HospitalService {
 	
 	@Autowired
 	CaptchaService captchaService
-	
+
+    @Autowired
+    CommonEmail commonEmail
 	/**
 	 * @param phone
 	 * @param password
@@ -95,7 +97,7 @@ public class HospitalService {
 		}
 		def captcha = RandomStringUtils.random(1, '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') + RandomStringUtils.random(5, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 		
-		def result = captchaService.sendTextMail(email, captcha)
+		def result = commonEmail.sendTextMail(email, captcha)
 		def hospitalCaptchaLog = new HospitalCaptchaLog(
 			hospital : hospital,
 			captcha : captcha,
@@ -137,7 +139,8 @@ public class HospitalService {
 	 */
 	@Transactional
 	sendCaptcha(String url, long hospitalId, String email) {
-		
+
+
 //		def hospital
 //		if (!activated) { //新用户
 //			hospital = hospitalRepository.findByEmail(email)

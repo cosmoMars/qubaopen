@@ -1,5 +1,4 @@
 package com.knowheart3.controller.user
-
 import com.knowheart3.repository.user.*
 import com.knowheart3.service.SmsService
 import com.knowheart3.service.user.UserService
@@ -13,6 +12,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -23,7 +23,6 @@ import javax.servlet.http.HttpSession
 
 import static com.knowheart3.utils.ValidateUtil.validatePhone
 import static com.knowheart3.utils.ValidateUtil.validatePwd
-
 /**
  * @author mars 用户表
  */
@@ -506,5 +505,42 @@ class UserController extends AbstractBaseController<User, Long> {
 		
 		'{"success" : "1"}'
 	}
+
+
+    @RequestMapping(value = 'testMessage', method = RequestMethod.GET)
+    testMessage() {
+        String param1 = '{"param1" : "王非","param2" : "13917377795"}'
+        String param2 = '{"param1" : "王非","param2" : "13917377795"}'
+        String param3 = '{"param1" : "http://zhixin.me/smsRedirectDr.html"}'
+        String param4 = '{"param1" : "http://zhixin.me/smsRedirect.html"}'
+        String param5 = '{"param1" : "http://zhixin.me/smsRedirectDr.html"}'
+        String param6 = '{"param1" : "3月22日11:00", "param2" : "同蒲路1680"}'
+        Map<String, Object> map1 = smsService.sendSmsMessage('13621673989', 2, param1)
+//        smsService.sendSmsMessage('13917377795', 3, param2)
+//        smsService.sendSmsMessage('13917377795', 4, param3)
+//        smsService.sendSmsMessage('13917377795', 5, param4)
+//        smsService.sendSmsMessage('13917377795', 6, param5)
+        Map<String, Object> map2 =  smsService.sendSmsMessage('13621673989', 7, param6)
+
+        return [
+                map1: map1,
+                map2 : map2
+        ]
+
+    }
+    @Transactional
+//    @Scheduled(fixedRate = 1000l)
+    @Scheduled(cron = "0/5 * * * * ?")
+    public void execute() {
+        println new Date()
+//        // TODO Auto-generated method stub
+//        try {
+//            sendToASpecificUser();
+//            sendToEveryOne();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+    }
 
 }

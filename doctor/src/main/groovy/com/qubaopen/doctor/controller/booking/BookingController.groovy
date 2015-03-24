@@ -1,5 +1,6 @@
-package com.qubaopen.doctor.controller.booking;
+package com.qubaopen.doctor.controller.booking
 
+import com.qubaopen.doctor.service.SmsService;
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
@@ -50,6 +51,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	
 	@Autowired
 	PayEntityRepository payEntityRepository
+
+    @Autowired
+    SmsService smsService
 	
 	@Override
 	protected MyRepository<Booking, Long> getRepository() {
@@ -509,13 +513,17 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	
 		def booking = bookingRepository.findOne(id),
 			bookingStatus = Booking.Status.values()[index]
-			
+
+        if (bookingStatus == Booking.Status.Accept) {
+            String param1 = '{"param1" : "http://zhixin.me/smsRedirect.html"}'
+            smsService.sendSmsMessage(booking.getPhone(), 5, param1)
+        }
 		booking.status = bookingStatus
 		
 		if (bookingStatus && bookingStatus == Booking.Status.Refusal) {
 			booking.refusalReason = content
 			
-			payEntityRepository.deleteByBooking(booking)
+//			payEntityRepository.deleteByBooking(booking)
 			
 		}
 		

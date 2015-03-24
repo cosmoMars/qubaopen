@@ -1,6 +1,7 @@
 package com.knowheart3.order;
 
 import com.knowheart3.repository.booking.BookingRepository;
+import com.knowheart3.service.SmsService;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.exception.*;
 import com.pingplusplus.model.Channel;
@@ -33,6 +34,9 @@ public class PingppResources {
 
     @Autowired
     BookingRepository bookingRepository;
+
+    @Autowired
+    SmsService smsService;
 
     /**
      * ping++ 发起支付
@@ -90,6 +94,10 @@ public class PingppResources {
 
         if (null != quick) {
             booking.setQuick(quick);
+            if (quick) {
+                String param = "{\"param1\" : \"http://zhixin.me/smsRedirectDr.html\"}";
+                smsService.sendSmsMessage(booking.getDoctor().getPhone(), 4, param);
+            }
         }
         if (null != money) {
             booking.setMoney(money);

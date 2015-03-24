@@ -1,15 +1,10 @@
 package com.qubaopen.survey.entity.system;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * sms189 中国短信网回调 Created by duel on 2014/6/30.
@@ -22,15 +17,19 @@ public class SmsCallBack extends AbstractPersistable<Long> {
 	private static final long serialVersionUID = -4276646803175758354L;
 
 	/**
-	 * 短信 dxid
+	 * 短信模版id
 	 */
-	@Column(unique = true)
-	private String backId;
+	private String templeteId;
 
 	/**
-	 * 短信 yzm验证码
+	 * 短信回调值
 	 */
-	private String backCode;
+	private String resCode;
+
+    /**
+     * 手机
+     */
+    private String phone;
 
 	/**
 	 * 时间
@@ -38,23 +37,23 @@ public class SmsCallBack extends AbstractPersistable<Long> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date time;
 
-	public String getBackId() {
-		return backId;
-	}
+    public String getTempleteId() {
+        return templeteId;
+    }
 
-	public void setBackId(String backId) {
-		this.backId = backId;
-	}
+    public void setTempleteId(String templeteId) {
+        this.templeteId = templeteId;
+    }
 
-	public String getBackCode() {
-		return backCode;
-	}
+    public String getResCode() {
+        return resCode;
+    }
 
-	public void setBackCode(String backCode) {
-		this.backCode = backCode;
-	}
+    public void setResCode(String resCode) {
+        this.resCode = resCode;
+    }
 
-	public Date getTime() {
+    public Date getTime() {
 		return time;
 	}
 
@@ -62,4 +61,11 @@ public class SmsCallBack extends AbstractPersistable<Long> {
 		this.time = time;
 	}
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

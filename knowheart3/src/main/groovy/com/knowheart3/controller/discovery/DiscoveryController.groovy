@@ -1,15 +1,14 @@
 package com.knowheart3.controller.discovery
+import com.knowheart3.repository.discovery.DailyDiscoveryRepository
 import com.knowheart3.repository.exercise.ExerciseInfoRepository
 import com.knowheart3.repository.exercise.ExerciseRepository
 import com.knowheart3.repository.exercise.UserExerciseRepository
 import com.knowheart3.repository.favorite.UserFavoriteRepository
 import com.knowheart3.repository.self.SelfUserQuestionnaireRepository
-import com.knowheart3.repository.discovery.DailyDiscoveryRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.topic.DailyDiscovery
 import com.qubaopen.survey.entity.user.User
-import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -68,11 +67,15 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 
             if (userExercise == null) {
 
-                def existExercise = userExerciseRepository.findCompleteExerciseByUserAndTime(user, DateUtils.parseDate(time, 'yyyy-MM-dd'))
+                def page = userExerciseRepository.findCompleteExerciseByUser(user, pageable)
+                def existExercise
+                if (page.getContent() && page.getContent().size() > 0) {
+                    existExercise = page.getContent()?.get(0)
+                }
+
                 if (existExercise) {
                     mession = true
-                    exercise = existExercise[0]
-                    exerciseCount = exerciseInfoRepository.countByExercise(exercise)
+                    exerciseCount = exerciseInfoRepository.countByExercise(existExercise)
                     number = exerciseCount
                 } else {
                     exercise = exerciseRepository.findRandomExercise()

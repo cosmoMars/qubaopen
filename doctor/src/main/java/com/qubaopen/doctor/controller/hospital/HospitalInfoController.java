@@ -12,6 +12,7 @@ import com.qubaopen.survey.entity.hospital.HospitalInfo;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -124,7 +125,11 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		logger.trace("-- 修改诊所信息 --");
 		
 		HospitalInfo hi = hospitalInfoRepository.findOne(hospital.getId());
-		
+
+        boolean isChange = false;
+        HospitalInfo hiReview = new HospitalInfo();
+        BeanUtils.copyProperties(hi, hiReview);
+
 		if (name != null) {
 			hi.setName(name);
 		}
@@ -139,7 +144,6 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			}
 		}
 		if (phone != null) {
-//			Assert.isTrue(validatePhone(phone), "{\"success\": \"0\", \"message\" : \"err003\"}");
 			if (!validatePhone(phone)) {
 				return "{\"success\": \"0\", \"message\" : \"err003\"}";
 			}
@@ -221,13 +225,19 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
             }
             hi.setHospitalAvatar(url);
         }
-        if (hi.getLoginStatus() == HospitalInfo.LoginStatus.Unaudited) {
+        if (!hi.equals(hiReview)) {
+            isChange = true;
+        }
+
+        if (hi.getLoginStatus() == HospitalInfo.LoginStatus.Unaudited || (hi.getLoginStatus() == HospitalInfo.LoginStatus.Refusal && isChange)) {
             hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
         }
-        if (hi.getLoginStatus() == HospitalInfo.LoginStatus.Auditing) {
+
+        if (isChange && hi.getLoginStatus() == HospitalInfo.LoginStatus.Audited) {
             hi.setReview(true);
         }
-		hospitalInfoRepository.save(hi);
+
+        hospitalInfoRepository.save(hi);
 		
 		return "{\"success\": \"1\"}";
 	}

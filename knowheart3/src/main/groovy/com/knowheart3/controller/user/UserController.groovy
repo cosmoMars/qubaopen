@@ -535,9 +535,9 @@ class UserController extends AbstractBaseController<User, Long> {
 //                map1: map1,
 //                map2 : map2
 //        ]
-        def di = doctorInfoRepository.findOne(1l)
+        DoctorInfo di = doctorInfoRepository.findOne(1l)
 
-        def di2 = new DoctorInfo()
+        DoctorInfo di2 = new DoctorInfo()
 
 //        JsonArray
 

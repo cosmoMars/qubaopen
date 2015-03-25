@@ -9,6 +9,7 @@ import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.doctor.DoctorRecord
 import org.apache.commons.lang3.time.DateUtils
 import org.joda.time.DateTime
+import org.springframework.beans.BeanUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
@@ -148,14 +149,19 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
                      HttpServletRequest request) {
 
         def doctorInfo = doctorInfoRepository.findOne(doctor.id)
-        def review = false
+
+        def doctorInfoReview = new DoctorInfo()
+        BeanUtils.copyProperties(doctorInfo, doctorInfoReview)
+
+
+        def isChange = false
         if (email) {
 
             if (!validateEmail(email)) {
                 return '{"success" : "0", "message": "err005"}'
             }
             if (doctor.email != email) {
-                review = true
+                isChange = true
             }
             doctor.email = email
         }
@@ -292,6 +298,11 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
         }
 		
 		def dr = doctorRecordRepository.findOne(doctor.id)
+
+        def drReview = new DoctorRecord()
+
+        BeanUtils.copyProperties(dr, drReview)
+
 		if (!dr) {
 			dr = new DoctorRecord(
 				id : doctor.id
@@ -376,13 +387,18 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 			}
 			
 		}
+        if (!doctorInfo.equals(doctorInfoReview) || !dr.equals(drReview)) {
+            isChange = true
+        }
 
-        if (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Unaudited) {
+        if (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Unaudited || (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Refusal && isChange)) {
             doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
         }
-        if (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Audited) {
-            doctorInfo.setReview(true)
+
+        if (isChange && doctorInfo.loginStatus == DoctorInfo.LoginStatus.Audited) {
+            doctorInfo.review = true
         }
+
 		doctorRecordRepository.save(dr)
 		doctorRepository.save(doctor)
 		doctorInfoRepository.save(doctorInfo)

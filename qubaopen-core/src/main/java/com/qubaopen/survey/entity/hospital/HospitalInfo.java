@@ -156,6 +156,43 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
      */
     private boolean review;
 
+    /**
+     * 复审原因
+     */
+    private String reviewReason;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HospitalInfo that = (HospitalInfo) o;
+
+        if (faceToFace != that.faceToFace) return false;
+        if (maxCharge != that.maxCharge) return false;
+        if (minCharge != that.minCharge) return false;
+        if (phoneConsult != that.phoneConsult) return false;
+        if (video != that.video) return false;
+        if (wordsConsult != that.wordsConsult) return false;
+        if (address != null ? !address.equals(that.address) : that.address != null) return false;
+        if (areaCode != null ? !areaCode.equals(that.areaCode) : that.areaCode != null) return false;
+        if (establishTime != null ? !establishTime.equals(that.establishTime) : that.establishTime != null)
+            return false;
+        if (genre != null ? !genre.equals(that.genre) : that.genre != null) return false;
+        if (hospitalAvatar != null ? !hospitalAvatar.equals(that.hospitalAvatar) : that.hospitalAvatar != null)
+            return false;
+        if (hospitalRecordPath != null ? !hospitalRecordPath.equals(that.hospitalRecordPath) : that.hospitalRecordPath != null)
+            return false;
+        if (introduce != null ? !introduce.equals(that.introduce) : that.introduce != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
+        if (qq != null ? !qq.equals(that.qq) : that.qq != null) return false;
+        if (targetUser != null ? !targetUser.equals(that.targetUser) : that.targetUser != null) return false;
+        if (urgentPhone != null ? !urgentPhone.equals(that.urgentPhone) : that.urgentPhone != null) return false;
+
+        return true;
+    }
+
     public Hospital getHospital() {
 		return hospital;
 	}
@@ -362,5 +399,13 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 
     public void setReview(boolean review) {
         this.review = review;
+    }
+
+    public String getReviewReason() {
+        return reviewReason;
+    }
+
+    public void setReviewReason(String reviewReason) {
+        this.reviewReason = reviewReason;
     }
 }

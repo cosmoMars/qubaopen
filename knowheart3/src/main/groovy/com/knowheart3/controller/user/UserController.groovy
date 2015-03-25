@@ -1,4 +1,5 @@
 package com.knowheart3.controller.user
+
 import com.knowheart3.repository.booking.BookingRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
 import com.knowheart3.repository.user.*
@@ -538,7 +539,10 @@ class UserController extends AbstractBaseController<User, Long> {
 
         def di2 = new DoctorInfo()
 
+//        JsonArray
+
         BeanUtils.copyProperties(di, di2)
+        println di2.doctor.phone
 //        println StringUtils.equals(userinfo.hashCode(), userinfo3.hashCode())
         println di.equals(di2)
         println "------------------------------------"

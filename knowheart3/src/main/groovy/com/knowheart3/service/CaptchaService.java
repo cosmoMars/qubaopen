@@ -14,8 +14,8 @@ import javax.mail.internet.MimeUtility;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-	
-import com.knowheart3.repository.HostMail.HostMailRepository;
+
+import com.knowheart3.repository.hostMail.HostMailRepository;
 import com.qubaopen.survey.entity.mail.HostMail;
 
 //import org.apache.log4j.net.SMTPAppender;

@@ -98,7 +98,7 @@ public class SmsService {
         smsCallBackRepository.save(smsCallBack);
 
         boolean isSuccess = StringUtils.equals(resCode, "0");
-        Map<String,  Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("resCode", resCode);
         map.put("isSuccess", isSuccess);
         return map;

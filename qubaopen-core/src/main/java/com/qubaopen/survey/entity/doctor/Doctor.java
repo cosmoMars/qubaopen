@@ -1,13 +1,12 @@
 package com.qubaopen.survey.entity.doctor;
 
+import com.qubaopen.core.entity.AbstractBaseEntity;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.envers.Audited;
-
-import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
  * @author mars 医师
@@ -60,7 +59,23 @@ public class Doctor extends AbstractBaseEntity<Long> {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "doctor")
 	private DoctorIdCardBind doctorIdCardBind;
 
-	public String getPhone() {
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Doctor doctor = (Doctor) o;
+
+        if (email != null ? !email.equals(doctor.email) : doctor.email != null) return false;
+        if (password != null ? !password.equals(doctor.password) : doctor.password != null) return false;
+        if (phone != null ? !phone.equals(doctor.phone) : doctor.phone != null) return false;
+
+        return true;
+    }
+
+    public String getPhone() {
 		return phone;
 	}
 

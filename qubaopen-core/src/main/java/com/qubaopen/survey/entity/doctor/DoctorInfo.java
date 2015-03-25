@@ -173,7 +173,52 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
      */
     private boolean review;
 
-	public Doctor getDoctor() {
+    /**
+     * 复审原因
+     */
+    private String reviewReason;
+
+    /**
+     * 助手
+     */
+    @ManyToOne
+    private Assistant assistant;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DoctorInfo that = (DoctorInfo) o;
+
+        if (commentConsult != that.commentConsult) return false;
+        if (faceToFace != that.faceToFace) return false;
+        if (Double.compare(that.offlineFee, offlineFee) != 0) return false;
+        if (Double.compare(that.onlineFee, onlineFee) != 0) return false;
+        if (phoneConsult != that.phoneConsult) return false;
+        if (quick != that.quick) return false;
+        if (video != that.video) return false;
+        if (address != null ? !address.equals(that.address) : that.address != null) return false;
+        if (areaCode != null ? !areaCode.equals(that.areaCode) : that.areaCode != null) return false;
+        if (avatarPath != null ? !avatarPath.equals(that.avatarPath) : that.avatarPath != null) return false;
+        if (birthday != null ? !birthday.equals(that.birthday) : that.birthday != null) return false;
+        if (doctor != null ? !doctor.equals(that.doctor) : that.doctor != null) return false;
+        if (experience != null ? !experience.equals(that.experience) : that.experience != null) return false;
+        if (field != null ? !field.equals(that.field) : that.field != null) return false;
+        if (genre != null ? !genre.equals(that.genre) : that.genre != null) return false;
+        if (introduce != null ? !introduce.equals(that.introduce) : that.introduce != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (phone != null ? !phone.equals(that.phone) : that.phone != null) return false;
+        if (qq != null ? !qq.equals(that.qq) : that.qq != null) return false;
+        if (recordPath != null ? !recordPath.equals(that.recordPath) : that.recordPath != null) return false;
+        if (sex != that.sex) return false;
+        if (targetUser != null ? !targetUser.equals(that.targetUser) : that.targetUser != null) return false;
+
+        return true;
+    }
+
+
+    public Doctor getDoctor() {
 		return doctor;
 	}
 
@@ -403,5 +448,21 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 
     public void setReview(boolean review) {
         this.review = review;
+    }
+
+    public Assistant getAssistant() {
+        return assistant;
+    }
+
+    public void setAssistant(Assistant assistant) {
+        this.assistant = assistant;
+    }
+
+    public String getReviewReason() {
+        return reviewReason;
+    }
+
+    public void setReviewReason(String reviewReason) {
+        this.reviewReason = reviewReason;
     }
 }

@@ -30,4 +30,6 @@ public interface BookingRepository extends MyRepository<Booking, Long> {
 
     @Query("from Booking b where b.user.id = :userId and b.hospital.id = :hospitalId and b.status in (0,1,11)")
     List<Booking> findExistHospitalBooking(@Param("user") Long userId, @Param("hospital") Long hospitalId);
+
+
 }

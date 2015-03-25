@@ -155,23 +155,36 @@ public class Booking extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private BookStatus doctorStatus;
 
+    /**
+     * pingpp订单
+     */
     private String chargeId;
+
+    /**
+     * 订单医师诊断
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "booking", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    private Set<DoctorDiagnosis> doctorDiagnosis;
+
+    /**
+     * 上一次预约时间
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastBookingTime;
+
+    /**
+     * 发送用户
+     */
+    private boolean sendUser;
+
+    /**
+     * 发送医师
+     */
+    private boolean sendDoctor;
 
 	public String getTradeNo() {
 		return tradeNo;
 	}
-
-	/**
-	 * 订单医师诊断
-	 */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "booking", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
-	private Set<DoctorDiagnosis> doctorDiagnosis;
-	
-	/**
-	 * 上一次预约时间
-	 */
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date lastBookingTime;
 
 	public void setTradeNo(String tradeNo) {
 		this.tradeNo = tradeNo;
@@ -399,5 +412,21 @@ public class Booking extends AbstractBaseEntity<Long> {
 
     public void setOutDated(Date outDated) {
         this.outDated = outDated;
+    }
+
+    public boolean isSendUser() {
+        return sendUser;
+    }
+
+    public void setSendUser(boolean sendUser) {
+        this.sendUser = sendUser;
+    }
+
+    public boolean isSendDoctor() {
+        return sendDoctor;
+    }
+
+    public void setSendDoctor(boolean sendDoctor) {
+        this.sendDoctor = sendDoctor;
     }
 }

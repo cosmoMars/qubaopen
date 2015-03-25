@@ -1,19 +1,10 @@
 package com.qubaopen.survey.entity.doctor;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import com.qubaopen.core.entity.AbstractBaseEntity2;
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity2;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author mars
@@ -145,7 +136,47 @@ public class DoctorRecord extends AbstractBaseEntity2<Long> {
 	@Column(length = 1000)
 	private String selfIntroduction;
 
-	public Doctor getDoctor() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DoctorRecord that = (DoctorRecord) o;
+
+        if (superviseHour != that.superviseHour) return false;
+        if (totalHour != that.totalHour) return false;
+        if (contactMethod != null ? !contactMethod.equals(that.contactMethod) : that.contactMethod != null)
+            return false;
+        if (course != null ? !course.equals(that.course) : that.course != null) return false;
+        if (degree != null ? !degree.equals(that.degree) : that.degree != null) return false;
+        if (educationalEnd != null ? !educationalEnd.equals(that.educationalEnd) : that.educationalEnd != null)
+            return false;
+        if (educationalIntroduction != null ? !educationalIntroduction.equals(that.educationalIntroduction) : that.educationalIntroduction != null)
+            return false;
+        if (educationalStart != null ? !educationalStart.equals(that.educationalStart) : that.educationalStart != null)
+            return false;
+        if (organization != null ? !organization.equals(that.organization) : that.organization != null) return false;
+        if (orientation != null ? !orientation.equals(that.orientation) : that.orientation != null) return false;
+        if (profession != null ? !profession.equals(that.profession) : that.profession != null) return false;
+        if (recordPath != null ? !recordPath.equals(that.recordPath) : that.recordPath != null) return false;
+        if (school != null ? !school.equals(that.school) : that.school != null) return false;
+        if (selfEnd != null ? !selfEnd.equals(that.selfEnd) : that.selfEnd != null) return false;
+        if (selfIntroduction != null ? !selfIntroduction.equals(that.selfIntroduction) : that.selfIntroduction != null)
+            return false;
+        if (selfStart != null ? !selfStart.equals(that.selfStart) : that.selfStart != null) return false;
+        if (supervise != null ? !supervise.equals(that.supervise) : that.supervise != null) return false;
+        if (superviseIntroduction != null ? !superviseIntroduction.equals(that.superviseIntroduction) : that.superviseIntroduction != null)
+            return false;
+        if (trainEnd != null ? !trainEnd.equals(that.trainEnd) : that.trainEnd != null) return false;
+        if (trainIntroduction != null ? !trainIntroduction.equals(that.trainIntroduction) : that.trainIntroduction != null)
+            return false;
+        if (trainStart != null ? !trainStart.equals(that.trainStart) : that.trainStart != null) return false;
+
+        return true;
+    }
+
+
+    public Doctor getDoctor() {
 		return doctor;
 	}
 

@@ -148,9 +148,14 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
                      HttpServletRequest request) {
 
         def doctorInfo = doctorInfoRepository.findOne(doctor.id)
+        def review = false
         if (email) {
+
             if (!validateEmail(email)) {
                 return '{"success" : "0", "message": "err005"}'
+            }
+            if (doctor.email != email) {
+                review = true
             }
             doctor.email = email
         }

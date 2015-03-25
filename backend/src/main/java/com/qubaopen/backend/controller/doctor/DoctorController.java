@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.qubaopen.backend.repository.doctor.AssistantRepository;
+import com.qubaopen.backend.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.backend.repository.doctor.DoctorRepository;
 import com.qubaopen.backend.service.SmsService;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.survey.entity.doctor.Assistant;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.doctor.DoctorInfo;
 
@@ -27,9 +31,15 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
 
 	@Autowired
 	private DoctorRepository doctorRepository;
-	
+
+    @Autowired
+    private DoctorInfoRepository doctorInfoRepository;
+
 	@Autowired
 	private SmsService smsService;
+
+    @Autowired
+    private AssistantRepository assistantRepository;
 	
 	@Override
 	protected MyRepository<Doctor, Long> getRepository() {
@@ -84,33 +94,48 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
 			@RequestParam(required = false) Long id,
 			@RequestParam(required = false) int loginStatus,
 			@RequestParam(required = false) String refusalReason,
-			@RequestParam(required = false) boolean review,
+			@RequestParam(required = false) Boolean review,
 			@RequestParam(required = false) String reviewReason) {
-		
-		Doctor doctor=doctorRepository.findOne(id);
-		
-		if(null != doctor){
-			doctor.getDoctorInfo().setLoginStatus( DoctorInfo.LoginStatus.values()[loginStatus]);
 
-			
-			//TODO 分配助手
-			String acName ="王助理";
-			String acPhone="13917377795";
-			String param = "{\"param1\" : \""+acName+"\",\"param2\" : \""+acPhone+"\"}";
-			if(loginStatus == 2){
+        DoctorInfo di = doctorInfoRepository.findOne(id);
+		
+		if(null != di){
+            DoctorInfo.LoginStatus status = DoctorInfo.LoginStatus.values()[loginStatus];
+			di.setLoginStatus(status);
+
+            Assistant assistant;
+            if (di.getAssistant() != null) {
+                assistant = di.getAssistant();
+            } else {
+                Long assistantId = assistantRepository.findSpaceAssistant();
+                assistant = assistantRepository.findOne(assistantId);
+                di.setAssistant(assistant);
+            }
+
+			String param = "{\"param1\" : \"" + assistant.getName() + "\",\"param2\" : \"" + assistant.getPhone() + "\"}";
+            Map<String, Object> result;
+			if(status == DoctorInfo.LoginStatus.Refusal && di.getLoginStatus() == DoctorInfo.LoginStatus.Auditing){
 				//拒绝
-				smsService.sendSmsMessage(doctor.getPhone(), 3, param);
-			}else if(loginStatus==3){
+                result = smsService.sendSmsMessage(di.getPhone(), 3, param);
+                di.setRefusalReason(refusalReason);
+			} else if (status == DoctorInfo.LoginStatus.Audited && (di.getLoginStatus() == DoctorInfo.LoginStatus.Auditing || di.getLoginStatus() == DoctorInfo.LoginStatus.Audited)){
 				//通过
-				smsService.sendSmsMessage(doctor.getPhone(), 2, param);
-			}
-			
-			
-			
-			
+                result = smsService.sendSmsMessage(di.getPhone(), 2, param);
+                if (review != null) {
+                    di.setReview(review);
+                    if (review) {
+                        di.setReviewReason(reviewReason);
+                    }
+                }
+			} else {
+                return "{\"success\" : \"0\", \"message\" : \"修改医师状态不正确\"}";
+            }
+            if (!StringUtils.equals((String)result.get("resCode"), "0")) {
+                return "{\"success\" : \"0\", \"message\" : \"resCode = " + result.get("resCode") + "\"}";
+            }
+			doctorInfoRepository.save(di);
 		}
-		
-		
-		return "";
+
+		return "{\"success\" : \"0\"}";
 	}
 }

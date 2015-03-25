@@ -100,7 +100,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
 		def tradeNo
 		if (doctorId != null) {
-			tradeNo = "u${user.id}d${doctorId}s${System.currentTimeMillis()}"
+			tradeNo = "u${user.id}d${doctorId}t${DateFormatUtils.format(new Date(), "yyyyMMddHHmmssssss")}"
             /*def exist = bookingRepository.findAll([
                 'user.id_equal' : user.id,
                 'doctor.id_equal' : doctorId,
@@ -112,7 +112,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
             }*/
 		}
 		if (hospitalId != null) {
-			tradeNo = "u${user.id}h${hospitalId}s${System.currentTimeMillis()}"
+			tradeNo = "u${user.id}h${hospitalId}t${DateFormatUtils.format(new Date(), "yyyyMMddHHmmssssss")}"
 
             def exist = bookingRepository.findExistHospitalBooking(user.id, hospitalId)
 

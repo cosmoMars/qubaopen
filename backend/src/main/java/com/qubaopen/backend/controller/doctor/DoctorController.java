@@ -82,7 +82,10 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
 	@RequestMapping(value = "modifyDoctorStatus", method = RequestMethod.POST)
 	private Object modifyDoctorStatus(
 			@RequestParam(required = false) Long id,
-			@RequestParam(required = false) int loginStatus) {
+			@RequestParam(required = false) int loginStatus,
+			@RequestParam(required = false) String refusalReason,
+			@RequestParam(required = false) boolean review,
+			@RequestParam(required = false) String reviewReason) {
 		
 		Doctor doctor=doctorRepository.findOne(id);
 		

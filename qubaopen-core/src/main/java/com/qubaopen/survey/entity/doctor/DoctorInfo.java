@@ -202,7 +202,7 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
         if (areaCode != null ? !areaCode.equals(that.areaCode) : that.areaCode != null) return false;
         if (avatarPath != null ? !avatarPath.equals(that.avatarPath) : that.avatarPath != null) return false;
         if (birthday != null ? !birthday.equals(that.birthday) : that.birthday != null) return false;
-        if (doctor != null ? !doctor.equals(that.doctor) : that.doctor != null) return false;
+        //if (doctor != null ? !doctor.equals(that.doctor) : that.doctor != null) return false;
         if (experience != null ? !experience.equals(that.experience) : that.experience != null) return false;
         if (field != null ? !field.equals(that.field) : that.field != null) return false;
         if (genre != null ? !genre.equals(that.genre) : that.genre != null) return false;

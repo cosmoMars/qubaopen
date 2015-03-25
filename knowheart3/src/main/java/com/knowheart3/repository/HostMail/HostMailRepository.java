@@ -1,4 +1,4 @@
-package com.knowheart3.repository.hostMail;
+package com.knowheart3.repository.HostMail;
 
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.mail.HostMail;

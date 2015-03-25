@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.qubaopen.backend.repository.doctor.DoctorRepository;
+import com.qubaopen.backend.service.SmsService;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.doctor.Doctor;
@@ -23,9 +24,12 @@ import com.qubaopen.survey.entity.doctor.DoctorInfo;
 @RestController
 @RequestMapping("doctor")
 public class DoctorController extends AbstractBaseController<Doctor, Long>{
-	
+
 	@Autowired
 	private DoctorRepository doctorRepository;
+	
+	@Autowired
+	private SmsService smsService;
 	
 	@Override
 	protected MyRepository<Doctor, Long> getRepository() {
@@ -71,5 +75,39 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
 		result.put("success", "1");
 		result.put("list", list);
 		return result;
+	}
+	
+	
+	
+	@RequestMapping(value = "modifyDoctorStatus", method = RequestMethod.POST)
+	private Object modifyDoctorStatus(
+			@RequestParam(required = false) Long id,
+			@RequestParam(required = false) int loginStatus) {
+		
+		Doctor doctor=doctorRepository.findOne(id);
+		
+		if(null != doctor){
+			doctor.getDoctorInfo().setLoginStatus( DoctorInfo.LoginStatus.values()[loginStatus]);
+
+			
+			//TODO 分配助手
+			String acName ="王助理";
+			String acPhone="13917377795";
+			String param = "{\"param1\" : \""+acName+"\",\"param2\" : \""+acPhone+"\"}";
+			if(loginStatus == 2){
+				//拒绝
+				smsService.sendSmsMessage(doctor.getPhone(), 3, param);
+			}else if(loginStatus==3){
+				//通过
+				smsService.sendSmsMessage(doctor.getPhone(), 2, param);
+			}
+			
+			
+			
+			
+		}
+		
+		
+		return "";
 	}
 }

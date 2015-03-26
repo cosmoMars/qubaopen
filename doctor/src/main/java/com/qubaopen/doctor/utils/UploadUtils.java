@@ -9,11 +9,14 @@ import com.qiniu.api.rs.GetPolicy;
 import com.qiniu.api.rs.PutPolicy;
 import com.qiniu.api.rs.URLUtils;
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by mars on 15/3/17.
@@ -28,7 +31,7 @@ public class UploadUtils {
         mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
     }
 
-    public String retrievePriavteUrl(String url) {
+    public static String retrievePriavteUrl(String url) {
 
         if (null == url || !url.startsWith("http://")) {
             return "";
@@ -36,10 +39,16 @@ public class UploadUtils {
 
         String[] str = url.split("/");
 
+
+        List<String> list = new ArrayList<>();
+        for (int i = 3; i < str.length ; i++) {
+            list.add(str[i]);
+        }
+
         String downloadUrl = null;
         try {
-            if (null != str[2] && null != str[3]) {
-                String baseUrl = URLUtils.makeBaseUrl(str[2], str[3]);
+            if (null != str[2] && list.size() > 0) {
+                String baseUrl = URLUtils.makeBaseUrl(str[2], StringUtils.join(list, "/"));
                 GetPolicy getPolicy = new GetPolicy();
                 downloadUrl = getPolicy.makeRequest(baseUrl, mac);
             }
@@ -91,7 +100,7 @@ public class UploadUtils {
             throw new RuntimeException(e);
         }
 
-
         return url;
     }
+
 }

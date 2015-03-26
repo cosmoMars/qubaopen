@@ -111,7 +111,6 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
             }
         }
 
-		
 		[
 			'success' : '1',
 			'exerciseId' : exercise?.id,

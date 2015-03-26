@@ -74,6 +74,7 @@ public class TopicController extends AbstractBaseController<Topic, Long> {
 			'id' : topic.id,
 			'name' : topic.name,
 			'content' : topic.content,
+            'topicPic' : topic.picUrl,
 			'isFavorite' : isFavorite	
 		]
 	}

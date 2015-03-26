@@ -1,16 +1,14 @@
 package com.qubaopen.survey.repository.doctor.custom;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.qubaopen.survey.entity.doctor.DoctorInfo;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import org.springframework.data.domain.Pageable;
-
-import com.qubaopen.survey.entity.doctor.DoctorInfo;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 
@@ -69,7 +67,6 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 //			String whereFilters = String.join(" and ", where);
 			
 			hql.append(whereFilters.toString());
-			System.out.println(hql.toString());
 		}
 
 		query = entityManager.createQuery(hql.toString());

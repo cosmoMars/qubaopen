@@ -35,6 +35,11 @@ public class SystemScheduleController {
     public void execute() {
 
         System.out.println(new Date());
+//        sendMessage();
+
+    }
+
+    private void sendMessage() {
 
         Map<String, Object> filters = new HashMap<>();
         filters.put("status_equal", Booking.Status.Paid);
@@ -60,7 +65,7 @@ public class SystemScheduleController {
 
                     Map<String, Object> result = smsService.sendSmsMessage(booking.getPhone(), 6, param);
 
-                    if (StringUtils.equals((String)result.get("resCode"), "0")) {
+                    if (StringUtils.equals((String) result.get("resCode"), "0")) {
                         booking.setSendUser(true);
                         sendBookings.add(booking);
                     }

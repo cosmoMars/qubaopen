@@ -1,16 +1,11 @@
-package com.qubaopen.doctor.repository.system;
+package com.qubaopen.doctor.controller.system;
 
 import com.qubaopen.doctor.repository.doctor.BookingRepository;
 import com.qubaopen.doctor.service.SmsService;
-import com.qubaopen.survey.entity.booking.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.*;
 
 /**
  * Created by mars on 15/3/24.
@@ -27,7 +22,7 @@ public class SystemScheduleController {
     private BookingRepository bookingRepository;
 
 
-    @Transactional
+   /* @Transactional
 //    @Scheduled(fixedRate = 1000l)
 //    @Scheduled(cron = "0/5 * * * * ?")
     @Scheduled(cron = "0 0/10 * * * ?")
@@ -56,6 +51,6 @@ public class SystemScheduleController {
         }
         bookingRepository.save(sendBookings);
 
-    }
+    }*/
 
 }

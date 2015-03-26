@@ -60,9 +60,6 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	
 	@Autowired
 	DoctorRecordRepository doctorRecordRepository
-
-    @Autowired
-    UploadUtils uploadUtils
 	
 	@Override
 	protected MyRepository<Doctor, Long> getRepository() {
@@ -130,7 +127,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 
             def recUrl
             if (dr) {
-                recUrl = uploadUtils.retrievePriavteUrl(dr.recordPath)
+                recUrl = UploadUtils.retrievePriavteUrl(dr.recordPath)
             }
 
 			return  [

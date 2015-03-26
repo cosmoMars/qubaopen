@@ -47,7 +47,7 @@ public class DoctorRecordController extends AbstractBaseController<DoctorRecord,
 		def dr = doctorRecordRepository.findOne(doctor.id)
         def recUrl
         if (dr) {
-            recUrl = uploadUtils.retrievePriavteUrl(dr.recordPath)
+            recUrl = UploadUtils.retrievePriavteUrl(dr.recordPath)
         }
 		[
 			'success' : '1',

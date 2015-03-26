@@ -82,7 +82,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			def code = areaCodeRepository.findByCode(areaCode),
 				idsList = []
 			idsList = areaCodeService.getAreaCodeIds(idsList, code)
-			filters.put('areaCode', idsList)
+            if (idsList.size() > 0) {
+                filters.put('areaCode', idsList)
+            }
 		}
 		if (faceToFace != null) {
 			filters.put('faceToFace', faceToFace)

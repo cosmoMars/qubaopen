@@ -20,7 +20,7 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 
 		Pageable pageable = (Pageable) filters.get("pageable");
 
-		Query query = null;
+		Query query;
 		StringBuilder hql = new StringBuilder();
 
 		hql.append("from DoctorInfo di ");
@@ -63,11 +63,9 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 					whereFilters.append(" and ");
 				}
 			}
-			
 //			String whereFilters = String.join(" and ", where);
 			
 			hql.append(whereFilters.toString());
-			System.out.println(hql.toString());
 		}
 
 		query = entityManager.createQuery(hql.toString());

@@ -139,7 +139,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
             def code = areaCodeRepository.findByCode(areaCode),
                 idsList = []
             idsList = areaCodeService.getAreaCodeIds(idsList, code)
-            filters.put('areaCode', idsList)
+            if (idsList.size() > 0) {
+                filters.put('areaCode', idsList)
+            }
         }
         if (faceToFace != null) {
             filters.put('faceToFace', faceToFace)
@@ -150,12 +152,13 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
         def hospitalInfos = hospitalInfoRepository.findByFilter(filters)
         hospitalInfos.each {
             data << [
-                'hospitalId' : it?.id,
-                'hospitalName' : it?.name,
-                'hospitalAddress' : it?.address,
-                'hospitalIntroduce' : it?.introduce,
-                'faceToFace' : it?.faceToFace,
-                'video' : it?.video
+                'hospitalId' : it.id,
+                'hospitalName' : it.name,
+                'hospitalAddress' : it.address,
+                'hospitalAvatar' : it.hospitalAvatar,
+                'hospitalIntroduce' : it.introduce,
+                'faceToFace' : it.faceToFace,
+                'video' : it.video
             ]
         }
         def more = true

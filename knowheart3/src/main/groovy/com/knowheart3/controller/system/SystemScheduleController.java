@@ -4,6 +4,7 @@ import com.knowheart3.repository.booking.BookingRepository;
 import com.knowheart3.service.SmsService;
 import com.qubaopen.survey.entity.booking.Booking;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,11 +32,11 @@ public class SystemScheduleController {
     @Transactional
 //    @Scheduled(fixedRate = 1000l)
 //    @Scheduled(cron = "0/5 * * * * ?")
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void execute() {
 
         System.out.println(new Date());
-//        sendMessage();
+        sendMessage();
 
     }
 
@@ -50,21 +51,21 @@ public class SystemScheduleController {
         List<Booking> sendBookings = new ArrayList<>();
 
         for (Booking booking : bookings) {
-            if (booking.getOutDated() != null) {
+            // 预约时间小于现在，超时时间大于现在
+            if (booking.getTime() != null && booking.getTime().compareTo(now) < 0 && booking.getOutDated() != null && booking.getOutDated().compareTo(now) == 1) {
                 int diffMins = (int) ((booking.getOutDated().getTime() - now.getTime()) / 1000 / 60);
+                // 小于两小时提醒
                 if (diffMins <= 120) {
                     String address = "";
                     if (booking.getDoctor() != null && booking.getDoctor().getDoctorInfo() != null) {
-                        if (booking.getDoctor().getDoctorInfo().getAddress() != null) {
-                            address = booking.getDoctor().getDoctorInfo().getAddress();
-                        }
+                       address = booking.getDoctor().getDoctorInfo().getAddress() != null ? booking.getDoctor().getDoctorInfo().getAddress() : "";
                     }
-//                    String param = "{\"param1\" : " + DateFormatUtils.format(booking.getTime(), "MM月dd日HH:mm") + ", \"param2\" : " + address + "}";
+                    String param = "{\"time\" : \"" + DateFormatUtils.format(booking.getTime(), "MM月dd日HH:mm") + "\", \"address\" : \"" + address + "\"}";
+                    System.out.println(param);
 
-                    String param = "{\"param1\" : \"http://zhixin.me/smsRedirectDr.html\"}";
+//                    String param = "{\"url\" : \"http://zhixin.me/smsRedirectDr.html\"}";
 
-                    Map<String, Object> result = smsService.sendSmsMessage(booking.getPhone(), 6, param);
-
+                    Map<String, Object> result = smsService.sendSmsMessage(booking.getPhone(), 7, param);
                     if (StringUtils.equals((String) result.get("resCode"), "0")) {
                         booking.setSendUser(true);
                         sendBookings.add(booking);

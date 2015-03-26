@@ -95,7 +95,7 @@ public class PingppResources {
         if (null != quick) {
             booking.setQuick(quick);
             if (quick) {
-                String param = "{\"param1\" : \"http://zhixin.me/smsRedirectDr.html\"}";
+                String param = "{\"url\" : \"http://zhixin.me/smsRedirectDr.html\"}";
                 smsService.sendSmsMessage(booking.getDoctor().getPhone(), 4, param);
             }
         }

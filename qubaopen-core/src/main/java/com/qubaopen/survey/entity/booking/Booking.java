@@ -131,10 +131,10 @@ public class Booking extends AbstractBaseEntity<Long> {
 	private Status status;
 
 	/**
-	 * 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次, 6 已付款， 7 付款接受，8 医师改约, 9 退款中，10 已退款
+	 * 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次, 6 已付款， 7 付款接受，8 医师改约, 9 退款中，10 已退款，11 关闭
 	 */
 	public enum Status {
-		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate, Refunding, Refunded
+		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate, Refunding, Refunded, Close
 	}
 
 	private double money;
@@ -181,6 +181,22 @@ public class Booking extends AbstractBaseEntity<Long> {
      * 发送医师
      */
     private boolean sendDoctor;
+
+    /**
+     * 是否解决
+     */
+    private boolean resolved;
+
+    /**
+     * 发送email
+     */
+    private boolean sendEmail;
+
+    /**
+     * 解决类型
+     */
+    @Enumerated
+    private ResolveType resolveType;
 
 	public String getTradeNo() {
 		return tradeNo;
@@ -428,5 +444,29 @@ public class Booking extends AbstractBaseEntity<Long> {
 
     public void setSendDoctor(boolean sendDoctor) {
         this.sendDoctor = sendDoctor;
+    }
+
+    public boolean isResolved() {
+        return resolved;
+    }
+
+    public void setResolved(boolean resolved) {
+        this.resolved = resolved;
+    }
+
+    public boolean isSendEmail() {
+        return sendEmail;
+    }
+
+    public void setSendEmail(boolean sendEmail) {
+        this.sendEmail = sendEmail;
+    }
+
+    public ResolveType getResolveType() {
+        return resolveType;
+    }
+
+    public void setResolveType(ResolveType resolveType) {
+        this.resolveType = resolveType;
     }
 }

@@ -1,4 +1,6 @@
-package com.knowheart3.controller.booking;
+package com.knowheart3.controller.booking
+
+import com.qubaopen.survey.entity.booking.ResolveType;
 
 import static com.knowheart3.utils.ValidateUtil.*
 
@@ -134,7 +136,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			helpReason : helpReason,
 			otherProblem : otherProblem,
 			treatmented : treatmented,
-			haveConsulted : haveConsulted
+			haveConsulted : haveConsulted,
+            resolveType: ResolveType.None
 //			time : new Date()
 		)
 		if (doctorId != null) {
@@ -563,6 +566,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
 			booking.status == Booking.Status.Consulted
 		}
+        booking.resolveType = ResolveType.None
+        booking.sendEmail = false
+        booking.resolved = false
 		
 		bookingRepository.save(booking)
 		'{"success" : "1"}'

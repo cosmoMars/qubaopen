@@ -1,19 +1,5 @@
 package com.qubaopen.backend.controller.doctor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.qubaopen.backend.repository.doctor.AssistantRepository;
 import com.qubaopen.backend.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.backend.repository.doctor.DoctorRepository;
@@ -23,6 +9,19 @@ import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.doctor.Assistant;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.doctor.DoctorInfo;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -112,7 +111,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
                 di.setAssistant(assistant);
             }
 
-			String param = "{\"param1\" : \"" + assistant.getName() + "\",\"param2\" : \"" + assistant.getPhone() + "\"}";
+			String param = "{\"name\" : \"" + assistant.getName() + "\",\"phone\" : \"" + assistant.getPhone() + "\"}";
             Map<String, Object> result;
 			if(status == DoctorInfo.LoginStatus.Refusal && di.getLoginStatus() == DoctorInfo.LoginStatus.Auditing){
 				//拒绝

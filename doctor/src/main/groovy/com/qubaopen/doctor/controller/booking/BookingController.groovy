@@ -1,23 +1,4 @@
 package com.qubaopen.doctor.controller.booking
-
-import com.qubaopen.doctor.service.SmsService;
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort.Direction
-import org.springframework.data.web.PageableDefault
-import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository
@@ -25,10 +6,23 @@ import com.qubaopen.doctor.repository.booking.BookingTimeRepository
 import com.qubaopen.doctor.repository.doctor.BookingRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.payEntity.PayEntityRepository
+import com.qubaopen.doctor.service.SmsService
 import com.qubaopen.survey.entity.booking.Booking
+import com.qubaopen.survey.entity.booking.ResolveType
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
+import org.joda.time.DateTime
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('booking')
@@ -514,15 +508,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def booking = bookingRepository.findOne(id),
 			bookingStatus = Booking.Status.values()[index]
 
+
         if (bookingStatus == Booking.Status.Accept) {
-            String param1 = '{"param1" : "http://zhixin.me/smsRedirect.html"}'
+            String param1 = '{"url" : "http://zhixin.me/smsRedirect.html"}'
             smsService.sendSmsMessage(booking.getPhone(), 5, param1)
         }
 		booking.status = bookingStatus
 		
 		if (bookingStatus && bookingStatus == Booking.Status.Refusal) {
 			booking.refusalReason = content
-			
+
 //			payEntityRepository.deleteByBooking(booking)
 			
 		}
@@ -535,6 +530,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def newTime = cal.getTime()
 			booking.time = newTime
 		}
+        booking.lastModifiedDate = new DateTime()
+
+        booking.resolveType = ResolveType.None
+        booking.sendEmail = false
+        booking.resolved = false
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}

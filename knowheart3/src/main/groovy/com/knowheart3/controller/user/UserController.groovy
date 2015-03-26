@@ -1,5 +1,4 @@
 package com.knowheart3.controller.user
-
 import com.knowheart3.repository.booking.BookingRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
 import com.knowheart3.repository.user.*
@@ -9,13 +8,12 @@ import com.knowheart3.utils.DateCommons
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.user.*
 import com.qubaopen.survey.entity.user.User.ThirdType
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
-import org.springframework.beans.BeanUtils
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
@@ -518,24 +516,34 @@ class UserController extends AbstractBaseController<User, Long> {
 
     @RequestMapping(value = 'testMessage', method = RequestMethod.GET)
     testMessage() {
+
+        def di = doctorInfoRepository.findOne(1l)
 //        String param1 = '{"param1" : "王非","param2" : "13917377795"}'
 //        String param2 = '{"param1" : "王非","param2" : "13917377795"}'
 //        String param3 = '{"param1" : "http://zhixin.me/smsRedirectDr.html"}'
 //        String param4 = '{"param1" : "http://zhixin.me/smsRedirect.html"}'
 //        String param5 = '{"param1" : "http://zhixin.me/smsRedirectDr.html"}'
-//        String param6 = '{"param1" : "3月22日11:00", "param2" : "同蒲路1680"}'
+        String param6 = '{"time" : "' +DateFormatUtils.format(new Date(), "MM月dd日HH:mm") +'", "address" : "' + di.address +'"}'
+
+        println param6
 //        Map<String, Object> map1 = smsService.sendSmsMessage('13621673989', 2, param1)
 ////        smsService.sendSmsMessage('13917377795', 3, param2)
 ////        smsService.sendSmsMessage('13917377795', 4, param3)
 ////        smsService.sendSmsMessage('13917377795', 5, param4)
 ////        smsService.sendSmsMessage('13917377795', 6, param5)
-//        Map<String, Object> map2 =  smsService.sendSmsMessage('13621673989', 7, param6)
+        Map<String, Object> map2 =  smsService.sendSmsMessage('13621673989', 7, param6)
+
+        def list = bookingRepository.findAll([
+                'userStatus_isNotNull' : null
+        ])
+
+        println list.size()
 //
 //        return [
 //                map1: map1,
 //                map2 : map2
 //        ]
-        DoctorInfo di = doctorInfoRepository.findOne(1l)
+    /*    DoctorInfo di = doctorInfoRepository.findOne(1l)
 
         DoctorInfo di2 = new DoctorInfo()
 
@@ -561,7 +569,7 @@ class UserController extends AbstractBaseController<User, Long> {
 //        println StringUtils.equals(userinfo.hashCode(), userinfo3.hashCode())
         println di.equals(di2)
         println "------------------------------------"
-
+*/
         '完成'
     }
 

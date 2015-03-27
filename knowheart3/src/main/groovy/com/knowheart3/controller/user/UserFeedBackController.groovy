@@ -1,26 +1,16 @@
 package com.knowheart3.controller.user
-
-import com.knowheart3.service.CaptchaService
-
-import javax.validation.Valid
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional
-import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
 import com.knowheart3.repository.user.UserFeedBackRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserFeedBack
 import com.qubaopen.survey.entity.user.UserFeedBackType
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.validation.BindingResult
+import org.springframework.web.bind.annotation.*
+
+import javax.validation.Valid
 
 @RestController
 @RequestMapping('userFeedBacks')
@@ -30,8 +20,6 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 	@Autowired
 	UserFeedBackRepository userFeedBackRepository
 
-    @Autowired
-    CaptchaService captchaService
 
 	@Override
 	protected MyRepository<UserFeedBack, Long> getRepository() {

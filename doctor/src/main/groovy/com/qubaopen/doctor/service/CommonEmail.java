@@ -3,7 +3,7 @@ package com.qubaopen.doctor.service;
 import com.qubaopen.doctor.repository.mail.HostMailRepository;
 import com.qubaopen.survey.entity.mail.HostMail;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -18,15 +18,16 @@ public class CommonEmail {
 
         HostMail hostMail = hostMailRepository.findOne(1l);
 
-        SimpleEmail sEmail = new SimpleEmail();
+//        SimpleEmail sEmail = new SimpleEmail();
+
+        HtmlEmail sEmail = new HtmlEmail ();
         //smtp host
-        sEmail.setHostName("mail.transport.protocol");
+        sEmail.setHostName("smtp.mxhichina.com");
         //登陆邮件服务器的用户名和密码
         sEmail.setAuthentication(hostMail.getUserName(), hostMail.getPassword());
         //接收人
         try {
             sEmail.addTo(email);
-
             //发送人
             sEmail.setFrom(hostMail.getUserName(), "知心团队");
             //标题
@@ -41,7 +42,8 @@ public class CommonEmail {
             buffer.append("[知心团队]");
             sEmail.setSubject("知心欢迎您 请立即激活您的账户");
             //邮件内容
-            sEmail.setMsg(buffer.toString());
+            sEmail.setHtmlMsg(buffer.toString());
+//            sEmail.setMsg(buffer.toString());
             //发送
             sEmail.send();
         } catch (EmailException e) {
@@ -49,4 +51,38 @@ public class CommonEmail {
         }
         return "1";
     }
+
+    public String sendTextMail(String email, String captcha) {
+
+        HostMail hostMail = hostMailRepository.findOne(1l);
+
+//        SimpleEmail sEmail = new SimpleEmail();
+        HtmlEmail sEmail = new HtmlEmail();
+        //smtp host
+        sEmail.setHostName("smtp.mxhichina.com");
+        //登陆邮件服务器的用户名和密码
+        sEmail.setAuthentication(hostMail.getUserName(), hostMail.getPassword());
+        //接收人
+        try {
+            sEmail.addTo(email);
+
+            //发送人
+            sEmail.setFrom(hostMail.getUserName(), "知心团队");
+            //标题
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("尊敬的知心用户您的验证码为：");
+            buffer.append("<br>");
+            buffer.append("<div><font size =\"5\" face=\"arial\" >" + captcha + "</font></div>");
+            buffer.append("[知心团队]");
+            sEmail.setSubject("知心欢迎您");
+            //邮件内容
+            sEmail.setHtmlMsg(buffer.toString());
+            //发送
+            sEmail.send();
+        } catch (EmailException e) {
+            e.printStackTrace();
+        }
+        return "1";
+    }
+
 }

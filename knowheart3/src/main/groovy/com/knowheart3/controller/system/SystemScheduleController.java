@@ -28,18 +28,15 @@ public class SystemScheduleController {
     @Autowired
     private BookingRepository bookingRepository;
 
-
-    @Transactional
-//    @Scheduled(fixedRate = 1000l)
-//    @Scheduled(cron = "0/5 * * * * ?")
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void execute() {
 
-        System.out.println(new Date());
+//        System.out.println(new Date());
         sendMessage();
 
     }
 
+    @Transactional
     private void sendMessage() {
 
         Map<String, Object> filters = new HashMap<>();

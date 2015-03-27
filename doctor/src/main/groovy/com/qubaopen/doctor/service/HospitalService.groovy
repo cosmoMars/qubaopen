@@ -90,10 +90,6 @@ public class HospitalService {
 			if ((today.time - lastSentDate.time) < 60000) {
 				return '{"success": "0", "message": "err009"}'
 			}
-
-//			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate) && hospitalCaptcha.sentNum > 10) {
-//				return '{"success": "0", "message": "err010"}'
-//			}
 		}
 		def captcha = RandomStringUtils.random(1, '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') + RandomStringUtils.random(5, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 		
@@ -140,17 +136,6 @@ public class HospitalService {
 	@Transactional
 	sendCaptcha(String url, long hospitalId, String email) {
 
-
-//		def hospital
-//		if (!activated) { //新用户
-//			hospital = hospitalRepository.findByEmail(email)
-//		} else { // 忘记密码发送短信
-//			hospital = hospitalRepository.findByEmailAndActivated(email, activated)
-//			if (!hospital) {
-//				return '{"success" : "0", "message" : "err001"}'
-//			}
-//		}
-//		
 		def hospitalCaptcha = hospitalCaptchaRepository.findOne(hospitalId)
 		def today = new Date()
 		if (hospitalCaptcha) {
@@ -158,14 +143,10 @@ public class HospitalService {
 			if ((today.time - lastSentDate.time) < 60000) {
 				return '{"success": "0", "message": "err009"}'
 			}
-
-//			if (DateUtils.isSameDay(today, hospitalCaptcha.lastSentDate) && hospitalCaptcha.sentNum > 10) {
-//				return '{"success": "0", "message": "err010"}'
-//			}
 		}
 		def captcha = DateFormatUtils.format(new Date(), 'yyyyMMdd') + RandomStringUtils.random(22, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 		
-		def result = captchaService.sendTextMail(url, hospitalId, email, captcha),
+		def result = commonEmail.sendTextMail(url, hospitalId, email, captcha),
 			hospitalCaptchaLog = new HospitalCaptchaLog(
 			hospital : new Hospital(id : hospitalId),
 			captcha : captcha,
@@ -230,7 +211,7 @@ public class HospitalService {
 		// 生成30位验证码
 		def captcha = DateFormatUtils.format(new Date(), 'yyyyMMdd') + RandomStringUtils.random(22, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 		
-		def result = captchaService.sendTextMail(email, captcha)
+		def result = commonEmail.sendTextMail(email, captcha)
 		
 		def hospitalCaptchaLog = new HospitalCaptchaLog(
 			hospital : hospital,

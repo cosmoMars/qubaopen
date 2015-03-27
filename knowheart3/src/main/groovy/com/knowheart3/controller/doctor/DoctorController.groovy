@@ -1,5 +1,4 @@
 package com.knowheart3.controller.doctor
-
 import com.knowheart3.repository.base.AreaCodeRepository
 import com.knowheart3.repository.doctor.DoctorAddressRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
@@ -79,12 +78,13 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			filters.put('targetId', targetId)
 		}
 		if (areaCode != null) {
-			def code = areaCodeRepository.findByCode(areaCode),
-				idsList = []
-			idsList = areaCodeService.getAreaCodeIds(idsList, code)
-            if (idsList.size() > 0) {
-                filters.put('areaCode', idsList)
+            def idsList = [],
+                code = areaCodeRepository.findByCode(areaCode)
+            idsList.add(-1l)
+            if (code) {
+                idsList = areaCodeService.getAreaCodeIds(idsList, code)
             }
+            filters.put('areaCode', idsList)
 		}
 		if (faceToFace != null) {
 			filters.put('faceToFace', faceToFace)
@@ -105,7 +105,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			]
 		}
 		def more = true
-		if (doctorInfos && doctorInfos.size() < pageable.pageSize) {
+		if (doctorInfos.size() < pageable.pageSize) {
 			more = false
 		}
 		[

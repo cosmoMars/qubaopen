@@ -136,12 +136,13 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
             filters.put('targetId', targetId)
         }
         if (areaCode != null) {
-            def code = areaCodeRepository.findByCode(areaCode),
-                idsList = []
-            idsList = areaCodeService.getAreaCodeIds(idsList, code)
-            if (idsList.size() > 0) {
-                filters.put('areaCode', idsList)
+            def idsList = [],
+                    code = areaCodeRepository.findByCode(areaCode)
+            idsList.add(-1l)
+            if (code) {
+                idsList = areaCodeService.getAreaCodeIds(idsList, code)
             }
+            filters.put('areaCode', idsList)
         }
         if (faceToFace != null) {
             filters.put('faceToFace', faceToFace)
@@ -162,7 +163,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
             ]
         }
         def more = true
-        if (hospitalInfos && hospitalInfos.size() < pageable.pageSize) {
+        if (hospitalInfos.size() < pageable.pageSize) {
             more = false
         }
         [

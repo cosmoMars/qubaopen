@@ -136,7 +136,7 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	 * @param password
 	 * @param captcha
 	 * @return
-	 * 医师注册
+	 * 诊所注册
 	 */
 	@RequestMapping(value = 'register', method = RequestMethod.POST)
 	register(@RequestParam(required = false) String email,

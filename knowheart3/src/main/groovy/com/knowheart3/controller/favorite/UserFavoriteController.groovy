@@ -78,22 +78,21 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 					'favoriteId' : it?.id,
 					'selfId' : it?.self?.id,
 					'selfName' : it?.self?.title,
-					'selfUrl' : it?.self?.picPath,
-                    'more' :  more
+					'selfUrl' : it?.self?.picPath
 				]
 			} else if (it.topic) {
 				list << [
 					'favoriteId' : it.id,
 					'topicId' : it?.topic?.id,
 					'topicName' : it?.topic?.name,
-					'topicUrl' : it?.topic?.picUrl,
-                    'more' : more
+					'topicUrl' : it?.topic?.picUrl
 				]
 			}
 		}
 		[
 			'success' : '1',
-			'list' : list	
+			'list' : list,
+			'more' :  more
 		]
 	}
 	

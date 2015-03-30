@@ -48,8 +48,10 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 			return '{"success" : "0", "message" : "err000"}'
 		}
 
-        def favorites
-        // 0 自测， 1 专题
+        def favorites = userFavoriteRepository.findByType(type, pageable)
+
+
+       /* // 0 自测， 1 专题
         if ('0' == type) {
             favorites = userFavoriteRepository.findAll(
                 [
@@ -64,23 +66,28 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
                     self_isNull : null
                 ], pageable
             )
-        }
+        }*/
 
-		def list = []
+		def list = [], more = true
+		if (favorites.size() < pageable.pageSize) {
+			more = false
+		}
 		favorites.each {
 			if (it.self) {
 				list << [
-					'favoriteId' : it.id,
+					'favoriteId' : it?.id,
 					'selfId' : it?.self?.id,
 					'selfName' : it?.self?.title,
-                    'more' :  favorites.hasNext()
+					'selfUrl' : it?.self?.picPath,
+                    'more' :  more
 				]
 			} else if (it.topic) {
 				list << [
 					'favoriteId' : it.id,
 					'topicId' : it?.topic?.id,
 					'topicName' : it?.topic?.name,
-                    'more' : favorites.hasNext()
+					'topicUrl' : it?.topic?.picUrl,
+                    'more' : more
 				]
 			}
 		}

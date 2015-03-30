@@ -1,15 +1,14 @@
 package com.qubaopen.survey.entity.user;
 
+import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.self.Self;
+import com.qubaopen.survey.entity.topic.Topic;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.envers.Audited;
-
-import com.qubaopen.core.entity.AbstractBaseEntity;
-import com.qubaopen.survey.entity.self.Self;
-import com.qubaopen.survey.entity.topic.Topic;
 
 @Entity
 @Table(name = "user_favorite")
@@ -29,6 +28,14 @@ public class UserFavorite extends AbstractBaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Topic topic;
+
+//	@ManyToMany
+//	@JoinTable(name = "user_topic_relation", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "topic_id"))
+//	private Set<Topic> topics;
+//
+//	@ManyToMany
+//	@JoinTable(name = "user_self_relation", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "self_id"))
+//	private Set<Self> selfs;
 
 	/**
 	 * 自测

@@ -418,5 +418,32 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
     }
 
+	/**
+	 * 根据selfid查找用户答案
+	 * @param id
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveResultBySelfId/{id}', method = RequestMethod.GET)
+	retrieveResultBySelfId(@PathVariable long id,
+					  @ModelAttribute('currentUser') User user) {
+
+		if (null == user.id) {
+			return '{"success" : "0", "message" : "err000"}'
+		}
+
+		def questionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : id), true)
+
+		[
+				'success' : '1',
+				'id' : questionnaire?.selfResultOption?.id,
+				'resultTitle' : questionnaire?.selfResultOption?.selfResult?.title,
+				'content' : questionnaire?.selfResultOption?.content,
+				'optionTitle' : questionnaire?.selfResultOption?.title,
+				'resultRemark' : questionnaire?.selfResultOption?.selfResult?.remark,
+				'optionNum' : questionnaire?.selfResultOption?.resultNum
+		]
+
+	}
 
 }

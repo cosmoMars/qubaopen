@@ -9,10 +9,12 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.topic.DailyDiscovery
 import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -50,23 +52,27 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	 * @return
 	 * 获取发现内容
 	 */
+    @Transactional(readOnly = true)
 	@RequestMapping(value = 'retrieveDiscoveryContent', method = RequestMethod.GET)
 	retrieveDiscoveryContent(@PageableDefault(page = 0, size = 1, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 		
-		def exercise, number, exerciseCount, userExercise, breakTime, mession = false, isLogin = false
+		def exercise, number, exerciseCount, userExercise, mession = false, isLogin = false
+        def now = new Date()
 		if (null == user.id) {
 			exercise = exerciseRepository.findRandomExercise()
+            // 查找练习第一题
 			number = 1
 		} else {
             isLogin = true
+            // 查找未完成的用户练习纪录
 			userExercise = userExerciseRepository.findOneByFilters([
 				user_equal : user,
 				complete_isFalse : null
 			])
 
             if (userExercise == null) {
-
+                // 查找刚完成的用户练习纪录
                 def page = userExerciseRepository.findCompleteExerciseByUser(user, pageable)
                 def existExercise
                 if (page.getContent() && page.getContent().size() > 0) {
@@ -79,20 +85,29 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                     number = exerciseCount
                 } else {
                     exercise = exerciseRepository.findRandomExercise()
+                    // 查找练习第一题
                     number = 1
                 }
             } else {
+                // 存在用户练习，得到练习大题
                 exercise = userExercise.exercise
-                number = userExercise.number as int
-                breakTime = ((new Date()).getTime() - userExercise.time.getTime()) / 1000 / 60 / 60 / 24 as int
-                if (breakTime == 1) {
-                    userExercise.time = new Date()
-                    userExercise.completeCount += 1
+
+                if (DateUtils.isSameDay(userExercise.time, now)) {
                     mession = true
-                } else if (breakTime > 1) {
-                    userExercise.completeCount = 0
+                    number = userExercise.number as int
+                } else {
+                    number = (userExercise.number as int) + 1
                 }
-                userExerciseRepository.save(userExercise)
+
+//                breakTime = ((new Date()).getTime() - userExercise.time.getTime()) / 1000 / 60 / 60 / 24 as int
+//                if (breakTime == 1) {
+//                    userExercise.time = new Date()
+//                    userExercise.completeCount += 1
+//                    mession = true
+//                } else if (breakTime > 1) {
+//                    userExercise.completeCount = 0
+//                }
+//                userExerciseRepository.save(userExercise)
             }
 		}
         if (exercise) {
@@ -104,7 +119,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
         def dailyDiscovery = page.getContent().get(0)
 
         def haveDone = false
-        if (dailyDiscovery?.self && null != user.id) {
+        if (dailyDiscovery?.self != null && null != user.id) {
             def count = selfUserQuestionnaireRepository.countBySelfAndUser(dailyDiscovery.self, user)
             if (count > 0) {
                 haveDone = true

@@ -1,18 +1,11 @@
 package com.qubaopen.survey.entity.topic;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.envers.Audited;
-
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.user.User;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "user_exercise")
@@ -32,6 +25,12 @@ public class UserExercise extends AbstractBaseEntity<Long> {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Exercise exercise;
+
+    /**
+     * 当前练习
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ExerciseInfo exerciseInfo;
 
 	/**
 	 * 完成题号
@@ -102,4 +101,11 @@ public class UserExercise extends AbstractBaseEntity<Long> {
 		this.time = time;
 	}
 
+    public ExerciseInfo getExerciseInfo() {
+        return exerciseInfo;
+    }
+
+    public void setExerciseInfo(ExerciseInfo exerciseInfo) {
+        this.exerciseInfo = exerciseInfo;
+    }
 }

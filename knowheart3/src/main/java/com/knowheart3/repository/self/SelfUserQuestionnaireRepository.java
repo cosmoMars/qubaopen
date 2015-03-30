@@ -46,5 +46,6 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
     int countBySelfAndUser(Self self, User user);
 
     List<SelfUserQuestionnaire> findByUserAndUsed(User user, Boolean used, Pageable pageable);
-	
+
+
 }

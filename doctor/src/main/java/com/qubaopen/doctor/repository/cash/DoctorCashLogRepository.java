@@ -19,4 +19,8 @@ public interface DoctorCashLogRepository extends MyRepository<DoctorCashLog, Lon
 	List<DoctorCashLog> findByDoctorAndTypeOrderOrderByTimeDesc(@Param("doctor") Doctor doctor, @Param("type") DoctorCashLog.Type type, Pageable pageable);
 	
 	DoctorCashLog findByDoctorTakeCash(DoctorTakeCash doctorTakeCash);
+	
+	@Query("from DoctorCashLog dcl where dcl.doctor = :doctor")
+	List<DoctorCashLog> findByDoctor(@Param("doctor") Doctor doctor, Pageable pageable);
+	
 }

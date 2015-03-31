@@ -86,7 +86,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 				cash = doctorCashRepository.save(cash)
 			}
 		}
-		cashLogs = doctorCashLogRepository.findAll(pageable)
+		cashLogs = doctorCashLogRepository.findByDoctor(doctor,pageable)
 		
 		def data = []
 		
@@ -94,7 +94,9 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 			data << [
 				'userName' : it?.userName,
 				'cash' : it?.cash,
-				'payType' : it?.payType?.ordinal(),
+				//TODO 2015-03-32 ios 因为已经发布 所以先保留该字段 遗留问题
+				'payType' : it?.type?.ordinal(),
+				'type' : it?.type?.ordinal(),
 				'time' : it?.time,
 				'payStatus' : it?.payStatus
 			]

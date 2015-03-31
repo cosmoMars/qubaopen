@@ -1,6 +1,6 @@
 package com.knowheart3.controller.self
-
 import com.knowheart3.controller.FileUtils
+import com.knowheart3.repository.discovery.DailyDiscoveryRepository
 import com.knowheart3.repository.favorite.UserFavoriteRepository
 import com.knowheart3.repository.interest.InterestUserQuestionnaireRepository
 import com.knowheart3.repository.self.SelfGroupRepository
@@ -15,6 +15,7 @@ import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -51,6 +52,9 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
     @Autowired
     UserFavoriteRepository userFavoriteRepository
+
+	@Autowired
+	DailyDiscoveryRepository dailyDiscoveryRepository
 
 
 	@Override
@@ -381,23 +385,27 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 //        def count = selfUserQuestionnaireRepository.countBySelfAndUser(new Self(id : selfId), user)
         def questionnaires = selfUserQuestionnaireRepository.findByUserAndUsed(user, true, pageable)
 
-        def data = []
+        def data = [], more = true
         if (questionnaires) {
             questionnaires.each {
                 data << [
-                        'id' : it.selfResultOption?.id,
-                        'resultTitle' : it.selfResultOption?.selfResult?.title,
-                        'content' : it.selfResultOption?.content,
-                        'optionTitle' : it.selfResultOption?.title,
-                        'resultRemark' : it.selfResultOption?.selfResult?.remark,
-                        'optionNum' : it.selfResultOption?.resultNum
+                	'id' : it.selfResultOption?.id,
+                    'resultTitle' : it.selfResultOption?.selfResult?.title,
+                    'content' : it.selfResultOption?.content,
+                    'optionTitle' : it.selfResultOption?.title,
+                    'resultRemark' : it.selfResultOption?.selfResult?.remark,
+                    'optionNum' : it.selfResultOption?.resultNum
                 ]
             }
         }
+		if (questionnaires.size() < pageable.pageSize) {
+			more = false
+		}
 
         [
-                'success' : '1',
-                'data' : data
+			'success' : '1',
+            'data' : data,
+			'more' : more
         ]
 
     }
@@ -443,6 +451,82 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 				'resultRemark' : questionnaire?.selfResultOption?.selfResult?.remark,
 				'optionNum' : questionnaire?.selfResultOption?.resultNum
 		]
+	}
+
+	/**
+	 * 获取历史
+	 * @param pageable
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveHistory', method = RequestMethod.GET)
+	retrieveHistory(@PageableDefault(page = 0, size = 20, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
+					@ModelAttribute('currentUser') User user) {
+
+		// 查找groupids
+		def groupIds = selfUserQuestionnaireRepository.findGroupId(user, pageable)
+
+		if (groupIds.size() > 0) {
+			def groups = selfGroupRepository.findByGroupIds(groupIds)
+			// 查找答案
+			def selfResultVos = selfUserQuestionnaireRepository.findSelfResultVo(user, groupIds)
+
+
+			def list = [], map = [:]
+			selfResultVos.each {
+				if (map.get(it.groupName)) {
+					map.get(it.groupName) << it
+				} else {
+					def mList = []
+					mList << it
+					map.put(it.groupName, mList)
+				}
+			}
+
+			groups.each { g ->
+				def groupData = []
+				g.selfs.each { s ->
+					def exist = selfResultVos.find { vo ->
+						s.id == Long.valueOf(vo.selfId)
+					}
+					if (exist) {
+						groupData << [
+								'suqId' : exist.suqId,
+								'selfId' : exist.selfId,
+								'dailyDate' : exist.ddTime,
+								'selfTitle' : exist.selfTitle,
+								'suqTime' : exist.suqTime,
+								'done' : exist.done
+						]
+					} else {
+
+						pageable = new PageRequest(0, 1)
+						def dailyDiscovery = dailyDiscoveryRepository.findBySelfId(s.id, pageable)
+
+						def time
+						if (dailyDiscovery.size() > 0) {
+							time = dailyDiscovery[0].time
+						}
+
+						groupData << [
+								'suqId' : '',
+								'selfId' : s.id,
+								'dailyDate' : time,
+								'selfTitle' : s.title,
+								'suqTime' : '',
+								'done' : false
+						]
+					}
+				}
+				list << [
+						'groupTitle' : g.content,
+						'list' : groupData
+				]
+			}
+
+			list
+
+		}
 
 	}
 

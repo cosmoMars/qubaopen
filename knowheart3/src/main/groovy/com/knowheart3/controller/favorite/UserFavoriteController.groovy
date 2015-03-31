@@ -78,6 +78,7 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 					'favoriteId' : it?.id,
 					'selfId' : it?.self?.id,
 					'selfName' : it?.self?.title,
+					'selfContent' : it.self.remark,
 					'selfUrl' : it?.self?.picPath
 				]
 			} else if (it.topic) {
@@ -85,6 +86,7 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 					'favoriteId' : it.id,
 					'topicId' : it?.topic?.id,
 					'topicName' : it?.topic?.name,
+					'topicContent' : it.topic.content,
 					'topicUrl' : it?.topic?.picUrl
 				]
 			}

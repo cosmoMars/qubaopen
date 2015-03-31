@@ -322,6 +322,7 @@ public class InterestController extends AbstractBaseController<Interest, Long> {
 				'resultTitle' : it?.interestResultOption?.interestResult?.title,
 				'content' : it?.interestResultOption?.content,
 				'optionTitle' : it?.interestResultOption?.title,
+				'interestUrl' : it?.interest?.picPath,
 				'resultNum' : it?.interestResultOption?.resultNum
 			]
 		}

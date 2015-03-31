@@ -87,14 +87,14 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
 		@ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 提交意见反馈 --'
-		
+
 		def type = UserFeedBack.Type.values()[idx]
 		
 		def userFeedBack = new UserFeedBack(
 			feedBackTime : new Date(),
 			type : type
 		)
-        if (null != user) {
+        if (null != user.id) {
             userFeedBack.user = user
         }
 		

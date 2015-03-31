@@ -1,20 +1,12 @@
 package com.qubaopen.survey.entity.cash;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.envers.Audited;
-
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.User;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "doctor_cash_log")
@@ -74,7 +66,7 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private PayStatus payStatus;
 	
-	private enum PayStatus {
+	public enum PayStatus {
 		Processing, Completed, Failure
 	}
 	

@@ -1,17 +1,17 @@
 package com.knowheart3.repository.self;
 
-import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
+import com.knowheart3.repository.self.custom.SelfUserQuestionnairerRepositoryCustom;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.self.Self;
 import com.qubaopen.survey.entity.self.SelfUserQuestionnaire;
 import com.qubaopen.survey.entity.user.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQuestionnaire, Long> {
+import java.util.List;
+
+public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQuestionnaire, Long>, SelfUserQuestionnairerRepositoryCustom {
 
 	@Query("from SelfUserQuestionnaire suq where suq.user = :user and suq.used = true and suq.time in (select max(s.time) from SelfUserQuestionnaire s where s.user = :user and s.used = true group by s.self) order by suq.time desc")
 	List<SelfUserQuestionnaire> findByMaxTime(@Param("user") User user);

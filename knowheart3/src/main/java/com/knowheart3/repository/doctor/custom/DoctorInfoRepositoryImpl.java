@@ -31,12 +31,10 @@ public class DoctorInfoRepositoryImpl implements DoctorInfoRepositoryCustom {
 		if (filters.get("targetId") != null) {
 			hql.append("join fetch di.targetUsers tu ");
 		}
-
+		hql.append("where ");
+		List<String> where = new ArrayList<String>();
+		where.add("di.loginStatus = 3");
 		if (filters != null) {
-			if (filters.size() > 1) {
-				hql.append("where ");
-			}
-			List<String> where = new ArrayList<String>();
 
 			if (filters.get("genreId") != null) {
 				where.add("g.id = :genreId");

@@ -11,6 +11,8 @@ import com.qubaopen.survey.entity.user.User;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,16 +29,19 @@ import java.util.*;
 @RequestMapping("pingpp")
 @SessionAttributes("currentUser")
 public class PingppResources {
-
-    static {
-        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
-    }
+//
+//    static {
+//        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+//    }
 
     @Autowired
     BookingRepository bookingRepository;
 
     @Autowired
     SmsService smsService;
+
+    @Value("${app_key}")
+    private String app_key;
 
     /**
      * ping++ 发起支付
@@ -48,6 +53,7 @@ public class PingppResources {
      * @param req
      * @param resp
      */
+    @Transactional
     @RequestMapping(value = "pingppOrder", method = RequestMethod.POST)
     public void pingppOrder(@RequestParam(required = false) Long bookingId,
             @RequestParam(required = false) Boolean quick,
@@ -77,10 +83,11 @@ public class PingppResources {
             Map<String, Object> map = new HashMap<>();
             map.put("user.id_equal", user.getId());
             map.put("doctor.id_equal", booking.getDoctor().getId());
-//            map.put("status_equal", Booking.Status.Paying);
+            map.put("id_notEqual", bookingId);
+            map.put("status_equal", Booking.Status.Accept);
             List<Booking> exist = bookingRepository.findAll(map);
 
-            if (null != exist && exist.size() > 0) {
+            if (exist.size() > 0) {
                 try {
                     out = resp.getWriter();
                     out.print("{\"success\" : \"0\", \"message\" : \"err809\"}");
@@ -109,12 +116,12 @@ public class PingppResources {
                 e.printStackTrace();
             }
         }
-
-        Map<String, Object> chargeParams = new HashMap<String, Object>();
+        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+        Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("order_no",  booking.getTradeNo());
         int amount = (int)(booking.getMoney() * 100);
         chargeParams.put("amount", amount);
-        Map<String, String> app = new HashMap<String, String>();
+        Map<String, String> app = new HashMap<>();
         app.put("id", "app_KavHuL08GO8O4Wbn");
         chargeParams.put("app", app);
         String channel = null;
@@ -123,7 +130,7 @@ public class PingppResources {
                 channel = Channel.ALIPAY;
                 break;
             case "2" :
-                channel = Channel.ALIPAY;
+                channel = Channel.WECHAT;
                 break;
             case "3" :
                 channel = Channel.UPMP;
@@ -137,7 +144,9 @@ public class PingppResources {
         StringBuffer content = new StringBuffer();
         content.append("下单时间：").append(DateFormatUtils.format(booking.getTime(), "yyyy-MM-dd"));
         content.append("，订单号：").append(booking.getTradeNo());
-        chargeParams.put("body",  content.toString());
+        chargeParams.put("body", content.toString());
+
+        System.out.println(chargeParams.toString());
         Charge ch;
         try {
             ch = Charge.create(chargeParams);

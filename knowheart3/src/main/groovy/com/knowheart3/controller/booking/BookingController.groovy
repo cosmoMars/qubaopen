@@ -1,33 +1,30 @@
 package com.knowheart3.controller.booking
-
-import com.qubaopen.survey.entity.booking.ResolveType;
-
-import static com.knowheart3.utils.ValidateUtil.*
-
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort.Direction
-import org.springframework.data.web.PageableDefault
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
 import com.knowheart3.repository.booking.BookingRepository
 import com.knowheart3.repository.booking.BookingSelfTimeRepository
 import com.knowheart3.repository.booking.BookingTimeRepository
+import com.knowheart3.repository.doctor.DoctorCashLogRepository
+import com.knowheart3.repository.doctor.DoctorCashRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.booking.Booking
+import com.qubaopen.survey.entity.booking.ResolveType
+import com.qubaopen.survey.entity.cash.DoctorCash
+import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.*
+
+import static com.knowheart3.utils.ValidateUtil.validatePhone
 /**
  * @author mars
  *
@@ -48,6 +45,15 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	
 	@Autowired
 	BookingSelfTimeRepository bookingSelfTimeRepository
+
+	@Autowired
+	DoctorCashRepository doctorCashRepository
+
+	@Autowired
+	DoctorCashLogRepository doctorCashLogRepository
+
+	@Value('${ratio}')
+	private double ratio
 	
 	@Override
 	MyRepository<Booking, Long> getRepository() {
@@ -550,6 +556,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @return
 	 * 修改用户订单状态
 	 */
+	@Transactional
 	@RequestMapping(value = 'confirmUserBookingStatus', method = RequestMethod.POST)
 	confirmUserBookingStatus(@RequestParam long bookingId,
 		@RequestParam(required = false) Integer idx,
@@ -563,10 +570,32 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
 			booking.status == Booking.Status.Consulted
+
+			def cash = booking.money * ratio as Double
+			def doctorCash = doctorCashRepository.findOne(booking.doctor.id)
+			if (doctorCash) {
+				doctorCash.inCash += cash
+				doctorCash.currentCash += cash
+			} else {
+				doctorCash = new DoctorCash(
+						doctor: booking.doctor,
+						inCash: cash,
+						currentCash: cash
+				)
+			}
+			doctorCashRepository.save(doctorCash)
+			def doctorCashLog = new DoctorCashLog(
+					doctor: booking.doctor,
+					user: booking.user,
+					userName: booking.name,
+					time: new Date(),
+					type: DoctorCashLog.Type.In,
+					payStatus: DoctorCashLog.PayStatus.Completed
+			)
+			doctorCashLogRepository.save(doctorCashLog)
 		}
         booking.resolveType = ResolveType.None
         booking.sendEmail = false
-        booking.resolved = false
 		
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
@@ -680,4 +709,5 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			'doctorAvatar' : nextBooking?.doctor?.doctorInfo?.avatarPath
 		]
 	}
+
 }

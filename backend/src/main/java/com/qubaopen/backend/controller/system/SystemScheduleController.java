@@ -195,7 +195,7 @@ public class SystemScheduleController {
 
     private void doResolveType(ResolveType type, Booking booking) {
 
-        if (booking.isSendEmail() || booking.isResolved()) {
+        if (booking.isSendEmail()) {
             return;
         }
         booking.setResolveType(type);

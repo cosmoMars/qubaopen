@@ -3,12 +3,16 @@ import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.booking.BookingSelfTimeRepository
 import com.qubaopen.doctor.repository.booking.BookingTimeRepository
+import com.qubaopen.doctor.repository.cash.DoctorCashLogRepository
+import com.qubaopen.doctor.repository.cash.DoctorCashRepository
 import com.qubaopen.doctor.repository.doctor.BookingRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.payEntity.PayEntityRepository
 import com.qubaopen.doctor.service.SmsService
 import com.qubaopen.survey.entity.booking.Booking
 import com.qubaopen.survey.entity.booking.ResolveType
+import com.qubaopen.survey.entity.cash.DoctorCash
+import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
 import com.qubaopen.survey.entity.user.User
@@ -18,6 +22,7 @@ import org.joda.time.DateTime
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.web.PageableDefault
@@ -46,8 +51,17 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	@Autowired
 	PayEntityRepository payEntityRepository
 
+	@Autowired
+	DoctorCashRepository doctorCashRepository
+
+	@Autowired
+	DoctorCashLogRepository doctorCashLogRepository
+
     @Autowired
     SmsService smsService
+
+	@Value('${ratio}')
+	double ratio
 	
 	@Override
 	protected MyRepository<Booking, Long> getRepository() {
@@ -534,7 +548,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
         booking.resolveType = ResolveType.None
         booking.sendEmail = false
-        booking.resolved = false
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}
@@ -630,6 +643,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @return
 	 * 修改医师订单状态
 	 */
+	@Transactional
 	@RequestMapping(value = 'confirmDoctorBookingStatus', method = RequestMethod.POST)
 	confirmDoctorBookingStatus(@RequestParam long bookingId,
 		@RequestParam(required = false) Integer idx,
@@ -650,8 +664,32 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
 			booking.status == Booking.Status.Consulted
+
+			def cash = booking.money * ratio as Double
+			def doctorCash = doctorCashRepository.findOne(booking.doctor.id)
+			if (doctorCash) {
+				doctorCash.inCash += cash
+				doctorCash.currentCash += cash
+			} else {
+				doctorCash = new DoctorCash(
+						doctor: booking.doctor,
+						inCash: cash,
+						currentCash: cash
+				)
+			}
+			doctorCashRepository.save(doctorCash)
+			def doctorCashLog = new DoctorCashLog(
+					doctor: booking.doctor,
+					user: booking.user,
+					userName: booking.name,
+					time: new Date(),
+					type: DoctorCashLog.Type.In,
+					payStatus: DoctorCashLog.PayStatus.Completed
+			)
+			doctorCashLogRepository.save(doctorCashLog)
 		}
-		
+		booking.resolveType = ResolveType.None
+		booking.sendEmail = false
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}

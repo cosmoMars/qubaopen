@@ -17,4 +17,7 @@ public interface DailyDiscoveryRepository extends MyRepository<DailyDiscovery, L
 //    @Query("from DailyDiscovery dd order by dd.time desc")
 //    List<DailyDiscovery> findOneByIndex(Pageable pageable);
 
+	List<DailyDiscovery> findBySelfId(long id, Pageable pageable);
+
+
 }

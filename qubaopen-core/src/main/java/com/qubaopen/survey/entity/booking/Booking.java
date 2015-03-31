@@ -183,11 +183,6 @@ public class Booking extends AbstractBaseEntity<Long> {
     private boolean sendDoctor;
 
     /**
-     * 是否解决
-     */
-    private boolean resolved;
-
-    /**
      * 发送email
      */
     private boolean sendEmail;
@@ -446,13 +441,6 @@ public class Booking extends AbstractBaseEntity<Long> {
         this.sendDoctor = sendDoctor;
     }
 
-    public boolean isResolved() {
-        return resolved;
-    }
-
-    public void setResolved(boolean resolved) {
-        this.resolved = resolved;
-    }
 
     public boolean isSendEmail() {
         return sendEmail;

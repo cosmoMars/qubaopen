@@ -70,9 +70,7 @@ public class SystemScheduleController {
                 }
             }
         }
-        if (sendBookings.size() > 0) {
-            bookingRepository.save(sendBookings);
-        }
+        bookingRepository.save(sendBookings);
     }
 
 }

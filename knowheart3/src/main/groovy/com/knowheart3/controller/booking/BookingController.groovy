@@ -481,8 +481,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		        it.outDated = null
 		        outDateBooking << it
 		    }
-		    if (it.outDated) {
-		        outSecond = (now.time - it.outDated.time) / 1000
+		    if (it.outDated != null) {
+		        outSecond = (now.time - it.outDated.time) / 1000 as int
 		    }
 			data << [
 				'bookingId' : it?.id,
@@ -520,10 +520,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'outSecond' : outSecond
 			]
 		}
-		if (outDateBooking != null && outDateBooking.size() > 0) {
-		    bookingRepository.save(outDateBooking)
-		}
-		
+		bookingRepository.save(outDateBooking)
+
 		[
 			'success' : '1',
 			'more' : more,

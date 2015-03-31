@@ -1,26 +1,20 @@
-package com.knowheart3.controller.exercise;
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
+package com.knowheart3.controller.exercise
 
 import com.knowheart3.repository.exercise.ExerciseInfoRepository
 import com.knowheart3.repository.exercise.ExerciseRepository
-import com.knowheart3.repository.exercise.UserExerciseInfoLogRepository;
+import com.knowheart3.repository.exercise.UserExerciseInfoLogRepository
 import com.knowheart3.repository.exercise.UserExerciseRepository
-import com.knowheart3.utils.DateCommons;
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.topic.Exercise
 import com.qubaopen.survey.entity.topic.UserExercise
 import com.qubaopen.survey.entity.topic.UserExerciseInfoLog
 import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('exercise')
@@ -84,20 +78,39 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
 		if (null == user.id) {
 			return '{"success" : "0", "message" : "err000"}'
 		}
+        // 找练习 总数
 		def eInfo = exerciseInfoRepository.findOne(id),
 			infoSize = exerciseInfoRepository.countByExercise(eInfo.exercise)
-		
+
+        // 用户现在练习纪录
 		def uExercise = userExerciseRepository.findOneByFilters([
 			user_equal : user,
 			complete_isFalse : null
 		])
+        // 存在练习，发现练习专栏不同删除原先练习
 		if (uExercise && uExercise?.exercise != eInfo?.exercise) {
 			userExerciseRepository.delete(uExercise)
 			uExercise = null
 		}
 		if (uExercise) {
-			uExercise.number = eInfo.number
-			uExercise.time = new Date()
+            def now = new Date()
+            // 今天已经完成练习
+            if (DateUtils.isSameDay(now, uExercise.time) && uExercise.exerciseInfo.id == id) {
+                return '{"success" : "0", "message" : "今天练习已经完成"}'
+            }
+            // 判断连续次数
+            Calendar c = Calendar.getInstance()
+            c.setTime(uExercise.time)
+            c.add(Calendar.DATE, 1)
+            if (DateUtils.isSameDay(c.getTime(), now)) {
+                uExercise.completeCount++
+            } else {
+                uExercise.completeCount = 1
+            }
+            uExercise.number = eInfo.number
+			uExercise.time = now
+            uExercise.exerciseInfo = eInfo
+
 			if (eInfo.number as int == infoSize) {
 				uExercise.complete = true
 			}
@@ -106,11 +119,10 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
 				user : user,
 				exercise : eInfo.exercise,
 				number : eInfo.number,
-				time : new Date()
+                time: new Date(),
+                completeCount: 1,
+                exerciseInfo: eInfo
 			)
-			if (eInfo.number as int == infoSize) {
-				uExercise.complete = true
-			}
 		}
 		def exerciseInfoLog = new UserExerciseInfoLog(
 			user : user,

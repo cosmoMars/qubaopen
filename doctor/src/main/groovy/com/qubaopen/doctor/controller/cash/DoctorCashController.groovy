@@ -222,55 +222,11 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 			time : new Date(),
 			payStatus : DoctorCashLog.PayStatus.Processing
 		)
+		cashLog.doctorTakeCash=takeCash;
 		doctorCashLogRepository.save(cashLog)
 		dCaptcha.captcha = null
 		doctorCaptchaRepository.save(dCaptcha)
 		doctorCashRepository.save(cash)
-		doctorTakeCashRepository.save(takeCash)
-		'{"success" : "1"}'
-	}
-	
-	/**
-	 * @param cashId
-	 * @param status
-	 * @param failureReason
-	 * @return
-	 * 修改提款状态
-	 */
-	@RequestMapping(value = 'modifyTakeCashStatus', method = RequestMethod.POST)
-	modifyTakeCashStatus(@RequestParam(required = false) Long cashId,
-		@RequestParam(required = false) Long doctorCashId,
-		@RequestParam(required = false) Integer status,
-		@RequestParam(required = false) String failureReason) {
-		
-		def takeCash = doctorTakeCashRepository.findOne(cashId)
-		
-		def cashLog = doctorCashLogRepository.findByDoctorTakeCash(new DoctorTakeCash(id : cashId)),
-			doctorCash = doctorCashRepository.findOne()
-		
-		if (status == null) {
-			return '{"success" : "0", "message" : "err914"}' // 状态位不正确
-		}
-		
-		if (DoctorTakeCash.Status.Success.ordinal() == status) {
-			
-			takeCash.status = DoctorTakeCash.Status.Success
-			
-			cashLog.payStatus = DoctorCashLog.PayStatus.Completed
-
-			doctorCashLogRepository.save(cashLog)
-		}
-		if (DoctorTakeCash.Status.Failure.ordinal() == status) {
-			if (failureReason == null) {
-				return '{"success" : "0", "message" : "err915"}' // 没有失败理由
-			}
-			takeCash.status = DoctorTakeCash.Status.Failure
-			takeCash.failureReason = failureReason
-			
-			cashLog.payStatus = DoctorCashLog.PayStatus.Failure
-			doctorCashLogRepository.save(cashLog)
-		}
-		
 		doctorTakeCashRepository.save(takeCash)
 		'{"success" : "1"}'
 	}

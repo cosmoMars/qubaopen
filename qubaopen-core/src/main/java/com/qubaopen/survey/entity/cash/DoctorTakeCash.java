@@ -52,7 +52,7 @@ public class DoctorTakeCash extends AbstractBaseEntity<Long> {
 	@Enumerated
 	private Status status;
 
-	private enum Status {
+	public enum Status {
 		Auditing, Success, Failure
 	}
 

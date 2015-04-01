@@ -24,6 +24,7 @@ public class DoctorCashLog extends AbstractBaseEntity<Long> {
 	/**
 	 * 取现纪录
 	 */
+	@OneToOne(fetch = FetchType.LAZY)
 	private DoctorTakeCash doctorTakeCash;
 	
 	/**

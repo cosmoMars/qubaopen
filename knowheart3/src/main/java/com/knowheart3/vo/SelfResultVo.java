@@ -1,12 +1,14 @@
 package com.knowheart3.vo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by mars on 15/3/30.
  */
-public class SelfResultVo {
+public class SelfResultVo implements Serializable{
 
+    private static final long serialVersionUID = 6504711788301100101L;
     /**
      * 用户答题答案
      */

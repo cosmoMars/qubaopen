@@ -116,29 +116,50 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		} else {
 			helps = helpRepository.findAll(pageable)
 			helps.each {
-				def comments = helpCommentRepository.findLimitComment(it)
+//				def comments = helpCommentRepository.findLimitComment(it)
+//				def commentData = []
+//				comments.each { cit ->
+//					def goods = helpCommentGoodRepository.findByHelpComment(cit),
+//						gSize = 0
+//					if (goods) {
+//						gSize = goods.size()
+//					}
+//					def isGood = goods.any { g ->
+//						g.user == user
+//					}
+//					commentData << [
+//						'commentId' : cit?.id,
+//						'doctorId' : cit?.doctor?.id,
+//						'doctorName' : cit?.doctor?.doctorInfo?.name,
+//						'hospitalName' : cit?.hospital?.hospitalInfo?.name,
+//						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
+//						'content' : cit?.content,
+//						'time' : DateFormatUtils.format(cit?.time, 'yyyy-MM-dd'),
+//						'goods' : gSize,
+//						'isGood' : isGood
+//					]
+//
+//				}
+				def comments = helpCommentRepository.findLimitCommentByGood(it)
 				def commentData = []
 				comments.each { cit ->
-					def goods = helpCommentGoodRepository.findByHelpComment(cit),
-						gSize = 0
-					if (goods) {
-						gSize = goods.size()
-					}
-					def isGood = goods.any { g ->
-						g.user == user
+					def isGood = false
+					if (cit.userId == user.id) {
+						isGood = true
 					}
 					commentData << [
-						'commentId' : cit?.id,
-						'doctorId' : cit?.doctor?.id,
-						'doctorName' : cit?.doctor?.doctorInfo?.name,
-						'hospitalName' : cit?.hospital?.hospitalInfo?.name,
-						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-						'content' : cit?.content,
-						'time' : DateFormatUtils.format(cit?.time, 'yyyy-MM-dd'),
-						'goods' : gSize,
+						'commentId' : cit.commentId,
+						'doctorId' : cit.doctorId,
+						'doctorName' : cit.doctorName,
+						'hospitalId' : cit.hospitalId,
+						'hospitalName' : cit.hospitalName,
+						'doctorAvatar' : cit.doctorPath,
+						'hospitalAvatar' : cit.hospitalPath,
+						'content' : cit.commentContent,
+						'time' : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
+						'goods' : cit.gSize,
 						'isGood' : isGood
 					]
-						
 				}
 				data << [
 					'helpId' : it?.id,

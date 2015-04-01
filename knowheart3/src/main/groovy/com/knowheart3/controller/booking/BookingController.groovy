@@ -161,6 +161,15 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		if (consultTypeIndex != null) {
 			booking.consultType = Booking.ConsultType.values()[consultTypeIndex]
+
+			if (doctorId != null) {
+				def doctorInfo = doctorInfoRepository.findOne(doctorId)
+				if (booking.consultType == Booking.ConsultType.Facetoface) {
+					booking.money = doctorInfo.offlineFee
+				} else if (booking.consultType == Booking.ConsultType.Video) {
+					booking.money = doctorInfo.onlineFee
+				}
+			}
 		}
 		booking.status = Booking.Status.values()[0]
 		booking = bookingRepository.save(booking)

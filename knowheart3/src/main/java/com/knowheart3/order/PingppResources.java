@@ -85,6 +85,7 @@ public class PingppResources {
             map.put("doctor.id_equal", booking.getDoctor().getId());
             map.put("id_notEqual", bookingId);
             map.put("status_equal", Booking.Status.Accept);
+            map.put("outDated_isNotNull", null);
             List<Booking> exist = bookingRepository.findAll(map);
 
             if (exist.size() > 0) {
@@ -107,7 +108,8 @@ public class PingppResources {
             }
         }
         if (null != money) {
-            booking.setMoney(money);
+            double quickMoney = money - booking.getMoney();
+            booking.setQuickMoney(quickMoney);
         }
         if (null != time) {
             try {
@@ -119,7 +121,7 @@ public class PingppResources {
         Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
         Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("order_no",  booking.getTradeNo());
-        int amount = (int)(booking.getMoney() * 100);
+        int amount = (int)(money * 100);
         chargeParams.put("amount", amount);
         Map<String, String> app = new HashMap<>();
         app.put("id", "app_KavHuL08GO8O4Wbn");
@@ -138,8 +140,9 @@ public class PingppResources {
         }
         chargeParams.put("channel",  channel);
         chargeParams.put("currency", "cny");
-        chargeParams.put("client_ip",  req.getRemoteAddr());
-        chargeParams.put("subject",  "知心心理咨询");
+//        chargeParams.put("client_ip",  req.getRemoteAddr());
+        chargeParams.put("client_ip",  "127.0.0.1");
+        chargeParams.put("subject", "知心心理咨询");
 
         StringBuffer content = new StringBuffer();
         content.append("下单时间：").append(DateFormatUtils.format(booking.getTime(), "yyyy-MM-dd"));
@@ -201,6 +204,39 @@ public class PingppResources {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping(value = "testPingpp", method = RequestMethod.GET)
+    public Charge testPingpp(){
+        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+
+        Map<String, Object> chargeParams = new HashMap<String, Object>();
+        chargeParams.put("order_no",  "123456789");
+        chargeParams.put("amount", 100);
+        Map<String, String> app = new HashMap<String, String>();
+        app.put("id", "app_KavHuL08GO8O4Wbn");
+        chargeParams.put("app", app);
+        chargeParams.put("channel",  Channel.UPMP);
+        chargeParams.put("currency", "cny");
+        chargeParams.put("client_ip",  "127.0.0.1");
+        chargeParams.put("subject",  "苹果2");
+        chargeParams.put("body",  "一个又大又红的红富士苹果");
+
+        System.out.println(chargeParams.toString());
+        Charge ch = null;
+        try {
+            ch = Charge.create(chargeParams);
+
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+        } catch (InvalidRequestException e) {
+            e.printStackTrace();
+        } catch (APIConnectionException e) {
+            e.printStackTrace();
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
+        return ch;
     }
 
 }

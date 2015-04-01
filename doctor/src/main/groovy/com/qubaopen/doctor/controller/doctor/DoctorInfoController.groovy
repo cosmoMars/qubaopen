@@ -301,7 +301,9 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 
         def drReview = new DoctorRecord()
 
-        BeanUtils.copyProperties(dr, drReview)
+        if (dr != null) {
+            BeanUtils.copyProperties(dr, drReview)
+        }
 
 		if (!dr) {
 			dr = new DoctorRecord(

@@ -137,7 +137,15 @@ public class Booking extends AbstractBaseEntity<Long> {
 		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate, Refunding, Refunded, Close
 	}
 
+	/**
+	 * 基础金额
+	 */
 	private double money;
+
+	/**
+	 * 加急金额
+	 */
+	private double quickMoney;
 
 	public enum BookStatus {
 		Consulted, NoConsult
@@ -457,4 +465,12 @@ public class Booking extends AbstractBaseEntity<Long> {
     public void setResolveType(ResolveType resolveType) {
         this.resolveType = resolveType;
     }
+
+	public double getQuickMoney() {
+		return quickMoney;
+	}
+
+	public void setQuickMoney(double quickMoney) {
+		this.quickMoney = quickMoney;
+	}
 }

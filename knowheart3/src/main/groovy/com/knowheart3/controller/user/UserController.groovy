@@ -174,7 +174,11 @@ class UserController extends AbstractBaseController<User, Long> {
 
         if (loginUser) {
 
-            def diffDay = (new Date().time - loginUser.loginDate.time) / 24 / 3600 / 1000
+			def now = new Date()
+			if (loginUser.loginDate == null) {
+				loginUser.loginDate = now
+			}
+            def diffDay = (now.time - loginUser.loginDate.time) / 24 / 3600 / 1000
             if (diffDay > 3650) {
                 return '{"success" : "0", "message" : "亲,登陆超时～请重新登陆哦～"}'
             }
@@ -187,12 +191,12 @@ class UserController extends AbstractBaseController<User, Long> {
 
             def	userLog = new UserLog(
                     user : loginUser,
-                    time : new Date()
+                    time : now
             )
 
             if (null == loginType) {
                 userLog.userLogType = new UserLogType(id : 1l)
-                loginUser.loginDate = new Date()
+                loginUser.loginDate = now
             } else {
                 def typeId = loginType as Long
                 userLog.userLogType = new UserLogType(id : typeId)

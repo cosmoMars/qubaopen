@@ -53,9 +53,10 @@ public class DoctorCaseController extends AbstractBaseController<DoctorCase, Lon
         def data = []
         cases.each {
             data << [
-                'id' : it?.id,
-                'title' : it?.title,
-                'createTime' : it?.createTime
+                'id' : it.id,
+                'title' : it.title,
+                'content' : it.content,
+                'createTime' : it.createTime
             ]
         }
 
@@ -80,10 +81,10 @@ public class DoctorCaseController extends AbstractBaseController<DoctorCase, Lon
 
         [
             'success' : '1',
-            'id' : doctorCase?.id,
-            'title' : doctorCase?.title,
-            'content' : doctorCase?.content,
-            'createTime' : doctorCase?.createTime
+            'id' : doctorCase.id,
+            'title' : doctorCase.title,
+            'content' : doctorCase.content,
+            'createTime' : doctorCase.createTime
         ]
 
     }

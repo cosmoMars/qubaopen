@@ -66,8 +66,16 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			time : new Date(),
 			content : content.trim()
 		)
-		helpRepository.save(help)
-		'{"success" : "1"}'
+		help = helpRepository.save(help)
+
+		[
+		    'success' : '1',
+			'helpId' : help.id,
+			'helpContent' : help.content,
+			'helpTime' : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
+			'userName' : user.userInfo.name,
+			'userAvatar' : user.userInfo.avatarPath
+		]
 	}
 	
 	/**
@@ -116,30 +124,6 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		} else {
 			helps = helpRepository.findAll(pageable)
 			helps.each {
-//				def comments = helpCommentRepository.findLimitComment(it)
-//				def commentData = []
-//				comments.each { cit ->
-//					def goods = helpCommentGoodRepository.findByHelpComment(cit),
-//						gSize = 0
-//					if (goods) {
-//						gSize = goods.size()
-//					}
-//					def isGood = goods.any { g ->
-//						g.user == user
-//					}
-//					commentData << [
-//						'commentId' : cit?.id,
-//						'doctorId' : cit?.doctor?.id,
-//						'doctorName' : cit?.doctor?.doctorInfo?.name,
-//						'hospitalName' : cit?.hospital?.hospitalInfo?.name,
-//						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-//						'content' : cit?.content,
-//						'time' : DateFormatUtils.format(cit?.time, 'yyyy-MM-dd'),
-//						'goods' : gSize,
-//						'isGood' : isGood
-//					]
-//
-//				}
 				def comments = helpCommentRepository.findLimitCommentByGood(it)
 				def commentData = []
 				comments.each { cit ->

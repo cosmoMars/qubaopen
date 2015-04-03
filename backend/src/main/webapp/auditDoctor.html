@@ -131,6 +131,7 @@
 
 </div>
 
+<script src="js/globalVariable.js"></script>
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.form.js"></script>
@@ -247,7 +248,7 @@
                 p=page;
             }
             $.ajax({
-                url:window.location.protocol+"//"+window.location.host+"/doctor/retrieveDoctor?size=10&page="+p+"&status="+status,
+                url:prevUrl+"/doctor/retrieveDoctor?size=10&page="+p+"&status="+status,
                 type: "GET",
                 async:true,
                 dataType: "json",
@@ -280,7 +281,7 @@
         /*新增 修改专栏*/
         function editTopic(jsonSent){
             $.ajax({
-                url:window.location.protocol+"//"+window.location.host+"/topic/generateTopic",
+                url:prevUrl+"/topic/generateTopic",
                 type: "POST",
                 data:jsonSent,
                 dataType: "json",
@@ -301,7 +302,7 @@
         /*删除专栏*/
         function deleteTopic(id){
             $.ajax({
-                url:window.location.protocol+"//"+window.location.host+"/topic/"+id,
+                url:prevUrl+"/topic/"+id,
                 type: "DELETE",
                 dataType: "json",
                 success: function (data, textStatus, jqXHR) {

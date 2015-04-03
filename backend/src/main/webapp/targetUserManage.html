@@ -24,6 +24,7 @@
 <div id="mainView" class="container marketing">
 </div>
 
+<script src="js/globalVariable.js"></script>
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.form.js"></script>
@@ -46,7 +47,7 @@
 
         initAutoTF(tableJson.data,null);
 
-        var url=window.location.protocol+"//"+window.location.host+"/targetUser/retrieveTargetUser?size=10&page=";
+        var url=prevUrl+"/targetUser/retrieveTargetUser?size=10&page=";
         getTableList(0,url);
 
 

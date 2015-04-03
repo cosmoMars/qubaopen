@@ -22,7 +22,7 @@ public class DoctorCase extends AbstractBaseEntity<Long> {
 
     private String title;
 
-    @Column(length = 10000)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)

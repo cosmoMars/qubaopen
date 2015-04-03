@@ -108,7 +108,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
 		def tradeNo
 		if (doctorId != null) {
-			tradeNo = "u${user.id}d${doctorId}t${DateFormatUtils.format(new Date(), "yyyyMMddHHmmssssss")}"
+			tradeNo = "u${user.id}d${doctorId}t${DateFormatUtils.format(new Date(), 'yyyyMMddHHmmssssss')}"
             /*def exist = bookingRepository.findAll([
                 'user.id_equal' : user.id,
                 'doctor.id_equal' : doctorId,
@@ -120,7 +120,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
             }*/
 		}
 		if (hospitalId != null) {
-			tradeNo = "u${user.id}h${hospitalId}t${DateFormatUtils.format(new Date(), "yyyyMMddHHmmssssss")}"
+			tradeNo = "u${user.id}h${hospitalId}t${DateFormatUtils.format(new Date(), 'yyyyMMddHHmmssssss')}"
 
             def exist = bookingRepository.findExistHospitalBooking(user.id, hospitalId)
 
@@ -193,22 +193,42 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@RequestParam boolean quick,
 		@ModelAttribute('currentUser') User user) {
 
-		def date
-		if (time == null) {
-			date = new Date()
-		} else {
+		def now = new Date(), usedTime,
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
- 		}
-		
+		def c = Calendar.getInstance()
+
+		if (quick) {
+			c.setTime now
+			c.add(Calendar.HOUR_OF_DAY, 6)
+			def sixLater = c.getTime()
+
+			c.setTime now
+			c.add(Calendar.DATE, 1)
+			def oneDayLater = c.getTime()
+
+			if (sixLater.compareTo(oneDayLater) < 1) {
+				usedTime = sixLater
+			} else {
+				usedTime = oneDayLater
+			}
+		} else {
+			c.setTime now
+			c.add(Calendar.DATE, 1)
+			c.set(Calendar.HOUR_OF_DAY, 0)
+			c.set(Calendar.MINUTE, 0)
+			usedTime = c.getTime()
+		}
+
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
 			bookingTime, data = []
 		if (doctorInfo)
 			bookingTime = doctorInfo.bookingTime
 		def times = bookingTime.split(',')
-		def c = Calendar.getInstance()
-		c.setTime date
+
 		
 		def dayData = [], timeData = [], outDateBooking = []
+
+		c.setTime date
 		for (i in 0..6) {
 			if (i > 0)
 				c.add(Calendar.DATE, 1)
@@ -227,11 +247,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					
 					bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)) // 订单占用 2
 			}
-				
+
 			dayData << [
 				'dayId' : i + 1,
 				'dayOfWeek' : idx,
-				'day' : DateFormatUtils.format(c.getTime(), 'yyyy-MM-dd')
+				'day' : DateFormatUtils.format(day, 'yyyy-MM-dd')
 			]
 			
 			if (dateBookingTime) {
@@ -262,7 +282,15 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					}
 				}
 			}
-			
+			if (DateUtils.isSameDay(usedTime, day) && usedTime.compareTo(day) > -1) {
+				def index = Integer.valueOf(DateFormatUtils.format(usedTime, 'HH'))
+				for (j in 0..index){
+					timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
+				}
+			} else if (!DateUtils.isSameDay(usedTime, day) && usedTime.compareTo(day) == 1) {
+				timeModel = "111111111111111111111111"
+			}
+
 			bookingList.each {
 				if (it.outDated && (new Date()).getTime() > it.outDated.getTime()) {
 					it.outDated = null
@@ -312,14 +340,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			date = new Date()
 		} else {
 			date = DateUtils.parseDate(time, 'yyyy-MM-dd')
-//			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd'), 'yyyy-MM-dd')
-//			if (date < today) {
-//				return '{"success" : "0", "message" : "err801"}'
-//			}
 		 }
 		
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
-			bookingTime, data = []
+			bookingTime
 		if (doctorInfo)
 			bookingTime = doctorInfo.bookingTime
 		def times = bookingTime.split(',')
@@ -337,31 +361,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				timeModel = times[idx - 1],
 //				timeList = bookingTimeRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId)),
 				bookingList = bookingRepository.findAllByTime(DateFormatUtils.format(day, 'yyyy-MM-dd'), new Doctor(id : doctorId))
-			
-			
-			/*if (timeList && timeList.size() > 0) {
-				if (!timeModel) {
-					timeModel = '000000000000000000000000'
-				}
-				timeList.each {
-					def start = Integer.valueOf(DateFormatUtils.format(it.startTime, 'HH')),
-						end
-					if (DateUtils.isSameDay(it.startTime, it.endTime)) {
-						end = Integer.valueOf(DateFormatUtils.format(it.endTime, 'HH'))
-					} else {
-						end = 24
-					}
-						
-					for (j in start .. end - 1) {
-						def occupy = timeModel.substring(j, j + 1)
-						// 1 占用， 0 未占用
-						if ("1" != occupy || !"1".equals(occupy)) {
-							timeModel = timeModel.substring(0, j) + '1' + timeModel.substring(j + 1)
-						}
-					}
-				}
-			}*/
-			
+
 			bookingList.each {
 				def index = Integer.valueOf(DateFormatUtils.format(it.time, 'HH')),
 					occupy = timeModel.substring(index, index + 1)
@@ -476,10 +476,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
+
+		def u = new User(id : user.id)
 		
 		def bookings = bookingRepository.findAll(
 			[
-				user_equal : user
+				user_equal : u
 			], pageable
 		)
 		def bookingContent = bookings.getContent()

@@ -53,9 +53,10 @@ class HospitalArticleController extends AbstractBaseController<HospitalArticle, 
         def data = []
         articles.each {
             data << [
-                'id' : it?.id,
-                'title' : it?.title,
-                'createTime' : it?.createTime
+                'id' : it.id,
+                'title' : it.title,
+                'content' : it.content,
+                'createTime' : it.createTime
             ]
         }
         [
@@ -79,10 +80,10 @@ class HospitalArticleController extends AbstractBaseController<HospitalArticle, 
 
         [
             'success' : '1',
-            'id' : article?.id,
-            'title' : article?.title,
-            'content' : article?.content,
-            'createTime' : article?.createTime
+            'id' : article.id,
+            'title' : article.title,
+            'content' : article.content,
+            'createTime' : article.createTime
         ]
     }
 }

@@ -1,4 +1,4 @@
-package com.knowheart3.vo;
+package com.qubaopen.survey.entity.vo;
 
 import java.io.Serializable;
 import java.util.Date;

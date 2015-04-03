@@ -1,8 +1,9 @@
 package com.knowheart3.repository.comment.custom;
 
-import com.knowheart3.vo.HelpCommentVo;
+
 import com.qubaopen.survey.entity.comment.Help;
 import com.qubaopen.survey.entity.comment.HelpComment;
+import com.qubaopen.survey.entity.vo.HelpCommentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;

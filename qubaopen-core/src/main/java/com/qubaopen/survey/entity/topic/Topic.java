@@ -1,5 +1,6 @@
 package com.qubaopen.survey.entity.topic;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -25,6 +26,7 @@ public class Topic extends AbstractBaseEntity<Long> {
 	/**
 	 * 内容
 	 */
+	@Column(columnDefinition = "TEXT")
 	private String content;
 	
 	/**

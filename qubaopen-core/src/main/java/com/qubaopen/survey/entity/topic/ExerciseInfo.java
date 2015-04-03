@@ -1,5 +1,6 @@
 package com.qubaopen.survey.entity.topic;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -30,6 +31,7 @@ public class ExerciseInfo extends AbstractBaseEntity<Long> {
 	/**
 	 * 练习内容
 	 */
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
 	/**

@@ -115,11 +115,30 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
         } else {
             exerciseCount = 0
         }
-		def page = dailyDiscoveryRepository.findAll(pageable)
-        def dailyDiscovery = page.getContent().get(0)
+        def c = Calendar.getInstance()
+        c.setTime new Date()
+        def diff = -pageable.pageNumber
+        c.add(Calendar.DATE, diff)
+        def today = c.getTime()
+//        def pable = new PageRequest(0, 1)
+//		def page = dailyDiscoveryRepository.findAll([
+//		        'time_equal' : DateFormatUtils.format(today, 'yyyy-MM-dd')
+//		], pable)
+//
+////        def page = dailyDiscoveryRepository.findByTimeAndPageable(c.getTime(), pageable)
+//        def dailyDiscovery = page.getContent().get(0)
+        def dailyDiscovery = dailyDiscoveryRepository.findByTime(c.getTime()),
+            size = dailyDiscoveryRepository.countByTime(c.getTime())
+
+
+        def more = false
+        if (size > 0) {
+            more = true
+        }
+
 
         def haveDone = false
-        if (dailyDiscovery?.self != null && null != user.id) {
+        if (dailyDiscovery && dailyDiscovery?.self != null && null != user.id) {
             def count = selfUserQuestionnaireRepository.countBySelfAndUser(dailyDiscovery.self, user)
             if (count > 0) {
                 haveDone = true
@@ -146,8 +165,8 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 			'topicContent' : dailyDiscovery?.topic?.content,
             'topicPic' : dailyDiscovery?.topic?.picUrl,
             'isLogin' : isLogin,
-            'time' : dailyDiscovery.time,
-            'more' : page.hasNext()
+            'time' : dailyDiscovery?.time,
+            'more' : more
 		]
 		
 	}

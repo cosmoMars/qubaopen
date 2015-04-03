@@ -23,7 +23,7 @@ public  class HospitalArticle extends AbstractBaseEntity<Long> {
 
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 10000)
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -1,12 +1,11 @@
 package com.qubaopen.survey.entity.topic;
 
+import com.qubaopen.core.entity.AbstractBaseEntity;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.hibernate.envers.Audited;
-
-import com.qubaopen.core.entity.AbstractBaseEntity;
 
 /**
  * 专栏
@@ -26,9 +25,9 @@ public class Topic extends AbstractBaseEntity<Long> {
 	/**
 	 * 内容
 	 */
-	@Column(columnDefinition = "TEXT")
+	@Column(length = 10000)
 	private String content;
-	
+
 	/**
 	 * 图片url
 	 */

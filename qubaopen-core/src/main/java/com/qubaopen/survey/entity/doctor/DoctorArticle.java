@@ -3,10 +3,7 @@ package com.qubaopen.survey.entity.doctor;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -25,8 +22,10 @@ public class DoctorArticle extends AbstractBaseEntity<Long> {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
     public Doctor getDoctor() {

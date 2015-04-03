@@ -343,7 +343,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		 }
 		
 		def doctorInfo = doctorInfoRepository.findOne(doctorId),
-			bookingTime, data = []
+			bookingTime
 		if (doctorInfo)
 			bookingTime = doctorInfo.bookingTime
 		def times = bookingTime.split(',')
@@ -476,10 +476,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
+
+		def u = new User(id : user.id)
 		
 		def bookings = bookingRepository.findAll(
 			[
-				user_equal : user
+				user_equal : u
 			], pageable
 		)
 		def bookingContent = bookings.getContent()

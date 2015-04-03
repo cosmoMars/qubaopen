@@ -465,14 +465,19 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
 		// 查找groupids
 		def groupIds = selfUserQuestionnaireRepository.findGroupId(user, pageable)
+		def more = true, list = []
 
 		if (groupIds.size() > 0) {
+
+			if (groupIds.size() < pageable.getPageSize()) {
+				more = false
+			}
 			def groups = selfGroupRepository.findByGroupIds(groupIds)
 			// 查找答案
 			def selfResultVos = selfUserQuestionnaireRepository.findSelfResultVo(user, groupIds)
 
 
-			def list = [], map = [:]
+			def map = [:]
 			selfResultVos.each {
 				if (map.get(it.groupName)) {
 					map.get(it.groupName) << it
@@ -524,7 +529,11 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 				]
 			}
 
-			list
+			[
+			        'success' : '1',
+					'data' : list,
+					'more' : more
+			]
 
 		}
 

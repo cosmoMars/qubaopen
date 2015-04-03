@@ -1,14 +1,10 @@
 package com.qubaopen.backend.controller.booking;
 
-import com.qubaopen.backend.repository.booking.BookingProcessLogRepository;
-import com.qubaopen.backend.repository.booking.BookingRepository;
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.survey.entity.booking.Booking;
-import com.qubaopen.survey.entity.booking.BookingProcessLog;
-import com.qubaopen.survey.entity.booking.ResolveType;
-import com.qubaopen.survey.entity.doctor.Doctor;
-import com.qubaopen.survey.entity.hospital.Hospital;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,10 +13,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.qubaopen.backend.repository.booking.BookingProcessLogRepository;
+import com.qubaopen.backend.repository.booking.BookingRepository;
+import com.qubaopen.backend.repository.doctor.AssistantRepository;
+import com.qubaopen.core.controller.AbstractBaseController;
+import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.survey.entity.booking.Booking;
+import com.qubaopen.survey.entity.booking.BookingProcessLog;
+import com.qubaopen.survey.entity.booking.ResolveType;
+import com.qubaopen.survey.entity.doctor.Assistant;
+import com.qubaopen.survey.entity.doctor.Doctor;
+import com.qubaopen.survey.entity.hospital.Hospital;
 
 @RestController
 @RequestMapping("booking")
@@ -32,8 +35,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	@Autowired
 	private BookingProcessLogRepository bookingProcessLogRepository;
 	
-//	@Autowired
-//	private AssistantRepository assistantRepository;
+	@Autowired
+	private AssistantRepository assistantRepository;
 	
 	
 	@Override
@@ -164,11 +167,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		if(null != booking){
 			BookingProcessLog bookingProcessLog=new BookingProcessLog();
-//			Assistant assistant=assistantRepository.findOne(assistantId);
+			Assistant assistant=assistantRepository.findOne(assistantId);
 			bookingProcessLog.setBooking(booking);
 			bookingProcessLog.setRemark(remark);
 			bookingProcessLog.setResolveType(booking.getResolveType());
-//			bookingProcessLog.setAssistant(assistant);
+			bookingProcessLog.setAssistant(assistant);
 			
 			if(resolved){
 				booking.setResolveType(ResolveType.None);

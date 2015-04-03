@@ -19,7 +19,7 @@ public class UserFavoriteRepositoryImpl implements UserFavoriteRepositoryCustom 
 	public List<FavoriteVo> findTopicVos(Pageable pageable) {
 
 		StringBuilder sql = new StringBuilder();
-		sql.append("select t.id topicId ,t.name, t.cnt,t.created_date topicCreateDate, dd.time ");
+		sql.append("select t.id topicId ,t.name, t.content,t.created_date topicCreateDate, dd.time ");
 		sql.append("from topic t ");
 		sql.append("left join daily_discovery dd on t.id = dd.topic_id ");
 		sql.append("order by dd.time asc, t.created_date desc ");

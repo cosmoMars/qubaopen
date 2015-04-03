@@ -19,7 +19,7 @@ public class AssistantRepositoryImpl implements AssistantRepositoryCustom {
         StringBuffer sql = new StringBuffer();
 
         sql.append("select a.id from assistant a ");
-        sql.append("a left join (select di.assistant_id id, count(di.assistant_id) count " +
+        sql.append("left join (select di.assistant_id id, count(di.assistant_id) count " +
                 "from doctor_info di group by di.assistant_id) dia ");
         sql.append(" on a.id = dia.id order by count ");
 

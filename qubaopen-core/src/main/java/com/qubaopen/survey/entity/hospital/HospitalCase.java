@@ -21,7 +21,7 @@ public class HospitalCase extends AbstractBaseEntity<Long> {
 
     private String title;
 
-    @Column(length = 10000)
+    @Column(columnDefinition = "TEXT")
     String content;
 
     @Temporal(TemporalType.TIMESTAMP)

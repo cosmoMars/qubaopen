@@ -1,16 +1,14 @@
 package com.qubaopen.backend.repository.topic.custom;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.qubaopen.backend.vo.FavoriteVo;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import org.springframework.data.domain.Pageable;
-
-import com.qubaopen.backend.vo.FavoriteVo;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class UserFavoriteRepositoryImpl implements UserFavoriteRepositoryCustom {
 
@@ -21,7 +19,7 @@ public class UserFavoriteRepositoryImpl implements UserFavoriteRepositoryCustom 
 	public List<FavoriteVo> findTopicVos(Pageable pageable) {
 
 		StringBuilder sql = new StringBuilder();
-		sql.append("select t.id topicId ,t.name, t.content,t.created_date topicCreateDate, dd.time ");
+		sql.append("select t.id topicId ,t.name, t.cnt,t.created_date topicCreateDate, dd.time ");
 		sql.append("from topic t ");
 		sql.append("left join daily_discovery dd on t.id = dd.topic_id ");
 		sql.append("order by dd.time asc, t.created_date desc ");

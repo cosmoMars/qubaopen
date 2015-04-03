@@ -25,8 +25,10 @@ public class Topic extends AbstractBaseEntity<Long> {
 	/**
 	 * 内容
 	 */
-	@Column(length = 10000)
+//	@Column(name = "cnt", length = 10000)
+	@Column(columnDefinition = "TEXT")
 	private String content;
+
 
 	/**
 	 * 图片url
@@ -41,20 +43,20 @@ public class Topic extends AbstractBaseEntity<Long> {
 		this.name = name;
 	}
 
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
 	public String getPicUrl() {
 		return picUrl;
 	}
 
 	public void setPicUrl(String picUrl) {
 		this.picUrl = picUrl;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 }

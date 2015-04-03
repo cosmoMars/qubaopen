@@ -19,5 +19,11 @@ public interface DailyDiscoveryRepository extends MyRepository<DailyDiscovery, L
 
 	List<DailyDiscovery> findBySelfId(long id, Pageable pageable);
 
+	@Query("from DailyDiscovery dd where date_format(dd.time, '%Y-%m-%d') = date_format(:date, '%Y-%m-%d')")
+	List<DailyDiscovery> findByTimeAndPageable(@Param("date") Date date, Pageable pageable);
+
+	@Query("select count(*) from DailyDiscovery dd where date_format(dd.time, '%Y-%m-%d') < date_format(:date, '%Y-%m-%d')")
+	int countByTime(@Param("date") Date date);
+
 
 }

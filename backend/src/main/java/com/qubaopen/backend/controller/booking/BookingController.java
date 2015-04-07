@@ -1,8 +1,8 @@
 package com.qubaopen.backend.controller.booking;
 
+import com.qubaopen.backend.repository.assistant.AssistantRepository;
 import com.qubaopen.backend.repository.booking.BookingProcessLogRepository;
 import com.qubaopen.backend.repository.booking.BookingRepository;
-import com.qubaopen.backend.repository.doctor.AssistantRepository;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.booking.Booking;

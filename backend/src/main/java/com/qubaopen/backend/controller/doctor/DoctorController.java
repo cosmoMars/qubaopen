@@ -1,6 +1,6 @@
 package com.qubaopen.backend.controller.doctor;
 
-import com.qubaopen.backend.repository.doctor.AssistantRepository;
+import com.qubaopen.backend.repository.assistant.AssistantRepository;
 import com.qubaopen.backend.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.backend.repository.doctor.DoctorRepository;
 import com.qubaopen.backend.service.SmsService;
@@ -107,7 +107,12 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
                 assistant = di.getAssistant();
             } else {
                 Long assistantId = assistantRepository.findSpaceAssistant();
+
+				if (assistantId == 0) {
+					return "没有可用的助手";
+				}
                 assistant = assistantRepository.findOne(assistantId);
+//				assistant = assistantRepository.findSpaceAssistant();
                 di.setAssistant(assistant);
             }
 

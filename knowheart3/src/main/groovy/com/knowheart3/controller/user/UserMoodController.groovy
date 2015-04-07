@@ -1,4 +1,8 @@
 package com.knowheart3.controller.user
+
+import com.knowheart3.repository.mindmap.MapRecordRepository
+import com.knowheart3.repository.mindmap.MapStatisticsRepository
+import com.knowheart3.repository.self.SelfRepository
 import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,6 +40,14 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 	@Autowired
 	UserMoodService userMoodService
 	
+	@Autowired
+	SelfRepository selfRepository
+
+	@Autowired
+	MapStatisticsRepository mapStatisticsRepository
+
+	@Autowired
+	MapRecordRepository mapRecordRepository
 
 	@Override
 	protected MyRepository<UserMood, Long> getRepository() {
@@ -249,9 +261,24 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
             return '{"success" : "0", "message" : "err000"}'
         }
 
+		def specialSelf = selfRepository.findSpecialSelf()
+		def specialMap = mapStatisticsRepository.findOneByFilters(
+				[
+						self_equal : specialSelf,
+						user_equal : user
+				]
+		)// 4小时题目
+		def specialMapRecords, moreThan7 = false
+		if (specialMap) {
+			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
+		}
+
+		if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
+			moreThan7 = true
+		}
         def coefficient = mapCoefficientRepository.findOne(user.id)
 
-        def moodContent = ''
+        def moodContent = '', pic
         if (coefficient) {
             //计算 正负情感趋势 上升 下降
             def c = Calendar.getInstance()
@@ -294,6 +321,8 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
         [
             'success' : '1',
             'data' : data,
+			'picPath' : pic,
+			'moreThan7' : moreThan7,
             'moodContent' : moodContent
         ]
 

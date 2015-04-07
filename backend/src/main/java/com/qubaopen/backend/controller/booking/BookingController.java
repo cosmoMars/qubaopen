@@ -14,6 +14,7 @@ import com.qubaopen.survey.entity.hospital.Hospital;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -154,6 +155,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @param remark
 	 * @return
 	 */
+	@Transactional
 	@RequestMapping(value = "resolveBooking", method = RequestMethod.POST)
 	private Object resolveBooking(@RequestParam long bookingId,
 			@RequestParam long assistantId,

@@ -1,14 +1,4 @@
 package com.knowheart3.service.user
-
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-
 import com.knowheart3.repository.mindmap.MapCoefficientRepository
 import com.knowheart3.repository.user.UserMoodRepository
 import com.knowheart3.repository.user.UserRepository
@@ -16,6 +6,11 @@ import com.qubaopen.survey.entity.mindmap.MapCoefficient
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserMood
 import com.qubaopen.survey.entity.user.UserMood.MoodType
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserMoodService {
@@ -29,9 +24,6 @@ class UserMoodService {
 	@Autowired
 	MapCoefficientRepository mapCoefficientRepository
 
-	@PersistenceContext
-	private EntityManager entityManager;
-	
 	/**
 	 * 用户提交心情
 	 * @param user
@@ -129,12 +121,6 @@ class UserMoodService {
 			m = strTime[1] as int,
 			day = getMonthLastDay(y, m)
 			
-		
-		def strHourTime = DateFormatUtils.format(new Date(), 'HH:mm').split(':'),
-			h = strHourTime[0] as int,
-			min = strHourTime[1] as int
-		
-		
 		def c = Calendar.getInstance()
 		c.set(Calendar.YEAR, y)
 		c.set(Calendar.MONTH, m - 1)
@@ -142,8 +128,6 @@ class UserMoodService {
 		c.set(Calendar.HOUR_OF_DAY, 0)
 		c.set(Calendar.MINUTE, 0)
 		c.set(Calendar.SECOND, 0)
-		
-//		println c.getTime()
 		
 		def monthData = []
 		for(i in 1..day) {
@@ -225,12 +209,6 @@ class UserMoodService {
             m = strTime[1] as int,
             day = getMonthLastDay(y, m)
 
-
-        def strHourTime = DateFormatUtils.format(new Date(), 'HH:mm').split(':'),
-            h = strHourTime[0] as int,
-            min = strHourTime[1] as int
-
-
         def c = Calendar.getInstance()
         c.set(Calendar.YEAR, y)
         c.set(Calendar.MONTH, m - 1)
@@ -238,8 +216,6 @@ class UserMoodService {
         c.set(Calendar.HOUR_OF_DAY, 0)
         c.set(Calendar.MINUTE, 0)
         c.set(Calendar.SECOND, 0)
-
-//		println c.getTime()
 
         def monthData = []
         for(i in 1..day) {

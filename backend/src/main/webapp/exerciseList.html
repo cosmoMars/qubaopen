@@ -2,7 +2,7 @@
 <html>
 <head lang="zh_cn">
     <meta charset="UTF-8">
-    <title>专栏列表</title>
+    <title>练习大套列表</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -19,6 +19,11 @@
             min-height: 407px;
         }
 
+        .previewImg{
+            max-height: 150px;
+            max-width: 300px;
+        }
+
     </style>
 </head>
 <body>
@@ -28,15 +33,11 @@
 
     <div class="row">
         <div class="col-sm-3">
-            <button type="button" id="btn-add" class="btn btn-primary">新增专栏</button>
+            <button type="button" id="btn-add" class="btn btn-primary">新增</button>
         </div>
 
         <div class="col-sm-9">
             <button type="button" id="btn-refresh" class="btn btn-primary">刷新列表</button>
-            <label>
-                <input type="checkbox" id="checkboxWarning" value="option1">
-                尚未加入"发现"
-            </label>
         </div>
     </div>
 
@@ -46,27 +47,12 @@
             <tr>
                 <th width="10%">编号</th>
                 <th width="35%">标题</th>
-                <th width="25%">录入时间</th>
-                <th width="15%">最近加入发现时间</th>
+                <th width="25%">备注</th>
+                <th width="15%">图片</th>
                 <th width="15%"></th>
             </tr>
             </thead>
             <tbody id="tableView">
-            <!--<tr data-aid="1">-->
-            <!--<th scope="row">1</th>-->
-            <!--<td>论持久战</td>-->
-            <!--<td>2014-12-12 15:15:13</td>-->
-            <!--<td>2015-02-27</td>-->
-            <!--<td><span class="check">查看</span> <span class="delete">删除</span></td>-->
-            <!--</tr>-->
-
-            <!--<tr data-aid="2">-->
-            <!--<th scope="row">1</th>-->
-            <!--<td>论持久战</td>-->
-            <!--<td>2014-12-12 15:15:13</td>-->
-            <!--<td>2015-02-27</td>-->
-            <!--<td><span class="check">查看</span> <span class="delete">删除</span></td>-->
-            <!--</tr>-->
             </tbody>
 
         </table>
@@ -92,38 +78,56 @@
                         &times;
                     </button>
                     <h4 class="modal-title" id="myModalLabel">
-                        编辑专栏
+                        编辑
                     </h4>
                 </div>
-                <div class="modal-body">
 
-                    <form class="form-horizontal" role="form">
+                <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
+                    <div class="modal-body">
+                        <input type="text" class="gone form-control" id="id" autocomplete="off" name="id"/>
+
                         <div class="form-group">
-                            <label for="title" class="col-sm-2 control-label">标题</label>
+                            <label for="name" class="col-sm-2 control-label">标题</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="title" autocomplete="off" data-aid=""
-                                       placeholder="请输入标题" required>
+                                <input type="text" class="form-control" id="name" autocomplete="off" name="name"
+                                       placeholder="请输入" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="content" class="col-sm-2 control-label">内容</label>
+                            <label for="remark" class="col-sm-2 control-label">备注</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" rows="3"  id="content"  placeholder="请输入内容"></textarea>
-
+                                <input type="text" class="form-control" id="remark" autocomplete="off"   name="remark"
+                                       placeholder="请输入" required>
                             </div>
                         </div>
-                    </form>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default"
-                            data-dismiss="modal">关闭
-                    </button>
-                    <button type="button" id="btn-confirm" class="btn btn-primary">
-                        提交
-                    </button>
-                </div>
+                        <div class="form-group">
+                            <label for="multipartFile" class="col-sm-2 control-label">图片</label>
+                            <div class="col-sm-10">
+                                <input type="file" class="form-control" id="multipartFile" name="multipartFile"
+                                       placeholder="请上传">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="img" class="col-sm-2 control-label">图片预览</label>
+                            <div class="col-sm-10">
+                                <img id="img" class="previewImg" src="">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="submit" id="btn-confirm" class="btn btn-primary">
+                            提交
+                        </button>
+                    </div>
+
+                </form>
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
@@ -134,27 +138,36 @@
 <script src="js/globalVariable.js"></script>
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.form.js"></script>
 
 <script>
     $(document).ready(function () {
 
-        var data = {"success":"1",data:[
-            {id:1,name:"专栏1",createdDate:"2014-12-12 15:15:13","dailyTime":"2015-02-27",content:"专栏1内容"},
-            {id:2,name:"专栏2",createdDate:"2014-12-16 15:15:13","dailyTime":"2015-02-28",content:"专栏2内容"},
-            {id:3,name:"专栏3",createdDate:"2014-12-16 15:15:13","dailyTime":"",content:"专栏3内容"},
-            {id:4,name:"专栏4",createdDate:"2014-12-16 15:15:13","dailyTime":"",content:"专栏4内容"}]};
-        var data1 = {"success":"1",data:[
-            {id:3,name:"专栏3",createdDate:"2014-12-12 15:15:13","dailyTime":"",content:"专栏3内容"},
-            {id:4,name:"专栏4",createdDate:"2014-12-16 15:15:13","dailyTime":"",content:"专栏4内容"}]};
+
+        //预览图片
+        $("#multipartFile").on("change",function(e){
+            var _this=this;
+            var file = e.target.files||e.dataTransfer.files;
+            if(file){
+                var reader = new FileReader();
+                reader.onload=function(){
+                    $("#img").attr("src",this.result).show();
+                }
+                reader.readAsDataURL(file[0]);
+            }
+        });
 
         //点击新增
         $("#btn-add").on("click",function(){
             $('#myModal').modal();
 
             //清除之前的数据
-            $("#title").attr("data-aid","");
-            $("#title").val("");
-            $("#content").val("");
+            $("#id").val("");
+            $("#name").val("");
+            $("#remark").val("");
+            $("#img").attr("src","").hide();
+            $("#multipartFile").val("");
+
         });
 
 
@@ -162,61 +175,29 @@
         $(document).on("click",".check",function(){
             console.log("check");
             $('#myModal').modal();
-            var id=$(this).closest("tr").attr("data-aid");
+            var id=$(this).closest("tr").attr("data-id");
             var sName=$(this).closest("tr").find(".name").html();
-            var sContent=$(this).closest("tr").find(".content").html();
+            var sRemark=$(this).closest("tr").find(".remark").html();
+            var sUrl=$(this).closest("tr").find(".url").html();
 
             //显示数据
-            $("#title").attr("data-aid",id);
-            $("#title").val(sName);
-            $("#content").val(sContent);
+            $("#id").val(id);
+            $("#name").val(sName);
+            $("#remark").val(sRemark);
+            $("#img").attr("src",sUrl).show();
         });
 
         //点击提交
         $("#btn-confirm").on("click",function(){
-
-            var id=$("#title").attr("data-aid");
-            var name=$("#title").val();
-            var content=$("#content").val();
-
-            if(!name){
-                alert("标题不能为空");
-                return;
-            }
-            if(!content){
-                alert("内容不能为空");
-                return;
-            }
-
-            var jsonSent={};
-            jsonSent.name=name;
-            jsonSent.content=content;
-
-            if(id){
-                jsonSent.id=id;
-                console.log("modify");
-            }else{
-
-                console.log("add");
-            }
-
-            console.log(jsonSent);
-            editTopic(jsonSent);
+            editExercise();
         });
 
 
         var page=0;
         //点击刷新
         $("#btn-refresh").on("click",function(){
-            var bChecked=$("#checkboxWarning").is(":checked");
-
             page=0;
-            getList(bChecked);
-            if(bChecked){
-//                updateList(data1.data);
-            }else{
-//                updateList(data.data);
-            }
+            getList(page);
         });
 
         //点击上一页  下一页
@@ -225,40 +206,37 @@
             if($(this).hasClass("disabled") || page<=0){
                 return;
             }
-            var bChecked=$("#checkboxWarning").is(":checked");
             page--;
-            getList(bChecked,page);
+            getList(page);
         });
         $("#next").on("click",function(){
             if($(this).hasClass("disabled")){
                 return;
             }
-            var bChecked=$("#checkboxWarning").is(":checked");
             page++;
-            getList(bChecked,page);
+            getList(page);
         });
 
         //点击删除
         $(document).on("click",".delete",function(){
 
             if(confirm("确认删除")){
-                var id=$(this).closest("tr").attr("data-aid");
-                deleteTopic(id)
+                var id=$(this).closest("tr").attr("data-id");
+                deleteExercise(id)
             }
         });
 
-        //初始加载
-        updateList(data.data);
-        getList(false);
+        //初始加载;
+        getList(0);
 
-        /*获取专栏列表*/
-        function getList(join,page){
+        /*获取列表*/
+        function getList(page){
             var p="";
             if(page){
                 p=page;
             }
             $.ajax({
-                url:prevUrl+"/dailyDiscovery/retrieveTopic?size=10&page="+p+"&join="+join,
+                url:prevUrl+"/exercise/retrieveExercise?size=10&page="+p,
                 type: "GET",
                 async:true,
                 dataType: "json",
@@ -288,31 +266,57 @@
             });
         }
 
-        /*新增 修改专栏*/
-        function editTopic(jsonSent){
-            $.ajax({
-                url:prevUrl+"/topic/generateTopic",
-                type: "POST",
-                data:jsonSent,
-                dataType: "json",
-                success: function (data, textStatus, jqXHR) {
+        /*新增 修改*/
+        function editExercise(){
+            $("#uploadPhotoForm").ajaxForm();
+            $('#uploadPhotoForm').submit(function () {
+                var id=$("#title").attr("data-id");
+                var name=$("#name").val();
+                var remark=$("#remark").val();
 
-                    var result = data.success;
-                    console.log(data);
-
-                    $('#myModal').modal("hide");
-                    getList($("#checkboxWarning").is(":checked"));
-                    if (result == 1) {
-                    }else if (result == 0) {
-                    }
+                if(!name){
+                    alert("标题不能为空");
+                    return;
                 }
+                if(!remark){
+                    alert("备注不能为空");
+                    return;
+                }
+
+                if(id){
+                    console.log("modify");
+                }else{
+
+                    console.log("add");
+                }
+
+                var options = {
+                    url:   prevUrl+"/exercise/generateExercise",
+                    type:  'post' ,
+                    dataType:  null,
+                    clearForm: true,
+                    success: function (data, textStatus, jqXHR) {
+                        var result = data.success;
+                        console.log(data);
+
+                        $('#myModal').modal("hide");
+                        if (result == 1) {
+                            getList(page);
+                        }else if (result == 0) {
+                        }
+                    }
+                };
+
+                $(this).ajaxSubmit(options);
+                return false;
             });
+
         }
 
-        /*删除专栏*/
-        function deleteTopic(id){
+        /*删除*/
+        function deleteExercise(id){
             $.ajax({
-                url:prevUrl+"/topic/"+id,
+                url:prevUrl+"/exercise/"+id,
                 type: "DELETE",
                 dataType: "json",
                 success: function (data, textStatus, jqXHR) {
@@ -341,11 +345,11 @@
                 appendHTML="";
 
                 appendHTML+=
-                        '<tr data-aid="'+data[i].id+'">' +
+                        '<tr data-id="'+data[i].id+'">' +
                         '<th scope="row">'+data[i].id+'</th>' +
                         '<td class="name">'+data[i].name+'</td>' +
-                        '<td>'+data[i].createdDate+'</td>' +
-                        '<td>'+data[i].dailyTime+'</td>' +
+                        '<td class="remark">'+data[i].remark+'</td>' +
+                        '<td class="url">'+data[i].url+'</td>' +
                         '<td><span class="check">查看</span> <span class="delete">删除</span></td>' +
                         '<td class="gone content">'+data[i].content+'</td>' +
                         '</tr>';

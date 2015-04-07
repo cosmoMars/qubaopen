@@ -23,6 +23,8 @@ import com.qubaopen.backend.repository.topic.DailyDiscoveryRepository;
 import com.qubaopen.backend.repository.topic.UserFavoriteRepository;
 import com.qubaopen.backend.repository.topic.TopicRepository;
 import com.qubaopen.backend.vo.FavoriteVo;
+import com.qubaopen.core.controller.AbstractBaseController;
+import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.self.Self;
 import com.qubaopen.survey.entity.topic.DailyDiscovery;
 import com.qubaopen.survey.entity.topic.Topic;
@@ -30,7 +32,7 @@ import com.qubaopen.survey.entity.topic.Topic;
 
 @RestController
 @RequestMapping("dailyDiscovery")
-public class DailyDiscoveryController {
+public class DailyDiscoveryController extends AbstractBaseController<DailyDiscovery, Long>  {
 	
 	@Autowired
 	private TopicRepository topicRepository;
@@ -43,6 +45,12 @@ public class DailyDiscoveryController {
 	
 	@Autowired
 	private UserFavoriteRepository favoriteRepository;
+	
+	@Override
+	protected MyRepository<DailyDiscovery, Long> getRepository() {
+		return dailyDiscoveryRepository;
+	}
+
 	
 	@RequestMapping(value = "retrieveTopic", method = RequestMethod.GET)
 	private Object retrieveTopic(@PageableDefault(page = 0, size = 20)

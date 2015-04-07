@@ -21,7 +21,7 @@ public class AssistantRepositoryImpl implements AssistantRepositoryCustom {
         sql.append("select a.id from assistant a ");
         sql.append("left join (select di.assistant_id id, count(di.assistant_id) count " +
                 "from doctor_info di group by di.assistant_id) dia ");
-        sql.append(" on a.id = dia.id order by count ");
+        sql.append(" on a.id = dia.id order by count limit 1");
 
         Query query = entityManager.createNativeQuery(sql.toString())
                 .setMaxResults(1);

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <title>子练习 列表</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .marketing{
+            margin-top: 100px;;
+        }
+
+        .gone{
+            display: none;
+        }
+
+        .tableParent{
+            min-height: 407px;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<div class="container marketing">
+
+    <div class="row">
+        <div class="col-sm-3">
+            <button type="button" id="btn-add" class="btn btn-primary">新增</button>
+        </div>
+
+        <div class="col-sm-9 form-inline">
+            <input type="text" id="txt-eid" class="form-control" placeholder="输入大套id"/>
+            <button type="button" id="btn-refresh" class="btn btn-primary">查询</button>
+        </div>
+    </div>
+
+    <div class="tableParent">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th width="10%">id</th>
+                <th width="15%">所属大套id</th>
+                <th width="15%">编号</th>
+                <th width="45%">名称</th>
+                <th width="15%"></th>
+            </tr>
+            </thead>
+            <tbody id="tableView">
+            </tbody>
+
+        </table>
+    </div>
+
+
+    <nav>
+        <ul class="pager">
+            <li id="prev" class="disabled"><a href="#">上一页</a></li>
+            <li id="next" class="disabled"><a href="#">下一页</a></li>
+        </ul>
+    </nav>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑
+                    </h4>
+                </div>
+
+                <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
+                    <div class="modal-body">
+                        <input type="text" class="gone form-control" id="id" autocomplete="off" name="id"/>
+
+                        <div class="form-group">
+                            <label for="exerciseId" class="col-sm-2 control-label">大套id</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="exerciseId" autocomplete="off" name="exerciseId"
+                                       placeholder="请输入" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="number" class="col-sm-2 control-label">编号</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="number" autocomplete="off" name="number"
+                                       placeholder="请输入" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">标题</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="name" autocomplete="off" name="name"
+                                       placeholder="请输入" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group gone">
+                            <label for="multipartFile" class="col-sm-2 control-label">图片</label>
+                            <div class="col-sm-10">
+                                <input type="file" class="form-control" id="multipartFile" name="multipartFile"
+                                       placeholder="请上传">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="content" class="col-sm-2 control-label">内容</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="3" name="content" id="content"  placeholder="请输入内容"></textarea>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">关闭
+                        </button>
+                        <button type="submit" id="btn-confirm" class="btn btn-primary">
+                            提交
+                        </button>
+                    </div>
+
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+</div>
+
+
+<script src="js/globalVariable.js"></script>
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.form.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+
+        //点击新增
+        $("#btn-add").on("click",function(){
+            $('#myModal').modal();
+            //清除之前的数据
+            $("#id").val("");
+            $("#exerciseId").val("");
+            $("#name").val("");
+            $("#number").val("");
+            $("#content").val("");
+            $("#multipartFile").val("");
+        });
+
+
+        //点击查看
+        $(document).on("click",".check",function(){
+            console.log("check");
+            $('#myModal').modal();
+            var id=$(this).closest("tr").attr("data-id");
+            var sName=$(this).closest("tr").find(".name").html();
+            var sContent=$(this).closest("tr").find(".content").html();
+            var sNumber=$(this).closest("tr").find(".number").html();
+            var sExerciseId=$(this).closest("tr").find(".exerciseId").html();
+
+            //显示数据
+            $("#id").val(id);
+            $("#name").val(sName);
+            $("#content").val(sContent);
+            $("#number").val(sNumber);
+            $("#exerciseId").val(sExerciseId);
+        });
+
+        //点击提交
+        $("#btn-confirm").on("click",function(){
+            editExercise();
+        });
+
+
+        var page=0;
+        //点击刷新
+        $("#btn-refresh").on("click",function(){
+            page=0;
+            var id=$("#txt-eid").val();
+            getList(id,page);
+        });
+
+        //点击上一页  下一页
+        $("#prev").on("click",function(){
+
+            if($(this).hasClass("disabled") || page<=0){
+                return;
+            }
+            page--;
+            var id=$("#txt-eid").val();
+            getList(id,page);
+        });
+        $("#next").on("click",function(){
+            if($(this).hasClass("disabled")){
+                return;
+            }
+            page++;
+            var id=$("#txt-eid").val();
+            getList(id,page);
+        });
+
+        //点击删除
+        $(document).on("click",".delete",function(){
+
+            if(confirm("确认删除")){
+                var id=$(this).closest("tr").attr("data-id");
+                deleteExercise(id)
+            }
+        });
+
+
+        /*获取列表*/
+        function getList(id,page){
+            var p="";
+            if(page){
+                p=page;
+            }
+            $.ajax({
+                url:prevUrl+"/exerciseInfo/retrieveExerciseInfo?id="+id+"&size=10&page="+p,
+                type: "GET",
+                async:true,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+
+                    console.log(data);
+
+                    if (result == 1) {
+                        updateList(data.list);
+                        if(data.list.length>=10){
+                            $("#next").removeClass("disabled");
+                        }else{
+                            $("#next").addClass("disabled");
+                        }
+                        if(page>0){
+                            $("#prev").removeClass("disabled");
+                        }else{
+                            $("#prev").addClass("disabled");
+                        }
+                    }else if (result == 0) {
+
+                        alert("请求错误");
+                    }
+                }
+            });
+        }
+
+        /*新增 修改*/
+        function editExercise(){
+            $("#uploadPhotoForm").ajaxForm();
+            $('#uploadPhotoForm').submit(function () {
+                var id=$("#id").val();
+                var name=$("#name").val();
+                var content=$("#content").val();
+
+                if(!name){
+                    alert("标题不能为空");
+                    return;
+                }
+                if(!content){
+                    alert("内容不能为空");
+                    return;
+                }
+
+                if(id){
+                    console.log("modify");
+                }else{
+
+                    console.log("add");
+                }
+
+                var options = {
+                    url:   prevUrl+"/exerciseInfo/generateExerciseInfo",
+                    type:  'post' ,
+                    dataType:  null,
+                    clearForm: true,
+                    success: function (data, textStatus, jqXHR) {
+                        var result = data.success;
+                        console.log(data);
+
+                        $('#myModal').modal("hide");
+                        if (result == 1) {
+                            var id=$("#txt-eid").val();
+                            getList(id,page);
+                        }else if (result == 0) {
+                        }
+                    }
+                };
+
+                $(this).ajaxSubmit(options);
+                return false;
+            });
+
+        }
+
+        /*删除*/
+        function deleteExercise(id){
+            $.ajax({
+                url:prevUrl+"/exerciseInfo/"+id,
+                type: "DELETE",
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+                    console.log(data);
+
+
+                    if (result == 1) {
+                        var id=$("#txt-eid").val();
+                        getList(id,page);
+                    }else if (result == 0) {
+                    }
+                }
+            });
+        }
+
+        //更新tableView界面
+        function updateList(data){
+
+            var oTableView=$("#tableView");
+
+            oTableView.empty();
+
+            var appendHTML;
+            for(var i=0;i<data.length;i++){
+                appendHTML="";
+
+                appendHTML+=
+                        '<tr data-id="'+data[i].id+'">' +
+                        '<th scope="row">'+data[i].id+'</th>' +
+                        '<td class="exerciseId">'+data[i].exerciseId+'</td>' +
+                        '<td class="number">'+data[i].number+'</td>' +
+                        '<td class="name">'+data[i].name+'</td>' +
+                        '<td><span class="check">查看</span> <span class="delete">删除</span></td>' +
+                        '<td class="gone content">'+data[i].content+'</td>' +
+                        '</tr>';
+
+                oTableView.append(appendHTML);
+            }
+
+
+        }
+    });
+</script>
+</body>
+</html>

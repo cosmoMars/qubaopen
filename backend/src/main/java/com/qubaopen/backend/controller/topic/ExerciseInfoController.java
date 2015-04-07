@@ -22,10 +22,11 @@ import com.qubaopen.backend.utils.UploadUtils;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.topic.Exercise;
+import com.qubaopen.survey.entity.topic.ExerciseInfo;
 
 @RestController
-@RequestMapping("exercise")
-public class ExerciseController extends AbstractBaseController<Exercise, Long> {
+@RequestMapping("exerciseInfo")
+public class ExerciseInfoController extends AbstractBaseController<ExerciseInfo, Long> {
 
 	@Autowired
 	private ExerciseRepository exerciseRepository;
@@ -38,31 +39,46 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
     private String exercise_url;
 
 	@Override
-	protected MyRepository<Exercise, Long> getRepository() {
-		return exerciseRepository;
+	protected MyRepository<ExerciseInfo, Long> getRepository() {
+		return exerciseInfoRepository;
 	}
 
+
 	/**
-	 * 获取 练习 大套 列表
+	 * 获取 子练习 列表
 	 * 
 	 * @param pageable
+	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "retrieveExercise", method = RequestMethod.GET)
-	private Object retrieveExercise(
-			@PageableDefault(page = 0, size = 20) Pageable pageable) {
+	@RequestMapping(value = "retrieveExerciseInfo", method = RequestMethod.GET)
+	private Object retrieveExerciseInfo(
+			@PageableDefault(page = 0, size = 20) Pageable pageable,
+			@RequestParam long id) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
-		List<Exercise> exercises = exerciseRepository.findExercise(pageable);
+		Exercise exercise = exerciseRepository.findOne(id);
 
-		for (Exercise exercise : exercises) {
+		if (exercise == null) {
+			result.put("success", "0");
+			result.put("message", "该套练习不存在");
+			return result;
+		}
+
+		List<ExerciseInfo> exerciseInfos = exerciseInfoRepository
+				.findExerciseInfo(pageable, exercise);
+
+		for (ExerciseInfo exerciseInfo : exerciseInfos) {
+
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("id", exercise.getId());
-			map.put("name", exercise.getName());
-			map.put("url", exercise.getUrl());
-			map.put("remark", exercise.getRemark());
+			map.put("id", exerciseInfo.getId());
+			map.put("name", exerciseInfo.getName());
+			map.put("content", exerciseInfo.getContent());
+			map.put("exerciseId", exerciseInfo.getExercise().getId());
+			map.put("number", exerciseInfo.getNumber());
+			// map.put("createdDate", exerciseInfo.getCreatedDate().toDate());
 			list.add(map);
 		}
 
@@ -70,37 +86,49 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
 		result.put("list", list);
 		return result;
 	}
-
+	
 	/**
-	 * 新增/修改  大套 练习
+	 * 新增/修改 子练习
 	 * @param id
 	 * @param name
-	 * @param remark
+	 * @param content
+	 * @param number
 	 * @param multipartFile
 	 * @return
 	 */
-	@RequestMapping(value = "generateExercise", method = RequestMethod.POST)
-	private Object generateExercise(@RequestParam(required = false) Long id,
+	@RequestMapping(value = "generateExerciseInfo", method = RequestMethod.POST)
+	private Object generateExerciseInfo(@RequestParam(required = false) long exerciseId,
+			@RequestParam(required = false) Long id,
 			@RequestParam(required = false) String name,
-			@RequestParam(required = false) String remark,
+			@RequestParam(required = false) String content,
+			@RequestParam(required = false) String number,
 			@RequestParam(required = false) MultipartFile multipartFile) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
-		Exercise exercise = null;
-		if (id != null) {
-			exercise = exerciseRepository.findOne(id);
-		} else {
-			exercise = new Exercise();
+		ExerciseInfo exerciseInfo = null;
+		Exercise exercise= exerciseRepository.findOne(exerciseId);
+		if(exercise==null){
+			result.put("success", "0");
+			result.put("message", "该套练习id不存在");
+			return result;
 		}
-		exercise.setName(name);
-		exercise.setRemark(remark);
+		
+		if (id != null) {
+			exerciseInfo = exerciseInfoRepository.findOne(id);
+		} else {
+			exerciseInfo = new ExerciseInfo();
+		}
+		exerciseInfo.setExercise(exercise);
+		exerciseInfo.setName(name);
+		exerciseInfo.setContent(content);
+		exerciseInfo.setNumber(number);
 		
 		  if (null != multipartFile) {
 	            String uname;
-	            if (null == exercise.getId()) {
+	            if (null == exerciseInfo.getId()) {
 	                uname = exercise_url;
 	            } else {
-	                uname = exercise_url + exercise.getId();
+	                uname = exercise_url + exerciseInfo.getId();
 	            }
 
 	            String picUrl;
@@ -109,12 +137,13 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
 	            } catch (IOException e) {
 	                throw new RuntimeException(e);
 	            }
-	            exercise.setUrl(picUrl);
+	            exerciseInfo.setPicUrl(picUrl);
 	        }
 		
-		exerciseRepository.save(exercise);
+		exerciseInfoRepository.save(exerciseInfo);
 
 		result.put("success", "1");
 		return result;
 	}
+
 }

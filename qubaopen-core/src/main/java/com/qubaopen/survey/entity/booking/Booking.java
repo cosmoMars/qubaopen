@@ -131,10 +131,10 @@ public class Booking extends AbstractBaseEntity<Long> {
 	private Status status;
 
 	/**
-	 * 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次, 6 已付款， 7 付款接受，8 医师改约, 9 退款中，10 已退款，11 关闭
+	 * 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次，6 已付款，7 付款接受，8 医师改约，9 退款中，10 已退款，11 关闭，12 支付中
 	 */
 	public enum Status {
-		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate, Refunding, Refunded, Close
+		Booking, Accept, Refusal, Consulted, Consulting, Next, Paid, PayAccept, ChangeDate, Refunding, Refunded, Close, Paying
 	}
 
 	/**

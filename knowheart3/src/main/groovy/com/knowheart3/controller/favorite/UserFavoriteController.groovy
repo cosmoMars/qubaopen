@@ -48,7 +48,7 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 			return '{"success" : "0", "message" : "err000"}'
 		}
 
-        def favorites = userFavoriteRepository.findByType(type, pageable)
+        def favorites = userFavoriteRepository.findByTypeAndUser(type, user, pageable)
 
 
        /* // 0 自测， 1 专题

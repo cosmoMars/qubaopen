@@ -29,10 +29,10 @@ import java.util.*;
 @RequestMapping("pingpp")
 @SessionAttributes("currentUser")
 public class PingppResources {
-//
-//    static {
-//        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
-//    }
+
+    static {
+        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+    }
 
     @Autowired
     BookingRepository bookingRepository;
@@ -61,15 +61,23 @@ public class PingppResources {
             @RequestParam(required = false) String time,
             @RequestParam(required = false) String type,
             HttpServletRequest req, HttpServletResponse resp,
-            @ModelAttribute("currentUser") User user) {
+            @ModelAttribute("currentUser") User user) throws IOException {
 
-//        if (null == user.getId()) {
-//            return "{\"success\" : \"0\", \"message\" : \"err000\"}";
-//        }
+        PrintWriter out;
+        if (null == user.getId()) {
+            out = resp.getWriter();
+            out.print("{\"success\" : \"0\", \"message\" : \"err000\"}");
+            return;
+        }
 
         Booking booking = bookingRepository.findOne(bookingId);
         resp.setContentType("application/json; charset=utf-8");
-        PrintWriter out;
+
+        if (booking.getStatus() != Booking.Status.Accept && booking.getStatus() != Booking.Status.Paying) {
+            out = resp.getWriter();
+            out.print("{\"success\" : \"0\", \"message\" : \"err811\"}");
+            return;
+        }
         if (null != booking.getDoctor() && booking.getStatus() == Booking.Status.Accept) {
 
             if (null == booking.getOutDated() || (new Date()).getTime() > booking.getOutDated().getTime()) {
@@ -82,21 +90,18 @@ public class PingppResources {
         if (null != booking.getDoctor()) {
             Map<String, Object> map = new HashMap<>();
             map.put("user.id_equal", user.getId());
-            map.put("doctor.id_equal", booking.getDoctor().getId());
+//            map.put("doctor.id_equal", booking.getDoctor().getId());
             map.put("id_notEqual", bookingId);
-            map.put("status_equal", Booking.Status.Accept);
-            map.put("outDated_isNotNull", null);
+//            map.put("status_equal", Booking.Status.Accept);
+            map.put("status_equal", Booking.Status.Paying);
+//            map.put("outDated_isNotNull", null);
             List<Booking> exist = bookingRepository.findAll(map);
 
             if (exist.size() > 0) {
-                try {
-                    out = resp.getWriter();
-                    out.print("{\"success\" : \"0\", \"message\" : \"err809\"}");
-                    out.close();
-                    return;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                out = resp.getWriter();
+                out.print("{\"success\" : \"0\", \"message\" : \"err809\"}");
+                out.close();
+                return;
             }
         }
 
@@ -118,7 +123,8 @@ public class PingppResources {
                 e.printStackTrace();
             }
         }
-        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+//        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+        // 创建订单
         Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("order_no",  booking.getTradeNo());
         int amount = (int)(money * 100);
@@ -140,8 +146,8 @@ public class PingppResources {
         }
         chargeParams.put("channel",  channel);
         chargeParams.put("currency", "cny");
-//        chargeParams.put("client_ip",  req.getRemoteAddr());
-        chargeParams.put("client_ip",  "127.0.0.1");
+        chargeParams.put("client_ip",  req.getRemoteAddr());
+//        chargeParams.put("client_ip",  "127.0.0.1");
         chargeParams.put("subject", "知心心理咨询");
 
         StringBuffer content = new StringBuffer();
@@ -149,7 +155,6 @@ public class PingppResources {
         content.append("，订单号：").append(booking.getTradeNo());
         chargeParams.put("body", content.toString());
 
-        System.out.println(chargeParams.toString());
         Charge ch;
         try {
             ch = Charge.create(chargeParams);
@@ -160,6 +165,7 @@ public class PingppResources {
             throw new RuntimeException(e);
         }
         booking.setChargeId(ch.getId());
+        booking.setStatus(Booking.Status.Paying);
         bookingRepository.save(booking);
     }
 
@@ -175,11 +181,7 @@ public class PingppResources {
             HttpServletResponse resp,
             @ModelAttribute("currentUser") User user) {
 
-//        if (null == user.getId()) {
-//            return "{\"success\" : \"0\", \"message\" : \"err000\"}";
-//        }
-
-        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+//        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
         Booking booking = bookingRepository.findOne(id);
         Charge ch = null;
         try {
@@ -196,7 +198,7 @@ public class PingppResources {
         }
         resp.setContentType("application/json; charset=utf-8");
 
-        PrintWriter out = null;
+        PrintWriter out;
         try {
             out = resp.getWriter();
             out.print(ch);
@@ -204,39 +206,6 @@ public class PingppResources {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @RequestMapping(value = "testPingpp", method = RequestMethod.GET)
-    public Charge testPingpp(){
-        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
-
-        Map<String, Object> chargeParams = new HashMap<String, Object>();
-        chargeParams.put("order_no",  "123456789");
-        chargeParams.put("amount", 100);
-        Map<String, String> app = new HashMap<String, String>();
-        app.put("id", "app_KavHuL08GO8O4Wbn");
-        chargeParams.put("app", app);
-        chargeParams.put("channel",  Channel.UPMP);
-        chargeParams.put("currency", "cny");
-        chargeParams.put("client_ip",  "127.0.0.1");
-        chargeParams.put("subject",  "苹果2");
-        chargeParams.put("body",  "一个又大又红的红富士苹果");
-
-        System.out.println(chargeParams.toString());
-        Charge ch = null;
-        try {
-            ch = Charge.create(chargeParams);
-
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-        } catch (InvalidRequestException e) {
-            e.printStackTrace();
-        } catch (APIConnectionException e) {
-            e.printStackTrace();
-        } catch (APIException e) {
-            e.printStackTrace();
-        }
-        return ch;
     }
 
 }

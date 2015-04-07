@@ -28,7 +28,7 @@ public interface BookingRepository extends MyRepository<Booking, Long> {
 
     Booking findByChargeId(String chargeId);
 
-    @Query("from Booking b where b.user.id = :userId and b.hospital.id = :hospitalId and b.status in (0,1,11)")
+    @Query("from Booking b where b.user.id = :userId and b.hospital.id = :hospitalId and b.status in (0,1,12)")
     List<Booking> findExistHospitalBooking(@Param("user") Long userId, @Param("hospital") Long hospitalId);
 
 

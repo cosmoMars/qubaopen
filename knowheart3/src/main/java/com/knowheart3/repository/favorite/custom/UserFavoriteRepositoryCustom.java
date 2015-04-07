@@ -1,5 +1,6 @@
 package com.knowheart3.repository.favorite.custom;
 
+import com.qubaopen.survey.entity.user.User;
 import com.qubaopen.survey.entity.user.UserFavorite;
 import org.springframework.data.domain.Pageable;
 
@@ -10,6 +11,6 @@ import java.util.List;
  */
 public interface UserFavoriteRepositoryCustom {
 
-    List<UserFavorite> findByType(String type, Pageable pageable);
+    List<UserFavorite> findByTypeAndUser(String type, User user,Pageable pageable);
 
 }

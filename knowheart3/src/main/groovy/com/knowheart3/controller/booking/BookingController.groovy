@@ -472,7 +472,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	@Transactional
 	@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
 	retrieveSelfBooking(
-//		@RequestParam(required = false) String ids,
 		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 		Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
@@ -481,7 +480,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		def bookings = bookingRepository.findAll(
 			[
-				user_equal : u
+				user_equal : u,
+				status_notEqual : Booking.Status.Close
 			], pageable
 		)
 		def bookingContent = bookings.getContent()
@@ -493,13 +493,14 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def outDateBooking = []
 		bookingContent.each {
 		    def outSecond, now = new Date()
-		    if (it.outDated > now) {
+		    if (it.status == Booking.Status.Paying && it.outDated <= now) {
 		        it.time = null
 		        it.outDated = null
+				it.status = Booking.Status.Accept
 		        outDateBooking << it
 		    }
 		    if (it.outDated != null) {
-		        outSecond = (now.time - it.outDated.time) / 1000 as int
+		        outSecond = (it.outDated.time - now.time) / 1000 as int
 		    }
 			data << [
 				'bookingId' : it?.id,
@@ -529,7 +530,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'quick' : it?.quick,
 				'consultType' : it?.consultType?.ordinal(),
 				'status' : it?.status?.ordinal(),
-				'money' : it?.money,
+				'baseMoney' : it.money,
+				'money' : it?.money + it?.quickMoney,
 				'userStatus' : it?.userStatus,
 				'doctorStatus' : it?.doctorStatus,
 				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
@@ -719,6 +721,30 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			'doctorStatus' : nextBooking?.doctorStatus,
 			'doctorAvatar' : nextBooking?.doctor?.doctorInfo?.avatarPath
 		]
+	}
+
+	/**
+	 * 关闭订单
+	 * @param id
+	 * @param user
+	 */
+	@RequestMapping(value = 'removeBooking', method = RequestMethod.POST)
+	removeBooking(@RequestParam long id,
+				  @ModelAttribute('currentUser') User user) {
+
+		if (null == user.getId()) {
+			return '{"success" : "0", "message" : "err000"}'
+		}
+
+		def booking = bookingRepository.findOne(id)
+
+		booking.status = Booking.Status.Close
+		booking.time = null
+		booking.outDated = null
+
+		bookingRepository.save(booking)
+
+		'{"success" : "1"}'
 	}
 
 }

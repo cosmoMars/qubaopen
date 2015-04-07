@@ -286,6 +286,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
             c.set(Calendar.HOUR_OF_DAY, 12)
             c.set(Calendar.MINUTE, 0)
             c.set(Calendar.SECOND, 0)
+			c.set(Calendar.MILLISECOND, 0)
             def todayTime = c.getTime().getTime(),
                 timeBefore = todayTime - 60 * 60 * 24 * 1000 * 2,
                 timeAfter = todayTime + 60 * 60 * 24 * 1000 * 2

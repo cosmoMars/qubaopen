@@ -18,4 +18,6 @@ public interface HelpCommentRepository extends MyRepository<HelpComment, Long>, 
 	
 	@Query("from HelpComment hc where hc.help = :help and hc.id not in (:ids) order by hc.createdDate asc")
 	List<HelpComment> findByHelp(@Param("help") Help Help, @Param("ids") List<Long> ids, Pageable pageable);
+
+	int countByHelp(Help help);
 }

@@ -178,7 +178,8 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		
 		
 		def help = helpRepository.findOne(helpId),
-			commentData = [], comments
+			commentData = [], comments,
+			commentCount = helpCommentRepository.countByHelp(help)
 		if (ids) {
 			def list = [],
 				strIds = ids.split(',')
@@ -223,7 +224,8 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				'userName' : '',
 				'userAvatar' : '',
 				'more' : more,
-				'data' : commentData
+				'data' : commentData,
+				'commentCount' : commentCount
 			]
 		}
 		[
@@ -234,7 +236,8 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			'userName' : help?.user?.userInfo?.nickName,
 			'userAvatar' : help?.user?.userInfo?.avatarPath,
 			'more' : more,
-			'data' : commentData
+			'data' : commentData,
+			'commentCount' : commentCount
 		]
 	}
 

@@ -108,12 +108,14 @@ public class UserFeedBackController extends AbstractBaseController<UserFeedBack,
             userFeedBack.contactMethod = contactMethod
         }
 		if (type == UserFeedBack.Type.Evaluate) {
-			def strIds = ids.split(','),
-				backTypes = [] as Set
+			if (ids != null) {
+				def strIds = ids.split(','),
+					backTypes = [] as Set
 				strIds.each {
 					backTypes << new UserFeedBackType(id : it.trim() as long)
 				}
-			userFeedBack.setBackTypes(backTypes)
+				userFeedBack.setBackTypes(backTypes)
+			}
 		}
 		
 		userFeedBackRepository.save(userFeedBack)

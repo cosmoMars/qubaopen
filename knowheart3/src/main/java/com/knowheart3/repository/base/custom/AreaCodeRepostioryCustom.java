@@ -1,7 +1,5 @@
 package com.knowheart3.repository.base.custom;
 
-import com.qubaopen.survey.entity.base.AreaCode;
-
 import java.util.List;
 
 /**
@@ -9,5 +7,5 @@ import java.util.List;
  */
 public interface AreaCodeRepostioryCustom {
 
-    List<AreaCode> findExistDoctorAreaCode();
+    List<String> findExistDoctorAreaCode();
 }

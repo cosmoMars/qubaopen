@@ -268,17 +268,15 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 						user_equal : user
 				]
 		)// 4小时题目
-		def specialMapRecords, moreThan7 = false
+		def specialMapRecords
 		if (specialMap) {
 			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
 		}
 
-		if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
-			moreThan7 = true
-		}
-        def coefficient = mapCoefficientRepository.findOne(user.id)
+		def moreThan7 = specialMapRecords.size(),
+			coefficient = mapCoefficientRepository.findOne(user.id),
+			moodContent = '', pic
 
-        def moodContent = '', pic
         if (coefficient) {
             //计算 正负情感趋势 上升 下降
             def c = Calendar.getInstance()

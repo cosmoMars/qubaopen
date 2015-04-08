@@ -21,4 +21,5 @@ public class AreaCodeController extends AbstractBaseController<AreaCode, Long> {
 		return areaCodeRepository;
 	}
 
+
 }

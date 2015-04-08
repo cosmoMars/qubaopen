@@ -201,6 +201,12 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 				gradeHint = true
 			}
 		}
+
+		def isFavorite = false,
+			userFavorite = userFavoriteRepository.findBySelfAndUser(new Self(id : selfId), user)
+		if (userFavorite) {
+			isFavorite = true
+		}
 		[
 			'success' : '1',
 			'message' : '成功',
@@ -210,7 +216,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			'optionTitle' : result?.title,
 			'resultRemark' : result?.selfResult?.remark,
 			'optionNum' : result?.resultNum,
-			'gradeHint' : gradeHint
+			'gradeHint' : gradeHint,
+			'isFavorite' : isFavorite
 		]
 	}
 
@@ -410,22 +417,6 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
     }
 
-    @RequestMapping(value = 'retrieveGroupSelf/{id}', method = RequestMethod.GET)
-    retrieveGroupSelf(@PathVariable long id,
-                      @ModelAttribute('currentUser') User user) {
-
-        if (null == user.id) {
-            return '{"success" : "0", "message" : "err000"}'
-        }
-
-        def self = selfRepository.findOne(id),
-            selfGroup = self.selfGroup
-
-//        if ()
-
-
-    }
-
 	/**
 	 * 根据selfid查找用户答案
 	 * @param id
@@ -440,7 +431,13 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 			return '{"success" : "0", "message" : "err000"}'
 		}
 
-		def questionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : id), true)
+		def questionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : id), true),
+			isFavorite = false,
+			userFavorite = userFavoriteRepository.findBySelfAndUser(questionnaire.self, user)
+
+		if (userFavorite) {
+			isFavorite = true
+		}
 
 		[
 				'success' : '1',
@@ -449,7 +446,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 				'content' : questionnaire?.selfResultOption?.content,
 				'optionTitle' : questionnaire?.selfResultOption?.title,
 				'resultRemark' : questionnaire?.selfResultOption?.selfResult?.remark,
-				'optionNum' : questionnaire?.selfResultOption?.resultNum
+				'optionNum' : questionnaire?.selfResultOption?.resultNum,
+				'isFavorite' : isFavorite
 		]
 	}
 

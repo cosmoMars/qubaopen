@@ -3,6 +3,8 @@ package com.knowheart3.controller.user
 import com.knowheart3.repository.mindmap.MapRecordRepository
 import com.knowheart3.repository.mindmap.MapStatisticsRepository
 import com.knowheart3.repository.self.SelfRepository
+import com.knowheart3.repository.user.UserMoodPicRepository
+import com.qubaopen.survey.entity.user.UserMoodPic
 import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -48,6 +50,9 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 
 	@Autowired
 	MapRecordRepository mapRecordRepository
+
+	@Autowired
+	UserMoodPicRepository userMoodPicRepository
 
 	@Override
 	protected MyRepository<UserMood, Long> getRepository() {
@@ -277,6 +282,8 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 			coefficient = mapCoefficientRepository.findOne(user.id),
 			moodContent = '', pic
 
+		def moodPics = userMoodPicRepository.findAll()
+
         if (coefficient) {
             //计算 正负情感趋势 上升 下降
             def c = Calendar.getInstance()
@@ -294,12 +301,24 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
             def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
 
             if (resultBefore <= resultToday && resultToday < resultAfter){ // 上升
+				pic = moodPics.find {
+					it.type == UserMoodPic.Type.Up
+				}.path
                 moodContent = MapContent.lowToHighTitle + MapContent.lowToHighContent + moodContent + MapContent.lowToHighMethod
             } else if (resultBefore > resultToday && resultToday >= resultAfter){ // 下降
+				pic = moodPics.find {
+					it.type == UserMoodPic.Type.Down
+				}.path
                 moodContent = MapContent.highToLowTitle + MapContent.highToLowContent + moodContent + MapContent.highToLowMethod
             } else if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
+				pic = moodPics.find {
+					it.type == UserMoodPic.Type.Top
+				}.path
                 moodContent = MapContent.highTideTitle + MapContent.highTideContent + moodContent
             } else if (resultBefore > resultToday  && resultToday < resultAfter){ // 最底处
+				pic = moodPics.find {
+					it.type == UserMoodPic.Type.Bottom
+				}.path
                 moodContent = MapContent.lowTideTitle + MapContent.lowTideContent + moodContent + MapContent.lowTideMethod
             }
         }

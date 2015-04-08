@@ -55,7 +55,7 @@ public class UploadUtils {
 
     /**
      * 上传图片至7牛
-     * type 1 医师头像，2 医师资质，3 诊所头像，4 诊所医师资质，5 明日发现，6 每日发现，7 用户头像，8 诊所资质
+     * type 1 公有图片，2 私有图片，3 默认
      * @param type
      * @param name
      * @param io

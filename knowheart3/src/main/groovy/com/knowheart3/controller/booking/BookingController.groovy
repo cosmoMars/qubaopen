@@ -5,6 +5,7 @@ import com.knowheart3.repository.booking.BookingTimeRepository
 import com.knowheart3.repository.doctor.DoctorCashLogRepository
 import com.knowheart3.repository.doctor.DoctorCashRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
+import com.knowheart3.service.SmsService
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.booking.Booking
@@ -51,6 +52,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
 	@Autowired
 	DoctorCashLogRepository doctorCashLogRepository
+
+	@Autowired
+	SmsService smsService
 
 	@Value('${ratio}')
 	private double ratio
@@ -173,6 +177,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		booking.status = Booking.Status.Booking
 		booking = bookingRepository.save(booking)
+
+//		smsService.sendSmsMessage
 		[
 			'success' : '1',
 			'bookingId' : booking?.id

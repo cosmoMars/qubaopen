@@ -162,77 +162,73 @@ class UserController extends AbstractBaseController<User, Long> {
 
         logger.trace ' -- 用户登录 -- '
 
-        /*if (!user) {
-            return '{"success" : "0", "message": "err014"}'
-        }*/
-
         if (!validatePhone(phone)) {
             return '{"success" : "0", "message": "err003"}'
         }
-//        def loginUser = userRepository.findByPhoneAndActivated(phone, true)
-        def loginUser = userRepository.captchaLogin(phone,  DigestUtils.md5Hex("knowheart$captcha"))
+		def loginUser = userRepository.findByPhone(phone)
+		if (!loginUser) {
+			return '{"success" : "0", "message": "err001"}'
+		}
+		if (loginUser.password != DigestUtils.md5Hex("knowheart$captcha")) {
+			return '{"success" : "0", "message": "err002"}'
+		}
 
-        if (loginUser) {
+		def now = new Date()
+		if (loginUser.loginDate == null) {
+			loginUser.loginDate = now
+		}
+		def diffDay = (now.time - loginUser.loginDate.time) / 24 / 3600 / 1000
+		if (diffDay > 3650) {
+			return '{"success" : "0", "message" : "亲,登陆超时～请重新登陆哦～"}'
+		}
+		def userCaptcha = userCaptchaRepository.findOne(loginUser.id)
 
-			def now = new Date()
-			if (loginUser.loginDate == null) {
-				loginUser.loginDate = now
-			}
-            def diffDay = (now.time - loginUser.loginDate.time) / 24 / 3600 / 1000
-            if (diffDay > 3650) {
-                return '{"success" : "0", "message" : "亲,登陆超时～请重新登陆哦～"}'
-            }
-            def userCaptcha = userCaptchaRepository.findOne(loginUser.id)
+		userCaptcha.captcha = null
+		userCaptchaRepository.save(userCaptcha)
 
-            userCaptcha.captcha = null
-            userCaptchaRepository.save(userCaptcha)
+		userService.saveUserCode(loginUser, udid, idfa, imei)
 
-            userService.saveUserCode(loginUser, udid, idfa, imei)
+		def	userLog = new UserLog(
+				user : loginUser,
+				time : now
+		)
 
-            def	userLog = new UserLog(
-                    user : loginUser,
-                    time : now
-            )
+		if (null == loginType) {
+			userLog.userLogType = new UserLogType(id : 1l)
+			loginUser.loginDate = now
+		} else {
+			def typeId = loginType as Long
+			userLog.userLogType = new UserLogType(id : typeId)
+		}
 
-            if (null == loginType) {
-                userLog.userLogType = new UserLogType(id : 1l)
-                loginUser.loginDate = now
-            } else {
-                def typeId = loginType as Long
-                userLog.userLogType = new UserLogType(id : typeId)
-            }
+		userLogRepository.save(userLog)
 
-            userLogRepository.save(userLog)
+		model.addAttribute('currentUser', loginUser)
 
-            model.addAttribute('currentUser', loginUser)
+		def userInfo = loginUser.userInfo,
+			userIdCardBind = loginUser.userIdCardBind,
+			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
 
-            def userInfo = loginUser.userInfo,
-                userIdCardBind = loginUser.userIdCardBind,
-                userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
-
-            return  [
-                    'success' : '1',
-                    'message' : '登录成功',
-                    'userId' : loginUser?.id,
-                    'phone' : loginUser?.phone,
-                    'name' : userIdCardBind?.userIDCard?.name,
-                    'sex' : userInfo?.sex?.ordinal(),
-                    'nickName' : userInfo?.nickName,
-                    'bloodType' : userInfo?.bloodType?.ordinal(),
-                    'district' : '',
-                    'email' : loginUser?.email,
-                    'defaultAddress' : userReceiveAddress?.detialAddress,
-                    'defaultAddressId' : userReceiveAddress?.id,
-                    'consignee' : userReceiveAddress?.consignee,
-                    'defaultAddressPhone' : userReceiveAddress?.phone,
-                    'idCard' : userIdCardBind?.userIDCard?.IDCard,
-                    'birthday' : userInfo?.birthday,
-                    'avatarPath' : userInfo?.avatarPath,
-                    'signature' : userInfo?.signature
-            ]
-        }
-
-        '{"success" : "0", "message": "err001"}'
+		return  [
+				'success' : '1',
+				'message' : '登录成功',
+				'userId' : loginUser?.id,
+				'phone' : loginUser?.phone,
+				'name' : userIdCardBind?.userIDCard?.name,
+				'sex' : userInfo?.sex?.ordinal(),
+				'nickName' : userInfo?.nickName,
+				'bloodType' : userInfo?.bloodType?.ordinal(),
+				'district' : '',
+				'email' : loginUser?.email,
+				'defaultAddress' : userReceiveAddress?.detialAddress,
+				'defaultAddressId' : userReceiveAddress?.id,
+				'consignee' : userReceiveAddress?.consignee,
+				'defaultAddressPhone' : userReceiveAddress?.phone,
+				'idCard' : userIdCardBind?.userIDCard?.IDCard,
+				'birthday' : userInfo?.birthday,
+				'avatarPath' : userInfo?.avatarPath,
+				'signature' : userInfo?.signature
+		]
     }
 
 	/**

@@ -1,5 +1,6 @@
 package com.knowheart3.utils;
 
+import com.qiniu.api.auth.AuthException;
 import com.qiniu.api.auth.digest.Mac;
 import com.qiniu.api.config.Config;
 import com.qiniu.api.io.IoApi;
@@ -7,11 +8,15 @@ import com.qiniu.api.io.PutExtra;
 import com.qiniu.api.rs.GetPolicy;
 import com.qiniu.api.rs.PutPolicy;
 import com.qiniu.api.rs.URLUtils;
+import org.apache.commons.codec.EncoderException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by mars on 15/3/17.
@@ -34,15 +39,24 @@ public class UploadUtils {
         }
 
         String[] str = url.split("/");
+
+
+        List<String> list = new ArrayList<>();
+        for (int i = 3; i < str.length ; i++) {
+            list.add(str[i]);
+        }
+
         String downloadUrl = null;
         try {
-            if (null != str[2] && null != str[3]) {
-                String baseUrl = URLUtils.makeBaseUrl(str[2], str[3]);
+            if (null != str[2] && list.size() > 0) {
+                String baseUrl = URLUtils.makeBaseUrl(str[2], StringUtils.join(list, "/"));
                 GetPolicy getPolicy = new GetPolicy();
                 downloadUrl = getPolicy.makeRequest(baseUrl, mac);
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (EncoderException e) {
+            e.printStackTrace();
+        } catch (AuthException e) {
+            e.printStackTrace();
         }
         return downloadUrl;
     }

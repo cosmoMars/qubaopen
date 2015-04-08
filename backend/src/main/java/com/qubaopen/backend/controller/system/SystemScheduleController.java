@@ -5,10 +5,11 @@ import com.qubaopen.backend.service.SmsService;
 import com.qubaopen.backend.utils.CommonEmail;
 import com.qubaopen.survey.entity.booking.Booking;
 import com.qubaopen.survey.entity.booking.ResolveType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,14 +33,14 @@ public class SystemScheduleController {
     private CommonEmail commonEmail;
 
 
-    /*@Transactional
+    @Transactional
     @Scheduled(cron = "0 0/10 * * * ?")
     public void execute() {
 
 //        sendMessage();
+        cycleBooking();
 
-
-    }*/
+    }
 
     private void sendMessage() {
 
@@ -74,6 +75,7 @@ public class SystemScheduleController {
     }
 
 
+    // 关于订单处理
     private void cycleBooking() {
 
         Map<String, Object> filters = new HashMap<>();

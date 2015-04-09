@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by mars on 15/4/9.
@@ -29,7 +30,12 @@ public class UserExerciseInfoLogRepositoryImpl implements UserExerciseInfoLogRep
                 .setParameter("user", user.getId())
                 .setMaxResults(1);
 
-        return (UserExerciseInfoLog) query.getSingleResult();
+        List resultList = query.getResultList();
+        if (resultList.size() > 0) {
+            return (UserExerciseInfoLog) resultList.get(0);
+        }
+
+        return null;
 
     }
 }

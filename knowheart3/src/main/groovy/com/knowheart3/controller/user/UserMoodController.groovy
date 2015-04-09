@@ -278,7 +278,7 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
 		}
 
-		def moreThan7 = specialMapRecords.size(),
+		def moreThan7 = specialMapRecords?.size(),
 			coefficient = mapCoefficientRepository.findOne(user.id),
 			moodContent = '', pic
 

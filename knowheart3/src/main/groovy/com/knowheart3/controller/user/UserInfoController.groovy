@@ -61,7 +61,9 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 
 		logger.trace ' -- 获得用户个人信息 -- '
 
-		userInfoService.retrievePersonalInfo(user.id)
+		if (user.id != null) {
+			userInfoService.retrievePersonalInfo(user.id)
+		}
 	}
 
 	/**

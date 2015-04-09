@@ -65,8 +65,11 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
         def now = new Date(),
             c = Calendar.getInstance()
         c.setTime new Date()
-        def diff = -pageable.pageNumber
-        c.add(Calendar.DATE, diff)
+
+        if (pageable.pageNumber > 0) {
+            def diff = -pageable.pageNumber
+            c.add(Calendar.DATE, diff)
+        }
         def today = c.getTime()
 
 		if (null == user.id) {
@@ -80,10 +83,11 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                     complete_isFalse : null
             ])
 
-            // 完成练习中最后一个纪录
+            def eLog
             if (!DateUtils.isSameDay(now, today) && today.compareTo(now) == -1) {
-                def eLog = userExerciseInfoLogRepository.findLastLogByUserAndTime(user, today)
-
+                eLog = userExerciseInfoLogRepository.findLastLogByUserAndTime(user, today)
+            }
+            if (eLog) {
                 def exerciseInfo = eLog.exerciseInfo
                 exercise = exerciseInfo.exercise
                 number = exerciseInfo.number as int
@@ -93,7 +97,13 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                 if (userExercise == null) {
                     // 查找刚完成的用户练习纪录
                     userExercise = userExerciseRepository.findCompleteExerciseByUser(user)
-                    mession = true
+                    if (userExercise) {
+                        mession = true
+                    } else {
+                        exercise = exerciseRepository.findRandomExercise()
+                        number = 1
+                    }
+
                 } else {
                     // 存在用户练习，得到练习大题
                     if (DateUtils.isSameDay(userExercise.time, now)) {
@@ -103,23 +113,21 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                         number = (userExercise.number as int) + 1
                     }
                 }
-                exercise = userExercise.exercise
+                if (userExercise) {
+                    exercise = userExercise.exercise
+                }
             }
 		}
         def exerciseCount = exerciseInfoRepository.countByExercise(exercise)
-        if (userExercise.complete == true) {
+        if (userExercise?.complete == true) {
             number = exerciseCount
         }
         def dailyDiscovery = dailyDiscoveryRepository.findByTime(today),
             size = dailyDiscoveryRepository.countByTime(today)
-
-
         def more = false
         if (size > 0) {
             more = true
         }
-
-
         def haveDone = false
         if (dailyDiscovery && dailyDiscovery?.self != null && null != user.id) {
             def count = selfUserQuestionnaireRepository.countBySelfAndUser(dailyDiscovery.self, user)

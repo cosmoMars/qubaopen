@@ -5,6 +5,7 @@ import com.knowheart3.repository.booking.BookingTimeRepository
 import com.knowheart3.repository.doctor.DoctorCashLogRepository
 import com.knowheart3.repository.doctor.DoctorCashRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
+import com.knowheart3.repository.doctor.DoctorRepository
 import com.knowheart3.service.SmsService
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -40,6 +41,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	
 	@Autowired
 	DoctorInfoRepository doctorInfoRepository
+
+	@Autowired
+	DoctorRepository doctorRepository
 	
 	@Autowired
 	BookingTimeRepository bookingTimeRepository
@@ -84,6 +88,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @param user
 	 * @return
 	 */
+	@Transactional
 	@RequestMapping(value = 'createBooking', method = RequestMethod.POST)
 	createBooking(@RequestParam(required = false) Long doctorId,
 		@RequestParam(required = false) Long hospitalId,
@@ -133,7 +138,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
             }
 		}
 
-		def sex
+		def sex, doctor
 		def booking = new Booking(
 			tradeNo : tradeNo,
 			user : user,
@@ -151,7 +156,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //			time : new Date()
 		)
 		if (doctorId != null) {
-			booking.doctor = new Doctor(id : doctorId)
+			doctor = doctorRepository.findOne(doctorId)
+			booking.doctor = doctor
 		}
 		if (hospitalId != null) {
 			booking.hospital = new Hospital(id : hospitalId)
@@ -178,7 +184,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		booking.status = Booking.Status.Booking
 		booking = bookingRepository.save(booking)
 
-//		smsService.sendSmsMessage
+		def doctorPhone = doctor.doctorInfo?.phone
+		if (doctorPhone) {
+			def param = '{"url" : "http://zhixin.me/smsRedirectDr.html"}'
+			smsService.sendSmsMessage(booking.doctor.doctorInfo.phone, 8, param)
+		}
+
 		[
 			'success' : '1',
 			'bookingId' : booking?.id

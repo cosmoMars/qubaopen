@@ -1,18 +1,16 @@
 package com.qubaopen.survey.repository.interest.custom;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.qubaopen.survey.entity.interest.Interest;
+import com.qubaopen.survey.entity.user.User;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import org.springframework.data.domain.Pageable;
-
-import com.qubaopen.survey.entity.interest.Interest;
-import com.qubaopen.survey.entity.user.User;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InterestRepositoryImpl implements InterestRepositoryCustom {
 	
@@ -137,6 +135,7 @@ public class InterestRepositoryImpl implements InterestRepositoryCustom {
 		try {
 			interests = query.getResultList();
 		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		
 		result.put("interests", interests);

@@ -2,6 +2,7 @@ package com.knowheart3.controller.discovery
 import com.knowheart3.repository.discovery.DailyDiscoveryRepository
 import com.knowheart3.repository.exercise.ExerciseInfoRepository
 import com.knowheart3.repository.exercise.ExerciseRepository
+import com.knowheart3.repository.exercise.UserExerciseInfoLogRepository
 import com.knowheart3.repository.exercise.UserExerciseRepository
 import com.knowheart3.repository.favorite.UserFavoriteRepository
 import com.knowheart3.repository.self.SelfUserQuestionnaireRepository
@@ -33,6 +34,9 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	
 	@Autowired
 	ExerciseInfoRepository exerciseInfoRepository
+
+    @Autowired
+    UserExerciseInfoLogRepository userExerciseInfoLogRepository
 	
 	@Autowired
 	UserExerciseRepository userExerciseRepository
@@ -57,78 +61,57 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 	retrieveDiscoveryContent(@PageableDefault(page = 0, size = 1, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
 		@ModelAttribute('currentUser') User user) {
 		
-		def exercise, number, exerciseCount, userExercise, mession = false, isLogin = false
-        def now = new Date()
+		def exercise, number, userExercise, mession = false, isLogin = false
+        def now = new Date(),
+            c = Calendar.getInstance()
+        c.setTime new Date()
+        def diff = -pageable.pageNumber
+        c.add(Calendar.DATE, diff)
+        def today = c.getTime()
+
 		if (null == user.id) {
 			exercise = exerciseRepository.findRandomExercise()
             // 查找练习第一题
 			number = 1
 		} else {
             isLogin = true
-            // 查找未完成的用户练习纪录
-			userExercise = userExerciseRepository.findOneByFilters([
-				user_equal : user,
-				complete_isFalse : null
-			])
+            userExercise = userExerciseRepository.findOneByFilters([
+                    user_equal : user,
+                    complete_isFalse : null
+            ])
 
-            if (userExercise == null) {
-                // 查找刚完成的用户练习纪录
-                def page = userExerciseRepository.findCompleteExerciseByUser(user, pageable)
-                def existExercise
-                if (page.getContent() && page.getContent().size() > 0) {
-                    existExercise = page.getContent()?.get(0)
-                }
+            // 完成练习中最后一个纪录
+            if (!DateUtils.isSameDay(now, today) && today.compareTo(now) == -1) {
+                def eLog = userExerciseInfoLogRepository.findLastLogByUserAndTime(user, today)
 
-                if (existExercise) {
-                    mession = true
-                    exerciseCount = exerciseInfoRepository.countByExercise(existExercise)
-                    number = exerciseCount
-                } else {
-                    exercise = exerciseRepository.findRandomExercise()
-                    // 查找练习第一题
-                    number = 1
-                }
+                def exerciseInfo = eLog.exerciseInfo
+                exercise = exerciseInfo.exercise
+                number = exerciseInfo.number as int
+                mession = true
             } else {
-                // 存在用户练习，得到练习大题
-                exercise = userExercise.exercise
-
-                if (DateUtils.isSameDay(userExercise.time, now)) {
+                // 查找未完成的用户练习纪录
+                if (userExercise == null) {
+                    // 查找刚完成的用户练习纪录
+                    userExercise = userExerciseRepository.findCompleteExerciseByUser(user)
                     mession = true
-                    number = userExercise.number as int
                 } else {
-                    number = (userExercise.number as int) + 1
+                    // 存在用户练习，得到练习大题
+                    if (DateUtils.isSameDay(userExercise.time, now)) {
+                        mession = true
+                        number = userExercise.number as int
+                    } else {
+                        number = (userExercise.number as int) + 1
+                    }
                 }
-
-//                breakTime = ((new Date()).getTime() - userExercise.time.getTime()) / 1000 / 60 / 60 / 24 as int
-//                if (breakTime == 1) {
-//                    userExercise.time = new Date()
-//                    userExercise.completeCount += 1
-//                    mession = true
-//                } else if (breakTime > 1) {
-//                    userExercise.completeCount = 0
-//                }
-//                userExerciseRepository.save(userExercise)
+                exercise = userExercise.exercise
             }
 		}
-        if (exercise) {
-		    exerciseCount = exerciseInfoRepository.countByExercise(exercise)
-        } else {
-            exerciseCount = 0
+        def exerciseCount = exerciseInfoRepository.countByExercise(exercise)
+        if (userExercise.complete == true) {
+            number = exerciseCount
         }
-        def c = Calendar.getInstance()
-        c.setTime new Date()
-        def diff = -pageable.pageNumber
-        c.add(Calendar.DATE, diff)
-        def today = c.getTime()
-//        def pable = new PageRequest(0, 1)
-//		def page = dailyDiscoveryRepository.findAll([
-//		        'time_equal' : DateFormatUtils.format(today, 'yyyy-MM-dd')
-//		], pable)
-//
-////        def page = dailyDiscoveryRepository.findByTimeAndPageable(c.getTime(), pageable)
-//        def dailyDiscovery = page.getContent().get(0)
-        def dailyDiscovery = dailyDiscoveryRepository.findByTime(c.getTime()),
-            size = dailyDiscoveryRepository.countByTime(c.getTime())
+        def dailyDiscovery = dailyDiscoveryRepository.findByTime(today),
+            size = dailyDiscoveryRepository.countByTime(today)
 
 
         def more = false

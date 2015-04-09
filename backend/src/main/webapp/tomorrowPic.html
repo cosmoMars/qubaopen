@@ -184,7 +184,7 @@
         });
 
         //点击提交
-        /*新增 修改专栏*/
+        /*新增 修改*/
         $("#btn-confirm").on("click",function(){
             $("#uploadPhotoForm").ajaxForm();
             $('#uploadPhotoForm').submit(function () {
@@ -275,7 +275,7 @@
         updateList(data.data);
         getList(false);
 
-        /*获取专栏列表*/
+        /*获取列表*/
         function getList(join,page){
             var p="";
             if(page){
@@ -314,7 +314,7 @@
 
 
 
-        /*删除专栏*/
+        /*删除*/
         function deleteTopic(id){
             $.ajax({
                 url:prevUrl+"/dailyDiscoveryPic/"+id,

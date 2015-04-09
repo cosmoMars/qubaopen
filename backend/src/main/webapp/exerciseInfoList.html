@@ -182,9 +182,11 @@
 
         //点击提交
         $("#btn-confirm").on("click",function(){
-            editExercise();
+            //有图片 使用jquery form提交方式
+
         });
 
+        editExercise();
 
         var page=0;
         //点击刷新
@@ -260,6 +262,8 @@
             });
         }
 
+
+
         /*新增 修改*/
         function editExercise(){
             $("#uploadPhotoForm").ajaxForm();
@@ -267,7 +271,6 @@
                 var id=$("#id").val();
                 var name=$("#name").val();
                 var content=$("#content").val();
-
                 if(!name){
                     alert("标题不能为空");
                     return;
@@ -283,7 +286,6 @@
 
                     console.log("add");
                 }
-
                 var options = {
                     url:   prevUrl+"/exerciseInfo/generateExerciseInfo",
                     type:  'post' ,

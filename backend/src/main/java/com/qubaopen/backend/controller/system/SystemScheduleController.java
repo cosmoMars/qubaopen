@@ -76,7 +76,7 @@ public class SystemScheduleController {
 
     // 关于订单处理
     @Transactional
-    private void cycleBooking() {
+    public void cycleBooking() {
 
         Map<String, Object> filters = new HashMap<>();
 
@@ -215,7 +215,7 @@ public class SystemScheduleController {
         bookingRepository.save(consultedBookings);
     }
 
-    private Booking doResolveType(ResolveType type, Booking booking) {
+    public Booking doResolveType(ResolveType type, Booking booking) {
 
         if (!booking.isSendEmail()) {
             booking.setResolveType(type);
@@ -235,4 +235,5 @@ public class SystemScheduleController {
         }
         return booking;
     }
+
 }

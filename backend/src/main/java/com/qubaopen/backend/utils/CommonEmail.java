@@ -29,18 +29,20 @@ public class CommonEmail {
         try {
             sEmail.addTo(email);
             //发送人
-            sEmail.setFrom(hostMail.getUserName(), "知心团队");
+            sEmail.setFrom(hostMail.getUserName(), "知心团队", "UTF-8");
             //标题
             StringBuffer buffer = new StringBuffer();
             buffer.append("问题来了");
             buffer.append("<br>");
             buffer.append("<div><font size =\"3\" face=\"arial\" >" + content + "</font></div>");
-            buffer.append("<a href='" + url + "'>");
+            buffer.append("<div><font size =\"3\" face=\"arial\" >" + url + "</font></div>");
+//            buffer.append("<a href='" + url + "'>");
             buffer.append("<br>");
             sEmail.setSubject("待解决问题booking");
             //邮件内容
             sEmail.setHtmlMsg(buffer.toString());
-//            sEmail.setMsg(buffer.toString());
+            sEmail.setCharset("UTF-8");
+
             //发送
             sEmail.send();
         } catch (EmailException e) {
@@ -48,4 +50,5 @@ public class CommonEmail {
         }
         return "1";
     }
+
 }

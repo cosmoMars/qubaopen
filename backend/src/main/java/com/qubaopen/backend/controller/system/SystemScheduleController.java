@@ -33,7 +33,7 @@ public class SystemScheduleController {
     private CommonEmail commonEmail;
 
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/2 * * * ?")
     public void execute() {
 
 //        sendMessage();
@@ -85,9 +85,10 @@ public class SystemScheduleController {
         // resolveType 1 预约
         filters.put("status_equal", Booking.Status.Booking);
         filters.put("resolveType_equal", ResolveType.None);
+        filters.put("sendEmail_isFalse", null);
         List<Booking> bookings = bookingRepository.findAll(filters);
 
-
+        List<Booking> sendBookings = new ArrayList<>();
         Calendar c = Calendar.getInstance();
         for (Booking booking : bookings) {
             c.setTimeInMillis(booking.getCreatedDate().getMillis());
@@ -97,47 +98,59 @@ public class SystemScheduleController {
             int diffSec = (int) ((now.getTime() - booking.getCreatedDate().getMillis()) / 1000);
             if (hour >= 9 && hour < 14) {
                 if (diffSec > 14400 ) {
-                    doResolveType(ResolveType.DoctorNoResponse, booking);
+                    booking = doResolveType(ResolveType.DoctorNoResponse, booking);
+                    sendBookings.add(booking);
                 }
             } else {
                 if (diffSec > 57600) {
-                    doResolveType(ResolveType.DoctorNoResponse, booking);
+                    booking = doResolveType(ResolveType.DoctorNoResponse, booking);
+                    sendBookings.add(booking);
                 }
             }
         }
+        bookingRepository.save(sendBookings);
 
         // resolveType 2 婉拒
         filters.clear();
         filters.put("status_equal", Booking.Status.Refusal);
         filters.put("resolveType_equal", ResolveType.None);
+        filters.put("sendEmail_isFalse", null);
         bookings = bookingRepository.findAll(filters);
 
+        sendBookings.clear();
         for (Booking booking : bookings) {
-            doResolveType(ResolveType.DoctorRefusal, booking);
+            booking = doResolveType(ResolveType.DoctorRefusal, booking);
+            sendBookings.add(booking);
         }
+        bookingRepository.save(sendBookings);
 
         // resolveType 3 用户未响应
         filters.clear();
         filters.put("status_equal", Booking.Status.Accept);
         filters.put("resolveType_equal", ResolveType.None);
+        filters.put("sendEmail_isFalse", null);
         bookings = bookingRepository.findAll(filters);
 
+        sendBookings.clear();
         for (Booking booking : bookings) {
             int diffSec = (int) ((now.getTime() - booking.getLastModifiedDate().getMillis()) / 1000);
             if (diffSec > 7 * 24 * 3600) {
-                doResolveType(ResolveType.UserNoResponse, booking);
+                booking = doResolveType(ResolveType.UserNoResponse, booking);
+                sendBookings.add(booking);
             }
-
         }
+        bookingRepository.save(sendBookings);
 
         // resolveType 4 加急
         filters.clear();
         filters.put("status_equal", Booking.Status.Paid);
         filters.put("quick_isTrue", null);
         filters.put("time_isNotNull", null);
+        filters.put("sendEmail_isFalse", null);
         bookings = bookingRepository.findAll(filters);
 
         List<Booking> refundBookings = new ArrayList<>();
+        sendBookings.clear();
         for (Booking booking : bookings) {
 
             int diffMins = (int) ((booking.getTime().getTime() - now.getTime()) / 1000 / 60);
@@ -148,36 +161,44 @@ public class SystemScheduleController {
             }
             int diffSec = (int) (now.getTime() - booking.getLastModifiedDate().getMillis()) / 1000;
             if (diffSec < 1.5 * 3600 && booking.getResolveType() == ResolveType.None) {
-                doResolveType(ResolveType.QuickConfirm, booking);
+                booking = doResolveType(ResolveType.QuickConfirm, booking);
+                sendBookings.add(booking);
             }
         }
-
+        bookingRepository.save(sendBookings);
         bookingRepository.save(refundBookings);
 
         // resolveType 5 改约
         filters.clear();
         filters.put("status_equal", Booking.Status.ChangeDate);
         filters.put("resolveType_equal", ResolveType.None);
+        filters.put("sendEmail_isFalse", null);
         bookings = bookingRepository.findAll(filters);
 
+        sendBookings.clear();
         for (Booking booking : bookings) {
-            doResolveType(ResolveType.BookingChange, booking);
+            booking = doResolveType(ResolveType.BookingChange, booking);
+            sendBookings.add(booking);
         }
 
+        bookingRepository.save(sendBookings);
 
         // resolveType 6 回访
         filters.clear();
         filters.put("resolveType_equal", ResolveType.None);
         filters.put("time_isNotNull", null);
+        filters.put("sendEmail_isFalse", null);
 
         List<Booking> consultedBookings = new ArrayList<>();
 
         bookings = bookingRepository.findAll(filters);
 
+        sendBookings.clear();
         for (Booking booking : bookings) {
 
             if (booking.getUserStatus() != null && booking.getDoctorStatus() != null &&booking.getUserStatus() != booking.getDoctorStatus()) {
-                doResolveType(ResolveType.BookingReview, booking);
+                booking =  doResolveType(ResolveType.BookingReview, booking);
+                sendBookings.add(booking);
             }
             int diffSec = (int) (now.getTime() - booking.getTime().getTime()) / 1000;
             if (diffSec > 15 * 24 * 3600) {
@@ -190,23 +211,28 @@ public class SystemScheduleController {
                 consultedBookings.add(booking);
             }
         }
+        bookingRepository.save(sendBookings);
         bookingRepository.save(consultedBookings);
     }
 
-    private void doResolveType(ResolveType type, Booking booking) {
+    private Booking doResolveType(ResolveType type, Booking booking) {
 
-        if (booking.isSendEmail()) {
-            return;
+        if (!booking.isSendEmail()) {
+            booking.setResolveType(type);
+            StringBuffer content = new StringBuffer();
+            content.append("订单： ");
+            content.append(booking.getId());
+            content.append(" 处于 ");
+            content.append(booking.getResolveType().toString());
+            content.append(" 状态中，请及时处理");
+
+            String url = "http://zhixin.com/dl?bookingId=" + booking.getId();
+            commonEmail.sendTextMail(content.toString(), "349280576@qq.com", url);
+            // todo 接受菲菲url
+
+            booking.setSendEmail(true);
+            return booking;
         }
-        booking.setResolveType(type);
-        StringBuffer content = new StringBuffer();
-        content.append("订单： ");
-        content.append(booking.getId());
-        content.append(" 处于 ");
-        content.append(booking.getResolveType().toString());
-        content.append(" 状态中，请及时处理");
-
-        commonEmail.sendTextMail(content.toString(), "349280576@qq.com", "http://zhixin.com/dl?bookingId=" + booking.getId());
-        // todo 接受菲菲url
+        return booking;
     }
 }

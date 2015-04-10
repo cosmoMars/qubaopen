@@ -86,7 +86,7 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 				cash = doctorCashRepository.save(cash)
 			}
 		}
-		cashLogs = doctorCashLogRepository.findByDoctor(doctor,pageable)
+		cashLogs = doctorCashLogRepository.findByDoctor(doctor, pageable)
 		
 		def data = []
 		

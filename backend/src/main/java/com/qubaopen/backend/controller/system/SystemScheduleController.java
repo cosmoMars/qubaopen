@@ -196,7 +196,7 @@ public class SystemScheduleController {
         sendBookings.clear();
         for (Booking booking : bookings) {
 
-            if (booking.getUserStatus() != null && booking.getDoctorStatus() != null &&booking.getUserStatus() != booking.getDoctorStatus()) {
+            if (booking.getUserStatus() != null && booking.getDoctorStatus() != null && (booking.getUserStatus() == Booking.BookStatus.NoConsult ||  booking.getDoctorStatus() == Booking.BookStatus.NoConsult)) {
                 booking =  doResolveType(ResolveType.BookingReview, booking);
                 sendBookings.add(booking);
             }

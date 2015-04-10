@@ -549,8 +549,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'status' : it?.status?.ordinal(),
 				'baseMoney' : it.money,
 				'money' : it?.money + it?.quickMoney,
-				'userStatus' : it?.userStatus,
-				'doctorStatus' : it?.doctorStatus,
+				'userStatus' : it?.userStatus?.ordinal(),
+				'doctorStatus' : it?.doctorStatus?.ordinal(),
 				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
 				'hospitalAvatar' : it?.hospital?.hospitalInfo?.hospitalAvatar,
 				'outSecond' : outSecond
@@ -599,7 +599,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			booking.userStatus = Booking.BookStatus.values()[idx]
 		}
 		if (booking.doctorStatus == Booking.BookStatus.Consulted && booking.userStatus == Booking.BookStatus.Consulted) {
-			booking.status == Booking.Status.Consulted
+			booking.status = Booking.Status.Consulted
 
 			def cash = booking.money * ratio as Double
 			def doctorCash = doctorCashRepository.findOne(booking.doctor.id)
@@ -620,7 +620,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					userName: booking.name,
 					time: new Date(),
 					type: DoctorCashLog.Type.In,
-					payStatus: DoctorCashLog.PayStatus.Completed
+					payStatus: DoctorCashLog.PayStatus.Completed,
+					cash: cash
 			)
 			doctorCashLogRepository.save(doctorCashLog)
 		}
@@ -651,9 +652,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			booking.status = Booking.Status.PayAccept
 		}
 		
-		if (date)
+		if (date){
 			booking.time = DateUtils.parseDate(date, 'yyyy-MM-dd HH')
-		
+			booking.status = Booking.Status.ChangeDate
+		}
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}
@@ -733,7 +735,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			'quick' : nextBooking?.quick,
 			'consultType' : nextBooking?.consultType?.ordinal(),
 			'status' : nextBooking?.status?.ordinal(),
-			'money' : nextBooking?.money,
+			'baseMoney' : nextBooking?.money,
 			'userStatus' : nextBooking?.userStatus,
 			'doctorStatus' : nextBooking?.doctorStatus,
 			'doctorAvatar' : nextBooking?.doctor?.doctorInfo?.avatarPath

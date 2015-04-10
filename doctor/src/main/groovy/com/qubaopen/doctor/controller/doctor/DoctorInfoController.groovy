@@ -393,7 +393,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
             isChange = true
         }
 
-        if (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Unaudited || (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Refusal && isChange)) {
+        if (isPass(doctor, doctorInfo) || (doctorInfo.loginStatus == DoctorInfo.LoginStatus.Refusal && isChange)) {
             doctorInfo.loginStatus = DoctorInfo.LoginStatus.Auditing
         }
 
@@ -406,5 +406,55 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 		doctorInfoRepository.save(doctorInfo)
 		'{"success": "1"}'
 	}
+
+    public boolean isPass(Doctor doctor, DoctorInfo doctorInfo) {
+
+        if (doctorInfo.loginStatus != DoctorInfo.LoginStatus.Unaudited){
+            return false;
+        }
+        if (doctor.email == null) {
+            return false;
+        }
+        if (doctorInfo.name == null) {
+            return false;
+        }
+        if (doctorInfo.phone == null) {
+            return false;
+        }
+        if (doctorInfo.sex == null) {
+            return false;
+        }
+        if (doctorInfo.birthday == null) {
+            return false;
+        }
+        if (doctorInfo.experience == null) {
+            return false;
+        }
+        if (doctorInfo.field == null) {
+            return false;
+        }
+        if (doctorInfo.qq == null) {
+            return false;
+        }
+        if (doctorInfo.targetUser == null) {
+            return false;
+        }
+        if (doctorInfo.genre == null) {
+            return false;
+        }
+        if (doctorInfo.bookingTime == null) {
+            return false;
+        }
+        if (doctorInfo.introduce == null) {
+            return false;
+        }
+        if (doctorInfo.avatarPath == null) {
+            return false;
+        }
+        if (doctorInfo.address == null) {
+            return false;
+        }
+        return true;
+    }
 }
 	

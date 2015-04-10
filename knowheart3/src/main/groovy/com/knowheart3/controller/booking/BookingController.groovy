@@ -645,11 +645,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@ModelAttribute('currentUser') User user) {
 		
 		def booking = bookingRepository.findOne(id)
-		
-		if (booking?.quick) {
-			booking.status = Booking.Status.Paid
-		} else {
-			booking.status = Booking.Status.PayAccept
+
+		if (booking.status != Booking.Status.Paid && booking.quick) {
+			return '{"success" : "0", "message" : "err812"}'
 		}
 		
 		if (date){

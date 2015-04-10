@@ -627,6 +627,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		
 		def booking = bookingRepository.findOne(id)
+
+		if (booking.status != Booking.Status.Paid && booking.quick) {
+			return '{"success" : "0", "message" : "err812"}'
+		}
 		
 		if (date){
 			booking.time = DateUtils.parseDate(date, 'yyyy-MM-dd HH')

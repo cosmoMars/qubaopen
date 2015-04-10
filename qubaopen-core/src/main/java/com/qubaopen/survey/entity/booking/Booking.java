@@ -201,6 +201,11 @@ public class Booking extends AbstractBaseEntity<Long> {
     @Enumerated
     private ResolveType resolveType;
 
+	/**
+	 * 是否回调
+	 */
+	private boolean notify;
+
 	public String getTradeNo() {
 		return tradeNo;
 	}
@@ -472,5 +477,13 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setQuickMoney(double quickMoney) {
 		this.quickMoney = quickMoney;
+	}
+
+	public boolean isNotify() {
+		return notify;
+	}
+
+	public void setNotify(boolean notify) {
+		this.notify = notify;
 	}
 }

@@ -33,7 +33,6 @@ public class SystemScheduleController {
     private CommonEmail commonEmail;
 
 
-    @Transactional
     @Scheduled(cron = "0 0/10 * * * ?")
     public void execute() {
 
@@ -76,10 +75,10 @@ public class SystemScheduleController {
 
 
     // 关于订单处理
+    @Transactional
     private void cycleBooking() {
 
         Map<String, Object> filters = new HashMap<>();
-//        filters.put("resolveType_equal", ResolveType.);
 
         Date now = new Date();
 
@@ -134,8 +133,8 @@ public class SystemScheduleController {
         // resolveType 4 加急
         filters.clear();
         filters.put("status_equal", Booking.Status.Paid);
-//        filters.put("resolveType_equal", ResolveType.None);
         filters.put("quick_isTrue", null);
+        filters.put("time_isNotNull", null);
         bookings = bookingRepository.findAll(filters);
 
         List<Booking> refundBookings = new ArrayList<>();
@@ -168,9 +167,8 @@ public class SystemScheduleController {
 
         // resolveType 6 回访
         filters.clear();
-//        filters.put("userStatus_isNotNull", null);
-//        filters.put("doctorStatus_isNotNull", null);
         filters.put("resolveType_equal", ResolveType.None);
+        filters.put("time_isNotNull", null);
 
         List<Booking> consultedBookings = new ArrayList<>();
 

@@ -6,7 +6,9 @@ import com.knowheart3.repository.doctor.DoctorCashLogRepository
 import com.knowheart3.repository.doctor.DoctorCashRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
 import com.knowheart3.repository.doctor.DoctorRepository
+import com.knowheart3.repository.hospital.HospitalRepository
 import com.knowheart3.service.SmsService
+import com.knowheart3.utils.CommonEmail
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.booking.Booking
@@ -14,7 +16,6 @@ import com.qubaopen.survey.entity.booking.ResolveType
 import com.qubaopen.survey.entity.cash.DoctorCash
 import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
@@ -44,6 +45,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
 	@Autowired
 	DoctorRepository doctorRepository
+
+	@Autowired
+	HospitalRepository hospitalRepository
 	
 	@Autowired
 	BookingTimeRepository bookingTimeRepository
@@ -59,6 +63,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
 	@Autowired
 	SmsService smsService
+
+	@Autowired
+	CommonEmail commonEmail
 
 	@Value('${ratio}')
 	private double ratio
@@ -138,7 +145,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
             }
 		}
 
-		def sex, doctor
+		def sex, doctor, hospital
 		def booking = new Booking(
 			tradeNo : tradeNo,
 			user : user,
@@ -160,7 +167,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			booking.doctor = doctor
 		}
 		if (hospitalId != null) {
-			booking.hospital = new Hospital(id : hospitalId)
+			hospital = hospitalRepository.findOne(hospitalId)
+			booking.hospital = hospital
 		}
 		if (birthdayStr) {
 			booking.birthday = DateUtils.parseDate(birthdayStr, 'yyyy-MM-dd')
@@ -184,10 +192,15 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		booking.status = Booking.Status.Booking
 		booking = bookingRepository.save(booking)
 
-		def doctorPhone = doctor.doctorInfo?.phone
-		if (doctorPhone) {
-			def param = '{"url" : "http://zhixin.me/smsRedirectDr.html"}'
-			smsService.sendSmsMessage(booking.doctor.doctorInfo.phone, 8, param)
+		if (doctor) {
+			def doctorPhone = doctor.doctorInfo?.phone
+			if (doctorPhone) {
+				def param = '{"url" : "http://zhixin.me/smsRedirectDr.html"}'
+				smsService.sendSmsMessage(booking.doctor.doctorInfo.phone, 8, param)
+			}
+		}
+		if (hospital) {
+			commonEmail.sendTextMail(hospital.email)
 		}
 
 		[

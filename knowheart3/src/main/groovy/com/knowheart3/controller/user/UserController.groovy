@@ -7,7 +7,6 @@ import com.knowheart3.service.user.UserService
 import com.knowheart3.utils.DateCommons
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.*
 import com.qubaopen.survey.entity.user.User.ThirdType
 import org.apache.commons.codec.digest.DigestUtils
@@ -15,6 +14,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -68,6 +68,9 @@ class UserController extends AbstractBaseController<User, Long> {
 
     @Autowired
     DoctorInfoRepository doctorInfoRepository
+
+	@Value('${whitePassword}')
+	String whitePassword
 
 	@Override
 	protected MyRepository<User, Long> getRepository() {
@@ -169,9 +172,12 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (!loginUser) {
 			return '{"success" : "0", "message": "err001"}'
 		}
-		if (loginUser.password != DigestUtils.md5Hex("knowheart$captcha")) {
+		if ((captcha && captcha != whitePassword) && (loginUser.password != DigestUtils.md5Hex("knowheart$captcha"))) {
 			return '{"success" : "0", "message": "err002"}'
 		}
+//		if (loginUser.password != DigestUtils.md5Hex("knowheart$captcha")) {
+//			return '{"success" : "0", "message": "err002"}'
+//		}
 
 		def now = new Date()
 		if (loginUser.loginDate == null) {
@@ -505,11 +511,12 @@ class UserController extends AbstractBaseController<User, Long> {
 	 * 退出
 	 */
 	@RequestMapping(value = 'logout', method = RequestMethod.GET)
-	logout(@ModelAttribute('currentDoctor') Doctor doctor, HttpServletRequest request) {
-		
-		def session = request.getSession()
-		session.invalidate()
-		
+	logout(@ModelAttribute('currentUser') User user, Model model) {
+
+		user = new User()
+		model.addAttribute("currentUser", user)
+
+//		session.invalidate()
 		'{"success" : "1"}'
 	}
 

@@ -1,6 +1,6 @@
-package com.qubaopen.backend.utils;
+package com.knowheart3.utils;
 
-import com.qubaopen.backend.repository.hostMail.HostMailRepository;
+import com.knowheart3.repository.hostMail.HostMailRepository;
 import com.qubaopen.survey.entity.mail.HostMail;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -16,7 +16,7 @@ public class CommonEmail {
     @Autowired
     private HostMailRepository hostMailRepository;
 
-    public String sendTextMail(String content, String email, String url) {
+    public String sendTextMail( String email) {
 
         HostMail hostMail = hostMailRepository.findOne(1l);
 
@@ -32,13 +32,7 @@ public class CommonEmail {
             sEmail.setFrom(hostMail.getUserName(), "知心团队", "UTF-8");
             //标题
             StringBuffer buffer = new StringBuffer();
-            buffer.append("问题来了");
-            buffer.append("<br>");
-            buffer.append("<div><font size =\"3\" face=\"arial\" >" + content + "</font></div>");
-            buffer.append("<div><font size =\"3\" face=\"arial\" >" + url + "</font></div>");
-//            buffer.append("<a href='" + url + "'>");
-            buffer.append("<br>");
-            sEmail.setSubject("待解决问题 订单");
+            buffer.append("伟大的诊所，有一份订单正在等待处理中，请及时确认");
             //邮件内容
             sEmail.setHtmlMsg(buffer.toString());
             sEmail.setCharset("UTF-8");

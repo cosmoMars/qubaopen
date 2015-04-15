@@ -127,14 +127,21 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		HospitalInfo hi = hospitalInfoRepository.findOne(hospital.getId());
 
         boolean isChange = false;
+		boolean isPass = true;
         HospitalInfo hiReview = new HospitalInfo();
         BeanUtils.copyProperties(hi, hiReview);
 
+		if (hi.getLoginStatus() != HospitalInfo.LoginStatus.Unaudited) {
+			isPass = false;
+		}
+
 		if (name != null) {
 			hi.setName(name);
+			isPass = false;
 		}
 		if (address != null) {
 			hi.setAddress(address);
+			isPass = false;
 		}
 		if (establishTime != null) {
 			try {
@@ -142,33 +149,41 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
+			isPass = false;
 		}
 		if (phone != null) {
 			if (!validatePhone(phone)) {
 				return "{\"success\": \"0\", \"message\" : \"err003\"}";
 			}
 			hi.setPhone(phone);
+			isPass = false;
 		}
 		if (urgentPhone != null) {
 			if (!validatePhone(urgentPhone)) {
 				return "{\"success\": \"0\", \"message\" : \"err003\"}";
 			}
 			hi.setUrgentPhone(urgentPhone);
+			isPass = false;
 		}
 		if (qq != null) {
 			hi.setQq(qq);
+			isPass = false;
 		}
 		if (introduce != null) {
 			hi.setIntroduce(introduce);
+			isPass = false;
 		}
 		if (wordsConsult != null) {
 			hi.setWordsConsult(wordsConsult);
+			isPass = false;
 		}
 		if (minCharge != null) {
 			hi.setMinCharge(minCharge);
+			isPass = false;
 		}
 		if (maxCharge != null) {
 			hi.setMaxCharge(maxCharge);
+			isPass = false;
 		}
 		if (timeExp != null) {
 			hi.setBookingTime(timeExp);
@@ -224,12 +239,13 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
                 throw new RuntimeException(e);
             }
             hi.setHospitalAvatar(url);
+			isPass = false;
         }
         if (!hi.equals(hiReview)) {
             isChange = true;
         }
 
-        if (hi.getLoginStatus() == HospitalInfo.LoginStatus.Unaudited || (hi.getLoginStatus() == HospitalInfo.LoginStatus.Refusal && isChange)) {
+        if (isPass || (hi.getLoginStatus() == HospitalInfo.LoginStatus.Refusal && isChange)) {
             hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
         }
 

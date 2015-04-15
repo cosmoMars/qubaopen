@@ -3,7 +3,6 @@ package com.knowheart3.order;
 import com.knowheart3.repository.booking.BookingRepository;
 import com.knowheart3.service.SmsService;
 import com.pingplusplus.Pingpp;
-import com.pingplusplus.exception.*;
 import com.pingplusplus.model.Channel;
 import com.pingplusplus.model.Charge;
 import com.qubaopen.survey.entity.booking.Booking;
@@ -11,7 +10,6 @@ import com.qubaopen.survey.entity.user.User;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,9 +37,6 @@ public class PingppResources {
 
     @Autowired
     SmsService smsService;
-
-    @Value("${app_key}")
-    private String app_key;
 
     /**
      * ping++ 发起支付
@@ -183,18 +178,12 @@ public class PingppResources {
 
 //        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
         Booking booking = bookingRepository.findOne(id);
-        Charge ch = null;
+        Charge ch;
         try {
             ch = Charge.retrieve(booking.getChargeId());
 
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-        } catch (InvalidRequestException e) {
-            e.printStackTrace();
-        } catch (APIConnectionException e) {
-            e.printStackTrace();
-        } catch (APIException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         resp.setContentType("application/json; charset=utf-8");
 

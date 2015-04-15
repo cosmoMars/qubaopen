@@ -94,7 +94,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                 mession = true
             } else {
                 // 查找未完成的用户练习纪录
-                if (userExercise == null) {
+                if (!userExercise) {
                     // 查找刚完成的用户练习纪录
                     userExercise = userExerciseRepository.findCompleteExerciseByUser(user)
                     if (userExercise) {

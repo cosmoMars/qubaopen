@@ -49,14 +49,14 @@ public class PingppNotifyController {
         if (o instanceof Charge) {
             Charge charge = (Charge) o;
             // 开发者在此处加入对支付异步通知的处理代码
-            if (true == charge.getPaid()) {
+            if (charge.getPaid()) {
                 Booking booking = bookingRepository.findByChargeId(charge.getId());
 
-                if (booking.isNotify() != true) {
+                if (!booking.isNotify()) {
                     if (null != booking.getHospital()) {
                         booking.setStatus(Booking.Status.PayAccept);
                     } else if (null != booking.getDoctor()) {
-                        if (false == booking.isQuick()) {
+                        if (!booking.isQuick()) {
                             booking.setStatus(Booking.Status.PayAccept);
                         } else {
                             booking.setStatus(Booking.Status.Paid);

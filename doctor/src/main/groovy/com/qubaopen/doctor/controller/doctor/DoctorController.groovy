@@ -1,12 +1,13 @@
 package com.qubaopen.doctor.controller.doctor
-
-import com.qubaopen.doctor.utils.UploadUtils;
-
-import static com.qubaopen.doctor.utils.ValidateUtil.*
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpSession
-
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.doctor.repository.doctor.*
+import com.qubaopen.doctor.service.DoctorService
+import com.qubaopen.doctor.utils.UploadUtils
+import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.DoctorInfo
+import com.qubaopen.survey.entity.doctor.DoctorLog
+import com.qubaopen.survey.entity.user.UserLogType
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
@@ -15,25 +16,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
+import org.springframework.web.bind.annotation.*
 
-import com.qubaopen.core.controller.AbstractBaseController
-import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.doctor.repository.doctor.DoctorAddressRepository
-import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
-import com.qubaopen.doctor.repository.doctor.DoctorLogRepository
-import com.qubaopen.doctor.repository.doctor.DoctorRecordRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorRepository
-import com.qubaopen.doctor.service.DoctorService
-import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.doctor.DoctorInfo
-import com.qubaopen.survey.entity.doctor.DoctorLog
-import com.qubaopen.survey.entity.user.UserLogType
+import javax.servlet.http.HttpSession
+
+import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone
+import static com.qubaopen.doctor.utils.ValidateUtil.validatePwd
 
 
 @RestController
@@ -291,11 +279,12 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 	 * 退出
 	 */
 	@RequestMapping(value = 'logout', method = RequestMethod.GET)
-	logout(@ModelAttribute('currentDoctor') Doctor doctor, HttpServletRequest request) {
-		
-		def session = request.getSession()
-		session.invalidate()
-		
+	logout(@ModelAttribute('currentDoctor') Doctor doctor, Model model) {
+
+		doctor = new Doctor()
+
+		model.addAttribute('curretnDoctor', doctor)
+
 		'{"success" : "1"}'
 	}
 	

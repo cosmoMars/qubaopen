@@ -24,9 +24,9 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping('hospitalDoctorRecord')
 @SessionAttributes('currentHospital')
-class HosptialDoctorRecordController extends AbstractBaseController<HospitalDoctorRecord, Long> {
+class HospitalDoctorRecordController extends AbstractBaseController<HospitalDoctorRecord, Long> {
 
-    private static Logger logger = LoggerFactory.getLogger(HosptialDoctorRecordController.class);
+    private static Logger logger = LoggerFactory.getLogger(HospitalDoctorRecordController.class);
 
     @Autowired
     HospitalDoctorRecordRepository hospitalDoctorRecordRepository

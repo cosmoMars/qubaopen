@@ -36,11 +36,9 @@ public class SecurityUtils {
 
         Assert.isTrue(!StringUtils.equals(ANDROID_CODE, from.trim()) || !StringUtils.equals(IOS_CODE, from.trim()), "未能识别请求来自于哪里~!");
        /* if (!StringUtils.equals(ANDROID_CODE, from.trim()) && !StringUtils.equals(IOS_CODE,from.trim())) {
-            log.info("未能识别请求来自于哪里~!");
-//			return ass.failure("未能识别请求来自于哪里~!");
+//			return ClientUtils.failure("未能识别请求来自于哪里~!");
         }
         if (null == sign || "".equals(sign.trim())) {
-            log.info("未能识别请求来自于哪里~!");
 //			return ClientUtils.failure("未签名的请求~!");
         }*/
 

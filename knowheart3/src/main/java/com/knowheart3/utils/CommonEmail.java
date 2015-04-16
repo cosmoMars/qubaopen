@@ -16,7 +16,7 @@ public class CommonEmail {
     @Autowired
     private HostMailRepository hostMailRepository;
 
-    public String sendTextMail( String email) {
+    public String sendTextMail(String email) {
 
         HostMail hostMail = hostMailRepository.findOne(1l);
 
@@ -32,10 +32,11 @@ public class CommonEmail {
             sEmail.setFrom(hostMail.getUserName(), "知心团队", "UTF-8");
             //标题
             StringBuffer buffer = new StringBuffer();
-            buffer.append("伟大的诊所，有一份订单正在等待处理中，请及时确认");
+            buffer.append("您有一份订单正在等待处理中，请及时确认");
             //邮件内容
             sEmail.setHtmlMsg(buffer.toString());
             sEmail.setCharset("UTF-8");
+            sEmail.setSubject("订单正在等待中");
 
             //发送
             sEmail.send();

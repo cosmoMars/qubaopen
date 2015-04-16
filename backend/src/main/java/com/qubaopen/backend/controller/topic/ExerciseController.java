@@ -110,7 +110,7 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
 	                throw new RuntimeException(e);
 	            }
 	            exercise.setUrl(picUrl);
-	        }
+		  }
 		
 		exerciseRepository.save(exercise);
 

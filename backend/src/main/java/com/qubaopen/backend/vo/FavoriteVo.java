@@ -16,6 +16,8 @@ public class FavoriteVo implements Serializable {
 	private Date createDate;
 
 	private Date favoriteCreateDate;
+	
+	private String picUrl;
 
 	public Long getId() {
 		return id;
@@ -55,6 +57,14 @@ public class FavoriteVo implements Serializable {
 
 	public void setFavoriteCreateDate(Date favoriteCreateDate) {
 		this.favoriteCreateDate = favoriteCreateDate;
+	}
+
+	public String getPicUrl() {
+		return picUrl;
+	}
+
+	public void setPicUrl(String picUrl) {
+		this.picUrl = picUrl;
 	}
 
 }

@@ -71,12 +71,8 @@ public class DailyDiscoveryController extends AbstractBaseController<DailyDiscov
 				map.put("name", topic.getName());
 				map.put("content", topic.getContent());
 				map.put("dailyTime", "");
-				Date time = null;
-				if (null != topic.getCreatedDate()) {
-					DateTime sqlTime = topic.getCreatedDate();
-					time = new Date(sqlTime.getMillis());
-				}
-				map.put("createdDate", time);
+				map.put("createdDate", topic.getCreatedDate().toDate());
+				map.put("url", topic.getPicUrl());
 				list.add(map);
 			}
 		} else {
@@ -88,6 +84,7 @@ public class DailyDiscoveryController extends AbstractBaseController<DailyDiscov
 				map.put("content", vo.getContent());
 				map.put("dailyTime", vo.getFavoriteCreateDate());
 				map.put("createdDate", vo.getCreateDate());
+				map.put("url", vo.getPicUrl());
 				list.add(map);
 			}
 		}

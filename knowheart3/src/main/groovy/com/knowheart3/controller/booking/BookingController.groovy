@@ -138,6 +138,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (hospitalId != null) {
 			tradeNo = "u${user.id}h${hospitalId}t${DateFormatUtils.format(new Date(), 'yyyyMMddHHmmssssss')}"
 
+//			def hospital = hospitalRepository.findOne(hospitalId)
+//			if (!hospital) {
+//				return '{"success" : "0", "message" : "没有该诊所"}'
+//			}
+
             def exist = bookingRepository.findExistHospitalBooking(user.id, hospitalId)
 
             if (exist && exist.size() > 0) {

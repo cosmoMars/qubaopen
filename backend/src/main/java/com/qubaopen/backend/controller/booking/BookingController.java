@@ -83,7 +83,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			map.put("lastModifiedDate", booking.getLastModifiedDate().toDate());
 			map.put("birthday", booking.getBirthday());
 			map.put("city", booking.getCity());
-			map.put("consultType", booking.getConsultType());
+			map.put("consultType", booking.getConsultType()==null?"":booking.getConsultType().ordinal());
 			map.put("haveChildren", booking.isHaveChildren());
 			map.put("haveConsulted", booking.isHaveConsulted());
 			map.put("helpReason", booking.getHelpReason());
@@ -97,7 +97,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			map.put("quick", booking.isQuick());
 			map.put("refusalReason", booking.getRefusalReason());
 			map.put("sex", booking.getSex());
-			map.put("status", booking.getStatus());
+			map.put("status", booking.getStatus()==null?"":booking.getStatus().ordinal());
 			map.put("time", booking.getTime());
 			map.put("treatmented", booking.isTreatmented());
 			map.put("userId", booking.getUser().getId());
@@ -186,5 +186,48 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		result.put("success", "1");
 		return result;
 
+	}
+	
+
+	/**
+	 * 获取订单处理记录
+	 * @param pageable
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "retrieveBookingProcessLogs", method = RequestMethod.GET)
+	private Object retrieveBookingProcessLogs(@PageableDefault(page = 0, size = 20)
+			Pageable pageable,
+			@RequestParam(required = false) Long bookingId) {
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		
+		List<BookingProcessLog> bookingProcessLogs;
+		
+		Booking booking=bookingRepository.findOne(bookingId);		
+		if(booking==null){
+			result.put("success", "0");
+			result.put("message", "没有该订单");
+		}
+		
+		bookingProcessLogs = bookingProcessLogRepository.findListByBooking(pageable,booking);
+		
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		for (BookingProcessLog bookingProcessLog : bookingProcessLogs) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id",bookingProcessLog.getId());
+			map.put("assistant",bookingProcessLog.getAssistant().getName());
+			map.put("remark",bookingProcessLog.getRemark());
+			map.put("resolveType",bookingProcessLog.getResolveType().ordinal());
+			list.add(map);
+			
+		}
+
+		result.put("success", "1");
+		result.put("list", list);
+		return result;
+		
 	}
 }

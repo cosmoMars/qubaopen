@@ -198,38 +198,60 @@ Ext.application({
                         refreshList(arguments[1]);
                     }
                 }
+            },{
+                id:'btn-history',
+                text:'查看历史处理结果',
+                xtype:'button',
+                handler:function(){
+                    var sm = grid.getSelectionModel();
+                    rowEditing.cancelEdit();
+                    if(sm.getSelection().length<1){
+                        Ext.Msg.alert('错误', '请选择一项');
+                        return;
+                    }
+                    var id=sm.getSelection()[0].get("id");
+                    retrieveBookingProcessLogs(id);
+                }
             }
             ],
             columns: {
                 items: [
-                    { text: 'id', dataIndex: 'id'},
-                    { text: 'userId', dataIndex: 'userId' },
-                    { text: 'name', dataIndex: 'name' },
-                    { text: 'phone', dataIndex: 'phone' },
-                    { text: 'helpReason', dataIndex: 'helpReason' },
-                    { text: 'consultType', dataIndex: 'consultType' },
-                    { text: 'money', dataIndex: 'money' },
-                    { text: 'quick', dataIndex: 'quick' },
-                    { text: 'quickMoney', dataIndex: 'quickMoney' },
-                    { text: 'city', dataIndex: 'city' },
-                    { text: 'tradeNo', dataIndex: 'tradeNo' },
-                    { text: 'createDate', dataIndex: 'createDate' },
-                    { text: 'lastModifiedDate', dataIndex: 'lastModifiedDate' },
-                    { text: 'doctorId', dataIndex: 'doctorId' },
-                    { text: 'doctorName', dataIndex: 'doctorName' },
-                    { text: 'doctorPhone', dataIndex: 'doctorPhone' },
-                    { text: 'status', dataIndex: 'status' },
-                    { text: 'refusalReason', dataIndex: 'refusalReason' },
-                    { text: 'payTime', dataIndex: 'payTime' },
-                    { text: 'otherProblem', dataIndex: 'otherProblem' },
-                    { text: 'lastBookingTime', dataIndex: 'lastBookingTime' },
-                    { text: 'resolveType', dataIndex: 'resolveType' },
-                    { text: 'chargeId', dataIndex: 'chargeId' },
-                    { text: 'userStatus', dataIndex: 'userStatus' },
-                    { text: 'doctorStatus', dataIndex: 'doctorStatus' },
-                    { text: 'hospitalId', dataIndex: 'hospitalId' },
-                    { text: 'hospitalName', dataIndex: 'hospitalName' },
-                    { text: 'hospitalPhone', dataIndex: 'hospitalPhone' }
+                    { text: 'id', dataIndex: 'id',width:50},
+                    { text: '订单状态', dataIndex: 'status',width:80,
+                        renderer: function(value){
+                            return getStatusText(value);
+                        }},
+                    { text: '用户id', dataIndex: 'userId',width:60 },
+                    { text: '用户名', dataIndex: 'name' ,width:60 },
+                    { text: '用户电话', dataIndex: 'phone' },
+                    { text: '咨询师id', dataIndex: 'doctorId',width:70 },
+                    { text: '咨询师名', dataIndex: 'doctorName' ,width:70 },
+                    { text: '咨询师电话', dataIndex: 'doctorPhone' },
+                    { text: '咨询原因', dataIndex: 'helpReason',width:200  },
+                    { text: '拒绝原因', dataIndex: 'refusalReason',width:200  },
+                    { text: '急', dataIndex: 'quick' ,width:50,
+                        renderer: function(value){
+                            return !!value?'√':'';
+                        }
+                    },
+                    { text: '咨式', dataIndex: 'consultType' ,width:50,
+                        renderer: function(value) {
+                            return !!value?'视':'面';
+                        }
+                    },
+                    { text: '创建时间', dataIndex: 'createDate' },
+                    { text: '金额', dataIndex: 'money' },
+                    { text: '加急金额', dataIndex: 'quickMoney' },
+                    { text: '城市', dataIndex: 'city' },
+                    { text: '修改时间', dataIndex: 'lastModifiedDate' },
+                    { text: '付款时间', dataIndex: 'payTime' },
+                    { text: '其他问题', dataIndex: 'otherProblem' },
+                    { text: '下次预约时间', dataIndex: 'lastBookingTime' },
+                    { text: '用户确认状态', dataIndex: 'userStatus' },
+                    { text: '咨询师确认状态', dataIndex: 'doctorStatus' },
+                    { text: '诊所id', dataIndex: 'hospitalId' },
+                    { text: '诊所名', dataIndex: 'hospitalName' },
+                    { text: '诊所电话', dataIndex: 'hospitalPhone' }
                 ]
             }
         })
@@ -245,7 +267,7 @@ function refreshList(type){
     var myPanel=Ext.getCmp('myPanel');
     myPanel.el.mask('Loading', 'x-mask-loading');
     Ext.Ajax.request( {
-        url : 'http://localhost:8080/booking/retrieveBookings?type='+type+'&size=10&page=',
+        url : prevUrl+'/booking/retrieveBookings?type='+type+'&size=10&page=',
         method : 'get',
         success : function(response, options) {
             myPanel.el.unmask();
@@ -291,17 +313,108 @@ function resolveBooking(json){
     });
 }
 
-//Ext.Ajax.request( {
-//    url : 'http://localhost:8080/booking/retrieveBookings?type=0&size=10&page=',
-//    method : 'get',
-//    success : function(response, options) {
-//        var o = Ext.util.JSON.decode(response.responseText);
-//
-//
-//        Ext.getCmp("myPanel").getStore().setData(o.list);
-//        //alert(o.msg);
-//        console.log(o);
-//    },
-//    failure : function(data) {
-//    }
-//});
+
+//根据bookingId 获取历史记录
+function retrieveBookingProcessLogs(id){
+    //加载框
+    var myPanel=Ext.getCmp('myPanel');
+    myPanel.el.mask('Loading', 'x-mask-loading');
+    Ext.Ajax.request( {
+        url : prevUrl+'/booking/retrieveBookingProcessLogs?bookingId='+id+'&size=10&page=',
+        method : 'get',
+        success : function(response, options) {
+            myPanel.el.unmask();
+            var o = Ext.util.JSON.decode(response.responseText);
+
+
+            var mydata=o.list;
+            Ext.create('Ext.window.Window', {
+                title: '历史记录',
+                height: 600,
+                width: 400,
+                layout: 'fit',
+                items: {  // Let's put an empty grid in just to illustrate fit layout
+                    xtype: 'grid',
+                    border: false,
+                    columns: {
+                        items: [
+                            { text: 'id', dataIndex: 'id'},
+                            { text: 'resolveType', dataIndex: 'resolveType' },
+                            { text: 'remark', dataIndex: 'remark' },
+                            { text: 'assistant', dataIndex: 'assistant' }
+                        ]
+                    },                 // One header just for show. There's no data,
+                    store: Ext.create('Ext.data.Store', {
+                        data: mydata ,
+                        model:Ext.define('logs', {
+                            extend: 'Ext.data.Model',
+                            fields: [
+                                {name: 'id',  type: 'string'},
+                                {name: 'resolveType',   type: 'string'},
+                                {name: 'remark', type: 'string'},
+                                {name: 'assistant', type: 'string'}
+                            ]
+                        })
+                    }) // A dummy empty data store
+                }
+            }).show();
+
+        },
+        failure : function(data) {
+            myPanel.el.unmask();
+        }
+    });
+}
+
+
+function getStatusText(value){
+    /**
+     * 0 预约，1 接受，2 拒绝，3 已咨询，4 未咨询，5 已约下次，6 已付款，7 付款接受，8 医师改约，9 退款中，10 已退款，11 关闭，12 支付中
+     */
+    var text="";
+
+    switch (value){
+        case 0:
+            text="预约中";
+            break;
+        case 1:
+            text="接受";
+            break;
+        case 2:
+            text="拒绝";
+            break;
+        case 3:
+            text="已咨询";
+            break;
+        case 4:
+            text="未咨询";
+            break;
+        case 5:
+            text="已约下次";
+            break;
+        case 6:
+            text="已付款";
+            break;
+        case 7:
+            text="付款接受";
+            break;
+        case 8:
+            text="医师改约";
+            break;
+        case 9:
+            text="退款中";
+            break;
+        case 10:
+            text="已退款";
+            break;
+        case 11:
+            text="关闭";
+            break;
+        case 12:
+            text="支付中";
+            break;
+        default:
+            break;
+    }
+    return text;
+}

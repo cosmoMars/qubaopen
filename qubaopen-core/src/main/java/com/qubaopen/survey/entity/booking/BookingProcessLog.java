@@ -1,7 +1,9 @@
 package com.qubaopen.survey.entity.booking;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Assistant;
+
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -19,6 +21,7 @@ public class BookingProcessLog extends AbstractBaseEntity<Long> {
      * 订单
      */
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Booking booking;
 
     /**

@@ -3,7 +3,9 @@
 <head lang="zh_cn">
     <meta charset="UTF-8">
     <title>流派管理</title>
+
     <link href="css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .marketing{
             margin-top: 100px;;
@@ -16,42 +18,285 @@
         .tableParent{
             min-height: 407px;
         }
+
     </style>
 </head>
 <body>
 
 
-<div id="mainView" class="container marketing">
+<div class="container marketing">
+
+    <div class="row">
+        <div class="col-sm-3">
+            <button type="button" id="btn-add" class="btn btn-primary">新增</button>
+        </div>
+
+        <div class="col-sm-9">
+            <button type="button" id="btn-refresh" class="btn btn-primary">刷新列表</button>
+        </div>
+    </div>
+
+    <div class="tableParent">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th width="40%">编号</th>
+                <th width="40%">标题</th>
+                <th width="20%"></th>
+            </tr>
+            </thead>
+            <tbody id="tableView">
+            </tbody>
+
+        </table>
+    </div>
+
+
+    <nav>
+        <ul class="pager">
+            <li id="prev" class="disabled"><a href="#">上一页</a></li>
+            <li id="next" class="disabled"><a href="#">下一页</a></li>
+        </ul>
+    </nav>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="name" autocomplete="off" data-id=""
+                                       placeholder="请输入标题" required>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" id="btn-confirm" class="btn btn-primary">
+                        提交
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
 </div>
+
 
 <script src="js/globalVariable.js"></script>
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.form.js"></script>
-<script src="js/autoTableForm.js"></script>
+
 <script>
     $(document).ready(function () {
 
-        tableJson={data:[
-            {tName:"编号",tSize:"33",tClass:"id"},
-            {tName:"标题",tSize:"33",tClass:"name"},
-            {tName:"操作",tSize:"34",tClass:"action"}
-        ]};
+        //点击新增
+        $("#btn-add").on("click",function(){
+            $('#myModal').modal();
 
-        formJson={data:[
-            {},
-            {}
-        ]};
-
-        optionsJson={listName:"genres"};
-
-        initAutoTF(tableJson.data,null);
-
-        var url=prevUrl+"/genre/retrieveGenre?size=10&page=";
-        getTableList(0,url);
+            //清除之前的数据
+            $("#name").attr("data-id","");
+            $("#name").val("");
+            $("#name").focus();
+        });
 
 
+        //点击查看
+        $(document).on("click",".check",function(){
+            console.log("check");
+            $('#myModal').modal();
+            var id=$(this).closest("tr").attr("data-id");
+            var sName=$(this).closest("tr").find(".name").html();
 
+            //显示数据
+            $("#name").attr("data-id",id);
+            $("#name").val(sName);
+            $("#name").focus();
+        });
+
+        //点击提交
+        $("#btn-confirm").on("click",function(){
+
+            var id=$("#name").attr("data-id");
+            var name=$("#name").val();
+
+            if(!name){
+                alert("名称不能为空");
+                return;
+            }
+
+
+            var jsonSent={};
+            jsonSent.name=name;
+
+            if(id){
+                jsonSent.id=id;
+                console.log("modify");
+            }else{
+
+                console.log("add");
+            }
+
+            console.log(jsonSent);
+            edit(jsonSent);
+        });
+
+
+        var page=0;
+        //点击刷新
+        $("#btn-refresh").on("click",function(){
+            page=0;
+            getList(page);
+        });
+
+        //点击上一页  下一页
+        $("#prev").on("click",function(){
+            if($(this).hasClass("disabled") || page<=0){
+                return;
+            }
+            page--;
+            getList(page);
+        });
+        $("#next").on("click",function(){
+            if($(this).hasClass("disabled")){
+                return;
+            }
+            page++;
+            getList(page);
+        });
+
+        //点击删除
+        $(document).on("click",".delete",function(){
+
+            if(confirm("确认删除")){
+                var id=$(this).closest("tr").attr("data-id");
+                deleteGenre(id)
+            }
+        });
+
+        //初始加载
+        getList(0);
+
+        /*获取列表*/
+        function getList(page){
+            var p="";
+            if(page){
+                p=page;
+            }
+            $.ajax({
+                url:prevUrl+"/genre/retrieveGenre?size=10&page="+p,
+                type: "GET",
+                async:true,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+
+                    console.log(data);
+
+                    if (result == 1) {
+                        updateList(data.list);
+                        if(data.list.length>=10){
+                            $("#next").removeClass("disabled");
+                        }else{
+                            $("#next").addClass("disabled");
+                        }
+                        if(page>0){
+                            $("#prev").removeClass("disabled");
+                        }else{
+                            $("#prev").addClass("disabled");
+                        }
+                    }else if (result == 0) {
+
+                        alert("请求错误");
+                    }
+                }
+            });
+        }
+
+        /*新增 修改*/
+        function edit(jsonSent){
+            $.ajax({
+                url:prevUrl+"/genre/generateGenre",
+                type: "POST",
+                data:jsonSent,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+                    console.log(data);
+
+                    if (result == 1) {
+                        $('#myModal').modal("hide");
+                        getList(page);
+                    }else if (result == 0) {
+                    }
+                }
+            });
+        }
+
+        /*删除*/
+        function deleteGenre(id){
+            $.ajax({
+                url:prevUrl+"/genre/"+id,
+                type: "DELETE",
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+                    console.log(data);
+
+
+                    if (result == 1) {
+                        getList($("#checkboxWarning").is(":checked"));
+                    }else if (result == 0) {
+                    }
+                }
+            });
+        }
+
+        //更新tableView界面
+        function updateList(data){
+
+            var oTableView=$("#tableView");
+
+            oTableView.empty();
+
+            var appendHTML;
+            for(var i=0;i<data.length;i++){
+                appendHTML="";
+
+                appendHTML+=
+                        '<tr data-id="'+data[i].id+'">' +
+                        '<th scope="row">'+data[i].id+'</th>' +
+                        '<td class="name">'+data[i].name+'</td>' +
+                        '<td><span class="check">查看</span> <span class="delete">删除</span></td>' +
+                        '</tr>';
+
+                oTableView.append(appendHTML);
+            }
+
+
+        }
     });
 </script>
 </body>

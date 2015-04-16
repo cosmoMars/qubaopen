@@ -44,7 +44,7 @@ public class TargetUserController extends AbstractBaseController<TargetUser, Lon
 		List<TargetUser> targetUsers = targetUserRepository.findAll();
 
 		map.put("success", "1");
-		map.put("targetUsers", targetUsers);
+		map.put("list", targetUsers);
 
 		return map;
 	}

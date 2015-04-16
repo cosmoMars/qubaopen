@@ -44,7 +44,7 @@ public class GenreController extends AbstractBaseController<Genre, Long> {
 		List<Genre> genres = genreRepository.findAll();
 
 		map.put("success", "1");
-		map.put("genres", genres);
+		map.put("list", genres);
 
 		return map;
 	}

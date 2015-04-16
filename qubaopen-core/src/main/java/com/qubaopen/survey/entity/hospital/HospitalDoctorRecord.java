@@ -8,6 +8,7 @@ import javax.persistence.Table;
 
 import org.hibernate.envers.Audited;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 
 @Entity
@@ -21,6 +22,7 @@ public class HospitalDoctorRecord extends AbstractBaseEntity<Long> {
 	 * 医院
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	@JoinColumn(name = "hospital_info_id")
 	private HospitalInfo hospitalInfo;
 

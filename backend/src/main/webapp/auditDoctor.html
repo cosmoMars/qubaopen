@@ -16,6 +16,11 @@
         .tableParent{
             min-height: 407px;
         }
+
+        .previewImg{
+            max-height: 150px;
+            max-width: 150px;
+        }
     </style>
 </head>
 <body>
@@ -31,10 +36,10 @@
         </div>
         <div class="col-sm-2">
             <select id="refresh-status" class="form-control">
-                <option value="0">待审核</option>
+                <option value="3">审核通过</option>
+                <option value="0">待审核(信息未完善)</option>
                 <option value="1">审核中</option>
                 <option value="2">拒绝</option>
-                <option value="3">审核通过</option>
             </select>
         </div>
 
@@ -45,10 +50,11 @@
             <thead>
             <tr>
                 <th width="10%">编号</th>
-                <th width="15%">姓名</th>
-                <th width="25%">手机</th>
-                <th width="15%">登陆状态</th>
-                <th width="15%">性别</th>
+                <th width="10%">姓名</th>
+                <th width="15%">手机</th>
+                <th width="10%">登陆状态</th>
+                <th width="10%">性别</th>
+                <th width="25%">时间</th>
                 <th width="15%">操作</th>
             </tr>
             </thead>
@@ -84,7 +90,7 @@
     <!-- 模态框（Modal） -->
     <div class="modal" id="myModal" tabindex="-1" role="dialog"
          aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
                 <div class="modal-header">
@@ -100,20 +106,120 @@
 
                     <form class="form-horizontal" role="form">
                         <div class="form-group">
-                            <label for="title" class="col-sm-2 control-label">标题</label>
+                            <label for="title" class="col-sm-2 control-label">姓名</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="title" autocomplete="off" data-aid=""
+                                <input type="text" class="form-control" id="title" disabled autocomplete="off" data-id=""
                                        placeholder="请输入标题" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="genre" class="col-sm-2 control-label">流派</label>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" rows="2" disabled id="genre" placeholder=""></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label for="targetUser" class="col-sm-2 control-label">对象</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control" rows="2" disabled id="targetUser"  placeholder=""></textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label for="genre" class="col-sm-2 control-label">流派</label>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <div class="col-sm-10" id="genres">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label for="targetUser" class="col-sm-2 control-label">对象</label>
+                                    <div class="col-sm-10" id="targets">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label for="introduce" class="col-sm-2 control-label">自我介绍</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="6"  id="introduce"  placeholder=""></textarea>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <label for="avatar" class="col-sm-2 control-label">头像</label>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <div class="col-sm-10">
+                                        <img id="avatar" class="previewImg" src="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label for="record" class="col-sm-2 control-label">资质</label>
+                                    <div class="col-sm-10">
+                                        <img id="record" class="previewImg" src="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">是否复审</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="reviewRadio" value="1"> 是
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="reviewRadio" value="0" checked> 否
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group gone has-error">
+                            <label for="reviewReason" class="col-sm-2 control-label">复审理由</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="6"  id="reviewReason"  placeholder=""></textarea>
+
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="content" class="col-sm-2 control-label">内容</label>
+                            <label class="col-sm-2 control-label">审核状态</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" rows="3"  id="content"  placeholder="请输入内容"></textarea>
+                                <select class="form-control" id="loginStatus">
+                                    <option value="2">拒绝</option>
+                                    <option value="3">通过</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group gone has-error">
+                            <label for="refusalReason" class="col-sm-2 control-label">拒绝理由</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="6"  id="refusalReason"  placeholder=""></textarea>
 
                             </div>
                         </div>
+
                     </form>
 
                 </div>
@@ -144,7 +250,7 @@
             $('#myModal').modal();
 
             //清除之前的数据
-            $("#title").attr("data-aid","");
+            $("#title").attr("data-id","");
             $("#title").val("");
             $("#content").val("");
         });
@@ -154,46 +260,104 @@
         $(document).on("click",".check",function(){
             console.log("check");
             $('#myModal').modal();
-            var id=$(this).closest("tr").attr("data-aid");
+            var id=$(this).closest("tr").find(".id").html();
             var sName=$(this).closest("tr").find(".name").html();
-            var sContent=$(this).closest("tr").find(".content").html();
+            var genre=$(this).closest("tr").find(".genre").html();
+            var targetUser=$(this).closest("tr").find(".targetUser").html();
+            var avatar=$(this).closest("tr").find(".avatar").html();
+            var record=$(this).closest("tr").find(".record").html();
+            var introduce=$(this).closest("tr").find(".introduce").html();
+            var review=$(this).closest("tr").find(".review").html();
+            var reviewReason=$(this).closest("tr").find(".reviewReason").html();
+            var refusalReason=$(this).closest("tr").find(".refusalReason").html();
+            var loginStatus=$(this).closest("tr").find(".loginStatus").html();
 
             //显示数据
-            $("#title").attr("data-aid",id);
+            $("#title").attr("data-id",id);
             $("#title").val(sName);
-            $("#content").val(sContent);
+            $("#genre").val(genre);
+            $("#targetUser").val(targetUser);
+            $("#avatar").attr("src",avatar);
+            $("#record").attr("src",record);
+            $("#introduce").val(introduce);
+
+            if(eval(review)){
+                $("input[name=reviewRadio]:first").click();
+            }else{
+                $("input[name=reviewRadio]:last").click();
+            }
+
+            if(loginStatus=="2"){
+                $("#refusalReason").closest(".form-group").show();
+            }else{
+                $("#refusalReason").closest(".form-group").hide();
+            }
+
+            $("#loginStatus").val(loginStatus);
+            $("#reviewReason").val(reviewReason);
+            $("#refusalReason").val(refusalReason);
+            getDoctorGenreTarget(id);
+        });
+
+        $(".previewImg").on("click",function(){
+            window.open($(this).attr("src"));
         });
 
         //点击提交
         $("#btn-confirm").on("click",function(){
 
-            var id=$("#title").attr("data-aid");
-            var name=$("#title").val();
-            var content=$("#content").val();
+            var id=$("#title").attr("data-id");
+            var introduce=$("#introduce").val();
+            var reviewReason=$("#reviewReason").val();
+            var refusalReason=$("#refusalReason").val();
+            var review=$("input[name=reviewRadio]:first").is(":checked");
+            var loginStatus=$("#loginStatus").val();
+            var genres=[];
+            var targets=[];
 
-            if(!name){
-                alert("标题不能为空");
-                return;
-            }
-            if(!content){
-                alert("内容不能为空");
-                return;
-            }
+            $("#genres").find("input[type=checkbox]").each(function(){
+                if($(this).is(":checked"))
+                    genres.push($(this).val());
+
+            });
+            $("#targets").find("input[type=checkbox]").each(function(){
+                if($(this).is(":checked"))
+                    targets.push($(this).val());
+            });
+
 
             var jsonSent={};
-            jsonSent.name=name;
-            jsonSent.content=content;
 
-            if(id){
-                jsonSent.id=id;
-                console.log("modify");
-            }else{
-
-                console.log("add");
+            if(review){
+                if(!reviewReason){
+                    alert("复审理由不能为空");
+                    return;
+                }
+                jsonSent.reviewReason=reviewReason;
             }
 
+            if(loginStatus=="2"){
+                if(!refusalReason){
+                    alert("拒绝理由不能为空");
+                    return;
+                }
+
+                jsonSent.refusalReason=refusalReason;
+            }
+
+
+
+            jsonSent.id=id;
+            jsonSent.introduce=introduce;
+            jsonSent.review=review;
+            jsonSent.loginStatus=parseInt(loginStatus);
+            jsonSent.genres=genres.toString();
+            jsonSent.targetUsers=targets.toString();
+
+
             console.log(jsonSent);
-            editTopic(jsonSent);
+
+            editDoctor(jsonSent);
         });
 
 
@@ -205,6 +369,7 @@
 
         });
 
+        //根据loginStatus筛选列表
         $("#refresh-status").on("change",function(){
             page=0;
             getList($("#refresh-status").val(),page);
@@ -216,25 +381,62 @@
             if($(this).hasClass("disabled") || page<=0){
                 return;
             }
-            var bChecked=$("#checkboxWarning").is(":checked");
             page--;
-            getList(bChecked,page);
+            getList($("#refresh-status").val(),page);
         });
         $("#next").on("click",function(){
             if($(this).hasClass("disabled")){
                 return;
             }
-            var bChecked=$("#checkboxWarning").is(":checked");
             page++;
-            getList(bChecked,page);
+            getList($("#refresh-status").val(),page);
         });
 
-        //点击删除
-        $(document).on("click",".delete",function(){
+        //添加流派
+        $(document).on("click","#addGenre",function(){
 
-            if(confirm("确认删除")){
-                var id=$(this).closest("tr").attr("data-aid");
-                deleteTopic(id)
+            var content=prompt("请输入要添加的内容","");
+            if (content!=null && content!="")
+            {
+                var jsonSent={};
+                jsonSent.name=content;
+                addGenre(jsonSent);
+            }
+        });
+
+        //添加对象
+        $(document).on("click","#addTarget",function(){
+
+            var content=prompt("请输入要添加的内容","");
+            if (content!=null && content!="")
+            {
+                var jsonSent={};
+                jsonSent.name=content;
+                addTarget(jsonSent);
+            }
+        });
+
+        //复审 单选按钮事件
+        $("input[name=reviewRadio]").on("change",function(){
+            if($(this).val()==1){
+                //复审 选择是 则展开复审理由
+                $("#reviewReason").closest(".form-group").show();
+                $("#reviewReason").focus();
+            }else{
+                $("#reviewReason").closest(".form-group").hide();
+                //复审 选择否 则隐藏复审理由
+            }
+        });
+
+        //审核状态 选中事件
+        $("#loginStatus").on("change",function(){
+            if($(this).val()==2){
+                //复审 选择是 则展开复审理由
+                $("#refusalReason").closest(".form-group").show();
+                $("#refusalReason").focus();
+            }else{
+                //复审 选择否 则隐藏复审理由
+                $("#refusalReason").closest(".form-group").hide();
             }
         });
 
@@ -278,10 +480,10 @@
             });
         }
 
-        /*新增 修改专栏*/
-        function editTopic(jsonSent){
+        /*审核咨询师 更改咨询师 审核状态 并且修改介绍 对象 流派*/
+        function editDoctor(jsonSent){
             $.ajax({
-                url:prevUrl+"/topic/generateTopic",
+                url:prevUrl+"/doctor/modifyDoctorStatus",
                 type: "POST",
                 data:jsonSent,
                 dataType: "json",
@@ -289,33 +491,106 @@
 
                     var result = data.success;
                     console.log(data);
-
                     $('#myModal').modal("hide");
-                    getList($("#checkboxWarning").is(":checked"));
                     if (result == 1) {
+                        getList($("#refresh-status").val());
                     }else if (result == 0) {
                     }
                 }
             });
         }
 
-        /*删除专栏*/
-        function deleteTopic(id){
+        //获取 所有流派对象 和 咨询师的流派和对象
+        function getDoctorGenreTarget(id){
             $.ajax({
-                url:prevUrl+"/topic/"+id,
-                type: "DELETE",
+                url:prevUrl+"/doctor/getGenreTarget?id="+id,
+                type: "GET",
+                async:true,
                 dataType: "json",
                 success: function (data, textStatus, jqXHR) {
-
                     var result = data.success;
                     console.log(data);
 
                     if (result == 1) {
+                        updateGenreTarget(data);
+                    }else if (result == 0) {
+                        alert("请求错误");
+                    }
+                }
+            });
+        }
+
+        //添加流派
+        function addGenre(jsonSent){
+            $.ajax({
+                url:prevUrl+"/genre/generateGenre",
+                type: "POST",
+                data:jsonSent,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    var result = data.success;
+                    if (result == 1) {
+                        getDoctorGenreTarget($("#title").attr("data-id"));
                     }else if (result == 0) {
                     }
                 }
             });
         }
+
+        //添加对象
+        function addTarget(jsonSent){
+            $.ajax({
+                url:prevUrl+"/targetUser/generateTargetUser",
+                type: "POST",
+                data:jsonSent,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    var result = data.success;
+                    if (result == 1) {
+                        getDoctorGenreTarget($("#title").attr("data-id"));
+                    }else if (result == 0) {
+                    }
+                }
+            });
+        }
+
+        /**
+         * 更新 所有对象和流派 以及咨询师的对象流派
+         * @param data
+         */
+        function updateGenreTarget(data){
+
+            var oGenresView=$("#genres");
+            var oTargetsView=$("#targets");
+            oGenresView.empty();
+            oTargetsView.empty();
+
+            var genres=data.genres;
+            var targets=data.targetUsers;
+
+            var appendHTML,checkedHTML;
+            for(var i=0;i<genres.length;i++){
+                appendHTML="";
+                checkedHTML="";
+                checkedHTML+=genres[i].checked?" checked ":"";
+                appendHTML+='<label class="checkbox-inline"><input type="checkbox" value="'+genres[i].id+'"'+checkedHTML+'>'+genres[i].name+'</label>';
+
+                oGenresView.append(appendHTML);
+            }
+
+            oGenresView.append('<label class="checkbox-inline"><span id="addGenre" class="glyphicon glyphicon-plus-sign"></span></label>');
+
+            for(i=0;i<targets.length;i++){
+                appendHTML="";
+                checkedHTML="";
+                checkedHTML+=targets[i].checked?" checked ":"";
+                appendHTML+='<label class="checkbox-inline"><input type="checkbox" value="'+targets[i].id+'"'+checkedHTML+'>'+targets[i].name+'</label>';
+                oTargetsView.append(appendHTML);
+            }
+            oTargetsView.append('<label class="checkbox-inline"><span id="addTarget" class="glyphicon glyphicon-plus-sign"></span></label>');
+
+        }
+
 
         //更新tableView界面
         function updateList(data){
@@ -335,7 +610,18 @@
                         '<td class="phone">'+data[i].phone+'</td>' +
                         '<td class="loginStatus">'+data[i].loginStatus+'</td>' +
                         '<td class="sex">'+data[i].sex+'</td>' +
-                        '<td><span class="check">查看</span> <span class="delete">删除</span></td>' +
+                        '<td class="createTime">'+data[i].createTime+'</td>' +
+                        '<td><span class="check">查看</span></td>' +
+                        '<td class="gone genre">'+data[i].genre+'</td>' +
+                        '<td class="gone field">'+data[i].field+'</td>' +
+                        '<td class="gone targetUser">'+data[i].targetUser+'</td>' +
+                        '<td class="gone experiece">'+data[i].experiece+'</td>' +
+                        '<td class="gone introduce">'+data[i].introduce+'</td>' +
+                        '<td class="gone avatar">'+data[i].avatar+'</td>' +
+                        '<td class="gone record">'+data[i].record+'</td>' +
+                        '<td class="gone review">'+data[i].review+'</td>' +
+                        '<td class="gone reviewReason">'+data[i].reviewReason+'</td>' +
+                        '<td class="gone refusalReason">'+data[i].refusalReason+'</td>' +
                         '</tr>';
 
                 oTableView.append(appendHTML);

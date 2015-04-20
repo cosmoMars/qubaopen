@@ -45,7 +45,9 @@ public class DoctorCase extends AbstractBaseEntity<Long> {
      * 拒绝理由
      */
     private String refusalReason;
-    
+
+    private String picPath;
+
     public Doctor getDoctor() {
         return doctor;
     }
@@ -100,5 +102,13 @@ public class DoctorCase extends AbstractBaseEntity<Long> {
 
     public void setRefusalReason(String refusalReason) {
         this.refusalReason = refusalReason;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
     }
 }

@@ -28,6 +28,24 @@ public class DoctorCase extends AbstractBaseEntity<Long> {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
+    /**
+     * 审核状态
+     */
+    @Enumerated
+    private Status status;
+
+    private enum Status {
+        Auditing, Failure, Success
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date publishTime;
+
+    /**
+     * 拒绝理由
+     */
+    private String refusalReason;
+    
     public Doctor getDoctor() {
         return doctor;
     }
@@ -58,5 +76,29 @@ public class DoctorCase extends AbstractBaseEntity<Long> {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Date getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Date publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public String getRefusalReason() {
+        return refusalReason;
+    }
+
+    public void setRefusalReason(String refusalReason) {
+        this.refusalReason = refusalReason;
     }
 }

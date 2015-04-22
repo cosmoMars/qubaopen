@@ -45,6 +45,7 @@ public class PingppNotifyController {
 
         PrintWriter out = response.getWriter();
 
+        System.out.println("开始回调接口");
         // 对异步通知做处理
         if (o instanceof Charge) {
             Charge charge = (Charge) o;
@@ -52,16 +53,21 @@ public class PingppNotifyController {
             if (charge.getPaid()) {
                 Booking booking = bookingRepository.findByChargeId(charge.getId());
 
+                System.out.println("订单id   " + booking.getId() + "  订单号  " + booking.getTradeNo());
+
                 if (!booking.isNotify()) {
                     if (null != booking.getHospital()) {
+                        System.out.println("回调诊所");
                         booking.setStatus(Booking.Status.PayAccept);
                     } else if (null != booking.getDoctor()) {
+                        System.out.println("回调医师");
                         if (!booking.isQuick()) {
                             booking.setStatus(Booking.Status.PayAccept);
                         } else {
                             booking.setStatus(Booking.Status.Paid);
                         }
                     }
+                    System.out.println("回调状态 ＝ " + booking.getStatus().ordinal());
                     booking.setNotify(true);
                     booking.setOutDated(null);
                     bookingRepository.save(booking);

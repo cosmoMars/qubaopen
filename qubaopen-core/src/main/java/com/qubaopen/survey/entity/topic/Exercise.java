@@ -1,11 +1,11 @@
 package com.qubaopen.survey.entity.topic;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
+import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.AuditStatus;
+import com.qubaopen.survey.entity.doctor.Doctor;
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import javax.persistence.*;
 
 /**
  * 练习
@@ -16,6 +16,9 @@ import com.qubaopen.core.entity.AbstractBaseEntity;
 public class Exercise extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = -4231296994213087799L;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Doctor doctor;
 	
 	/**
 	 * 练习标题
@@ -31,7 +34,21 @@ public class Exercise extends AbstractBaseEntity<Long> {
 	 * 图片url
 	 */
 	private String url;
-	
+
+	/**
+	 * 审核状态
+	 */
+	@Enumerated
+	private AuditStatus status;
+
+	public Doctor getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(Doctor doctor) {
+		this.doctor = doctor;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -56,4 +73,11 @@ public class Exercise extends AbstractBaseEntity<Long> {
 		this.url = url;
 	}
 
+	public AuditStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AuditStatus status) {
+		this.status = status;
+	}
 }

@@ -34,12 +34,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	
 	@Autowired
 	HelpCommentGoodRepository helpCommentGoodRepository
-	
+
 	@Override
 	MyRepository<Help, Long> getRepository() {
-		return helpRepository
+		helpRepository
 	}
-	
+
 	
 	/**
 	 * @param user
@@ -56,93 +56,80 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		Pageable pageable) {
 		
 		logger.trace('-- 获取求助信息 --')
-		
-		def helps, data = [], list = []
-		if (ids) {
+
+		def helps, data = [], list = [], size = 0
+		/*if (ids) {
 			def strIds = ids.split(',')
 			strIds.each {
 				list << Long.valueOf(it.trim())
 			}
+		}*/
+
+		def hcGoods = helpCommentGoodRepository.findAll(
+				[
+						'helpComment.doctor_equal': doctor,
+						view_isFalse              : null,
+				]
+		)
+
+		hcGoods.each {
+			list << it.id
 		}
+
 		if (self) {
-			if (ids) {
-				helps = helpRepository.findByDoctor(doctor, list, pageable)
-			} else {
-				helps = helpRepository.findByDoctor(doctor, pageable)
-			}
-			helps.each {
-				def comments = helpCommentRepository.findByHelpAndDoctor(it, doctor),
-					commentSize =  helpCommentRepository.countCommentByHelp(it)
-				def commentData = []
-				comments.each { cit ->
-					def goods = helpCommentGoodRepository.countByHelpComment(cit)
-					commentData << [
-						'commentId' : cit?.id,
-						'doctorId' : cit?.doctor?.id,
-						'doctorName' : cit?.doctor?.doctorInfo?.name,
-						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-						'hospitalName' : cit?.hospital?.hospitalInfo?.name,
-						'content' : cit?.content,
-						'time' : cit?.time,
-						'goods' : goods
-					]
-						
-				}
-				data << [
-					'helpId' : it?.id,
-					'helpContent' : it?.content,
-					'helpTime' : DateFormatUtils.format(it?.time, 'yyyy-MM-dd'),
-					'userName' : it?.user?.userInfo?.nickName,
-					'userAvatar' : it?.user?.userInfo?.avatarPath,
-					'userSex' : it?.user?.userInfo?.sex?.ordinal(),
-					'commentSize' : commentSize,
-					'commentData' : commentData
-				]
-			}
+			helps = helpRepository.findByDoctor(doctor, pageable)
+			size = helps ? helps.size() : 0
+
 		} else {
-			if (ids) {
-				helps = helpRepository.findAllHelp(list, pageable)
+			helps = helpRepository.findAll(pageable)
+			size = helps ? helps.getContent().size() : 0
+		}
+		helps.each {
+			// 查找评论详细集合
+			def comments
+			if (self) {
+				comments = helpCommentRepository.findLimitCommentByGood(it, doctor)
 			} else {
-				helps = helpRepository.findAllByPageable(pageable)
+				comments = helpCommentRepository.findLimitCommentByGood(it)
 			}
-			helps.each {
-				def comments = helpCommentRepository.findLimitComment(it),
-					commentSize =  helpCommentRepository.countCommentByHelp(it)
-				def commentData = []
-				comments.each { cit ->
-					def goods = helpCommentGoodRepository.countByHelpComment(cit)
-					commentData << [
-						'commentId' : cit?.id,
-						'doctorId' : cit?.doctor?.id,
-						'doctorName' : cit.doctor?.doctorInfo?.name,
-						'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-						'hospitalName' : cit?.hospital?.hospitalInfo?.name,
-						'content' : cit?.content,
-						'time' : cit?.time,
-						'goods' : goods
-					]
-						
-				}
-				data << [
-					'helpId' : it?.id,
-					'helpContent' : it?.content,
-					'helpTime' : DateFormatUtils.format(it?.time, 'yyyy-MM-dd'),
-					'userName' : it?.user?.userInfo?.nickName,
-					'userAvatar' : it?.user?.userInfo?.avatarPath,
-					'userSex' : it?.user?.userInfo?.sex?.ordinal(),
-					'commentSize' : commentSize,
-					'commentData' : commentData
+
+			def commentSize = helpCommentRepository.countCommentByHelp(it)
+			def commentData = []
+			comments.each { cit ->
+				commentData << [
+						'commentId'     : cit.commentId,
+						'doctorId'      : cit.doctorId,
+						'doctorName'    : cit.doctorName,
+						'hospitalId'    : cit.hospitalId,
+						'hospitalName'  : cit.hospitalName,
+						'doctorAvatar'  : cit.doctorPath,
+						'hospitalAvatar': cit.hospitalPath,
+						'content'       : cit.commentContent,
+						'time'          : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
+						'goods'         : cit.gSize
 				]
 			}
+			data << [
+					'helpId'     : it?.id,
+					'helpContent': it?.content,
+					'helpTime'   : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+					'userName'   : it?.user?.userInfo?.nickName,
+					'userAvatar' : it?.user?.userInfo?.avatarPath,
+					'commentSize': commentSize,
+					'commentData': commentData
+			]
 		}
 		def more = true
-		if (helps.size() < pageable.pageSize) {
+		if (size < pageable.pageSize) {
 			more = false
 		}
+
 		[
-			'success' : '1',
-			'data' : data,
-			'more' : more
+				'success': '1',
+				'hcGoods': hcGoods ? hcGoods.size() : 0,
+				'hcIds'  : list,
+				'data'   : data,
+				'more'   : more
 		]
 	}
 		
@@ -213,6 +200,35 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			'more' : more,
 			'data' : commentData
 		]
+	}
+
+	/**
+	 * 查看被点赞的评论
+	 * @param ids
+	 * @param doctor
+	 */
+	@RequestMapping(value = 'retrieveGoodComment', method = RequestMethod.POST)
+	retrieveGoodComment(@RequestParam(required = false) String ids,
+						@ModelAttribute('currentDoctor') Doctor doctor) {
+
+		def list = []
+		if (ids) {
+			def strIds = ids.split(',')
+			strIds.each {
+				list << Long.valueOf(it.trim())
+			}
+		}
+		if (list.size() <= 0) {
+			return '{"success" : "1"}'
+		}
+		def goodComments = helpCommentGoodRepository.findByIds(list)
+
+		goodComments.each {
+			it.view = true
+
+			it.helpComment.help
+		}
+
 	}
 
 }

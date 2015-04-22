@@ -44,23 +44,41 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
 	 * 获取列表
 	 */
 	@RequestMapping(value = 'retrieveExerciseList', method = RequestMethod.GET)
-	def retrieveExerciseList(@PageableDefault(page = 0, size = 20) Pageable pageable) {
-		
+	def retrieveExerciseList(@PageableDefault(page = 0, size = 20) Pageable pageable,
+							 @ModelAttribute('currentUser') User user) {
+
 		def list = exerciseRepository.findAll(pageable)
-		
+
+		def uExerciseCount = 0
 		def data = []
-		list.each {
-			def	infoSize = exerciseInfoRepository.countByExercise(it)
-			data << [
-				'id' : it?.id,
-				'name' : it?.name,
-				'pic' : it?.url,
-				'size' : infoSize
-			]
+		if (user.id != null) {
+
+			list.each {
+				def infoSize = exerciseInfoRepository.countByExercise(it)
+				uExerciseCount = userExerciseRepository.countByUserAndExerciseAndComplete(user, it, true)
+				data << [
+						'id'          : it?.id,
+						'name'        : it?.name,
+						'pic'         : it?.url,
+						'size'        : infoSize,
+						uExerciseCount: uExerciseCount,
+				]
+			}
+		} else {
+			list.each {
+				def infoSize = exerciseInfoRepository.countByExercise(it)
+				data << [
+						'id'          : it?.id,
+						'name'        : it?.name,
+						'pic'         : it?.url,
+						'size'        : infoSize,
+						uExerciseCount: 0,
+				]
+			}
 		}
 		[
-			'success' : '1',
-			'data' : data
+				success: '1',
+				data   : data
 		]
 	}
 	

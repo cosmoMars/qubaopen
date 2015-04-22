@@ -29,8 +29,8 @@ class AreaCodeController extends AbstractBaseController<AreaCode, Long> {
         List<AreaCode> areaCodes = areaCodeRepository.findExistDoctorAreaCode();
 
         [
-                'success' : '1',
-                'list' : areaCodes
+                'success': '1',
+                'list'   : areaCodes
         ]
     }
 }

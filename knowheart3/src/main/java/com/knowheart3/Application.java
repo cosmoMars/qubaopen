@@ -1,10 +1,13 @@
 package com.knowheart3;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-
-import javax.servlet.Filter;
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
@@ -14,14 +17,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import javax.servlet.Filter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 @ComponentScan
 @EnableAutoConfiguration
@@ -36,6 +34,11 @@ public final class Application {
 		filter.setForceEncoding(false);
 		return filter;
 	}
+
+//	@Bean
+//	public DataSource dataSource() {
+//		return DataSourceFactory.getDataSource("rds-test-798");
+//	}
 
 	@Bean
 	public ObjectMapper objectMapper() {

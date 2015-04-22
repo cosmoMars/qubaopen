@@ -1,16 +1,10 @@
 package com.qubaopen.survey.entity.system;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import com.qubaopen.core.entity.AbstractBaseEntity;
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 系统 软件版本 Created by duel on 2014/6/27.
@@ -63,7 +57,7 @@ public class SystemVersion extends AbstractBaseEntity<Long> {
 	private UseObject useObject;
 	
 	public enum UseObject {
-		User, Doctor
+		User, Doctor, kh3
 	}
 
 	public String getVersion() {

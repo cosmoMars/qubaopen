@@ -1,14 +1,13 @@
 package com.qubaopen.survey.entity.comment;
 
+import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.user.User;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.envers.Audited;
-
-import com.qubaopen.core.entity.AbstractBaseEntity;
-import com.qubaopen.survey.entity.user.User;
 
 /**
  * @author mars
@@ -27,6 +26,11 @@ public class HelpCommentGood extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private HelpComment helpComment;
 
+	/**
+	 * 是否查看
+	 */
+	private boolean view;
+
 	public User getUser() {
 		return user;
 	}
@@ -43,4 +47,11 @@ public class HelpCommentGood extends AbstractBaseEntity<Long> {
 		this.helpComment = helpComment;
 	}
 
+	public boolean isView() {
+		return view;
+	}
+
+	public void setView(boolean view) {
+		this.view = view;
+	}
 }

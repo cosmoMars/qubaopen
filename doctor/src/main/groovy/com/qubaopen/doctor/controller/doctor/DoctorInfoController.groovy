@@ -41,6 +41,12 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
     @Autowired
     DoctorRecordRepository doctorRecordRepository
 
+    @Autowired
+    DoctorArticleRepository doctorArticleRepository
+
+    @Autowired
+    DoctorCaseRepository doctorCaseRepository
+
     @Value('${doctor_record_url}')
     String doctor_record_url
 
@@ -455,6 +461,30 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
             return false;
         }
         return true;
+    }
+
+    /**
+     * 个人专栏
+     * @param doctor
+     * @return
+     */
+    @RequestMapping(value = 'retrieveInfoSpecial', method = RequestMethod.GET)
+    retrieveInfoSpecial(@ModelAttribute('currentDoctor') Doctor doctor) {
+
+
+        def doctorInfo = doctorInfoRepository.findOne(doctor.id),
+            articleCount = doctorArticleRepository.countByDoctor(doctor),
+            caseCount = doctorCaseRepository.countByDoctor(doctor)
+
+        [
+                'success'     : '1',
+                'address'     : doctorInfo.address,
+                'video'       : doctorInfo.video,
+                'faceToFace'  : doctorInfo.faceToFace,
+                'introduce'   : doctorInfo.introduce,
+                'articleCount': articleCount,
+                'caseCount'   : caseCount
+        ]
     }
 }
 	

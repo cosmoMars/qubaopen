@@ -2,6 +2,7 @@ package com.knowheart3.repository.exercise;
 
 import com.knowheart3.repository.exercise.custom.UserExerciseRepositoryCustom;
 import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.survey.entity.topic.Exercise;
 import com.qubaopen.survey.entity.topic.UserExercise;
 import com.qubaopen.survey.entity.user.User;
 import org.springframework.data.domain.Page;
@@ -19,5 +20,9 @@ public interface UserExerciseRepository extends MyRepository<UserExercise, Long>
 
     @Query("from UserExercise ue where ue.user = :user and ue.complete = true")
     Page<UserExercise> findCompleteExerciseByUser(@Param("user") User user, Pageable pageable);
+
+    int countByUserAndComplete(User user, boolean complete);
+
+    int countByUserAndExerciseAndComplete(User user, Exercise exercise, boolean complete);
 
 }

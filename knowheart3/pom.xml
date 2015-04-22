@@ -140,17 +140,27 @@
         <db.username>knowheart</db.username>
         <db.password>knowheart</db.password>
       </properties>
-
     </profile>
     <profile>
       <id>wonders-outer</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <properties>
         <db.driver>com.mysql.jdbc.Driver</db.driver>
         <db.url>jdbc:mysql://101.231.124.8:45687/knowheart</db.url>
         <db.username>knowheart</db.username>
         <db.password>knowheart</db.password>
       </properties>
-
+    </profile>
+    <profile>
+      <id>ali</id>
+      <properties>
+        <db.driver>com.mysql.jdbc.Driver</db.driver>
+        <db.url>jdbc:mysql://115.28.210.110:3306/knowheart</db.url>
+        <db.username>surveyadmin</db.username>
+        <db.password>x7d91jd9lkx81</db.password>
+      </properties>
     </profile>
   </profiles>
 

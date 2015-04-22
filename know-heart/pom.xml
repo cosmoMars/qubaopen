@@ -102,6 +102,51 @@
       <artifactId>jdom</artifactId>
       <version>1.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.alibaba.appengine</groupId>
+      <artifactId>services-api</artifactId>
+      <version>1.4.27-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba.appengine</groupId>
+      <artifactId>services-jae-api</artifactId>
+      <version>1.0.8-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
+
+  <repositories>
+    <repository>
+      <id>taerepository</id>
+      <url>http://mvnrepo.tae.taobao.com/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>taesnapshots</id>
+      <url>http://mvnrepo.tae.taobao.com/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>taereleases</id>
+      <url>http://mvnrepo.tae.taobao.com/content/repositories/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
 </project>

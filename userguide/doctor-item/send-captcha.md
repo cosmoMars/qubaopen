@@ -1,6 +1,6 @@
 # 发送验证码
 
-**请求地址:** uDoctor/sendCaptcha?phone=13621673xxx
+**请求地址：** uDoctor/sendCaptcha?phone=13621673xxx
 
 **HTTP请求方式：** GET
 

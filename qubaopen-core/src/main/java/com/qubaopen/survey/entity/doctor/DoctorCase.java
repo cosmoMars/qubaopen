@@ -33,15 +33,7 @@ public class DoctorCase extends AbstractBaseEntity<Long> {
      * 审核状态
      */
     @Enumerated
-<<<<<<< HEAD
-    private Status status;
-
-    public enum Status {
-        Auditing, Failure, Success
-    }
-=======
     private AuditStatus status;
->>>>>>> 0a1c025ac3861431dc65be54ae6eef41c5617b71
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishTime;

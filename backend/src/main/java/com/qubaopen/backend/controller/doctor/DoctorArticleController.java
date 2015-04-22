@@ -20,6 +20,7 @@ import com.qubaopen.backend.repository.doctor.DoctorRepository;
 import com.qubaopen.backend.service.SmsService;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.survey.entity.AuditStatus;
 import com.qubaopen.survey.entity.doctor.DoctorArticle;
 
 
@@ -62,7 +63,7 @@ public class DoctorArticleController extends AbstractBaseController<DoctorArticl
 			@RequestParam(required = false) Long doctorId) {
 		
 		Map<String, Object> result = new HashMap<String, Object>();
-		DoctorArticle.Status s = DoctorArticle.Status.values()[status];
+		AuditStatus s = AuditStatus.values()[status];
 		Map<String, Object> filter = new HashMap<String, Object>();
 		filter.put("status_equal",s);
 		List<DoctorArticle> doctorArticles = doctorArticleRepository.findAll(filter, pageable).getContent();
@@ -108,8 +109,8 @@ public class DoctorArticleController extends AbstractBaseController<DoctorArticl
         
 		
 		if(null != doctorArticle){
-            DoctorArticle.Status s = DoctorArticle.Status.values()[status];
-			if(s == DoctorArticle.Status.Failure){
+			AuditStatus s = AuditStatus.values()[status];
+			if(s == AuditStatus.Failure){
 				//拒绝
 				doctorArticle.setRefusalReason(refusalReason);
 				

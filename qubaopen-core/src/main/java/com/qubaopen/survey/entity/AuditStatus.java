@@ -12,7 +12,7 @@ public enum AuditStatus {
     /**
      * 失败
      */
-    Failuse,
+    Failure,
 
     /**
      * 成功

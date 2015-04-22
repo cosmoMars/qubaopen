@@ -1,15 +1,4 @@
-package com.qubaopen.doctor.controller.comment;
-
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
+package com.qubaopen.doctor.controller.comment
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.comment.HelpCommentRepository
@@ -18,14 +7,14 @@ import com.qubaopen.survey.entity.comment.Help
 import com.qubaopen.survey.entity.comment.HelpComment
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('helpComment')
 @SessionAttributes('currentDoctor')
 public class HelpCommentController extends AbstractBaseController<HelpComment, Long> {
 
-	private static Logger logger = LoggerFactory.getLogger(HelpCommentController.class)
-	
 	@Autowired
 	HelpCommentRepository helpCommentRepository
 	

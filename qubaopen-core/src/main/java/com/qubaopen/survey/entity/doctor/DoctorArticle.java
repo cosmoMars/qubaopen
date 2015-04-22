@@ -1,6 +1,7 @@
 package com.qubaopen.survey.entity.doctor;
 
 import com.qubaopen.core.entity.AbstractBaseEntity;
+import com.qubaopen.survey.entity.AuditStatus;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -32,11 +33,7 @@ public class DoctorArticle extends AbstractBaseEntity<Long> {
      * 审核状态
      */
     @Enumerated
-    private Status status;
-
-    private enum Status {
-        Auditing, Failure, Success
-    }
+    private AuditStatus status;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date publishTime;
@@ -80,11 +77,11 @@ public class DoctorArticle extends AbstractBaseEntity<Long> {
         this.createTime = createTime;
     }
 
-    public Status getStatus() {
+    public AuditStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(AuditStatus status) {
         this.status = status;
     }
 

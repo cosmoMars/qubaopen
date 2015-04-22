@@ -13,9 +13,9 @@ class SystemVersionService {
 	SystemVersionRepository systemVersionRepository
 
 	@Transactional
-	SystemVersion getUrl(String type, String version){
+	SystemVersion getUrl(String type, String version, int resource){
 		
-		def sv = systemVersionRepository.findByTypeAndObjectIdx(SystemVersion.Type.values()[type as int], SystemVersion.UseObject.User)
+		def sv = systemVersionRepository.findByTypeAndObjectIdx(SystemVersion.Type.values()[type as int], SystemVersion.UseObject.values()[resource])
 		
 		def v = version as double
 		

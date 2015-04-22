@@ -29,6 +29,7 @@ import java.util.*;
 public class PingppResources {
 
     static {
+//        Pingpp.apiKey = "sk_live_jX1mb908ern5r1qz9KGGiXfH";
         Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
     }
 
@@ -141,8 +142,8 @@ public class PingppResources {
         }
         chargeParams.put("channel",  channel);
         chargeParams.put("currency", "cny");
-        chargeParams.put("client_ip",  req.getRemoteAddr());
-//        chargeParams.put("client_ip",  "127.0.0.1");
+//        chargeParams.put("client_ip",  req.getRemoteAddr());
+        chargeParams.put("client_ip",  "127.0.0.1");
         chargeParams.put("subject", "知心心理咨询");
 
         StringBuffer content = new StringBuffer();

@@ -26,23 +26,27 @@ public class SystemVersionController extends AbstractBaseController<SystemVersio
 	protected MyRepository<SystemVersion, Long> getRepository() {
 		return systemVersionRepository;
 	}
-	
+
 	@RequestMapping(value = 'getUpdateInfo', method = RequestMethod.GET)
 	getUpdateInfo(@RequestParam(required = false) String type,
-		@RequestParam(required = false) String version) {
-		
-		if (type ==null || type.equals("")) {
+				  @RequestParam(required = false) String version,
+				  @RequestParam(required = false) Integer resource) {
+
+		if (type == null || type.equals("")) {
 			return '{"success": "0", "message": "类型为空"}'
 		}
-		if (version ==null || version.equals("")) {
+		if (version == null || version.equals("")) {
 			return '{"success": "0", "message": "版本号为空"}'
 		}
-		
-		
-		def systemVersion=systemVersionService.getUrl(type, version);
-		if(systemVersion){
-			return '{"success": "1", "path": "'+systemVersion.downloadUrl+'","message":"'+systemVersion.detail+'"}'
-		}else{
+
+
+		if (resource == null) {
+			resource = 0
+		}
+		def systemVersion = systemVersionService.getUrl(type, version, resource);
+		if (systemVersion) {
+			return '{"success": "1", "path": "' + systemVersion.downloadUrl + '","message":"' + systemVersion.detail + '"}'
+		} else {
 			return '{"success": "0","message":"已是最新版本"}'
 		}
 	}

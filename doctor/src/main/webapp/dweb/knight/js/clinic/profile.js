@@ -76,6 +76,8 @@ function modifyInfo(){
         jsonSent.wordsConsult=$("#wordsConsult label:eq(0)").hasClass("active");
         //jsonSent.phoneConsult=$("#phoneConsult label:eq(0)").hasClass("active");
         jsonSent.timeExp=$("#btn-pick").attr("data-time");
+        jsonSent.genre=$("#genre").val();
+        jsonSent.targetUser=$("#targetUser").val();
 
         function JsonToString(o) {
             var arr = [];
@@ -182,8 +184,9 @@ function updateProfileView(obj){
     $("#maxCharge").val(data.maxCharge);
     $("#urgentConsult").val(data.quick);
     $("#btn-pick").attr("data-time",data.bookingTime);
-
-
+    $("#genre").val(data.genre);
+    $("#targetUser").val(data.targetUser);
+    $("#avatarUrl").attr("src",data.avatar);
 
     if(data.wordsConsult){
         $("#wordsConsult label").eq(0).click();

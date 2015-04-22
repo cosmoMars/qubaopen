@@ -173,7 +173,7 @@
                             </div>
                             <div class="col-sm-5">
                                 <div class="form-group">
-                                    <label for="record" class="col-sm-2 control-label">资质</label>
+                                    <label for="record" class="col-sm-2 control-label">营业执照</label>
                                     <div class="col-sm-10">
                                         <img id="record" class="previewImg" src="">
                                     </div>
@@ -263,7 +263,7 @@
             var genre=$(this).closest("tr").find(".genre").html();
             var targetUser=$(this).closest("tr").find(".targetUser").html();
             var avatar=$(this).closest("tr").find(".avatar").html();
-            var record=$(this).closest("tr").find(".record").html();
+            var record=$(this).closest("tr").find(".record").attr("data-src");
             var introduce=$(this).closest("tr").find(".introduce").html();
             var review=$(this).closest("tr").find(".review").html();
             var reviewReason=$(this).closest("tr").find(".reviewReason").html();
@@ -616,7 +616,7 @@
                         '<td class="gone experiece">'+data[i].experiece+'</td>' +
                         '<td class="gone introduce">'+data[i].introduce+'</td>' +
                         '<td class="gone avatar">'+data[i].avatar+'</td>' +
-                        '<td class="gone record">'+data[i].record+'</td>' +
+                        '<td class="gone record" data-src="'+data[i].record+'"></td>' +
                         '<td class="gone review">'+data[i].review+'</td>' +
                         '<td class="gone reviewReason">'+data[i].reviewReason+'</td>' +
                         '<td class="gone refusalReason">'+data[i].refusalReason+'</td>' +

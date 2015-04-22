@@ -1,5 +1,28 @@
 package com.qubaopen.doctor.controller.hospital;
 
+import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qubaopen.core.controller.AbstractBaseController;
@@ -9,23 +32,6 @@ import com.qubaopen.doctor.utils.UploadUtils;
 import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.hospital.HospitalDoctorRecord;
 import com.qubaopen.survey.entity.hospital.HospitalInfo;
-import org.apache.commons.lang3.time.DateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone;
 
 @RestController
 @RequestMapping("hospitalInfo")
@@ -36,9 +42,6 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 	
 	@Autowired
 	private HospitalInfoRepository hospitalInfoRepository;
-
-    @Autowired
-    private UploadUtils uploadUtils;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -79,6 +82,10 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		map.put("wordsConsult", hospitalInfo.isWordsConsult());
 		map.put("minCharge", hospitalInfo.getMinCharge());
 		map.put("maxCharge", hospitalInfo.getMaxCharge());
+		map.put("genre", hospitalInfo.getGenre());
+		map.put("targetUser", hospitalInfo.getTargetUser());
+		map.put("avatar", hospitalInfo.getHospitalAvatar());
+		map.put("record", hospitalInfo.getHospitalRecordPath());
 		
 		List<String> records = new ArrayList<String>();
 		
@@ -118,6 +125,8 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			@RequestParam(required = false) Integer maxCharge,
 			@RequestParam(required = false) String timeJson,
 			@RequestParam(required = false) String timeExp,
+			@RequestParam(required = false) String genre,
+			@RequestParam(required = false) String targetUser,
             @RequestParam(required = false) MultipartFile avatar,
 			@ModelAttribute("currentHospital") Hospital hospital
 			) {
@@ -127,21 +136,17 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		HospitalInfo hi = hospitalInfoRepository.findOne(hospital.getId());
 
         boolean isChange = false;
-		boolean isPass = true;
         HospitalInfo hiReview = new HospitalInfo();
         BeanUtils.copyProperties(hi, hiReview);
 
 		if (hi.getLoginStatus() != HospitalInfo.LoginStatus.Unaudited) {
-			isPass = false;
 		}
 
 		if (name != null) {
 			hi.setName(name);
-			isPass = false;
 		}
 		if (address != null) {
 			hi.setAddress(address);
-			isPass = false;
 		}
 		if (establishTime != null) {
 			try {
@@ -149,41 +154,39 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			isPass = false;
 		}
 		if (phone != null) {
 			if (!validatePhone(phone)) {
 				return "{\"success\": \"0\", \"message\" : \"err003\"}";
 			}
 			hi.setPhone(phone);
-			isPass = false;
 		}
 		if (urgentPhone != null) {
 			if (!validatePhone(urgentPhone)) {
 				return "{\"success\": \"0\", \"message\" : \"err003\"}";
 			}
 			hi.setUrgentPhone(urgentPhone);
-			isPass = false;
 		}
 		if (qq != null) {
 			hi.setQq(qq);
-			isPass = false;
 		}
 		if (introduce != null) {
 			hi.setIntroduce(introduce);
-			isPass = false;
+		}
+		if (genre != null) {
+			hi.setGenre(genre);
+		}
+		if (targetUser != null) {
+			hi.setTargetUser(targetUser);
 		}
 		if (wordsConsult != null) {
 			hi.setWordsConsult(wordsConsult);
-			isPass = false;
 		}
 		if (minCharge != null) {
 			hi.setMinCharge(minCharge);
-			isPass = false;
 		}
 		if (maxCharge != null) {
 			hi.setMaxCharge(maxCharge);
-			isPass = false;
 		}
 		if (timeExp != null) {
 			hi.setBookingTime(timeExp);
@@ -234,18 +237,17 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
             String hName = hospital_url + hospital.getId();
             String url;
             try {
-                url = uploadUtils.uploadTo7niu(1, hName, avatar.getInputStream());
+                url = UploadUtils.uploadTo7niu(1, hName, avatar.getInputStream());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             hi.setHospitalAvatar(url);
-			isPass = false;
         }
         if (!hi.equals(hiReview)) {
             isChange = true;
         }
 
-        if (isPass || (hi.getLoginStatus() == HospitalInfo.LoginStatus.Refusal && isChange)) {
+        if (isPass(hospital, hi) || (hi.getLoginStatus() == HospitalInfo.LoginStatus.Refusal && isChange)) {
             hi.setLoginStatus(HospitalInfo.LoginStatus.Auditing);
         }
 
@@ -257,5 +259,59 @@ public class HospitalInfoController extends AbstractBaseController<HospitalInfo,
 		
 		return "{\"success\": \"1\"}";
 	}
+	
+	
+	public boolean isPass(Hospital hospital, HospitalInfo hospitalInfo) {
+		 
+		if (hospitalInfo.getLoginStatus() != HospitalInfo.LoginStatus.Unaudited) {
+			return false;
+		}
+
+		if (hospitalInfo.getName()==null) {
+			return false;
+		}
+		
+		if (hospitalInfo.getAddress()==null) {
+			return false;
+		}
+		
+		if (hospitalInfo.getPhone() == null) {
+			return false;
+		}
+		
+		if (hospitalInfo.getUrgentPhone() == null) {
+			return false;
+		}
+
+		if (hospitalInfo.getQq() == null) {
+			return false;
+		}
+
+		if (hospitalInfo.getIntroduce() == null) {
+			return false;
+		}
+
+		if (hospitalInfo.getGenre() == null) {
+			return false;
+		}
+
+		if (hospitalInfo.getTargetUser() == null) {
+			return false;
+		}
+
+		if (hospitalInfo.getBookingTime() == null) {
+			return false;
+		}
+
+		if (hospitalInfo.getHospitalRecordPath() == null) {
+			return false;
+		}
+
+		if (hospitalInfo.getHospitalAvatar() == null) {
+			return false;
+		}
+
+        return true;
+	} 
 
 }

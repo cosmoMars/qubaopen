@@ -100,6 +100,12 @@
 
     <form class="form-horizontal form-profile" role="form" enctype="multipart/form-data" method="post" id="uploadPhotoForm">
         <div class="form-group">
+            <div class="" style="margin: 0 auto;display: table;">
+                <img class="img-circle" id="avatarUrl" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="" width="80" height="80">
+
+            </div>
+        </div>
+        <div class="form-group">
             <label for="clinicName" class="col-sm-2 control-label">诊所名称</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="clinicName" autocomplete="off"
@@ -132,6 +138,14 @@
             <div class="col-sm-10">
                 <input type="text" class="form-control" id="address"
                        placeholder="请输入详细地址">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="avatar" class="col-sm-2 control-label">头像</label>
+            <div class="col-sm-10">
+                <input type="file" class="form-control" id="avatar" name="avatar"
+                       placeholder="请上传">
             </div>
         </div>
 
@@ -212,10 +226,29 @@
                 <!--</div>-->
             <!--</div>-->
         <!--</div>-->
+
+
         <div class="form-group">
             <label for="introduction" class="col-sm-2 control-label">诊所介绍</label>
             <div class="col-sm-10">
                 <textarea class="form-control" rows="3"  id="introduction"  placeholder="请填写"></textarea>
+
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="genre" class="col-sm-2 control-label">咨询流派</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" rows="2"  id="genre"  placeholder="请填写"></textarea>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="targetUser" class="col-sm-2 control-label">咨询对象</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" rows="2"  id="targetUser"  placeholder="请填写"></textarea>
 
             </div>
         </div>

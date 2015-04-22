@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh_cn">
+    <meta charset="UTF-8">
+    <title>咨询师案例审核</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .marketing{
+            margin-top: 100px;;
+        }
+
+        .gone{
+            display: none;
+        }
+
+        .tableParent{
+            min-height: 407px;
+        }
+
+        .previewImg{
+            max-height: 150px;
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+
+
+
+<div class="container marketing">
+
+    <div class="row">
+
+        <div class="col-sm-1">
+            <button type="button" id="btn-refresh" class="btn btn-primary">刷新列表</button>
+        </div>
+        <div class="col-sm-2">
+            <select id="refresh-status" class="form-control">
+                <option value="0">审核中</option>
+                <option value="1">拒绝</option>
+                <option value="2">通过</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="tableParent">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th width="10%">编号</th>
+                <th width="10%">咨询师</th>
+                <th width="20%">标题</th>
+                <th width="10%">审核状态</th>
+                <th width="30%">时间</th>
+                <th width="15%">操作</th>
+            </tr>
+            </thead>
+            <tbody id="tableView">
+            <!--<tr data-aid="1">-->
+            <!--<th scope="row">1</th>-->
+            <!--<td>论持久战</td>-->
+            <!--<td>2014-12-12 15:15:13</td>-->
+            <!--<td>2015-02-27</td>-->
+            <!--<td><span class="check">查看</span> <span class="delete">删除</span></td>-->
+            <!--</tr>-->
+
+            <!--<tr data-aid="2">-->
+            <!--<th scope="row">1</th>-->
+            <!--<td>论持久战</td>-->
+            <!--<td>2014-12-12 15:15:13</td>-->
+            <!--<td>2015-02-27</td>-->
+            <!--<td><span class="check">查看</span> <span class="delete">删除</span></td>-->
+            <!--</tr>-->
+            </tbody>
+
+        </table>
+    </div>
+
+
+    <nav>
+        <ul class="pager">
+            <li id="prev" class="disabled"><a href="#">上一页</a></li>
+            <li id="next" class="disabled"><a href="#">下一页</a></li>
+        </ul>
+    </nav>
+
+    <!-- 模态框（Modal） -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        编辑
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="title" class="col-sm-2 control-label">标题</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="title" disabled autocomplete="off" data-id=""
+                                       placeholder="请输入标题" required>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label for="content" class="col-sm-2 control-label">内容</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="6" disabled id="content"  placeholder=""></textarea>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <label for="picPath" class="col-sm-2 control-label">图片</label>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <div class="col-sm-10">
+                                        <img id="picPath" class="previewImg" src="">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">审核状态</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="status">
+                                    <option value="0">审核中</option>
+                                    <option value="1">拒绝</option>
+                                    <option value="2">通过</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group gone has-error">
+                            <label for="refusalReason" class="col-sm-2 control-label">拒绝理由</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="6"  id="refusalReason"  placeholder=""></textarea>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" id="btn-confirm" class="btn btn-primary">
+                        提交
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+</div>
+
+<script src="js/globalVariable.js"></script>
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.form.js"></script>
+<script>
+    $(document).ready(function () {
+
+
+        //点击新增
+        $("#btn-add").on("click",function(){
+            $('#myModal').modal();
+
+            //清除之前的数据
+            $("#title").attr("data-id","");
+            $("#title").val("");
+            $("#content").val("");
+        });
+
+
+        //点击查看
+        $(document).on("click",".check",function(){
+            console.log("check");
+            $('#myModal').modal();
+            var id=$(this).closest("tr").find(".id").html();
+            var picPath=$(this).closest("tr").find(".picPath").html();
+            var title=$(this).closest("tr").find(".title").html();
+            var content=$(this).closest("tr").find(".content").html();
+            var refusalReason=$(this).closest("tr").find(".refusalReason").html();
+            var status=$(this).closest("tr").find(".status").html();
+
+            //显示数据
+            $("#title").attr("data-id",id);
+            $("#title").val(title);
+            $("#picPath").attr("src",picPath);
+            $("#content").val(content);
+
+
+            if(status=="1"){
+                $("#refusalReason").closest(".form-group").show();
+            }else{
+                $("#refusalReason").closest(".form-group").hide();
+            }
+
+            $("#status").val(status);
+            $("#refusalReason").val(refusalReason);
+        });
+
+        $(".previewImg").on("click",function(){
+            window.open($(this).attr("src"));
+        });
+
+        //点击提交
+        $("#btn-confirm").on("click",function(){
+
+            var id=$("#title").attr("data-id");
+            var content=$("#content").val();
+            var refusalReason=$("#refusalReason").val();
+            var status=$("#status").val();
+
+
+            var jsonSent={};
+
+
+
+            if(status=="1"){
+                if(!refusalReason){
+                    alert("拒绝理由不能为空");
+                    return;
+                }
+
+                jsonSent.refusalReason=refusalReason;
+            }
+
+            jsonSent.id=id;
+            jsonSent.content=content;
+            jsonSent.status=parseInt(status);
+
+            console.log(jsonSent);
+
+            editDoctor(jsonSent);
+        });
+
+
+        var page=0;
+        //点击刷新
+        $("#btn-refresh").on("click",function(){
+            page=0;
+            getList($("#refresh-status").val());
+
+        });
+
+        //根据loginStatus筛选列表
+        $("#refresh-status").on("change",function(){
+            page=0;
+            getList($("#refresh-status").val(),page);
+        });
+
+        //点击上一页  下一页
+        $("#prev").on("click",function(){
+
+            if($(this).hasClass("disabled") || page<=0){
+                return;
+            }
+            page--;
+            getList($("#refresh-status").val(),page);
+        });
+        $("#next").on("click",function(){
+            if($(this).hasClass("disabled")){
+                return;
+            }
+            page++;
+            getList($("#refresh-status").val(),page);
+        });
+
+
+        //审核状态 选中事件
+        $("#status").on("change",function(){
+            if($(this).val()==1){
+                //复审 选择是 则展开复审理由
+                $("#refusalReason").closest(".form-group").show();
+                $("#refusalReason").focus();
+            }else{
+                //复审 选择否 则隐藏复审理由
+                $("#refusalReason").closest(".form-group").hide();
+            }
+        });
+
+        //初始加载
+        getList($("#refresh-status").val());
+
+        /*获取列表*/
+        function getList(status,page){
+            var p="";
+            if(page){
+                p=page;
+            }
+            $.ajax({
+                url:prevUrl+"/doctorCase/retrieveDoctorCase?size=10&page="+p+"&status="+status,
+                type: "GET",
+                async:true,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+
+                    console.log(data);
+
+                    if (result == 1) {
+                        updateList(data.list);
+                        if(data.list.length>=10){
+                            $("#next").removeClass("disabled");
+                        }else{
+                            $("#next").addClass("disabled");
+                        }
+                        if(page>0){
+                            $("#prev").removeClass("disabled");
+                        }else{
+                            $("#prev").addClass("disabled");
+                        }
+                    }else if (result == 0) {
+
+                        alert("请求错误");
+                    }
+                }
+            });
+        }
+
+        /*编辑*/
+        function editDoctor(jsonSent){
+            $.ajax({
+                url:prevUrl+"/doctorCase/modifyDoctorCaseStatus",
+                type: "POST",
+                data:jsonSent,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+
+                    var result = data.success;
+                    console.log(data);
+                    $('#myModal').modal("hide");
+                    if (result == 1) {
+                        getList($("#refresh-status").val());
+                    }else if (result == 0) {
+                    }
+                }
+            });
+        }
+
+        //更新tableView界面
+        function updateList(data){
+
+            var oTableView=$("#tableView");
+
+            oTableView.empty();
+
+            var appendHTML;
+            for(var i=0;i<data.length;i++){
+                appendHTML="";
+
+                appendHTML+=
+                        '<tr>' +
+                        '<td class="id">'+data[i].id+'</th>' +
+                        '<td class="name">'+data[i].doctorId+'</td>' +
+                        '<td class="title">'+data[i].title+'</td>' +
+                        '<td class="status">'+data[i].status+'</td>' +
+                        '<td class="createdDate">'+data[i].createdDate+'</td>' +
+                        '<td><span class="check">查看</span></td>' +
+                        '<td class="gone content">'+data[i].content+'</td>' +
+                        '<td class="gone refusalReason">'+data[i].refusalReason+'</td>' +
+                        '<td class="gone picPath">'+data[i].picPath+'</td>' +
+                        '</tr>';
+
+                oTableView.append(appendHTML);
+            }
+
+
+        }
+
+    });
+</script>
+</body>
+</html>

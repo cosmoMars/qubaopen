@@ -1,0 +1,280 @@
+[33mcommit d9c7dcab90e5fd8f3410762df70b8b1da85e1159[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Mon Apr 20 15:06:57 2015 +0800
+
+    modify doctorArticle and doctorCase
+
+[33mcommit e3bca0cc3300602c8e4c30a8b8751a8a89f64de8[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Mon Apr 20 15:02:50 2015 +0800
+
+    modify doctorArticle and doctorCase
+
+[33mcommit 89729dc2435e3362e68555e5a5468273a928804a[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 17 11:42:30 2015 +0800
+
+    userExerciseId and retrievePriavteUrl
+
+[33mcommit 8436cce50a5df939def92b6b22515b45ba4567b2[m
+Merge: 9c6089b 3a689d5
+Author: knight <361714571@qq.com>
+Date:   Thu Apr 16 17:27:11 2015 +0800
+
+    Merge branch 'master' of ssh://101.231.124.8:45672/knowheart/knowheart-3.0
+
+[33mcommit 9c6089bc2de6d015ff19bb6b34a3906d9beda224[m
+Author: knight <361714571@qq.com>
+Date:   Thu Apr 16 17:25:14 2015 +0800
+
+    modify about topic
+
+[33mcommit 3a689d54502db376a79a34559e2c3e4a021b9789[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Thu Apr 16 16:01:32 2015 +0800
+
+    backend email
+
+[33mcommit bbb685571a53a6501ff7132fa294b6071392b355[m
+Merge: 26be8f6 7eba9b1
+Author: knight <361714571@qq.com>
+Date:   Thu Apr 16 13:37:23 2015 +0800
+
+    Merge branch 'master' of ssh://101.231.124.8:45672/knowheart/knowheart-3.0
+
+[33mcommit 26be8f63c64b2b6a23fa882b16d076d6625ef077[m
+Author: knight <361714571@qq.com>
+Date:   Thu Apr 16 13:35:35 2015 +0800
+
+    1诊所咨询师审核接口;2 审核网页
+
+[33mcommit 7eba9b1aba2fdc9e98b3251eb6f19122f76a97fc[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Thu Apr 16 10:32:27 2015 +0800
+
+    修改pom 修改对诊所下单bug
+
+[33mcommit 60d662264f894da2d98d84f6ec7c2b3c5a5b354e[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Wed Apr 15 16:32:53 2015 +0800
+
+    修改pom 以及修改securityUtils
+
+[33mcommit ed338fc75439218a310a1a19f230e12ef2c9772a[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Wed Apr 15 11:40:03 2015 +0800
+
+    添加发送邮件->knowheart3, 修改诊所信息bug,修改parent pom, 修改knowheart3pom以及application.properties
+
+[33mcommit 806fa19de004139a2f7af02ccfded0ba8279fb2e[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 10 18:58:57 2015 +0800
+
+    修改ping++回调接口，添加notify字段
+
+[33mcommit aadb296bd1dbe47b1e9114675236ba4891f2d912[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 10 16:30:49 2015 +0800
+
+    修改backend回访判断，修改医师金额日志bug
+
+[33mcommit bf61cee53afe58d8c31b9e88f86e1b13f4769069[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 10 13:54:17 2015 +0800
+
+    解决邮件乱码问题
+
+[33mcommit e104f4e24df9d5d193a681028c715e62ec96504b[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 10 11:25:08 2015 +0800
+
+    backend systemSchedule
+
+[33mcommit 11b32c615a655cfc03499f8dc797a013dbc402a9[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 10 10:42:59 2015 +0800
+
+    修改发送邮件问题，修复自动任务bug
+
+[33mcommit 07f193f20e84889afaafc97834f507c59a7e7ff1[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Thu Apr 9 20:30:28 2015 +0800
+
+    修改每日发现练习bug，获取用户练习历史bug
+
+[33mcommit 40ee81e46d0b373396df140831576af4f999cad9[m
+Merge: e63afd4 c727e46
+Author: mars <cosmo_mars@outlook.com>
+Date:   Thu Apr 9 17:21:26 2015 +0800
+
+    application
+
+[33mcommit e63afd497ecda48ed5747997de1d655c64d91b91[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Thu Apr 9 17:19:29 2015 +0800
+
+    修改创建订单发送短信，修改每日发现接口中练习问题
+
+[33mcommit c727e4695931ad9ef60d24d72c711884ec846b35[m
+Author: knight <361714571@qq.com>
+Date:   Thu Apr 9 14:27:49 2015 +0800
+
+    add extjs
+
+[33mcommit a0c0cbf516e8be7ed25401a04888b13867531073[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Wed Apr 8 19:39:07 2015 +0800
+
+    添加commentCount, 添加查看地区邮编
+
+[33mcommit 0771098fc8e0d92ef66c69aff9c4d9ccc41b50d1[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Wed Apr 8 14:27:49 2015 +0800
+
+    添加查看具有医师的地区，self添加收藏标记，心情周期添加图片
+
+[33mcommit 5008a6b16df662b7685baafe2c1f228eb0ecc9a1[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Wed Apr 8 09:46:42 2015 +0800
+
+    modify moreThan7 to size
+
+[33mcommit cde27e021902f1f7815895c6490e8071d71660d7[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Tue Apr 7 20:24:16 2015 +0800
+
+    修改付款回调接口，修改收藏bug
+
+[33mcommit fed3eebe13bd6083f19f7b9531cd0cbb6d596549[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Tue Apr 7 15:13:47 2015 +0800
+
+    remove doctor-AssistantRepository.java
+
+[33mcommit 38f8231f8147d69e1db949c5570190e589802018[m
+Merge: eb48959 433407b
+Author: mars <cosmo_mars@outlook.com>
+Date:   Tue Apr 7 13:42:06 2015 +0800
+
+    merge file
+
+[33mcommit eb48959c9a3269cbd96111292a38dbe7acb857b0[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Tue Apr 7 13:35:46 2015 +0800
+
+    修改创建订单，订单号
+
+[33mcommit 433407b649df05b2c24bc14583606454564adc4e[m
+Author: knight <361714571@qq.com>
+Date:   Tue Apr 7 13:29:10 2015 +0800
+
+    '练习录入'
+
+[33mcommit 8530378d29121bf194ab714d1a8566a50a8a6173[m
+Merge: 32d86ef e55dd89
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 14:54:09 2015 +0800
+
+    Merge branch 'master' of ssh://101.231.124.8:45672/knowheart/knowheart-3.0
+
+[33mcommit e55dd895104ed5aece94f97088871138def09033[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 3 14:53:58 2015 +0800
+
+    favoriteImpl cnt->content
+
+[33mcommit e01076ce1c65a0e962cd50755de412a106573375[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 3 14:53:22 2015 +0800
+
+    favoriteImpl cnt->content
+
+[33mcommit 32d86efa33311329a6b38a77a931ec91b5853d99[m
+Merge: d202a45 00fddf4
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 14:50:46 2015 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit d202a450c4b60cf7db9ae8d9ebc6f7a8b3db5d8d[m
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 14:50:35 2015 +0800
+
+    merge
+
+[33mcommit 00fddf4ac635d1be717acb6bed9e4cd6a0d9f853[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 3 14:48:19 2015 +0800
+
+    backend application.properties
+
+[33mcommit 25e9d27d5605ed7f77a344540d17f1a536c19c3d[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 3 14:47:36 2015 +0800
+
+    modify entity and AssistantRepositoryImpl
+
+[33mcommit f00bd4ae7091fad460a117f82a1d40b4c94d6754[m
+Merge: 113f067 3cf8d56
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 13:44:09 2015 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 113f0671c2145f36bbaba8aca15b895e4beb2b4f[m
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 13:43:53 2015 +0800
+
+    merge
+
+[33mcommit 3cf8d56a1a93fe76d841cec350fbcbd3036fef2a[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 3 12:46:36 2015 +0800
+
+    modify entity varchar length and modify discovery
+
+[33mcommit 2db2210f7b822d6239a70a1d75ac6d4b97496d6e[m
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 10:24:41 2015 +0800
+
+    content=>text
+
+[33mcommit 429bab02f5f3ee55718f94c38cbc4f7c4328c6f5[m
+Merge: 174cd55 3a7dcb6
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 10:01:49 2015 +0800
+
+    Merge branch 'master' of ssh://101.231.124.8:45672/knowheart/knowheart-3.0
+
+[33mcommit 174cd555df9d6ec78786500b447bf904debecf55[m
+Author: knight <361714571@qq.com>
+Date:   Fri Apr 3 09:59:57 2015 +0800
+
+    请求的前缀url改为全局变量
+
+[33mcommit 3a7dcb6b6a072e1e644128eedd64ac678ac508b3[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Fri Apr 3 09:46:06 2015 +0800
+
+    修改content-> text()
+
+[33mcommit 98a6787919b639021acd1d878645241cc16d6c41[m
+Merge: 0c7205a ce18a70
+Author: mars <cosmo_mars@outlook.com>
+Date:   Wed Apr 1 20:05:18 2015 +0800
+
+    dd
+
+[33mcommit 0c7205a4188f650647c48a5a68cc5000241a8905[m
+Author: mars <cosmo_mars@outlook.com>
+Date:   Wed Apr 1 20:03:21 2015 +0800
+
+    修改订单查询接口，修改创建求助，修改求助中心评论，添加内容->文章，案例
+
+[33mcommit ce18a70e30bf50325254f68e63e292775d0e3e41[m
+Author: knight <361714571@qq.com>
+Date:   Wed Apr 1 19:37:21 2015 +0800
+
+    exercise & info
+
+[33mcommit d803f52

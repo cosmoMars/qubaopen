@@ -34,7 +34,7 @@ public class DoctorCase extends AbstractBaseEntity<Long> {
     @Enumerated
     private Status status;
 
-    private enum Status {
+    public enum Status {
         Auditing, Failure, Success
     }
 

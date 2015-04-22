@@ -5,12 +5,14 @@ import com.qubaopen.backend.repository.genre.TargetUserRepository;
 import com.qubaopen.backend.repository.hospital.HospitalInfoRepository;
 import com.qubaopen.backend.repository.hospital.HospitalRepository;
 import com.qubaopen.backend.utils.CommonEmail;
+import com.qubaopen.backend.utils.UploadUtils;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.doctor.Genre;
 import com.qubaopen.survey.entity.doctor.TargetUser;
 import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.hospital.HospitalInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -77,7 +79,7 @@ public class HospitalController extends AbstractBaseController<Hospital,Long>{
 			map.put("reviewReason", hospital.getHospitalInfo().getReviewReason()==null?"":hospital.getHospitalInfo().getReviewReason());
 			map.put("refusalReason", hospital.getHospitalInfo().getRefusalReason()==null?"":hospital.getHospitalInfo().getRefusalReason());
 			map.put("avatar", hospital.getHospitalInfo().getHospitalAvatar()==null?"":hospital.getHospitalInfo().getHospitalAvatar());
-			map.put("record", hospital.getHospitalInfo().getHospitalRecordPath()==null?"":hospital.getHospitalInfo().getHospitalRecordPath());
+			map.put("record", hospital.getHospitalInfo().getHospitalRecordPath()==null?"":UploadUtils.retrievePriavteUrl(hospital.getHospitalInfo().getHospitalRecordPath()));
 			map.put("introduce", hospital.getHospitalInfo().getIntroduce()==null?"":hospital.getHospitalInfo().getIntroduce());
 			map.put("doctorRecords",hospital.getHospitalInfo().getHospitalDoctorRecords());
 			list.add(map);

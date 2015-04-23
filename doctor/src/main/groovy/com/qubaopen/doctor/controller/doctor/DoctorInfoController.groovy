@@ -486,5 +486,27 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
                 'caseCount'   : caseCount
         ]
     }
+
+    /**
+     * 修改医师线上状态
+     * @param idx
+     * @param doctor
+     * @return
+     */
+    @RequestMapping(value = 'changeOnlineStatus', method = RequestMethod.POST)
+    changeOnlineStatus(@RequestParam int idx,
+                       @ModelAttribute('currentDoctor') Doctor doctor) {
+
+        def di = doctorInfoRepository.findOne(doctor.id),
+            lineStatus = DoctorInfo.OnLineStatus.values()[idx]
+
+        if (lineStatus) {
+            di.onLineStatus = lineStatus
+        }
+
+        doctorInfoRepository.save(di)
+
+        '{"success" : "1"}'
+    }
 }
 	

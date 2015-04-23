@@ -541,41 +541,48 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		    if (it.outDated != null) {
 		        outSecond = (it.outDated.time - now.time) / 1000 as int
 		    }
+			def doctorName
+			if (it?.doctor) {
+				doctorName = it?.doctor?.doctorInfo?.name
+			} else {
+				doctorName = it?.doctorName
+			}
+
 			data << [
-				'bookingId' : it?.id,
-				'doctorId' : it?.doctor?.id,
-				'doctorName' : it?.doctor?.doctorInfo?.name,
-				'doctorPhone' : it?.doctor?.doctorInfo?.phone,
-				'lastBookingTime' : it?.lastBookingTime,
-				'hospitalId' :	it?.hospital?.id,
-				'hospitalName' : it?.hospital?.hospitalInfo?.name,
-				'hospitalPhone' : it?.hospital?.hospitalInfo?.phone,
-				'name' : it?.name,
-				'phone' : it?.phone,
-				'sex' : it?.sex?.ordinal(),
-				'birthday' : it?.birthday,
-				'profession' : it?.profession,
-				'onlineFee' : it?.doctor?.doctorInfo?.onlineFee,
-				'offlineFee' : it?.doctor?.doctorInfo?.offlineFee,
-				'city' : it?.city,
-				'married' : it?.married,
-				'haveChildren' : it?.haveChildren,
-				'helpReason' : it?.helpReason,
-				'otherProblem' : it?.otherProblem,
-				'treatmented' : it?.treatmented,
-				'haveConsulted' : it?.haveConsulted,
-				'refusalReason' : it?.refusalReason,
-				'time' : it?.time,
-				'quick' : it?.quick,
-				'consultType' : it?.consultType?.ordinal(),
-				'status' : it?.status?.ordinal(),
-				'baseMoney' : it.money,
-				'money' : it?.money + it?.quickMoney,
-				'userStatus' : it?.userStatus?.ordinal(),
-				'doctorStatus' : it?.doctorStatus?.ordinal(),
-				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
-				'hospitalAvatar' : it?.hospital?.hospitalInfo?.hospitalAvatar,
-				'outSecond' : outSecond
+					'bookingId'      : it?.id,
+					'doctorId'       : it?.doctor?.id,
+					'doctorName'     : doctorName,
+					'doctorPhone'    : it?.doctor?.doctorInfo?.phone,
+					'lastBookingTime': it?.lastBookingTime,
+					'hospitalId'     : it?.hospital?.id,
+					'hospitalName'   : it?.hospital?.hospitalInfo?.name,
+					'hospitalPhone'  : it?.hospital?.hospitalInfo?.phone,
+					'name'           : it?.name,
+					'phone'          : it?.phone,
+					'sex'            : it?.sex?.ordinal(),
+					'birthday'       : it?.birthday,
+					'profession'     : it?.profession,
+					'onlineFee'      : it?.doctor?.doctorInfo?.onlineFee,
+					'offlineFee'     : it?.doctor?.doctorInfo?.offlineFee,
+					'city'           : it?.city,
+					'married'        : it?.married,
+					'haveChildren'   : it?.haveChildren,
+					'helpReason'     : it?.helpReason,
+					'otherProblem'   : it?.otherProblem,
+					'treatmented'    : it?.treatmented,
+					'haveConsulted'  : it?.haveConsulted,
+					'refusalReason'  : it?.refusalReason,
+					'time'           : it?.time,
+					'quick'          : it?.quick,
+					'consultType'    : it?.consultType?.ordinal(),
+					'status'         : it?.status?.ordinal(),
+					'baseMoney'      : it.money,
+					'money'          : it?.money + it?.quickMoney,
+					'userStatus'     : it?.userStatus?.ordinal(),
+					'doctorStatus'   : it?.doctorStatus?.ordinal(),
+					'doctorAvatar'   : it?.doctor?.doctorInfo?.avatarPath,
+					'hospitalAvatar' : it?.hospital?.hospitalInfo?.hospitalAvatar,
+					'outSecond'      : outSecond
 			]
 		}
 		bookingRepository.save(outDateBooking)

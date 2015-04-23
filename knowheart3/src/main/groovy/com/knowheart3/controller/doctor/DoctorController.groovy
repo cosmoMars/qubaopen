@@ -78,13 +78,13 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			filters.put('targetId', targetId)
 		}
 		if (areaCode != null) {
-            def idsList = [],
-                code = areaCodeRepository.findByCode(areaCode)
-            idsList.add(-1l)
-            if (code) {
-                idsList = areaCodeService.getAreaCodeIds(idsList, code)
-            }
-            filters.put('areaCode', idsList)
+			def idsList = [],
+				code = areaCodeRepository.findByCode(areaCode)
+			idsList.add(-1l)
+			if (code) {
+				idsList = areaCodeService.getAreaCodeIds(idsList, code)
+			}
+			filters.put('areaCode', idsList)
 		}
 		if (faceToFace != null) {
 			filters.put('faceToFace', faceToFace)
@@ -95,13 +95,15 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		doctorInfos = doctorInfoRepository.findByFilter(filters)
 		doctorInfos.each {
 			data << [
-				'doctorId' : it?.id,
-				'doctorName' : it?.name,
-				'doctorAvatar' : it?.avatarPath,
-				'doctorAddress' : it?.address,
-				'doctorIntroduce' : it?.introduce,
-				'faceToFace' : it?.faceToFace,
-				'video' : it?.video
+					'doctorId'       : it?.id,
+					'doctorName'     : it?.name,
+					'doctorAvatar'   : it?.avatarPath,
+					'doctorAddress'  : it?.address,
+					'doctorIntroduce': it?.introduce,
+					'faceToFace'     : it?.faceToFace,
+					'video'          : it?.video,
+					'onlineFee'      : it?.onlineFee,
+					'offlineFee'     : it?.offlineFee
 			]
 		}
 		def more = true
@@ -109,9 +111,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			more = false
 		}
 		[
-			'success' : '1',
-			'more' : more,
-			'data' : data	
+				'success': '1',
+				'more'   : more,
+				'data'   : data
 		]
 	}
 		

@@ -1,13 +1,12 @@
 package com.qubaopen.doctor.controller.hospital;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.qubaopen.core.controller.AbstractBaseController;
+import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.doctor.repository.doctor.BookingRepository;
+import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
+import com.qubaopen.survey.entity.booking.Booking;
+import com.qubaopen.survey.entity.hospital.Hospital;
+import com.qubaopen.survey.entity.hospital.HospitalInfo;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -17,21 +16,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.doctor.repository.doctor.BookingRepository;
-import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
-import com.qubaopen.survey.entity.booking.Booking;
-import com.qubaopen.survey.entity.hospital.Hospital;
-import com.qubaopen.survey.entity.hospital.HospitalInfo;
+import java.text.ParseException;
+import java.util.*;
 
 @RestController
 @RequestMapping("hospitalBooking")
@@ -129,13 +117,13 @@ public class HospitalBookingController extends AbstractBaseController<Booking, L
 		result.put("doctorStatus", booking.getDoctorStatus() != null ? booking.getDoctorStatus().ordinal() : "");
 		return result;
 	}
-	
+
 	/**
-	 * @param month
-	 * @param doctor
-	 * @return
 	 * 日历列表
-	 * @throws ParseException 
+	 * @param time
+	 * @param hospital
+	 * @return
+	 * @throws ParseException
 	 */
 	@RequestMapping(value = "retrieveWeeklySchedule", method = RequestMethod.GET)
 	private Map<String, Object> retrieveWeeklySchedule(@RequestParam(required = false) String time,

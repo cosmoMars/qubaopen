@@ -206,6 +206,11 @@ public class Booking extends AbstractBaseEntity<Long> {
 	 */
 	private boolean notify;
 
+	/**
+	 * 诊所安排医师名
+	 */
+	private String doctorName;
+
 	public String getTradeNo() {
 		return tradeNo;
 	}
@@ -485,5 +490,13 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setNotify(boolean notify) {
 		this.notify = notify;
+	}
+
+	public String getDoctorName() {
+		return doctorName;
+	}
+
+	public void setDoctorName(String doctorName) {
+		this.doctorName = doctorName;
 	}
 }

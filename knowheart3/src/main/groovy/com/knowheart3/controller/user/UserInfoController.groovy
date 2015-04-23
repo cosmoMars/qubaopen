@@ -1,30 +1,25 @@
 package com.knowheart3.controller.user
-
-import org.springframework.beans.factory.annotation.Value
-
-import javax.servlet.http.HttpServletRequest
-
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-
 import com.knowheart3.repository.user.UserInfoRepository
 import com.knowheart3.repository.user.UserRepository
 import com.knowheart3.service.user.UserInfoService
 import com.knowheart3.service.user.UserService
-import com.knowheart3.utils.UploadUtils;
-
-import static com.knowheart3.utils.ValidateUtil.*;
-
+import com.knowheart3.utils.UploadUtils
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserInfo
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.Pageable
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.MultipartHttpServletRequest
 
+import javax.servlet.http.HttpServletRequest
 
+import static com.knowheart3.utils.ValidateUtil.validateNormalString
 
 @RestController
 @RequestMapping('userInfos')
@@ -273,21 +268,42 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
      * @return
      */
     @RequestMapping(value = 'uploadUserAvatar', method = RequestMethod.POST, consumes = 'multipart/form-data')
-    uploadUserAvatar(@RequestParam(required = false) MultipartFile avatar, @ModelAttribute('currentUser') User user) {
+    uploadUserAvatar(@RequestParam(required = false) MultipartFile avatar,
+					 @ModelAttribute('currentUser') User user) {
 
-        logger.trace(' -- 上传头像 -- ')
+		logger.trace(' -- 上传头像 -- ')
+		if (avatar) {
+			def userInfo = userInfoRepository.findOne(user.id)
+			String name = "$user_url$user.id"
+			def url = UploadUtils.uploadTo7niu(1, name, avatar.inputStream)
 
-        if (avatar) {
-            def userInfo = userInfoRepository.findOne(user.id)
-            String name = "$user_url$user.id"
-            def url = UploadUtils.uploadTo7niu(1, name, avatar.inputStream)
-//            def url = uploadUtils.uploadUser(user.id, avatar)
-
-            userInfo.avatarPath = url
-            userInfoRepository.save(userInfo)
-
-            return '{"success": "1"}'
+			userInfo.avatarPath = url
+			userInfoRepository.save(userInfo)
         }
-        '{"success": "0", "message" : "err102"}'
+		'{"success": "1"}'
+
     }
+
+	@RequestMapping(value = 'uploadUserAvatar1', method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
+	uploadUserAvatar1(@ModelAttribute('currentUser') User user,
+					  MultipartHttpServletRequest request){
+		def ui = userInfoRepository.findOne(user.id)
+
+		def fileMap = request.getFileMap()
+		String name = "$user_url$user.id"
+		def url = UploadUtils.uploadTo7niu(1, name, fileMap.get("avatar").inputStream)
+
+		ui.avatarPath = url
+		userInfoRepository.save(ui)
+		'{"success": "1"}'
+
+	}
+
+	@RequestMapping(value = 'uploadUserAvatar2', method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
+	uploadUserAvatar2(@RequestParam String from,
+			@ModelAttribute('currentUser') User user){
+		[
+		        from: from
+		]
+	}
 }

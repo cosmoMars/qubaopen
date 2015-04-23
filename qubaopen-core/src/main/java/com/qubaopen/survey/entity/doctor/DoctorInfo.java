@@ -184,6 +184,16 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
     @ManyToOne
     private Assistant assistant;
 
+	/**
+	 * 登录状态
+	 */
+	@Enumerated
+	private OnLineStatus onLineStatus;
+
+	public enum  OnLineStatus {
+		Online, Offline
+	}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -464,4 +474,12 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
     public void setReviewReason(String reviewReason) {
         this.reviewReason = reviewReason;
     }
+
+	public OnLineStatus getOnLineStatus() {
+		return onLineStatus;
+	}
+
+	public void setOnLineStatus(OnLineStatus onLineStatus) {
+		this.onLineStatus = onLineStatus;
+	}
 }

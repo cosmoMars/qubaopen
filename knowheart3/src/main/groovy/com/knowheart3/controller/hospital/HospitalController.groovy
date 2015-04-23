@@ -53,29 +53,29 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		@PageableDefault(page = 0, size = 20) Pageable pageable) {
 		
 		logger.trace '-- 诊所列表 --'
-		
-		
-		def list = [], hospitals, data = []
-		if (ids) {
-			def strIds = ids.split(',')
-			strIds.each {
-				list << Long.valueOf(it.trim())
-			}
-			hospitals = hospitalRepository.findOtherHospital(list, pageable)
-		} else {
-			hospitals = hospitalRepository.findAll(pageable)
-		}
-		hospitals.each {
-			data << [
-				'hospitalId' : it?.id,
-				'hospitalName' : it?.hospitalInfo?.name
-			]
-		}
-		[
-			'success' : '1',
-			'data' : data
-		]
-	}
+
+
+        def list = [], hospitals, data = []
+        if (ids) {
+            def strIds = ids.split(',')
+            strIds.each {
+                list << Long.valueOf(it.trim())
+            }
+            hospitals = hospitalRepository.findOtherHospital(list, pageable)
+        } else {
+            hospitals = hospitalRepository.findAll(pageable)
+        }
+        hospitals.each {
+            data << [
+                    'hospitalId'  : it?.id,
+                    'hospitalName': it?.hospitalInfo?.name
+            ]
+        }
+        [
+                'success': '1',
+                'data'   : data
+        ]
+    }
 		
 	@RequestMapping(value = 'retrieveHospitalDetail/{id}', method = RequestMethod.GET)
 	retrieveHosptialDetial(@PathVariable long id) {
@@ -85,18 +85,22 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 		def hospital = hospitalInfoRepository.findOne(id)
 		
 		[
-			'success' : '1',
-			'name' : hospital?.name,
-			'address' : hospital?.address,
-			'establishTime' : hospital?.establishTime,
-			'phone' : hospital?.phone,
-			'urgentPhone' : hospital?.urgentPhone,
-			'qq' : hospital?.qq,
-			'introduce' : hospital?.introduce,
-			'wordsConsult' : hospital?.wordsConsult,
-			'minCharge' : hospital?.minCharge,
-			'maxCharge' : hospital?.maxCharge,
-			'records' : hospital?.hospitalDoctorRecords?.size()
+                success       : '1',
+                name          : hospital.name,
+                address       : hospital.address,
+                establishTime : hospital.establishTime,
+                phone         : hospital.phone,
+                urgentPhone   : hospital.urgentPhone,
+                qq            : hospital.qq,
+                introduce     : hospital.introduce,
+                wordsConsult  : hospital.wordsConsult,
+                minCharge     : hospital.minCharge,
+                maxCharge     : hospital.maxCharge,
+                records       : hospital.hospitalDoctorRecords?.size(),
+                video         : hospital.video,
+                faceToFace    : hospital.faceToFace,
+                hospitalAvatar: hospital.hospitalAvatar
+
 		]
 	}
 
@@ -153,13 +157,15 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
         def hospitalInfos = hospitalInfoRepository.findByFilter(filters)
         hospitalInfos.each {
             data << [
-                'hospitalId' : it.id,
-                'hospitalName' : it.name,
-                'hospitalAddress' : it.address,
-                'hospitalAvatar' : it.hospitalAvatar,
-                'hospitalIntroduce' : it.introduce,
-                'faceToFace' : it.faceToFace,
-                'video' : it.video
+                    hospitalId       : it.id,
+                    hospitalName     : it.name,
+                    hospitalAddress  : it.address,
+                    hospitalAvatar   : it.hospitalAvatar,
+                    hospitalIntroduce: it.introduce,
+                    faceToFace       : it.faceToFace,
+                    video            : it.video,
+                    minCharge        : it.minCharge,
+                    maxCharge        : it.maxCharge
             ]
         }
         def more = true
@@ -167,9 +173,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
             more = false
         }
         [
-            'success' : '1',
-            'more' : more,
-            'data' : data
+                'success': '1',
+                'more'   : more,
+                'data'   : data
         ]
 
     }

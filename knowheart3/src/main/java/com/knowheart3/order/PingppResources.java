@@ -29,8 +29,8 @@ import java.util.*;
 public class PingppResources {
 
     static {
-//        Pingpp.apiKey = "sk_live_jX1mb908ern5r1qz9KGGiXfH";
-        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
+        Pingpp.apiKey = "sk_live_jX1mb908ern5r1qz9KGGiXfH";
+//        Pingpp.apiKey = "sk_test_SOujjTjTar5KeP4a9OvvD4CG";
     }
 
     @Autowired

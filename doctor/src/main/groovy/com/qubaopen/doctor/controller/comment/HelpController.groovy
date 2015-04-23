@@ -168,37 +168,37 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		comments.each {
 			def goods = helpCommentGoodRepository.countByHelpComment(it)
 			commentData << [
-				'commentId' : it?.id,
-				'doctorId' : it?.doctor?.id,
-				'doctorName' : it?.doctor?.doctorInfo?.name,
-				'hospitalName' : it?.hospital?.hospitalInfo?.name,
-				'content' : it?.content,
-				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
-				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-				'goods' : goods
+					'commentId'   : it?.id,
+					'doctorId'    : it?.doctor?.id,
+					'doctorName'  : it?.doctor?.doctorInfo?.name,
+					'hospitalName': it?.hospital?.hospitalInfo?.name,
+					'content'     : it?.content,
+					'doctorAvatar': it?.doctor?.doctorInfo?.avatarPath,
+					'time'        : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+					'goods'       : goods
 			]
 		}
 		if (pageable.pageNumber > 0) {
 			return [
-				'success' : '1',
-				'helpId' : '',
-				'helpContent' : '',
-				'helpTime' : '',
-				'userName' : '',
-				'userAvatar' : '',
-				'more' : more,
-				'data' : commentData
+					'success'    : '1',
+					'helpId'     : '',
+					'helpContent': '',
+					'helpTime'   : '',
+					'userName'   : '',
+					'userAvatar' : '',
+					'more'       : more,
+					'data'       : commentData
 			]
 		}
 		[
-			'success' : '1',
-			'helpId' : help?.id,
-			'helpContent' : help?.content,
-			'helpTime' : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
-			'userName' : help?.user?.userInfo?.nickName,
+			'success'    : '1',
+			'helpId'     : help?.id,
+			'helpContent': help?.content,
+			'helpTime'   : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
+			'userName'   : help?.user?.userInfo?.nickName,
 			'userAvatar' : help?.user?.userInfo?.avatarPath,
-			'more' : more,
-			'data' : commentData
+			'more'       : more,
+			'data'       : commentData
 		]
 	}
 
@@ -211,7 +211,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	retrieveGoodComment(@RequestParam(required = false) String ids,
 						@ModelAttribute('currentDoctor') Doctor doctor) {
 
-		def list = []
+		def list = [], commentIds = [], data = [], commentMap = [:]
 		if (ids) {
 			def strIds = ids.split(',')
 			strIds.each {
@@ -221,14 +221,54 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		if (list.size() <= 0) {
 			return '{"success" : "1"}'
 		}
+		// 查找点赞纪录
 		def goodComments = helpCommentGoodRepository.findByIds(list)
-
 		goodComments.each {
+			// 设置已阅
 			it.view = true
+			commentIds << it.helpComment.id
 
-			it.helpComment.help
+			if (commentMap.get(it.helpComment)) {
+				def size = commentMap.get(it.helpComment) + 1
+				commentMap.put(it.helpComment, size)
+			} else {
+				commentMap.put(it.helpComment, 1)
+			}
 		}
 
-	}
+		// 查找点赞的求助主题
+		def helps = helpRepository.findByComment(commentIds)
 
+		helps.each {
+			def commentData = []
+
+			commentMap.each { k, v ->
+
+				// 比配求助
+				if (k.help.id == it.id) {
+					commentData << [
+							commentId     : k.id,
+							commentContent: k.content,
+							commentTime   : k.time,
+							commentSize   : v
+					]
+				}
+
+			}
+
+			data << [
+					helpId     : it.id,
+					helpContent: it.content,
+					helpTime   : it.time,
+					commentData: commentData
+			]
+		}
+
+		helpCommentGoodRepository.save(goodComments)
+
+		[
+				success: '1',
+				data   : data
+		]
+	}
 }

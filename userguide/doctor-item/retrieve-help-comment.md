@@ -4,13 +4,19 @@
 
 **HTTP请求方式：** POST
 
+| 请求参数 | 类型 | 是否必选 | 参数说明 |
+| -- | -- | -- | -- |
+| self | boolean | false | 查看自己 |
+| page | int | false | 页码 |
+| size | int | false | 大小 |
+
 >响应结果：
 
 ```json
 {
   "success" : "1",
-  "hcGoods" : 0,
-  "hcIds" : [ ],
+  "hcGoods" : 4,
+  "hcIds" : [ 3, 25, 26, 29 ],
   "data" : [ {
     "helpId" : 17,
     "helpContent" : "好困，不想上班咋办",

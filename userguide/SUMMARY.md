@@ -36,6 +36,8 @@
    * [用户-诊所](user-item/user-hospital)
        * [获取诊所列表](user-item/retrieve-hospital-list.md)
        * [获取诊所详情](user-item/retrieve-hospital-info.md)
+       * [筛选诊所](user-item/filter-hospital.md)
+       * [获取诊所文章列表](user-item/retireve-hospital-article.md)
 * [医师端](doctor-item/README.md)
    * [医师](doctor-item/doctor.md)
        * [发送验证码](doctor-item/send-captcha.md)
@@ -87,7 +89,8 @@
        * [获取医师专栏](doctor-item/doctor-special-info.md)
    * [医师练习](doctor-item/doctor-exercise)
        * [获取练习列表](doctor-item/retrieve-exercise-list.md)
-   * [医师帮助](doctor-item/doctor-help.md)
+   * [医师求助](doctor-item/doctor-help.md)
        * [获取求助评价](doctor-item/retrieve-help-comment.md)
+       * [获取点赞评论](doctor-item/retrieve-good-comment.md)
 * [错误代码信息](error-message/README.md)
 

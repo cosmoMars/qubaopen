@@ -114,6 +114,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@RequestParam(required = false) Integer consultTypeIndex,
 		@ModelAttribute('currentUser') User user
 		) {
+
+		if (!user || !user.id) {
+			return '{"success" : "0", "message": "err000"}'
+		}
 		
 		if (!validatePhone(phone)) {
 			return '{"success" : "0", "message": "err003"}'

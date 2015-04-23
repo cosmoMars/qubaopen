@@ -29,4 +29,7 @@ public interface HelpRepository extends MyRepository<Help, Long> {
 	@Query("from Help h where h.id in (select hc.help.id from HelpComment hc where hc.hospital = :hospital)")
 	List<Help> findByHospital(@Param("hospital") Hospital hospital, Pageable pageable);
 
+	@Query("from Help h where h.id in (select hc.help.id from HelpComment hc where hc.id in (:ids))")
+	List<Help> findByComment(@Param("ids") List<Long> ids);
+
 }

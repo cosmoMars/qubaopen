@@ -1,10 +1,10 @@
-package com.qubaopen.survey.service.user
+package com.knowheart3.service.user
+import com.knowheart3.repository.user.UserRepository
+import com.knowheart3.repository.user.UserShareRepository
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserShare
 import com.qubaopen.survey.entity.user.UserShare.ShareOrigin
 import com.qubaopen.survey.entity.user.UserShare.ShareTarget
-import com.qubaopen.survey.repository.user.UserRepository
-import com.qubaopen.survey.repository.user.UserShareRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

@@ -1,15 +1,9 @@
 package com.qubaopen.survey.entity.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import com.qubaopen.core.entity.AbstractBaseEntity;
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import javax.persistence.*;
 
 /**
  * @author mars 用户分享表
@@ -42,10 +36,10 @@ public class UserShare extends AbstractBaseEntity<Long> {
 	private ShareOrigin shareOrigin;
 
 	/**
-	 * 分享来源 0分享软件 1奖品 2自测 3兴趣 4调研 5心理地图 6自测解析度称号
+	 * 分享来源 0分享软件 1奖品 2自测 3兴趣 4调研 5心理地图 6自测解析度称号,7专栏,8练习
 	 */
 	public enum ShareOrigin {
-		SOFTWARE, REWARD, SELF, INTEREST, SURVEY, MINDMAP, USERSELFTITLE
+		SOFTWARE, REWARD, SELF, INTEREST, SURVEY, MINDMAP, USERSELFTITLE, Topic, Exercise
 	}
 
 	/**

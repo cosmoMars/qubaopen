@@ -524,11 +524,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			], pageable
 		)
 		def bookingContent = bookings.getContent()
-		def data = [], more = true
-		
-		if (bookingContent.size() < pageable.pageSize) {
-			more = false
-		}
+		def data = []
+
 		def outDateBooking = []
 		bookingContent.each {
 		    def outSecond, now = new Date()
@@ -536,7 +533,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		        it.time = null
 		        it.outDated = null
 				it.status = Booking.Status.Accept
-		        outDateBooking << it
+				bookingRepository.save(it)
+//		        outDateBooking << it
 		    }
 		    if (it.outDated != null) {
 		        outSecond = (it.outDated.time - now.time) / 1000 as int
@@ -582,14 +580,18 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					'doctorStatus'   : it?.doctorStatus?.ordinal(),
 					'doctorAvatar'   : it?.doctor?.doctorInfo?.avatarPath,
 					'hospitalAvatar' : it?.hospital?.hospitalInfo?.hospitalAvatar,
-					'outSecond'      : outSecond
+					'outSecond'        : outSecond,
+					'doctorAddress'    : it?.doctor?.doctorInfo?.address,
+					'hospitalAddress'  : it?.hospital?.hospitalInfo?.address,
+					'hospitalMinCharge': it?.hospital?.hospitalInfo?.minCharge,
+					'hospitalMaxCharge': it?.hospital?.hospitalInfo?.maxCharge
 			]
 		}
-		bookingRepository.save(outDateBooking)
+//		bookingRepository.save(outDateBooking)
 
 		[
 			'success' : '1',
-			'more' : more,
+			'more': bookings.hasNext(),
 			'data' : data	
 		]
 		

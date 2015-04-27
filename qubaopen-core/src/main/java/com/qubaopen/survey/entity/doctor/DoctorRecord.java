@@ -100,7 +100,7 @@ public class DoctorRecord extends AbstractBaseEntity2<Long> {
 	/**
 	 * 督导学习时间
 	 */
-	private int superviseHour;
+	private String superviseHour;
 
 	/**
 	 * 督导联系方式
@@ -128,7 +128,7 @@ public class DoctorRecord extends AbstractBaseEntity2<Long> {
 	/**
 	 * 总小时
 	 */
-	private int totalHour;
+	private String totalHour;
 
 	/**
 	 * 自我介绍
@@ -143,8 +143,8 @@ public class DoctorRecord extends AbstractBaseEntity2<Long> {
 
         DoctorRecord that = (DoctorRecord) o;
 
-        if (superviseHour != that.superviseHour) return false;
-        if (totalHour != that.totalHour) return false;
+        if (superviseHour != null ? !superviseHour.equals(that.superviseHour) : that.superviseHour != null) return false;
+        if (totalHour != null ? !totalHour.equals(that.totalHour) : that.totalHour != null) return false;
         if (contactMethod != null ? !contactMethod.equals(that.contactMethod) : that.contactMethod != null)
             return false;
         if (course != null ? !course.equals(that.course) : that.course != null) return false;
@@ -296,11 +296,11 @@ public class DoctorRecord extends AbstractBaseEntity2<Long> {
 		this.orientation = orientation;
 	}
 
-	public int getSuperviseHour() {
+	public String getSuperviseHour() {
 		return superviseHour;
 	}
 
-	public void setSuperviseHour(int superviseHour) {
+	public void setSuperviseHour(String superviseHour) {
 		this.superviseHour = superviseHour;
 	}
 
@@ -336,11 +336,12 @@ public class DoctorRecord extends AbstractBaseEntity2<Long> {
 		this.selfEnd = selfEnd;
 	}
 
-	public int getTotalHour() {
+
+	public String getTotalHour() {
 		return totalHour;
 	}
 
-	public void setTotalHour(int totalHour) {
+	public void setTotalHour(String totalHour) {
 		this.totalHour = totalHour;
 	}
 

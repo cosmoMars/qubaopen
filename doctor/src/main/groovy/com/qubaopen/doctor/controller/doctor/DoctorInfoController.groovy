@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
-import javax.servlet.http.HttpServletRequest
-
 import static com.qubaopen.doctor.utils.ValidateUtil.validateEmail
 import static com.qubaopen.doctor.utils.ValidateUtil.validatePhone
 
@@ -151,8 +149,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
                      @RequestParam(required = false) String times,
                      @RequestParam(required = false) String json,
                      @RequestParam(required = false) String recordJson,
-                     @ModelAttribute('currentDoctor') Doctor doctor,
-                     HttpServletRequest request) {
+                     @ModelAttribute('currentDoctor') Doctor doctor) {
 
         def doctorInfo = doctorInfoRepository.findOne(doctor.id)
 
@@ -236,7 +233,6 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
         }
 
         if (times != null) {
-            println doctorInfo.bookingTime
             def resultTime = doctorInfo.bookingTime.split(','),
                     tempTimes = times.split('&')
             tempTimes.each { t ->
@@ -259,8 +255,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
         if (json != null) {
             def resultModel = doctorInfo.bookingTime.split(',')
 
-            def jsonNodes = objectMapper.readTree(json),
-                    bookingModels = []
+            def jsonNodes = objectMapper.readTree(json)
 
             jsonNodes.each {
                 if (it.get('type') == null) {
@@ -351,7 +346,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 				dr.orientation = jsonNode.get('orientation').asText()
 			}
 			if (jsonNode.get('superviseHour') != null) {
-				dr.superviseHour = jsonNode.get('superviseHour').asInt()
+				dr.superviseHour = jsonNode.get('superviseHour').asText()
 			}
 			if (jsonNode.get('contactMethod') != null) {
 				dr.contactMethod = jsonNode.get('contactMethod').asText()
@@ -360,7 +355,7 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
 				dr.superviseIntroduction = jsonNode.get('superviseIntroduction').asText()
 			}
 			if (jsonNode.get('totalHour') != null) {
-				dr.totalHour = jsonNode.get('totalHour').asInt()
+				dr.totalHour = jsonNode.get('totalHour').asText()
 			}
 			if (jsonNode.get('selfIntroduction') != null) {
 				dr.selfIntroduction = jsonNode.get('selfIntroduction').asText()

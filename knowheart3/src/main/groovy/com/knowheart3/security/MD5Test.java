@@ -9,10 +9,10 @@ public class MD5Test {
     private final static String ANDROID_CODE = "8012537";
     private final static String IOS_CODE = "027375";
 
-    public static void main(String args[]) {
-
-        checkSecurity();
-    }
+//    public static void main(String args[]) {
+//
+//        checkSecurity();
+//    }
 
     /**
      * 登录

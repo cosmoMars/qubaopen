@@ -43,7 +43,7 @@ public class UserShare extends AbstractBaseEntity<Long> {
 	}
 
 	/**
-	 * 备注 用来记录 用户问卷id 或者用户奖品id等
+	 * 备注 用来记录 分享来源的id
 	 */
 	private String remark;
 

@@ -111,14 +111,14 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 		result
 	}
 
-	@RequestMapping(value = 'retrieveMapByResult', method = RequestMethod.POST)
-	retrieveMapByResult(@RequestParam long resultId,
+	@RequestMapping(value = 'retrieveMapBySelf', method = RequestMethod.POST)
+	retrieveMapBySelf(@RequestParam long selfId,
 					  @ModelAttribute('currentUser') User user) {
 
 		if (null == user.id) {
 			return '{"success" : "0", "message" : "err000"}'
 		}
 
-		mapStatisticsService.retrieveMapByResultAndUser(resultId, user)
+		mapStatisticsService.retrieveMapByResultAndUser(selfId, user)
 	}
 }

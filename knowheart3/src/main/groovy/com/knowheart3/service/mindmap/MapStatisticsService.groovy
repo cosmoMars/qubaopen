@@ -1703,15 +1703,23 @@ public class MapStatisticsService {
 		]
 	}
 
+	/**
+	 * 通过用户结果答案查找map
+	 * @param resultId
+	 * @param user
+	 * @return
+	 */
+	def retrieveMapByResultAndUser(long selfId, User user) {
 
-	def retrieveMapByResultAndUser(long resultId, User user) {
 
-		/**
 		def data = []
 
-		def selfResult = selfResultOptionRepository.findOne(resultId),
-			selfGroup = selfResult.selfResult?.self?.selfGroup
+//		def userSelfResult = selfResultOptionRepository.findOne(resultId),
+		def self = selfRepository.findOne(selfId),
+			selfGroup = self?.selfGroup
 
+
+		// 查找答案
 		def mStatistics = mapStatisticsRepository.findBySelfGroupAndUser(selfGroup, user)
 		def groupResultMaps = [:]
 
@@ -1725,714 +1733,338 @@ public class MapStatisticsService {
 			}
 		}
 
+		// 情绪预测题
 		def	specialGroup = selfGroupRepository.findSpecialSelfGroup()
 
+		def singleMaps = []
 
 
-		if (typeId != null) {
 
-			def selfManagementType = new SelfManagementType(id : typeId)
-			def groupMaps = mapStatisticsRepository.findMapWithoutSpecialGroup(selfManagementType, user, specialGroup, true)
+		groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
+			if (v.size() < k.selfs.size() && v != null) {
 
-			def singleMaps = []
-
-			groupMaps.each {
-				if (groupResultMaps.get(it.self.selfGroup)) {
-					groupResultMaps.get(it.self.selfGroup) << it
-				} else {
-					def tempMap = []
-					tempMap << it
-					groupResultMaps.put(it.self.selfGroup, tempMap)
+				def allName = []
+				def completeName = [] as Set
+				k.selfs.each {
+					allName << it.abbreviation
 				}
-			}
-
-			groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
-				if (v.size() < k.selfs.size() && v != null) {
-
-					def allName = []
-					def completeName = [] as Set
-					k.selfs.each {
-						allName << it.abbreviation
+				v.each { s ->
+					s.mapRecords.each {
+						if (allName.contains(it.name)) {
+							completeName << it.name
+						}
 					}
+				}
+				def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
+				data << [
+						'groupId' : k?.id,
+						'mapTitle' : k?.title,
+						'chart' : '',
+						'mapMax' : k?.mapMax,
+						'resultName' : '',
+						'resultScore' : '',
+						'resultContent' : '',
+						'managementType' : k?.selfManagementType?.id,
+						'recommendedValue' : k?.recommendedValue,
+						'graphicsType' : k?.graphicsType?.id,
+						'special' : false,
+						'lock' : true,
+						'tips' : strName
+				]
+			} else if (v.size() == 1 && k.selfs.size() == 1) {
+				singleMaps += v
+			} else if (v.size() == k.selfs.size() && k.selfs.size() > 1) {
+				def records = []
+				def recordMaps = [:]
+				def chart = []
+				if (k.name == 'EPQ') {
+					v.each { s ->
+						records += s.mapRecords
+					}
+
 					v.each { s ->
 						s.mapRecords.each {
-							if (allName.contains(it.name)) {
-								completeName << it.name
+							if (recordMaps.get(it.name)) {
+								recordMaps.get(it.name) << it
+							} else {
+								def tempList = []
+								tempList << it
+								recordMaps.put(it.name, tempList)
 							}
 						}
 					}
-					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
+
+					recordMaps.each { rk, rv ->
+						def score = 0
+						rv.each {
+							score += it.value
+						}
+						def idMap = userIDCardBindService.calculateAgeByIdCard(user)
+
+						def age, sex
+						if (idMap) {
+							age = idMap.get('age')
+							sex = idMap.get('sex')
+						} else {
+							def c = Calendar.getInstance()
+							c.setTime new Date()
+							age = c.get(Calendar.YEAR) - (DateFormatUtils.format(user.userInfo.birthday, 'yyyy') as int)
+							sex = user.userInfo.sex.ordinal()
+						}
+
+						def epqBasic = epqBasicRepository.findOneByFilters(
+								[
+										'minAge_lessThanOrEqualTo' : age,
+										'maxAge_greaterThanOrEqualTo' : age,
+										'sex_equal' : sex,
+										'name_equal' : rk
+								]
+						)
+						def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
+						recordMaps.get(rk).clear()
+						recordMaps.put(rk, tScore)
+					}
+
+					def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
+					def resultStr = MapContent.epqTitle
+
+					if (recordMaps['E'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['N']) {
+						resultStr += MapContent.EGreaterThanPN
+					} else if (recordMaps['E'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['P']) {
+						resultStr += MapContent.EGreaterThanNP
+					} else if (recordMaps['P'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['N']) {
+						resultStr += MapContent.PGreaterThanEN
+					} else if (recordMaps['P'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['E']) {
+						resultStr += MapContent.PGreaterThanNE
+					} else if (recordMaps['N'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['E']) {
+						resultStr += MapContent.NGreaterThanPE
+					} else if (recordMaps['N'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['P']) {
+						resultStr += MapContent.NGreaterThanEP
+					}
+					if (recordMaps['L'] > 60) {
+						resultStr += MapContent.lieL
+					}
 					data << [
 							'groupId' : k?.id,
 							'mapTitle' : k?.title,
-							'chart' : '',
+							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : '',
+							'resultName' : k?.content,
 							'resultScore' : '',
-							'resultContent' : '',
+							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
 							'graphicsType' : k?.graphicsType?.id,
 							'special' : false,
-							'lock' : true,
-							'tips' : strName
+							'lock' : false,
+							'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
+							'level' : level
 					]
-				} else if (v.size() == 1 && k.selfs.size() == 1) {
-					singleMaps += v
-				} else if (v.size() == k.selfs.size() && k.selfs.size() > 1) {
-					def records = []
-					def recordMaps = [:]
-					def chart = []
-					if (k.name == 'EPQ') {
-						v.each { s ->
-							records += s.mapRecords
-						}
-
+				} else {
+					chart = []
+					def resultStr = '', contentMap = [:] as Map
+					if (k?.graphicsType) {
 						v.each { s ->
 							s.mapRecords.each {
-								if (recordMaps.get(it.name)) {
-									recordMaps.get(it.name) << it
-								} else {
-									def tempList = []
-									tempList << it
-									recordMaps.put(it.name, tempList)
-								}
-							}
-						}
-
-						recordMaps.each { rk, rv ->
-							def score = 0
-							rv.each {
-								score += it.value
-							}
-							def idMap = userIDCardBindService.calculateAgeByIdCard(user)
-
-							def age, sex
-							if (idMap) {
-								age = idMap.get('age')
-								sex = idMap.get('sex')
-							} else {
-								def c = Calendar.getInstance()
-								c.setTime new Date()
-								age = c.get(Calendar.YEAR) - (DateFormatUtils.format(user.userInfo.birthday, 'yyyy') as int)
-								sex = user.userInfo.sex.ordinal()
-							}
-
-							def epqBasic = epqBasicRepository.findOneByFilters(
-									[
-											'minAge_lessThanOrEqualTo' : age,
-											'maxAge_greaterThanOrEqualTo' : age,
-											'sex_equal' : sex,
-											'name_equal' : rk
-									]
-							)
-							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
-							recordMaps.get(rk).clear()
-							recordMaps.put(rk, tScore)
-						}
-
-						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
-						def resultStr = MapContent.epqTitle
-
-						if (recordMaps['E'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['N']) {
-							resultStr += MapContent.EGreaterThanPN
-						} else if (recordMaps['E'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['P']) {
-							resultStr += MapContent.EGreaterThanNP
-						} else if (recordMaps['P'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['N']) {
-							resultStr += MapContent.PGreaterThanEN
-						} else if (recordMaps['P'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['E']) {
-							resultStr += MapContent.PGreaterThanNE
-						} else if (recordMaps['N'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['E']) {
-							resultStr += MapContent.NGreaterThanPE
-						} else if (recordMaps['N'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['P']) {
-							resultStr += MapContent.NGreaterThanEP
-						}
-						if (recordMaps['L'] > 60) {
-							resultStr += MapContent.lieL
-						}
-						data << [
-								'groupId' : k?.id,
-								'mapTitle' : k?.title,
-								'chart' : chart,
-								'mapMax' : k?.mapMax,
-								'resultName' : k?.content,
-								'resultScore' : '',
-								'resultContent' : resultStr,
-								'managementType' : k?.selfManagementType?.id,
-								'recommendedValue' : k?.recommendedValue,
-								'graphicsType' : k?.graphicsType?.id,
-								'special' : false,
-								'lock' : false,
-								'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
-								'level' : level
-						]
-					} else {
-						chart = []
-						def resultStr = '', contentMap = [:] as Map
-						if (k?.graphicsType) {
-							v.each { s ->
-								s.mapRecords.each {
-									chart << [name : it.name, value : it.value]
-									contentMap.put(it.name, it.value)
-								}
-							}
-						}
-						if ('ABCD' == k?.name || 'ABCD'.equals(k?.name)) {
-							resultStr = MapContent.abcdTitle
-
-							// AB
-							if (contentMap['AB'] >= 120 && contentMap['AB'] <= 200) {
-								resultStr += MapContent.extremeA
-							} else if (contentMap['AB'] >= 106 && contentMap['AB'] <= 119) {
-								resultStr += MapContent.obviousA
-							} else if (contentMap['AB'] >= 100 && contentMap['AB'] <= 105) {
-								resultStr += MapContent.tendencyA
-							} else if (contentMap['AB'] >= 90 && contentMap['AB'] <= 99) {
-								resultStr += MapContent.extremeB
-							} else if (contentMap['AB'] >= 0 && contentMap['AB'] <= 89) {
-								resultStr += MapContent.tendencyB
-							}
-							// C
-							if (contentMap['C'] >= 14 && contentMap['C'] <= 100) {
-								resultStr += MapContent.typicalC
-							} else if (contentMap['C'] >= 7 && contentMap['C'] <= 13) {
-								resultStr += MapContent.tendencyC
-							} else if (contentMap['C'] >= 0 && contentMap['C'] <= 6) {
-								resultStr += MapContent.notC
-							}
-
-							// D
-							if (contentMap['D'] >= 0 && contentMap['D'] <= 9) {
-								resultStr += MapContent.D1
-							} else if (contentMap['D'] >= 10 && contentMap['D'] <= 15) {
-								resultStr += MapContent.D2
-							} else if (contentMap['D'] >= 16 && contentMap['D'] <= 18) {
-								resultStr += MapContent.D3
-							} else if (contentMap['D'] >= 19 && contentMap['D'] <= 27) {
-								resultStr += MapContent.D4
-							} else if (contentMap['D'] >= 28 && contentMap['D'] <= 36) {
-								resultStr += MapContent.D5
-							} else if (contentMap['D'] >= 37 && contentMap['D'] <= 100) {
-								resultStr += MapContent.D6
-							}
-						}
-
-						data << [
-								'groupId' : k?.id,
-								'mapTitle' : k?.title,
-								'chart' : chart,
-								'mapMax' : k?.mapMax,
-								'resultName' : k?.content,
-								'resultScore' : '',
-								'resultContent' : resultStr,
-								'managementType' : k?.selfManagementType?.id,
-								'recommendedValue' : k?.recommendedValue,
-								'graphicsType' : k?.graphicsType?.id,
-								'special' : false,
-								'lock' : false
-						]
-					}
-				}
-
-			}
-			def selfResultCount = 0
-			singleMaps.each { // 单个题目出答案
-				def chart = [], resultMaps = [], strResult = ''
-//				if (it?.self?.graphicsType) {
-//					it.mapRecords.each {
-//						chart << [name : it.name, value : it.value]
-//					}
-//				}
-				if (it?.self?.id && (10l == it?.self?.id || 13l == it?.self?.id || 14l == it?.self?.id)) {
-					println it?.self?.id
-					resultMaps = selfUserQuestionnaireRepository.findBySelfAndUserOrderByTimeAsc(it?.self, user)
-					if (resultMaps.size() > 1) {
-						resultMaps.each {
-							chart << [name : it.time.getTime(), value : it.score]
-						}
-					}
-				} else if (it?.self?.id && (8l == it?.self?.id || 16l == it?.self?.id)) {
-					def resultMapRecords = mapRecordRepository.findBySelfAndUser(it?.self, user),
-						moodMaps = [:]
-					resultMapRecords.each {
-						moodMaps.put(it.name, it.value)
-					}
-					if ('ADULT' == it.self.abbreviation) {
-						if (moodMaps['Tenacity']) {
-							chart << [name : '坚韧性', value : moodMaps['Tenacity']]
-						} else {
-							chart << [name : '坚韧性', value : 0]
-						}
-						if (moodMaps['Optimism']) {
-							chart << [name : '乐观性', value : moodMaps['Optimism']]
-						} else {
-							chart << [name : '乐观性', value : 0]
-						}
-						if (moodMaps['Poisedness']) {
-							chart << [name : '自若性', value : moodMaps['Poisedness']]
-						} else {
-							chart << [name : '自若性', value : 0]
-						}
-						if (moodMaps['Persistence']) {
-							chart << [name : '执着性', value : moodMaps['Persistence']]
-						} else {
-							chart << [name : '执着性', value : 0]
-						}
-
-					}
-					if ('MBTI' == it.self.abbreviation) {
-						if (moodMaps['J']) {
-							chart << [name : '判断（J）', value : moodMaps['J']]
-						} else {
-							chart << [name : '判断（J）', value : 0]
-						}
-						if (moodMaps['T']) {
-							chart << [name : '思考（T）', value : moodMaps['T']]
-						} else {
-							chart << [name : '思考（T）', value : 0]
-						}
-						if (moodMaps['S']) {
-							chart << [name : '实感（S）', value : moodMaps['S']]
-						} else {
-							chart << [name : '实感（S）', value : 0]
-						}
-						if (moodMaps['E']) {
-							chart << [name : '外向（E）', value : moodMaps['E']]
-						} else {
-							chart << [name : '外向（E）', value : 0]
-						}
-						if (moodMaps['P']) {
-							chart << [name : '（P）感觉', value : moodMaps['P']]
-						} else {
-							chart << [name : '（P）感觉', value : 0]
-						}
-						if (moodMaps['F']) {
-							chart << [name : '（F）情感', value : moodMaps['F']]
-						} else {
-							chart << [name : '（F）情感', value : 0]
-						}
-						if (moodMaps['N']) {
-							chart << [name : '（N）直觉', value : moodMaps['N']]
-						} else {
-							chart << [name : '（N）直觉', value : 0]
-						}
-						if (moodMaps['I']) {
-							chart << [name : '（I）内向', value : moodMaps['I']]
-						} else {
-							chart << [name : '（I）内向', value : 0]
-						}
-					}
-
-				} else if (it?.self?.selfGroup?.graphicsType){
-					it.mapRecords.each {
-						chart << [name : it.name, value : it.value]
-					}
-				}
-
-				if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
-					selfResultCount ++
-					def selfResult = selfResultOptionRepository.findOne(145l)
-					data << [
-							'groupId' : '',
-							'mapTitle' : selfResult.title,
-							'chart' : [],
-							'mapMax' : '',
-							'resultName' : selfResult.name,
-							'resultScore' : '',
-							'resultContent' : selfResult?.content,
-							'managementType' : it?.selfManagementType?.id,
-							'recommendedValue' : it?.recommendedValue,
-							'graphicsType' : '',
-							'special' : false,
-							'lock' : false,
-							'picPath' : ''
-					]
-				}
-				strResult = it?.selfResultOption?.content
-				if ('SDS' == it?.self?.selfGroup?.name) {
-					strResult += ('\n' + MapContent.sds)
-				}
-				data << [
-						'groupId' : it?.self?.selfGroup?.id,
-						'mapTitle' : it?.self?.title,
-						'chart' : chart,
-						'mapMax' : it?.self?.selfGroup?.mapMax,
-						'resultName' : it?.selfResultOption?.name,
-						'resultScore' : '',
-						'resultContent' : strResult,
-						'managementType' : it?.selfManagementType?.id,
-						'recommendedValue' : it?.recommendedValue,
-						'graphicsType' : it?.self?.selfGroup?.graphicsType?.id,
-						'special' : false,
-						'lock' : false,
-						'picPath' : it?.selfResultOption?.picPath
-				]
-			}
-
-		} else {
-
-//			def specialMaps = mapStatisticsRepository.findOneByFilters(
-//				[
-//					self_equal : specialSelf,
-//					user_equal : user
-//				]
-//			)// 4小时题目
-//			if (specialMaps) {
-//				existMaps += specialMaps
-//			}
-			def groupMaps = mapStatisticsRepository.findMapWithoutSpecialGroup(user, specialGroup, true)
-
-//			existMaps += groupMaps
-			def singleMaps = []
-
-//			if (existMaps) {
-//				singleMaps = mapStatisticsRepository.findMapWithoutExists(existMaps, user)
-//			} else {
-//				singleMaps = mapStatisticsRepository.findAll(
-//					['user_equal' : user]
-//				)
-//			}
-			def groupResultMaps = [:]
-
-			groupMaps.each {
-				if (groupResultMaps.get(it.self.selfGroup)) {
-					groupResultMaps.get(it.self.selfGroup) << it
-				} else {
-					def tempMap = []
-					tempMap << it
-					groupResultMaps.put(it.self.selfGroup, tempMap)
-				}
-			}
-
-			groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
-				if (v.size() < k.selfs.size() && v != null) {
-					def allName = []
-					def completeName = [] as Set
-					k.selfs.each {
-						allName << it.abbreviation
-					}
-					v.each { s ->
-						s.mapRecords.each {
-							if (allName.contains(it.name)) {
-								completeName << it.name
+								chart << [name : it.name, value : it.value]
+								contentMap.put(it.name, it.value)
 							}
 						}
 					}
-					def strName = "本问卷共［${allName.join(",")}］ $allName.size 套问卷， 您已完成［${completeName.join(",")}］问卷，请完成其他问卷得出结果" as String
+					if ('ABCD' == k?.name || 'ABCD'.equals(k?.name)) {
+						resultStr = MapContent.abcdTitle
+
+						// AB
+						if (contentMap['AB'] >= 120 && contentMap['AB'] <= 200) {
+							resultStr += MapContent.extremeA
+						} else if (contentMap['AB'] >= 106 && contentMap['AB'] <= 119) {
+							resultStr += MapContent.obviousA
+						} else if (contentMap['AB'] >= 100 && contentMap['AB'] <= 105) {
+							resultStr += MapContent.tendencyA
+						} else if (contentMap['AB'] >= 90 && contentMap['AB'] <= 99) {
+							resultStr += MapContent.extremeB
+						} else if (contentMap['AB'] >= 0 && contentMap['AB'] <= 89) {
+							resultStr += MapContent.tendencyB
+						}
+						// C
+						if (contentMap['C'] >= 14 && contentMap['C'] <= 100) {
+							resultStr += MapContent.typicalC
+						} else if (contentMap['C'] >= 7 && contentMap['C'] <= 13) {
+							resultStr += MapContent.tendencyC
+						} else if (contentMap['C'] >= 0 && contentMap['C'] <= 6) {
+							resultStr += MapContent.notC
+						}
+
+						// D
+						if (contentMap['D'] >= 0 && contentMap['D'] <= 9) {
+							resultStr += MapContent.D1
+						} else if (contentMap['D'] >= 10 && contentMap['D'] <= 15) {
+							resultStr += MapContent.D2
+						} else if (contentMap['D'] >= 16 && contentMap['D'] <= 18) {
+							resultStr += MapContent.D3
+						} else if (contentMap['D'] >= 19 && contentMap['D'] <= 27) {
+							resultStr += MapContent.D4
+						} else if (contentMap['D'] >= 28 && contentMap['D'] <= 36) {
+							resultStr += MapContent.D5
+						} else if (contentMap['D'] >= 37 && contentMap['D'] <= 100) {
+							resultStr += MapContent.D6
+						}
+					}
+
 					data << [
 							'groupId' : k?.id,
 							'mapTitle' : k?.title,
-							'chart' : '',
+							'chart' : chart,
 							'mapMax' : k?.mapMax,
-							'resultName' : '',
+							'resultName' : k?.content,
 							'resultScore' : '',
-							'resultContent' : '',
+							'resultContent' : resultStr,
 							'managementType' : k?.selfManagementType?.id,
 							'recommendedValue' : k?.recommendedValue,
 							'graphicsType' : k?.graphicsType?.id,
 							'special' : false,
-							'lock' : true,
-							'tips' : strName
-					]
-				} else if (v.size() == 1 && k.selfs.size() == 1) {
-					singleMaps += v
-				} else if (v.size() == k.selfs.size() && k.selfs.size() > 1) {
-					def records = []
-					def recordMaps = [:]
-					def chart = []
-					if (k.name == 'EPQ') {
-						v.each { s ->
-							records += s.mapRecords
-						}
-
-						v.each { s ->
-							s.mapRecords.each {
-								if (recordMaps.get(it.name)) {
-									recordMaps.get(it.name) << it
-								} else {
-									def tempList = []
-									tempList << it
-									recordMaps.put(it.name, tempList)
-								}
-							}
-						}
-
-						recordMaps.each { rk, rv ->
-							def score = 0
-							rv.each {
-								score += it.value
-							}
-
-							def idMap = userIDCardBindService.calculateAgeByIdCard(user)
-
-							def age, sex
-							if (idMap) {
-								age = idMap.get('age')
-								sex = idMap.get('sex')
-							} else {
-								def c = Calendar.getInstance()
-								c.setTime new Date()
-								age = c.get(Calendar.YEAR) - (DateFormatUtils.format(user.userInfo.birthday, 'yyyy') as int)
-								sex = user.userInfo.sex.ordinal()
-							}
-
-							def epqBasic = epqBasicRepository.findOneByFilters(
-									[
-											'minAge_lessThanOrEqualTo' : age,
-											'maxAge_greaterThanOrEqualTo' : age,
-											'sex_equal' : sex,
-											'name_equal' : rk
-									]
-							)
-							def tScore = calculateT.calT(score, epqBasic.mValue, epqBasic.sdValue)
-							recordMaps.get(rk).clear()
-							recordMaps.put(rk, tScore)
-
-						}
-						def level = calculateT.calLevel(recordMaps.get('E'), recordMaps.get('N'))
-						def resultStr = MapContent.epqTitle
-
-						if (recordMaps['E'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['N']) {
-							resultStr += MapContent.EGreaterThanPN
-						} else if (recordMaps['E'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['P']) {
-							resultStr += MapContent.EGreaterThanNP
-						} else if (recordMaps['P'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['N']) {
-							resultStr += MapContent.PGreaterThanEN
-						} else if (recordMaps['P'] >= recordMaps['N'] && recordMaps['N'] >= recordMaps['E']) {
-							resultStr += MapContent.PGreaterThanNE
-						} else if (recordMaps['N'] >= recordMaps['P'] && recordMaps['P'] >= recordMaps['E']) {
-							resultStr += MapContent.NGreaterThanPE
-						} else if (recordMaps['N'] >= recordMaps['E'] && recordMaps['E'] >= recordMaps['P']) {
-							resultStr += MapContent.NGreaterThanEP
-						}
-						if (recordMaps['L'] > 60) {
-							resultStr += MapContent.lieL
-						}
-
-						data << [
-								'groupId' : k?.id,
-								'mapTitle' : k?.title,
-								'chart' : chart,
-								'mapMax' : k?.mapMax,
-								'resultName' : k?.content,
-								'resultScore' : '',
-								'resultContent' : resultStr,
-								'managementType' : k?.selfManagementType?.id,
-								'recommendedValue' : k?.recommendedValue,
-								'graphicsType' : k?.graphicsType?.id,
-								'special' : false,
-								'lock' : false,
-								'point' : [E : recordMaps.get('E'), N : recordMaps.get('N')],
-								'level' : level
-						]
-					} else {
-						chart = []
-						def resultStr = '', contentMap = [:] as Map
-						if (k?.graphicsType) {
-							v.each { s ->
-								s.mapRecords.each {
-									chart << [name : it.name, value : it.value]
-									contentMap.put(it.name, it.value)
-								}
-							}
-						}
-						if ('ABCD' == k?.name || 'ABCD'.equals(k?.name)) {
-							resultStr = MapContent.abcdTitle
-
-							// AB
-							if (contentMap['AB'] >= 120 && contentMap['AB'] <= 200) {
-								resultStr += MapContent.extremeA
-							} else if (contentMap['AB'] >= 106 && contentMap['AB'] <= 119) {
-								resultStr += MapContent.obviousA
-							} else if (contentMap['AB'] >= 100 && contentMap['AB'] <= 105) {
-								resultStr += MapContent.tendencyA
-							} else if (contentMap['AB'] >= 90 && contentMap['AB'] <= 99) {
-								resultStr += MapContent.extremeB
-							} else if (contentMap['AB'] >= 0 && contentMap['AB'] <= 89) {
-								resultStr += MapContent.tendencyB
-							}
-							// C
-							if (contentMap['C'] >= 14 && contentMap['C'] <= 100) {
-								resultStr += MapContent.typicalC
-							} else if (contentMap['C'] >= 7 && contentMap['C'] <= 13) {
-								resultStr += MapContent.tendencyC
-							} else if (contentMap['C'] >= 0 && contentMap['C'] <= 6) {
-								resultStr += MapContent.notC
-							}
-
-							// D
-							if (contentMap['D'] >= 0 && contentMap['D'] <= 9) {
-								resultStr += MapContent.D1
-							} else if (contentMap['D'] >= 10 && contentMap['D'] <= 15) {
-								resultStr += MapContent.D2
-							} else if (contentMap['D'] >= 16 && contentMap['D'] <= 18) {
-								resultStr += MapContent.D3
-							} else if (contentMap['D'] >= 19 && contentMap['D'] <= 27) {
-								resultStr += MapContent.D4
-							} else if (contentMap['D'] >= 28 && contentMap['D'] <= 36) {
-								resultStr += MapContent.D5
-							} else if (contentMap['D'] >= 37 && contentMap['D'] <= 100) {
-								resultStr += MapContent.D6
-							}
-						}
-
-						data << [
-								'groupId' : k?.id,
-								'mapTitle' : k?.title,
-								'chart' : chart,
-								'mapMax' : k?.mapMax,
-								'resultName' : k?.content,
-								'resultScore' : '',
-								'resultContent' : resultStr,
-								'managementType' : k?.selfManagementType?.id,
-								'recommendedValue' : k?.recommendedValue,
-								'graphicsType' : k?.graphicsType?.id,
-								'special' : false,
-								'lock' : false
-						]
-					}
-				}
-			}
-			def selfResultCount = 0
-			singleMaps.each { // 单个题目出答案
-				def chart = [], resultMaps = [], strResult = ''
-//				if (it?.self?.graphicsType) {
-//					it.mapRecords.each {
-//						chart << [name : it.name, value : it.value]
-//					}
-//				}
-				if (it?.self?.id && (10l == it?.self?.id || 13l == it?.self?.id || 14l == it?.self?.id)) {
-					println it?.self?.id
-					resultMaps = selfUserQuestionnaireRepository.findBySelfAndUserOrderByTimeAsc(it?.self, user)
-					if (resultMaps.size() > 1) {
-						resultMaps.each {
-							chart << [name : it.time.getTime(), value : it.score]
-						}
-					}
-				} else if (it?.self?.id && (8l == it?.self?.id || 16l == it?.self?.id)) {
-					def resultMapRecords = mapRecordRepository.findBySelfAndUser(it?.self, user),
-						moodMaps = [:]
-					resultMapRecords.each {
-						moodMaps.put(it.name, it.value)
-					}
-					if ('ADULT' == it.self.abbreviation) {
-						if (moodMaps['Tenacity']) {
-							chart << [name : '坚韧性', value : moodMaps['Tenacity']]
-						} else {
-							chart << [name : '坚韧性', value : 0]
-						}
-						if (moodMaps['Optimism']) {
-							chart << [name : '乐观性', value : moodMaps['Optimism']]
-						} else {
-							chart << [name : '乐观性', value : 0]
-						}
-						if (moodMaps['Poisedness']) {
-							chart << [name : '自若性', value : moodMaps['Poisedness']]
-						} else {
-							chart << [name : '自若性', value : 0]
-						}
-						if (moodMaps['Persistence']) {
-							chart << [name : '执着性', value : moodMaps['Persistence']]
-						} else {
-							chart << [name : '执着性', value : 0]
-						}
-
-					}
-					if ('MBTI' == it.self.abbreviation) {
-						if (moodMaps['J']) {
-							chart << [name : '判断（J）', value : moodMaps['J']]
-						} else {
-							chart << [name : '判断（J）', value : 0]
-						}
-						if (moodMaps['T']) {
-							chart << [name : '思考（T）', value : moodMaps['T']]
-						} else {
-							chart << [name : '思考（T）', value : 0]
-						}
-						if (moodMaps['S']) {
-							chart << [name : '实感（S）', value : moodMaps['S']]
-						} else {
-							chart << [name : '实感（S）', value : 0]
-						}
-						if (moodMaps['E']) {
-							chart << [name : '外向（E）', value : moodMaps['E']]
-						} else {
-							chart << [name : '外向（E）', value : 0]
-						}
-						if (moodMaps['P']) {
-							chart << [name : '（P）感觉', value : moodMaps['P']]
-						} else {
-							chart << [name : '（P）感觉', value : 0]
-						}
-						if (moodMaps['F']) {
-							chart << [name : '（F）情感', value : moodMaps['F']]
-						} else {
-							chart << [name : '（F）情感', value : 0]
-						}
-						if (moodMaps['N']) {
-							chart << [name : '（N）直觉', value : moodMaps['N']]
-						} else {
-							chart << [name : '（N）直觉', value : 0]
-						}
-						if (moodMaps['I']) {
-							chart << [name : '（I）内向', value : moodMaps['I']]
-						} else {
-							chart << [name : '（I）内向', value : 0]
-						}
-					}
-
-				} else if (it?.self?.selfGroup?.graphicsType){
-					it.mapRecords.each {
-						chart << [name : it.name, value : it.value]
-					}
-				}
-				if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
-					selfResultCount ++
-					def selfResult = selfResultOptionRepository.findOne(145l)
-					data << [
-							'groupId' : '',
-							'mapTitle' : selfResult.title,
-							'chart' : [],
-							'mapMax' : '',
-							'resultName' : selfResult.name,
-							'resultScore' : '',
-							'resultContent' : selfResult?.content,
-							'managementType' : it?.selfManagementType?.id,
-							'recommendedValue' : it?.recommendedValue,
-							'graphicsType' : '',
-							'special' : false,
-							'lock' : false,
-							'picPath' : ''
+							'lock' : false
 					]
 				}
-				strResult = it?.selfResultOption?.content
-				if ('SDS' == it?.self?.selfGroup?.name) {
-					strResult += ('\n' + MapContent.sds)
-				}
-				data << [
-						'groupId' : it?.self?.selfGroup?.id,
-						'mapTitle' : it?.self?.title,
-						'chart' : chart,
-						'mapMax' : it?.self?.selfGroup?.mapMax,
-						'resultName' : it?.selfResultOption?.name,
-						'resultScore' : '',
-						'resultContent' : strResult,
-						'managementType' : it?.selfManagementType?.id,
-						'recommendedValue' : it?.recommendedValue,
-						'graphicsType' : it?.self?.selfGroup?.graphicsType?.id,
-						'special' : false,
-						'lock' : false,
-						'picPath' : it?.selfResultOption?.picPath
-				]
 			}
+
 		}
+		def selfResultCount = 0
+		singleMaps.each { // 单个题目出答案
+			def chart = [], resultMaps = [], strResult = ''
+			if (it?.self?.id && (10l == it?.self?.id || 13l == it?.self?.id || 14l == it?.self?.id)) {
+				println it?.self?.id
+				resultMaps = selfUserQuestionnaireRepository.findBySelfAndUserOrderByTimeAsc(it?.self, user)
+				if (resultMaps.size() > 1) {
+					resultMaps.each {
+						chart << [name : it.time.getTime(), value : it.score]
+					}
+				}
+			} else if (it?.self?.id && (8l == it?.self?.id || 16l == it?.self?.id)) {
+				def resultMapRecords = mapRecordRepository.findBySelfAndUser(it?.self, user),
+					moodMaps = [:]
+				resultMapRecords.each {
+					moodMaps.put(it.name, it.value)
+				}
+				if ('ADULT' == it.self.abbreviation) {
+					if (moodMaps['Tenacity']) {
+						chart << [name : '坚韧性', value : moodMaps['Tenacity']]
+					} else {
+						chart << [name : '坚韧性', value : 0]
+					}
+					if (moodMaps['Optimism']) {
+						chart << [name : '乐观性', value : moodMaps['Optimism']]
+					} else {
+						chart << [name : '乐观性', value : 0]
+					}
+					if (moodMaps['Poisedness']) {
+						chart << [name : '自若性', value : moodMaps['Poisedness']]
+					} else {
+						chart << [name : '自若性', value : 0]
+					}
+					if (moodMaps['Persistence']) {
+						chart << [name : '执着性', value : moodMaps['Persistence']]
+					} else {
+						chart << [name : '执着性', value : 0]
+					}
+
+				}
+				if ('MBTI' == it.self.abbreviation) {
+					if (moodMaps['J']) {
+						chart << [name : '判断（J）', value : moodMaps['J']]
+					} else {
+						chart << [name : '判断（J）', value : 0]
+					}
+					if (moodMaps['T']) {
+						chart << [name : '思考（T）', value : moodMaps['T']]
+					} else {
+						chart << [name : '思考（T）', value : 0]
+					}
+					if (moodMaps['S']) {
+						chart << [name : '实感（S）', value : moodMaps['S']]
+					} else {
+						chart << [name : '实感（S）', value : 0]
+					}
+					if (moodMaps['E']) {
+						chart << [name : '外向（E）', value : moodMaps['E']]
+					} else {
+						chart << [name : '外向（E）', value : 0]
+					}
+					if (moodMaps['P']) {
+						chart << [name : '（P）感觉', value : moodMaps['P']]
+					} else {
+						chart << [name : '（P）感觉', value : 0]
+					}
+					if (moodMaps['F']) {
+						chart << [name : '（F）情感', value : moodMaps['F']]
+					} else {
+						chart << [name : '（F）情感', value : 0]
+					}
+					if (moodMaps['N']) {
+						chart << [name : '（N）直觉', value : moodMaps['N']]
+					} else {
+						chart << [name : '（N）直觉', value : 0]
+					}
+					if (moodMaps['I']) {
+						chart << [name : '（I）内向', value : moodMaps['I']]
+					} else {
+						chart << [name : '（I）内向', value : 0]
+					}
+				}
+
+			} else if (it?.self?.selfGroup?.graphicsType){
+				it.mapRecords.each {
+					chart << [name : it.name, value : it.value]
+				}
+			}
+
+			if ((it?.self?.id == 13l || it?.self?.id == 10l) && selfResultCount < 1) {
+				selfResultCount ++
+				def selfResult = selfResultOptionRepository.findOne(145l)
+				data << [
+						'groupId' : '',
+						'mapTitle' : selfResult.title,
+						'chart' : [],
+						'mapMax' : '',
+						'resultName' : selfResult.name,
+						'resultScore' : '',
+						'resultContent' : selfResult?.content,
+						'managementType' : it?.selfManagementType?.id,
+						'recommendedValue' : it?.recommendedValue,
+						'graphicsType' : '',
+						'special' : false,
+						'lock' : false,
+						'picPath' : ''
+				]
+			}
+			strResult = it?.selfResultOption?.content
+			if ('SDS' == it?.self?.selfGroup?.name) {
+				strResult += ('\n' + MapContent.sds)
+			}
+			data << [
+					'groupId' : it?.self?.selfGroup?.id,
+					'mapTitle' : it?.self?.title,
+					'chart' : chart,
+					'mapMax' : it?.self?.selfGroup?.mapMax,
+					'resultName' : it?.selfResultOption?.name,
+					'resultScore' : '',
+					'resultContent' : strResult,
+					'managementType' : it?.selfManagementType?.id,
+					'recommendedValue' : it?.recommendedValue,
+					'graphicsType' : it?.self?.selfGroup?.graphicsType?.id,
+					'special' : false,
+					'lock' : false,
+					'picPath' : it?.selfResultOption?.picPath
+			]
+		}
+
 		[
 				'success' : '1',
 				'message' : '成功',
 				'userId' : user.id,
 				'data' : data
 		]
-		 */
+
 
 	}
 }

@@ -271,4 +271,63 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				data   : data
 		]
 	}
+
+	/**
+	 * 医师获取点赞信息
+	 * @param ids
+	 * @param doctor
+	 */
+	@RequestMapping(value = 'retrieveGoodHelpComment', method = RequestMethod.POST)
+	retrieveGoodHelpComment(@RequestParam(required = false) String ids,
+							@ModelAttribute('currentDoctor') Doctor doctor) {
+
+		def idList = []
+
+		if (ids) {
+			def idStr = ids.split(',')
+
+			idStr.each {
+				idList << Long.valueOf(it.trim())
+			}
+		}
+		if (idList.size() <= 0) {
+			return '{"success" : "1"}'
+		}
+		// 查找点赞纪录
+		def goodComments = helpCommentGoodRepository.findByIds(idList),
+			data = []
+
+		def now = new Date()
+
+		goodComments.each {
+			it.view = true
+
+			def minTime = (now.time - it.createdDate.millis) / 1000 / 60 as int,
+				time,
+				type = 1 // 1分钟，2时间
+
+			if (minTime < 60) {
+				time = minTime == 0 ? 1 : minTime
+			} else {
+				time = it.createdDate.toDate()
+				type = 2
+			}
+
+			data << [
+					userAvatar    : it.user?.userInfo?.avatarPath,
+					userName      : it.user?.userInfo?.nickName,
+					doctorName    : it.helpComment?.doctor?.doctorInfo?.name,
+					commentContent: it.helpComment?.content,
+					time          : time as String,
+					type          : type
+			]
+		}
+
+		helpCommentGoodRepository.save(goodComments)
+
+		[
+				success: '1',
+				data   : data
+		]
+	}
 }

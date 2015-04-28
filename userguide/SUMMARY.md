@@ -50,6 +50,8 @@
        * [交易查询](user-item/query-charge.md)
    * [预约](user-item/user-booking.md)
        * [取消预约](user-item/remove-booking.md)
+   * [心理地图](user-item/mindmap)
+       * [根据自测获取心理地图](user-item/retrieve-map-by-self.md)
 * [医师端](doctor-item/README.md)
    * [医师](doctor-item/doctor.md)
        * [发送验证码](doctor-item/send-captcha.md)
@@ -105,5 +107,6 @@
    * [医师求助](doctor-item/doctor-help.md)
        * [获取求助评价](doctor-item/retrieve-help-comment.md)
        * [获取点赞评论](doctor-item/retrieve-good-comment.md)
+       * [医师获取点赞评论](doctor-item/retrieve-good-help-comment.md)
 * [错误代码信息](error-message/README.md)
 

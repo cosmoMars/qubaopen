@@ -1,6 +1,6 @@
 # 根据自测获取心理地图
 
-**请求地址：** mapStatistics/retrieveMapByResult
+**请求地址：** mapStatistics/retrieveMapBySelf
 
 **HTTP请求方式：** POST
 

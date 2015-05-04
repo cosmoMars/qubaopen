@@ -52,6 +52,8 @@
        * [取消预约](user-item/remove-booking.md)
    * [心理地图](user-item/mindmap)
        * [根据自测获取心理地图](user-item/retrieve-map-by-self.md)
+   * [用户求助](user-item/user-help.md)
+       * [删除用户求助](user-item/delete-user-help.md)
 * [医师端](doctor-item/README.md)
    * [医师](doctor-item/doctor.md)
        * [发送验证码](doctor-item/send-captcha.md)

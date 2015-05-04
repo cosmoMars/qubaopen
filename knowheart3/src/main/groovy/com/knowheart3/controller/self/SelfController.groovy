@@ -430,13 +430,14 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 		if (null == user.id) {
 			return '{"success" : "0", "message" : "err000"}'
 		}
-
+		def userFavorite
 		def questionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : id), true),
-			isFavorite = false,
+			isFavorite = false
+		if (questionnaire) {
 			userFavorite = userFavoriteRepository.findBySelfAndUser(questionnaire.self, user)
-
-		if (userFavorite) {
-			isFavorite = true
+			if (userFavorite) {
+				isFavorite = true
+			}
 		}
 
 		[

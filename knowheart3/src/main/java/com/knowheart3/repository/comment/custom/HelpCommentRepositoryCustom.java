@@ -13,4 +13,6 @@ public interface HelpCommentRepositoryCustom {
 
 	List<HelpCommentVo> findLimitCommentByGood(Help help);
 
+	int deleteByHelpComentId(List<Long> commentIds);
+
 }

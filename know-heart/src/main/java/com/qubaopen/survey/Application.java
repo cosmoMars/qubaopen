@@ -1,6 +1,5 @@
 package com.qubaopen.survey;
 
-import com.alibaba.appengine.api.ds.DataSourceFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -18,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.servlet.Filter;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
@@ -33,11 +31,6 @@ public final class Application {
 		filter.setEncoding("UTF-8");
 		filter.setForceEncoding(false);
 		return filter;
-	}
-
-	@Bean
-	public DataSource dataSource() {
-		return DataSourceFactory.getDataSource("rds-test-798");
 	}
 
 	@Bean

@@ -19,7 +19,7 @@ public class HelpCommentRepositoryImpl implements HelpCommentRepositoryCustom {
 
 	@Autowired
 	private EntityManager entityManager;
-	
+
 	@Override
 	public List<HelpComment> findLimitComment(Help help) {
 		
@@ -75,5 +75,17 @@ public class HelpCommentRepositoryImpl implements HelpCommentRepositoryCustom {
 		return result;
 	}
 
+	@Override
+	public int deleteByHelpComentId(List<Long> commentIds) {
+		StringBuffer sql = new StringBuffer();
+
+		sql.append("delete from help_comment_good where help_comment_id in (:commentIds)");
+
+
+		Query query = entityManager.createNativeQuery(sql.toString())
+				.setParameter("commentIds", commentIds);
+
+		return query.executeUpdate();
+	}
 
 }

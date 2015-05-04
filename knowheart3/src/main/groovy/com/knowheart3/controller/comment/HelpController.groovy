@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.web.PageableDefault
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -155,9 +156,14 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				]
 			}
 		}
+		def more = true
+		if (data.size() < pageable.pageSize) {
+			more = false
+		}
 		[
-			'success' : '1',
-			'data' : data
+				'success': '1',
+				'more'   : more,
+				'data'   : data
 		]
 	}
 		
@@ -239,6 +245,46 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			'data' : commentData,
 			'commentCount' : commentCount
 		]
+	}
+
+	/**
+	 * 删除求助
+	 * @param id
+	 * @param user
+	 * @return
+	 */
+	@Transactional
+	@RequestMapping(value = 'deleteHelpById', method = RequestMethod.POST)
+	deleteHelpById(@RequestParam long id,
+				   @ModelAttribute('currentUser') User user) {
+
+		if (null == user.id) {
+			return '{"success" : "0", "message" : "err000"}'
+		}
+
+		def help = new Help(id: id)
+		def helpComments = helpCommentRepository.findAll(
+				[
+						help_equal: help
+				]
+		)
+
+		if (helpComments) {
+			def ids = []
+			helpComments.each {
+				ids << it.id
+			}
+
+			helpCommentRepository.deleteByHelpComentId(ids)
+		}
+		helpComments.each {
+			helpCommentRepository.delete(it)
+		}
+
+		helpRepository.delete(help)
+
+		'{"success" : "1"}'
+
 	}
 
 }

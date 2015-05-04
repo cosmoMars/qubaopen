@@ -202,12 +202,17 @@ public class SelfPersistentService {
 		def specialSelf = selfRepository.findSpecialSelf()
 		
 //		def questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, self),
+		def questionnaire = selfUserQuestionnaireRepository.findRecentQuestionnarie(user, selfUserQuestionnaire.id)
 		def	now = new Date()
-		if (selfUserQuestionnaire) {
-			def intervalTime = selfUserQuestionnaire.self.intervalTime as Long
-			if (now.getTime() - selfUserQuestionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
-				if (selfUserQuestionnaire.self.id == specialSelf.id) {
-					def record = mapRecordRepository.findMaxRecordBySpecialSelf(selfUserQuestionnaire.self, user)
+		if (questionnaire) {
+			def intervalTime = questionnaire.self.intervalTime as Long
+
+			println (now.getTime() - questionnaire.time.getTime())
+			println (now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000)
+
+			if (now.getTime() - questionnaire.time.getTime() < intervalTime * 60 * 60 * 1000) {
+				if (questionnaire.self.id == specialSelf.id) {
+					def record = mapRecordRepository.findMaxRecordBySpecialSelf(questionnaire.self, user)
 					if (record)
 						mapRecordRepository.delete(record)
 				}

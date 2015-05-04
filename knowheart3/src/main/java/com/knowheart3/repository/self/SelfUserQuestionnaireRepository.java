@@ -47,5 +47,8 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 
     List<SelfUserQuestionnaire> findByUserAndUsed(User user, Boolean used, Pageable pageable);
 
+	@Query("from SelfUserQuestionnaire sq where sq.self.id = 15 and sq.time = (select max(s.time) from SelfUserQuestionnaire s where s.user = :user and s.used = true and s.self.id = 15 and s.id != :questionnaireId) ")
+	SelfUserQuestionnaire findRecentQuestionnarie(@Param("user") User user, @Param("questionnaireId") long questionnaireId);
+
 
 }

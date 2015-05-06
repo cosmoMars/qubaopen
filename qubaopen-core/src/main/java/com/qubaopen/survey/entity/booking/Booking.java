@@ -190,6 +190,11 @@ public class Booking extends AbstractBaseEntity<Long> {
      */
     private boolean sendDoctor;
 
+	/**
+	 * 15mins发送
+	 */
+	private boolean send15Mins;
+
     /**
      * 发送email
      */
@@ -498,5 +503,13 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	public void setDoctorName(String doctorName) {
 		this.doctorName = doctorName;
+	}
+
+	public boolean isSend15Mins() {
+		return send15Mins;
+	}
+
+	public void setSend15Mins(boolean send15Mins) {
+		this.send15Mins = send15Mins;
 	}
 }

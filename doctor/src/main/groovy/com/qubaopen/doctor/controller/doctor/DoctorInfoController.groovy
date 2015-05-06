@@ -428,9 +428,6 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
         if (doctorInfo.birthday == null) {
             return false;
         }
-        if (doctorInfo.experience == null) {
-            return false;
-        }
         if (doctorInfo.field == null) {
             return false;
         }
@@ -444,9 +441,6 @@ public class DoctorInfoController extends AbstractBaseController<DoctorInfo, Lon
             return false;
         }
         if (doctorInfo.bookingTime == null) {
-            return false;
-        }
-        if (doctorInfo.introduce == null) {
             return false;
         }
         if (doctorInfo.avatarPath == null) {

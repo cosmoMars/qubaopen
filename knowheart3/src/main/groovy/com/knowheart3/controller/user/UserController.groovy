@@ -525,59 +525,17 @@ class UserController extends AbstractBaseController<User, Long> {
     testMessage() {
 
         def di = doctorInfoRepository.findOne(1l)
-//        String param1 = '{"param1" : "王非","param2" : "13917377795"}'
-//        String param2 = '{"param1" : "王非","param2" : "13917377795"}'
-//        String param3 = '{"param1" : "http://zhixin.me/smsRedirectDr.html"}'
-//        String param4 = '{"param1" : "http://zhixin.me/smsRedirect.html"}'
-//        String param5 = '{"param1" : "http://zhixin.me/smsRedirectDr.html"}'
-        String param6 = '{"time" : "' +DateFormatUtils.format(new Date(), "MM月dd日HH:mm") +'", "address" : "' + di.address +'"}'
 
-        println param6
-//        Map<String, Object> map1 = smsService.sendSmsMessage('13621673989', 2, param1)
-////        smsService.sendSmsMessage('13917377795', 3, param2)
-////        smsService.sendSmsMessage('13917377795', 4, param3)
-////        smsService.sendSmsMessage('13917377795', 5, param4)
-////        smsService.sendSmsMessage('13917377795', 6, param5)
-        Map<String, Object> map2 =  smsService.sendSmsMessage('13621673989', 7, param6)
 
-        def list = bookingRepository.findAll([
-                'userStatus_isNotNull' : null
-        ])
+		StringBuffer param = new StringBuffer();
+		param.append("{\"name\" : \"" + "112121" + "\"");
+		param.append(", \"qq\" : \"" + (di != null ? di.getQq() : "") + "\"");
+		param.append(", \"time\" : \"" + DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss") + "\"}");
 
-        println list.size()
-//
-//        return [
-//                map1: map1,
-//                map2 : map2
-//        ]
-    /*    DoctorInfo di = doctorInfoRepository.findOne(1l)
+		System.out.println(param.toString());
+        Map<String, Object> map2 =  smsService.sendSmsMessage('13621673989', 9, param.toString())
 
-        DoctorInfo di2 = new DoctorInfo()
-
-//        JsonArray
-
-        BeanUtils.copyProperties(di, di2)
-        println di2.doctor.phone
-//        println StringUtils.equals(userinfo.hashCode(), userinfo3.hashCode())
-        println di.equals(di2)
-        println "------------------------------------"
-
-        di = userInfoRepository.save(di)
-//        println StringUtils.equals(userinfo.hashCode(), userinfo3.hashCode())
-        println di.equals(di2)
-        println "------------------------------------"
-
-        di.name = "jiong" + System.currentTimeMillis()
-//        println StringUtils.equals(userinfo.hashCode(), userinfo3.hashCode())
-        println di.equals(di2)
-        println "------------------------------------"
-
-        di = userInfoRepository.save(di)
-//        println StringUtils.equals(userinfo.hashCode(), userinfo3.hashCode())
-        println di.equals(di2)
-        println "------------------------------------"
-*/
-        '完成'
+		map2
     }
 
 }

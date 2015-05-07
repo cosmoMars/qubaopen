@@ -18,15 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.qubaopen.backend.repository.assistant.AssistantRepository;
 import com.qubaopen.backend.repository.doctor.DoctorInfoRepository;
+import com.qubaopen.backend.repository.doctor.DoctorRecordRepository;
 import com.qubaopen.backend.repository.doctor.DoctorRepository;
 import com.qubaopen.backend.repository.genre.GenreRepository;
 import com.qubaopen.backend.repository.genre.TargetUserRepository;
 import com.qubaopen.backend.service.SmsService;
+import com.qubaopen.backend.utils.UploadUtils;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.doctor.Assistant;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.doctor.DoctorInfo;
+import com.qubaopen.survey.entity.doctor.DoctorRecord;
 import com.qubaopen.survey.entity.doctor.Genre;
 import com.qubaopen.survey.entity.doctor.TargetUser;
 
@@ -40,6 +43,9 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
 
     @Autowired
     private DoctorInfoRepository doctorInfoRepository;
+
+	@Autowired
+	DoctorRecordRepository doctorRecordRepository;
 
 	@Autowired
 	private SmsService smsService;
@@ -90,11 +96,62 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
 			map.put("genre", doctor.getDoctorInfo().getGenre()==null?"":doctor.getDoctorInfo().getGenre());
 			map.put("targetUser", doctor.getDoctorInfo().getTargetUser()==null?"":doctor.getDoctorInfo().getTargetUser());
 			map.put("avatar", doctor.getDoctorInfo().getAvatarPath()==null?"":doctor.getDoctorInfo().getAvatarPath());
-			map.put("record", doctor.getDoctorInfo().getRecordPath()==null?"":doctor.getDoctorInfo().getRecordPath());
+			map.put("record", doctor.getDoctorInfo().getRecordPath()==null?"":UploadUtils.retrievePriavteUrl(doctor.getDoctorInfo().getRecordPath()));
 			map.put("introduce", doctor.getDoctorInfo().getIntroduce()==null?"":doctor.getDoctorInfo().getIntroduce());
 			map.put("review", doctor.getDoctorInfo().isReview());
 			map.put("reviewReason", doctor.getDoctorInfo().getReviewReason()==null?"":doctor.getDoctorInfo().getReviewReason());
 			map.put("refusalReason", doctor.getDoctorInfo().getRefusalReason()==null?"":doctor.getDoctorInfo().getRefusalReason());
+			
+			DoctorRecord dr=doctorRecordRepository.findOne(doctor.getId());
+		    StringBuffer autoIntroduce = new StringBuffer();
+
+			
+			if(doctor.getDoctorInfo().getIntroduce()==null && dr!=null){
+				
+				//流派
+				autoIntroduce.append("流派:");
+				autoIntroduce.append(doctor.getDoctorInfo().getGenre()==null?"":"\n"+doctor.getDoctorInfo().getGenre());
+				//对象
+				autoIntroduce.append("\n\n擅长对象:");
+				autoIntroduce.append(doctor.getDoctorInfo().getTargetUser()==null?"":"\n"+doctor.getDoctorInfo().getTargetUser());
+
+				//学位和学历
+				autoIntroduce.append("\n\n【学位和学历】");
+				autoIntroduce.append(dr.getEducationalStart()==null?"":"\n"+dr.getEducationalStart()+"至");
+				autoIntroduce.append(dr.getEducationalEnd()==null?"":dr.getEducationalEnd());
+				autoIntroduce.append(dr.getSchool()==null?"":"\n"+dr.getSchool());
+				autoIntroduce.append(dr.getProfession()==null?"":"\n"+dr.getProfession());
+				autoIntroduce.append(dr.getDegree()==null?"":"\n"+dr.getDegree());
+				autoIntroduce.append(dr.getEducationalIntroduction()==null?"":"\n"+dr.getEducationalIntroduction());
+				
+				//培训经历
+				autoIntroduce.append("\n\n【培训经历】");
+				autoIntroduce.append(dr.getTrainStart()==null?"":"\n"+dr.getTrainStart()+"至");
+				autoIntroduce.append(dr.getTrainEnd()==null?"":dr.getTrainEnd());
+				autoIntroduce.append(dr.getCourse()==null?"":"\n"+dr.getCourse());
+				autoIntroduce.append(dr.getOrganization()==null?"":"\n"+dr.getOrganization());
+				autoIntroduce.append(dr.getTrainIntroduction()==null?"":"\n"+dr.getTrainIntroduction());
+
+				//接收督导经历
+				autoIntroduce.append("\n\n【接收督导经历】");
+				autoIntroduce.append(dr.getSupervise()==null?"":"\n"+dr.getSupervise());
+				autoIntroduce.append(dr.getOrientation()==null?"":"\n"+dr.getOrientation());
+				autoIntroduce.append(dr.getSuperviseHour()==null?"":"\n"+dr.getSuperviseHour());
+				autoIntroduce.append(dr.getContactMethod()==null?"":"\n"+dr.getContactMethod());
+				autoIntroduce.append(dr.getSuperviseIntroduction()==null?"":"\n"+dr.getSuperviseIntroduction());
+				
+				//自我经历
+				autoIntroduce.append("\n\n【自我经历】");
+				autoIntroduce.append(dr.getSelfStart()==null?"":"\n"+dr.getSelfStart()+"至");
+				autoIntroduce.append(dr.getSelfEnd()==null?"":dr.getSelfEnd());
+				autoIntroduce.append(dr.getTotalHour()==null?"":"\n"+dr.getTotalHour());
+				autoIntroduce.append(dr.getSelfIntroduction()==null?"":"\n"+dr.getSelfIntroduction());
+				
+				
+				map.put("introduce", autoIntroduce);
+			}
+			//获取个人经历信息
+			
 			list.add(map);
 		}
 		

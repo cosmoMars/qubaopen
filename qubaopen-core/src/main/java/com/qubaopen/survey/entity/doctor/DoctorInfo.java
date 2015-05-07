@@ -52,7 +52,7 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	private Date birthday;
 
 	/**
-	 * 资质
+	 * 资质 2015-5-5 暂不用
 	 */
 	private String experience;
 

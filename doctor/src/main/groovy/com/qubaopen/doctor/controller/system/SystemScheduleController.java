@@ -50,8 +50,8 @@ public class SystemScheduleController {
        List<Booking> sendBookings = new ArrayList<>();
 
        for (Booking booking : bookings) {
-           // 预约时间小于现在，超时时间大于现在
-           if (booking.getTime() != null && booking.getTime().compareTo(now) < 0 && booking.getOutDated() != null && booking.getOutDated().compareTo(now) == 1) {
+           // 超时时间大于现在
+           if (booking.getTime() != null && booking.getOutDated() != null && booking.getOutDated().compareTo(now) == 1) {
                int diffMins = (int) ((booking.getOutDated().getTime() - now.getTime()) / 1000 / 60);
                // 小于两小时提醒
                if (diffMins <= 120) {

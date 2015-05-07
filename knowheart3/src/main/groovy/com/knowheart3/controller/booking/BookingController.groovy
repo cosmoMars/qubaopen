@@ -499,7 +499,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'doctorStatus' : booking?.doctorStatus
 			]
 		} else {
-			'{"success" : "0", "message" : "err"}'
+			'{"success" : "0", "message" : "没有订单"}'
 		}
 	}
 	

@@ -1,24 +1,14 @@
-package com.qubaopen.doctor.service;
+package com.qubaopen.doctor.service
 
+import com.qubaopen.doctor.repository.doctor.*
+import com.qubaopen.doctor.utils.DateCommons
+import com.qubaopen.survey.entity.doctor.*
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
-import com.qubaopen.doctor.repository.doctor.DoctorCaptchaLogRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorCaptchaRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorRepository;
-import com.qubaopen.doctor.repository.doctor.DoctorUdidRepository;
-import com.qubaopen.doctor.utils.DateCommons
-import com.qubaopen.survey.entity.doctor.Doctor
-import com.qubaopen.survey.entity.doctor.DoctorCaptcha
-import com.qubaopen.survey.entity.doctor.DoctorCaptchaLog
-import com.qubaopen.survey.entity.doctor.DoctorInfo
-import com.qubaopen.survey.entity.doctor.DoctorUdid
 
 @Service
 public class DoctorService {
@@ -79,6 +69,7 @@ public class DoctorService {
 			def randomNum = RandomStringUtils.randomNumeric(6)
 			def doctorInfo = new DoctorInfo(
 				id : d.id,
+				phone: d.phone,
 				name : "医师$randomNum",
 				loginStatus : DoctorInfo.LoginStatus.Unaudited,
 				bookingTime : '111111110000000000001111,111111110000000000001111,111111110000000000001111,111111110000000000001111,111111110000000000001111,111111111111111111111111,111111111111111111111111'

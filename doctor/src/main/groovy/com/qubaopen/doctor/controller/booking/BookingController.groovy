@@ -95,6 +95,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //		c.add(Calendar.DATE, -7)
 //		ago = c.getTime() as Date
 
+		def result = bookingRepository.countBooking(doctor)
+
 		if (index == null || index == 0) {
 			if (idsStr) {
 				bookingList = bookingRepository.findBookingList(doctor, ids, pageable)
@@ -110,20 +112,29 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		} else {
 			def idsStatus = []
 
-			if (index == 1) {
-				idsStatus = [Booking.Status.Booking, Booking.Status.Paid]
-			} else if (index == 2){
-				idsStatus = [Booking.Status.PayAccept]
-			} else if (index == 3){
-				idsStatus = [Booking.Status.Consulted, Booking.Status.Next]
-			} else if (index == 4){
-				idsStatus = [Booking.Status.ChangeDate]
-			}
-			if (idsStr) {
-				bookingList = bookingRepository.findBookingListWithoutStatus(doctor, idsStatus, ids, pageable)
+			if (index == 2) {
+//				idsStatus = [Booking.Status.PayAccept]
+
+				if (idsStr) {
+					bookingList = bookingRepository.findByWithoutStatusAndNullDoctorStatus(doctor, ids, pageable)
+				} else {
+					bookingList = bookingRepository.findByWithoutStatusAndNullDoctorStatus(doctor, pageable)
+				}
 			} else {
-				bookingList = bookingRepository.findBookingListWithoutStatus(doctor, idsStatus, pageable)
+				if (index == 1) {
+					idsStatus = [Booking.Status.Booking, Booking.Status.Paid]
+				} else if (index == 3) {
+					idsStatus = [Booking.Status.Consulted, Booking.Status.Next]
+				} else if (index == 4) {
+					idsStatus = [Booking.Status.ChangeDate]
+				}
+				if (idsStr) {
+					bookingList = bookingRepository.findBookingListWithoutStatus(doctor, idsStatus, ids, pageable)
+				} else {
+					bookingList = bookingRepository.findBookingListWithoutStatus(doctor, idsStatus, pageable)
+				}
 			}
+
 		}
 
 		def data = []
@@ -140,8 +151,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'consultType' : it?.consultType?.ordinal(),
 				'status' : it?.status?.ordinal(),
 				'money' : money,
-				'userStatus' : it?.userStatus,
-				'doctorStatus' : it?.doctorStatus,
+				'userStatus'  : it?.userStatus?.ordinal(),
+				'doctorStatus': it?.doctorStatus?.ordinal(),
 				'userSex' : it?.sex?.ordinal(),
 				'avatar' : it?.user?.userInfo?.avatarPath
 			]
@@ -153,6 +164,11 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		[
 			'success' : '1',
 			'data' : data,
+			'all'      : result['all'],
+			'toConfirm': result['toConfirm'],
+			'toConsult': result['toConsult'],
+			'record'   : result['record'],
+			'change'   : result['change'],
 			'more' : more
 		]
 	}

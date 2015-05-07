@@ -3,6 +3,7 @@ package com.qubaopen.doctor.repository.doctor;
 import java.util.Date;
 import java.util.List;
 
+import com.qubaopen.doctor.repository.doctor.custom.BookingRepositoryCustom;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,11 +13,17 @@ import com.qubaopen.survey.entity.booking.Booking;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.user.User;
 
-public interface BookingRepository extends MyRepository<Booking, Long> {
+public interface BookingRepository extends MyRepository<Booking, Long>, BookingRepositoryCustom {
 
 	@Query("from Booking b where b.doctor = :doctor and b.status in (:idsStatus) and b.id not in (:ids)")
 	List<Booking> findBookingListWithoutStatus(@Param("doctor") Doctor doctor, @Param("idsStatus") List<Booking.Status> idsStatus, @Param("ids") List<Long> ids, Pageable pageable);
-	
+
+	@Query("from Booking b where b.doctor = :doctor and b.status = 7 and b.id not in (:ids) and b.doctorStatus is null")
+	List<Booking> findByWithoutStatusAndNullDoctorStatus(@Param("doctor") Doctor doctor, @Param("ids") List<Long> ids, Pageable pageable);
+
+	@Query("from Booking b where b.doctor = :doctor and b.status = 7 and b.doctorStatus is null")
+	List<Booking> findByWithoutStatusAndNullDoctorStatus(@Param("doctor") Doctor doctor, Pageable pageable);
+
 	@Query("from Booking b where b.doctor = :doctor and b.id not in (:ids) and b.status != 11")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("ids") List<Long> ids, Pageable pageable);
 	

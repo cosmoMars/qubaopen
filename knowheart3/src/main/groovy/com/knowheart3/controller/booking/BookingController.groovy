@@ -8,6 +8,7 @@ import com.knowheart3.repository.doctor.DoctorInfoRepository
 import com.knowheart3.repository.doctor.DoctorRepository
 import com.knowheart3.repository.hospital.HospitalRepository
 import com.knowheart3.service.SmsService
+import com.knowheart3.service.booking.BookingService
 import com.knowheart3.utils.CommonEmail
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -66,6 +67,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
 	@Autowired
 	CommonEmail commonEmail
+
+	@Autowired
+	BookingService bookingService
 
 	@Value('${ratio}')
 	private double ratio
@@ -508,37 +512,35 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * @return
 	 * 获取订单列表
 	 */
-	@Transactional
+//	@Transactional
 	@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
 	retrieveSelfBooking(
-		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
-		Pageable pageable,
-		@ModelAttribute('currentUser') User user) {
+			@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
+					Pageable pageable,
+			@ModelAttribute('currentUser') User user) {
 
-		def u = new User(id : user.id)
-		
 		def bookings = bookingRepository.findAll(
-			[
-				user_equal : u,
-				status_notEqual : Booking.Status.Close
-			], pageable
+				[
+						user_equal     : user,
+						status_notEqual: Booking.Status.Close
+				], pageable
 		)
 		def bookingContent = bookings.getContent()
 		def data = []
 
 		def outDateBooking = []
 		bookingContent.each {
-		    def outSecond, now = new Date()
-		    if (it.status == Booking.Status.Paying && it.outDated <= now) {
-		        it.time = null
-		        it.outDated = null
+			def outSecond, now = new Date()
+			if (it.status == Booking.Status.Paying && it.outDated <= now) {
+				it.time = null
+				it.outDated = null
 				it.status = Booking.Status.Accept
-				bookingRepository.save(it)
-//		        outDateBooking << it
-		    }
-		    if (it.outDated != null) {
-		        outSecond = (it.outDated.time - now.time) / 1000 as int
-		    }
+//				bookingRepository.save(it)
+				outDateBooking << it
+			}
+			if (it.outDated != null) {
+				outSecond = (it.outDated.time - now.time) / 1000 as int
+			}
 			def doctorName
 			if (it?.doctor) {
 				doctorName = it?.doctor?.doctorInfo?.name
@@ -547,39 +549,39 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			}
 
 			data << [
-					'bookingId'      : it?.id,
-					'doctorId'       : it?.doctor?.id,
-					'doctorName'     : doctorName,
-					'doctorPhone'    : it?.doctor?.doctorInfo?.phone,
-					'lastBookingTime': it?.lastBookingTime,
-					'hospitalId'     : it?.hospital?.id,
-					'hospitalName'   : it?.hospital?.hospitalInfo?.name,
-					'hospitalPhone'  : it?.hospital?.hospitalInfo?.phone,
-					'name'           : it?.name,
-					'phone'          : it?.phone,
-					'sex'            : it?.sex?.ordinal(),
-					'birthday'       : it?.birthday,
-					'profession'     : it?.profession,
-					'onlineFee'      : it?.doctor?.doctorInfo?.onlineFee,
-					'offlineFee'     : it?.doctor?.doctorInfo?.offlineFee,
-					'city'           : it?.city,
-					'married'        : it?.married,
-					'haveChildren'   : it?.haveChildren,
-					'helpReason'     : it?.helpReason,
-					'otherProblem'   : it?.otherProblem,
-					'treatmented'    : it?.treatmented,
-					'haveConsulted'  : it?.haveConsulted,
-					'refusalReason'  : it?.refusalReason,
-					'time'           : it?.time,
-					'quick'          : it?.quick,
-					'consultType'    : it?.consultType?.ordinal(),
-					'status'         : it?.status?.ordinal(),
-					'baseMoney'      : it.money,
-					'money'          : it?.money + it?.quickMoney,
-					'userStatus'     : it?.userStatus?.ordinal(),
-					'doctorStatus'   : it?.doctorStatus?.ordinal(),
-					'doctorAvatar'   : it?.doctor?.doctorInfo?.avatarPath,
-					'hospitalAvatar' : it?.hospital?.hospitalInfo?.hospitalAvatar,
+					'bookingId'        : it?.id,
+					'doctorId'         : it?.doctor?.id,
+					'doctorName'       : doctorName,
+					'doctorPhone'      : it?.doctor?.doctorInfo?.phone,
+					'lastBookingTime'  : it?.lastBookingTime,
+					'hospitalId'       : it?.hospital?.id,
+					'hospitalName'     : it?.hospital?.hospitalInfo?.name,
+					'hospitalPhone'    : it?.hospital?.hospitalInfo?.phone,
+					'name'             : it?.name,
+					'phone'            : it?.phone,
+					'sex'              : it?.sex?.ordinal(),
+					'birthday'         : it?.birthday,
+					'profession'       : it?.profession,
+					'onlineFee'        : it?.doctor?.doctorInfo?.onlineFee,
+					'offlineFee'       : it?.doctor?.doctorInfo?.offlineFee,
+					'city'             : it?.city,
+					'married'          : it?.married,
+					'haveChildren'     : it?.haveChildren,
+					'helpReason'       : it?.helpReason,
+					'otherProblem'     : it?.otherProblem,
+					'treatmented'      : it?.treatmented,
+					'haveConsulted'    : it?.haveConsulted,
+					'refusalReason'    : it?.refusalReason,
+					'time'             : it?.time,
+					'quick'            : it?.quick,
+					'consultType'      : it?.consultType?.ordinal(),
+					'status'           : it?.status?.ordinal(),
+					'baseMoney'        : it.money,
+					'money'            : it?.money + it?.quickMoney,
+					'userStatus'       : it?.userStatus?.ordinal(),
+					'doctorStatus'     : it?.doctorStatus?.ordinal(),
+					'doctorAvatar'     : it?.doctor?.doctorInfo?.avatarPath,
+					'hospitalAvatar'   : it?.hospital?.hospitalInfo?.hospitalAvatar,
 					'outSecond'        : outSecond,
 					'doctorAddress'    : it?.doctor?.doctorInfo?.address,
 					'hospitalAddress'  : it?.hospital?.hospitalInfo?.address,
@@ -587,14 +589,14 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					'hospitalMaxCharge': it?.hospital?.hospitalInfo?.maxCharge
 			]
 		}
-//		bookingRepository.save(outDateBooking)
+		bookingService.saveBooking(outDateBooking)
 
 		[
-			'success' : '1',
-			'more': bookings.hasNext(),
-			'data' : data	
+				'success': '1',
+				'more'   : bookings.hasNext(),
+				'data'   : data
 		]
-		
+
 	}
 		
 	def dayForWeek(Date date) {

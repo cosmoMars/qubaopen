@@ -94,22 +94,38 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //		c.setTime(nowDate)
 //		c.add(Calendar.DATE, -7)
 //		ago = c.getTime() as Date
-		
-		if (index != null) {
-			def status = Booking.Status.values()[index]
-			if (idsStr) {
-				bookingList = bookingRepository.findBookingList(doctor, status, ids, pageable)
-			} else {
-				bookingList = bookingRepository.findBookingList(doctor, status, pageable)
-			}
-		} else {
+
+		if (index == null || index == 0) {
 			if (idsStr) {
 				bookingList = bookingRepository.findBookingList(doctor, ids, pageable)
 			} else {
-				bookingList = bookingRepository.findBookingList(doctor, pageable)
+//				bookingList = bookingRepository.findBookingList(doctor, pageable)
+				bookingList = bookingRepository.findAll(
+						[
+								doctor_equal: doctor,
+								status_notEqual: Booking.Status.Close
+						], pageable
+				)
+			}
+		} else {
+			def idsStatus = []
+
+			if (index == 1) {
+				idsStatus = [Booking.Status.Booking, Booking.Status.Paid]
+			} else if (index == 2){
+				idsStatus = [Booking.Status.PayAccept]
+			} else if (index == 3){
+				idsStatus = [Booking.Status.Consulted, Booking.Status.Next]
+			} else if (index == 4){
+				idsStatus = [Booking.Status.ChangeDate]
+			}
+			if (idsStr) {
+				bookingList = bookingRepository.findBookingListWithoutStatus(doctor, idsStatus, ids, pageable)
+			} else {
+				bookingList = bookingRepository.findBookingListWithoutStatus(doctor, idsStatus, pageable)
 			}
 		}
-		
+
 		def data = []
 		bookingList.each {
 			def money = it?.money + it?.quickMoney
@@ -131,7 +147,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			]
 		}
 		def more = true
-		if (bookingList.size() < pageable.pageSize) {
+		if (data.size() < pageable.pageSize) {
 			more = false
 		}
 		[

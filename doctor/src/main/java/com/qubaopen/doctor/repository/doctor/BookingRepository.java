@@ -14,14 +14,14 @@ import com.qubaopen.survey.entity.user.User;
 
 public interface BookingRepository extends MyRepository<Booking, Long> {
 
-	@Query("from Booking b where b.doctor = :doctor and b.status = :status and b.id not in (:ids)")
-	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("status") Booking.Status status, @Param("ids") List<Long> ids, Pageable pageable);
+	@Query("from Booking b where b.doctor = :doctor and b.status in (:idsStatus) and b.id not in (:ids)")
+	List<Booking> findBookingListWithoutStatus(@Param("doctor") Doctor doctor, @Param("idsStatus") List<Booking.Status> idsStatus, @Param("ids") List<Long> ids, Pageable pageable);
 	
-	@Query("from Booking b where b.doctor = :doctor and b.id not in (:ids)")
+	@Query("from Booking b where b.doctor = :doctor and b.id not in (:ids) and b.status != 11")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("ids") List<Long> ids, Pageable pageable);
 	
-	@Query("from Booking b where b.doctor = :doctor and b.status = :status")
-	List<Booking> findBookingList(@Param("doctor") Doctor doctor, @Param("status") Booking.Status status, Pageable pageable);
+	@Query("from Booking b where b.doctor = :doctor and b.status in (:idsStatus)")
+	List<Booking> findBookingListWithoutStatus(@Param("doctor") Doctor doctor, @Param("idsStatus") List<Booking.Status> idsStatus, Pageable pageable);
 	
 	@Query("from Booking b where b.doctor = :doctor")
 	List<Booking> findBookingList(@Param("doctor") Doctor doctor, Pageable pageable);

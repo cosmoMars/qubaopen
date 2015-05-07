@@ -21,7 +21,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 //		logger.info(" =================== request preHandle =========================");
 		
-//		System.out.println(request.getSession().getId() + "-------------------------------");systemVersions
+//		System.out.println(request.getSession().getId() + "-------------------------------");
 
 //		System.out.println(request.getRequestURI() + "====================");
 //		System.out.println(request.getSession().getServletContext().getRealPath("/"));

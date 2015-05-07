@@ -5,10 +5,14 @@ import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.doctor.repository.doctor.BookingRepository;
 import com.qubaopen.doctor.repository.hospital.HospitalInfoRepository;
 import com.qubaopen.survey.entity.booking.Booking;
+import com.qubaopen.survey.entity.booking.ResolveType;
+import com.qubaopen.survey.entity.doctor.Doctor;
+import com.qubaopen.survey.entity.doctor.DoctorInfo;
 import com.qubaopen.survey.entity.hospital.Hospital;
 import com.qubaopen.survey.entity.hospital.HospitalInfo;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -205,7 +210,62 @@ public class HospitalBookingController extends AbstractBaseController<Booking, L
 		return result;
 	}
 
-	
+	/**
+	 * @param id
+	 * @param index
+	 * @param doctor
+	 * @return
+	 * 修改订单状态
+	 */
+	@Transactional
+	@RequestMapping(value = "modifyBookingStatus", method = RequestMethod.POST)
+	private String modifyBookingStatus(@RequestParam(required = false) Long id,
+						@RequestParam(required = false) String content,
+						@RequestParam(required = false) Integer index,
+						@ModelAttribute("currentHospital") Hospital hospital) {
+
+		logger.trace("-- 修改订单状态 --");
+
+		HospitalInfo hi = hospitalInfoRepository.findOne(hospital.getId());
+
+		if (hi.getLoginStatus() != HospitalInfo.LoginStatus.Audited) {
+			return "{\"success\" : \"0\", \"message\" : \"err923\"}";
+		}
+
+		Booking booking = bookingRepository.findOne(id);
+		Booking.Status bookingStatus = Booking.Status.values()[index];
+
+
+//		if (bookingStatus == Booking.Status.Accept) {
+//			String param1 = "{\"url\" : \"http://zhixin.me/smsRedirect.html\"}";
+//			smsService.sendSmsMessage(booking.getPhone(), 5, param1);
+//		}
+		booking.setStatus(bookingStatus);
+
+		if (bookingStatus !=  null && bookingStatus == Booking.Status.Refusal) {
+			booking.setRefusalReason(content);
+
+//			payEntityRepository.deleteByBooking(booking)
+
+		}
+
+		if (bookingStatus != null && bookingStatus == Booking.Status.Next) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(booking.getTime());
+
+			cal.add(Calendar.DATE, 7);
+			Date newTime = cal.getTime();
+			booking.setTime(newTime);
+		}
+		booking.setLastModifiedDate(new DateTime());
+		booking.setResolveType(ResolveType.None);
+		booking.setSendEmail(false);
+		bookingRepository.save(booking);
+		return "{\"success\" : \"1\"}";
+	}
+
+
+
 	int dayForWeek(Date date) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);

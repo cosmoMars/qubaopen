@@ -211,14 +211,17 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				g.user == user
 			}
 			commentData << [
-				'commentId' : it?.id,
-				'doctorId' : it?.doctor?.id,
-				'doctorName' : it?.doctor?.doctorInfo?.name,
-				'doctorContent' : it?.content,
-				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
-				'doctorTime' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-				'goods' : gSize,
-				'isGood' : isGood
+					'commentId'     : it?.id,
+					'doctorId'      : it?.doctor?.id,
+					'doctorName'    : it?.doctor?.doctorInfo?.name,
+					'doctorContent' : it?.content,
+					'doctorAvatar'  : it?.doctor?.doctorInfo?.avatarPath,
+					'doctorTime'    : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+					'hospitalId'    : it?.hospital?.id,
+					'hospitalName'  : it?.hospital?.hospitalInfo?.name,
+					'hospitalAvatar': it?.hospital?.hospitalInfo?.hospitalAvatar,
+					'goods'         : gSize,
+					'isGood'        : isGood
 			]
 		}
 		if (pageable.pageNumber > 0) {

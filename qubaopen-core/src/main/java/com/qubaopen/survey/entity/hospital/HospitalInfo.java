@@ -161,6 +161,11 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
      */
     private String reviewReason;
 
+	/**
+	 * 每月结算日
+	 */
+	private int clearDay = 1;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -408,4 +413,12 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
     public void setReviewReason(String reviewReason) {
         this.reviewReason = reviewReason;
     }
+
+	public int getClearDay() {
+		return clearDay;
+	}
+
+	public void setClearDay(int clearDay) {
+		this.clearDay = clearDay;
+	}
 }

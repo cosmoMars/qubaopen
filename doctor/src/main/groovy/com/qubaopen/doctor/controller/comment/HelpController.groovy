@@ -168,14 +168,16 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		comments.each {
 			def goods = helpCommentGoodRepository.countByHelpComment(it)
 			commentData << [
-					'commentId'   : it?.id,
-					'doctorId'    : it?.doctor?.id,
-					'doctorName'  : it?.doctor?.doctorInfo?.name,
-					'hospitalName': it?.hospital?.hospitalInfo?.name,
-					'content'     : it?.content,
-					'doctorAvatar': it?.doctor?.doctorInfo?.avatarPath,
-					'time'        : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-					'goods'       : goods
+					'commentId'     : it?.id,
+					'doctorId'      : it?.doctor?.id,
+					'doctorName'    : it?.doctor?.doctorInfo?.name,
+					'hospitalId'    : it?.hospital?.id,
+					'hospitalName'  : it?.hospital?.hospitalInfo?.name,
+					'content'       : it?.content,
+					'doctorAvatar'  : it?.doctor?.doctorInfo?.avatarPath,
+					'hospitalAvatar': it?.hospital?.hospitalInfo?.hospitalAvatar,
+					'time'          : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+					'goods'         : goods
 			]
 		}
 		if (pageable.pageNumber > 0) {
@@ -303,23 +305,20 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			it.view = true
 
 			def minTime = (now.time - it.createdDate.millis) / 1000 / 60 as int,
-				time,
-				type = 1 // 1分钟，2时间
-
+				time
 			if (minTime < 60) {
-				time = minTime == 0 ? 1 : minTime
+				time = "${minTime == 0 ? 1 : minTime}分钟之前" as String
 			} else {
-				time = it.createdDate.toDate()
-				type = 2
+				time = DateFormatUtils.format(it.createdDate.toDate(),'M月d日 H:mm') as String
 			}
 
 			data << [
+					helpId        : it.id,
 					userAvatar    : it.user?.userInfo?.avatarPath,
 					userName      : it.user?.userInfo?.nickName,
 					doctorName    : it.helpComment?.doctor?.doctorInfo?.name,
 					commentContent: it.helpComment?.content,
-					time          : time as String,
-					type          : type
+					time          : time
 			]
 		}
 

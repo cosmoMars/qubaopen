@@ -48,7 +48,8 @@ public class HelpCommentRepositoryImpl implements HelpCommentRepositoryCustom {
 		sql.append("from help_comment_good group by help_comment_id) a ");
 		sql.append("on a.id = hc.id ");
 		sql.append("where help_id = :helpId ");
-		sql.append("order by a.hsum desc,hc.created_date desc ");
+		sql.append("order by a.hsum desc ");
+//		,hc.created_date desc
 
 		Query query = entityManager.createNativeQuery(sql.toString())
 				.setParameter("helpId", help.getId())

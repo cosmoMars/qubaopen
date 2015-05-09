@@ -77,6 +77,9 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		logger.trace '--  获取医师现金信息 --'
 		
 		def cash, cashLogs
+
+		def doctorInfo = doctorInfoRepository.findOne(doctor.id)
+
 		if (pageable.pageNumber == 0) {
 			cash = doctorCashRepository.findOne(doctor.id)
 			if (!cash) {
@@ -105,20 +108,25 @@ public class DoctorCashController extends AbstractBaseController<DoctorCash, Lon
 		if (data.size() < 20) {
 			more = false
 		}
+		def clearContent
+		if (doctorInfo.hospital?.hospitalInfo?.name) {
+			clearContent = "与${doctorInfo.hospital.hospitalInfo.name}在${doctorInfo.hospital.hospitalInfo.clearDay}号进行统一打款" as String
+		}
 		if (pageable.pageNumber == 0) {
 			return [
-				"success" : "1",
-				'inCash' : cash?.inCash,
-				'outCash' : cash?.outCash,
-				'currentCash' : cash?.currentCash,
-				'more' : more,
-				'data' : data
+					"success"     : "1",
+					'inCash'      : cash?.inCash,
+					'outCash'     : cash?.outCash,
+					'currentCash' : cash?.currentCash,
+					'clearContent': clearContent,
+					'more'        : more,
+					'data'        : data
 			]
 		} else {
 			return [
-				"success" : "1",
-				'more' : more,
-				'data' : data
+					"success": "1",
+					'more'   : more,
+					'data'   : data
 			]
 		}
 		

@@ -141,6 +141,9 @@ public class ExerciseController extends AbstractBaseController<Exercise, Long> {
                 completeCount: 1,
                 exerciseInfo: eInfo
 			)
+			if (infoSize == 1) {
+				uExercise.complete = 1
+			}
 		}
 		def exerciseInfoLog = new UserExerciseInfoLog(
 			user : user,

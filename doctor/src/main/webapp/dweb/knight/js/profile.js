@@ -142,10 +142,16 @@ function modifyInfo(){
         jsonSent.quick=$("#urgentConsult label:eq(0)").hasClass("active");
         jsonSent.commentConsult=$("#commentConsult label:eq(0)").hasClass("active");
         jsonSent.phoneConsult=$("#phoneConsult label:eq(0)").hasClass("active");
-        jsonSent.video=$("#video").hasClass("active");
-        jsonSent.faceToFace=$("#faceToFace").hasClass("active");
-        jsonSent.introduce=$("#introduction").val();
+        //jsonSent.introduce=$("#introduction").val();
         jsonSent.bookingTime=$("#btn-pick").attr("data-time");
+        jsonSent.video=$("#video").is(":checked");
+        jsonSent.faceToFace=$("#faceToFace").is(":checked");
+        if(jsonSent.video){
+            jsonSent.onlineFee=$("#onlineFee").val();
+        }
+        if(jsonSent.faceToFace){
+            jsonSent.offlineFee=$("#offlineFee").val();
+        }
 
 
         recordJson.educationalStart=$("#educationalStart").val();
@@ -179,14 +185,14 @@ function modifyInfo(){
             return "{" + arr.join(",") + "}";
         }
 
-        jsonSent.recordJson=JsonToString(recordJson);
+        jsonSent.recordJson=JsonToString(jsonFilter(recordJson));
 
 
         //jsonSent.record=$("#certificate").val();
         //jsonSent.avatar=$("#avatar").val();
 
 
-        console.log(jsonSent);
+        console.log(jsonFilter(jsonSent));
 
         $(this).ajaxSubmit({
             url: ContextUrl+"/doctorInfo/modifyDoctorInfo",
@@ -285,13 +291,10 @@ function updateProfileView(obj){
         $("#phoneConsult label").eq(1).click();
     }
 
-    if(data.video){
-        $("#video").addClass("active");
-    }
-
-    if(data.faceToFace){
-        $("#faceToFace").addClass("active");
-    }
+    $("#video").attr("checked", data.video);
+    $("#faceToFace").attr("checked", data.faceToFace);
+    $("#onlineFee").val(data.onlineFee);
+    $("#offlineFee").val(data.offlineFee);
 
     $("#introduction").val(data.introduce);
     //jsonSent.record=$("#certificate").val();
@@ -356,4 +359,15 @@ function setDataJson(data){
 
 function getDataJson(){
     return dataJson;
+}
+
+//把空的json去掉
+function jsonFilter(json){
+
+    for (var key in json){
+        if(!json[key] && typeof  json[key]!="boolean"){
+            delete json[key];
+        }
+    }
+    return json;
 }

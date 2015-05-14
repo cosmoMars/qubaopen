@@ -9,6 +9,8 @@
 
 var more=false;
 var page=0;
+
+
 $(document).ready(function () {
 
     //获取详细信息 没有则返回列表
@@ -19,11 +21,6 @@ $(document).ready(function () {
         getHelpDetail(help,page);
     }
 
-
-
-
-
-
     $(document).on("scroll",function(){
         if(getScrollTop() + getClientHeight() == getScrollHeight() && more){
             console.log("到达底部");
@@ -32,7 +29,6 @@ $(document).ready(function () {
         }
     });
 });
-
 
 /**
  * 请求
@@ -123,7 +119,11 @@ function updateHelpDetailView(data,page){
         return;
     }
 
-    var appendHTML='<div class="panel panel-default "><div class="panel-body"><p>'+data.helpContent+'</p></div></div>';
+    //var appendHTML='<div class="panel panel-default "><div class="panel-body"><p>'+data.helpContent+'</p></div></div>';
+    var appendHTML='<div class="panel panel-warning "><div class="panel-body"><p><img class="img-circle" src="'+data.userAvatar+'" alt="Generic placeholder image" style="width: 40px; height: 40px;">'+
+        data.userName+'</p><p>'+data.helpContent+'</p>' +
+        '<p class="label-time">发表于 '+data.helpTime+'</p></div></div>';
+
 
     oMainView.empty().append(appendHTML);
 
@@ -153,12 +153,18 @@ function replyView(aData){
     }else{
         nameHTML=aData.hospitalName + ' 心理诊所';
     }
-    var appendHTML='<div class="panel panel-default "><div class="panel-body"><p><img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" style="width: 40px; height: 40px;">' +
+    var appendHTML='<div class="panel panel-default "><div class="panel-body"><p><img class="img-circle" src="'+aData.doctorAvatar+'" ' +
+        'alt="Generic placeholder image" style="width: 40px; height: 40px;" onerror="defaultImg(this)";>' +
     ' '+nameHTML +
     '</p><p>'+aData.content+'</p>' +
     '<p class="label-time">回答于 '+aData.time+'<span class="pull-right"><span>'+aData.goods+' </span><span class="color-orange glyphicon glyphicon-thumbs-up"></span></span></p></div></div>';
 
     return appendHTML;
+}
+
+/* 头像没加载出来 用默认图片 */
+function defaultImg(e){
+    e.src= "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
 }
 
 /**

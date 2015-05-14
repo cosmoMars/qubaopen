@@ -91,6 +91,7 @@ function updateOrderDetailView(obj){
     var content="";
     $("#userName").attr("user-id",data.userId);
     $("#userName").empty().append(data.userName);
+    $("#userPhone").empty().append(data.phone);
 
     content=data.userSex?"男":"女";
     $("#userSex").empty().append(content);

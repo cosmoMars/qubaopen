@@ -142,8 +142,8 @@
 
     <nav>
         <ul class="pager">
-            <li class="disabled"><a href="#">上一页</a></li>
-            <li class="disabled"><a href="#">下一页</a></li>
+            <li id="prev" class="disabled"><a href="#">上一页</a></li>
+            <li id="next" class="disabled"><a href="#">下一页</a></li>
         </ul>
     </nav>
 
@@ -223,8 +223,8 @@
                                 <nav>
                                     <ul class="pager">
                                         <span id="refreshTopic" class="glyphicon glyphicon-refresh"></span>
-                                        <li class="disabled"><a href="#">上一页</a></li>
-                                        <li class="disabled"><a href="#">下一页</a></li>
+                                        <li id="tPrev" class="disabled"><a href="#">上一页</a></li>
+                                        <li id="tNext" class="disabled"><a href="#">下一页</a></li>
                                     </ul>
                                 </nav>
 
@@ -267,8 +267,8 @@
                                 <nav>
                                     <ul class="pager">
                                         <span id="refreshSelf" class="glyphicon glyphicon-refresh"></span>
-                                        <li class="disabled"><a href="#">上一页</a></li>
-                                        <li class="disabled"><a href="#">下一页</a></li>
+                                        <li id="sPrev" class="disabled"><a href="#">上一页</a></li>
+                                        <li id="sNext" class="disabled"><a href="#">下一页</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -365,29 +365,77 @@
             });
 
 
-            var dPage= 0,tPage= 0,sPage= 0;
+            var page= 0,tPage= 0,sPage= 0;
 
 
             //点击刷新
             $("#btn-refresh").on("click",function(){
                 var bChecked=$("#checkboxWarning").is(":checked");
-                getDiscoveryList();
+                page=0;
+                getDiscoveryList(page);
                 //updateList(data.data);
+            });
+            //发现翻页
+            $("#prev").on("click",function(){
+                if($(this).hasClass("disabled") || page<=0){
+                    return;
+                }
+                page--;
+                getDiscoveryList(page);
+            });
+            $("#next").on("click",function(){
+                if($(this).hasClass("disabled")){
+                    return;
+                }
+                page++;
+                getDiscoveryList(page);
             });
 
             //点击刷新 专栏
             $("#refreshTopic").on("click",function(){
                 //var _this=this;
                 $(this).addClass("rotate");
-                getTopicList();
+                tPage=0;
+                getTopicList(tPage);
                 //setTimeout(function(){$(_this).removeClass("rotate")},1000);
+            });
+            //专栏 翻页
+            $("#tPrev").on("click",function(){
+                if($(this).hasClass("disabled") || tPage<=0){
+                    return;
+                }
+                tPage--;
+                getTopicList(tPage);
+            });
+            $("#tNext").on("click",function(){
+                if($(this).hasClass("disabled")){
+                    return;
+                }
+                tPage++;
+                getTopicList(tPage);
             });
 
             //点击刷新 测评
             $("#refreshSelf").on("click",function(){
-                getSelfList();
+                $(this).addClass("rotate");
+                sPage=0;
+                getSelfList(sPage);
             });
-
+            //测评 翻页
+            $("#sPrev").on("click",function(){
+                if($(this).hasClass("disabled") || sPage<=0){
+                    return;
+                }
+                sPage--;
+                getSelfList(sPage);
+            });
+            $("#sNext").on("click",function(){
+                if($(this).hasClass("disabled")){
+                    return;
+                }
+                sPage++;
+                getSelfList(sPage);
+            });
 
             //点击删除
             $(document).on("click",".delete",function(){
@@ -443,7 +491,7 @@
 
             getDiscoveryList();
             getTopicList();
-            getSelfList();
+            getSelfList(sPage);
 
 
 // 获得对应的事件名字
@@ -486,6 +534,16 @@
 
                         if (result == 1) {
                             updateDiscoveryList(data.list);
+                            if(data.list.length>=10){
+                                $("#next").removeClass("disabled");
+                            }else{
+                                $("#next").addClass("disabled");
+                            }
+                            if(page>0){
+                                $("#prev").removeClass("disabled");
+                            }else{
+                                $("#prev").addClass("disabled");
+                            }
                         }else if (result == 0) {
                             alert("请求错误");
                         }
@@ -494,9 +552,9 @@
             }
 
             /*获取专栏列表*/
-            function getTopicList(){
+            function getTopicList(tPage){
                 $.ajax({
-                    url:prevUrl+"/dailyDiscovery/retrieveTopic?join=false&size=10",
+                    url:prevUrl+"/dailyDiscovery/retrieveTopic?join=false&size=10&page="+tPage,
                     type: "GET",
                     async:false,
                     dataType: "json",
@@ -508,6 +566,16 @@
 
                         if (result == 1) {
                             updateTopicList(data.list);
+                            if(data.list.length>=10){
+                                $("#tNext").removeClass("disabled");
+                            }else{
+                                $("#tNext").addClass("disabled");
+                            }
+                            if(tPage>0){
+                                $("#tPrev").removeClass("disabled");
+                            }else{
+                                $("#tPrev").addClass("disabled");
+                            }
                         }else if (result == 0) {
 
                             alert("请求错误");
@@ -516,10 +584,11 @@
                 });
             }
 
+
             /*获取测评列表*/
-            function getSelfList(){
+            function getSelfList(sPage){
                 $.ajax({
-                    url:prevUrl+"/dailyDiscovery/retrieveSelf?join=false&size=10",
+                    url:prevUrl+"/dailyDiscovery/retrieveSelf?join=false&size=10&page="+sPage,
                     type: "GET",
                     async:false,
                     dataType: "json",
@@ -531,6 +600,16 @@
 
                         if (result == 1) {
                             updateSelfList(data.list);
+                            if(data.list.length>=10){
+                                $("#sNext").removeClass("disabled");
+                            }else{
+                                $("#sNext").addClass("disabled");
+                            }
+                            if(sPage>0){
+                                $("#sPrev").removeClass("disabled");
+                            }else{
+                                $("#sPrev").addClass("disabled");
+                            }
                         }else if (result == 0) {
 
                             alert("请求错误");
@@ -657,7 +736,7 @@
             function refreshList(){
                 getDiscoveryList();
                 getTopicList();
-                getSelfList();
+                getSelfList(sPage);
             }
 
 

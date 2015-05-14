@@ -52,6 +52,10 @@ $(document).ready(function () {
             case 11:
                 $oTitleLabel.html("确认用户已前来完成咨询？");
                 break;
+            case 12:
+                $oTitleLabel.html("请填写与用户电话确认好的预约时间");
+                $("#timeBody").removeClass("hide");
+                break;
             default:
                 $oTitleLabel.html("确定修改订单状态？");
                 break;
@@ -65,6 +69,7 @@ $(document).ready(function () {
         helpId="";
         $("#refuseBody").addClass("hide").find("input").val("");
         $("#warningBody").addClass("hide");
+        $("#timeBody").addClass("hide");
         $(".conflict").removeClass("hide");
         $("#changeTime").val("");
         $("#conflictId").attr("data-id","");
@@ -139,6 +144,8 @@ $(document).ready(function () {
             cofirmBookingStatus(helpId,0);
         }else if(status==11){
             cofirmBookingStatus(helpId,1);
+        }else if(status==12){
+            modifyBookingStatus(helpId,status);
         }
         $('#myModal').modal("hide");
     });
@@ -155,7 +162,7 @@ function getOrderList(){
 
     $.ajax({
         url: ContextUrl+"/hospitalBooking/retrieveHospitalBooking",
-        type: "POST",
+        type: "post",
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
 
@@ -187,11 +194,13 @@ function modifyBookingStatus(id,index){
     if(index==2){
         jsonSent.content=$("#refuseContent").val();
     }
+    if(index==12){
+        jsonSent.bookingTime=$("#bookingTime").val();
+    }
     console.log(jsonSent);
 
-    return;
     $.ajax({
-        url: ContextUrl+"/booking/modifyBookingStatus",
+        url: ContextUrl+"/hospitalBooking/modifyBookingStatus",
         type: "POST",
         data:jsonSent,
         dataType: "json",
@@ -366,7 +375,7 @@ function status2Html(data){
 
             break;
         case 1:
-            returnHtml+='<div class="text-status orange">待付款</div>';
+            returnHtml+='<button type="button" class="btn btn-default btn-xs btn-zhixin book-status change-status orange" help-status="12">选择时间</button>';
             break;
         case 2:
             returnHtml+='<div class="text-status gray">已婉拒</div>';
@@ -408,6 +417,18 @@ function status2Html(data){
             break;
         case 8:
             returnHtml+='<div class="text-status orange">正在改约</div>';
+            break;
+        case 9:
+            returnHtml+='<div class="text-status gray">退款中</div>';
+            break;
+        case 10:
+            returnHtml+='<div class="text-status gray">已退款</div>';
+            break;
+        case 11:
+            returnHtml+='<div class="text-status gray">订单关闭</div>';
+            break;
+        case 12:
+            returnHtml+='<div class="text-status gray">付款中</div>';
             break;
         default:
             returnHtml+="默认";

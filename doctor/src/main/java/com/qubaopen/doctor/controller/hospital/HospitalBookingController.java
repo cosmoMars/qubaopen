@@ -221,6 +221,7 @@ public class HospitalBookingController extends AbstractBaseController<Booking, L
 	@RequestMapping(value = "modifyBookingStatus", method = RequestMethod.POST)
 	private String modifyBookingStatus(@RequestParam(required = false) Long id,
 						@RequestParam(required = false) String content,
+						@RequestParam(required = false) String bookingTime,
 						@RequestParam(required = false) Integer index,
 						@ModelAttribute("currentHospital") Hospital hospital) {
 
@@ -247,7 +248,19 @@ public class HospitalBookingController extends AbstractBaseController<Booking, L
 
 //			payEntityRepository.deleteByBooking(booking)
 
+		}else if (bookingStatus !=  null && bookingStatus == Booking.Status.Paying) {
+
+			try {
+				booking.setTime(DateUtils.parseDate(bookingTime, "yyyy-MM-dd HH:mm"));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
+		
+		
+		
 
 		if (bookingStatus != null && bookingStatus == Booking.Status.Next) {
 			Calendar cal = Calendar.getInstance();

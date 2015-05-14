@@ -115,11 +115,11 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			
 			helps.each {
 				data << [
-					'helpId' : it?.id,
-					'userName' : it?.user?.userInfo?.nickName,
-					'helpContent' : it?.content,
+						'helpId'     : it?.id,
+						'userName'   : it?.user?.userInfo?.nickName,
+						'helpContent': it?.content,
 					'userAvatar' : it?.user?.userInfo?.avatarPath,
-					'helpTime' : DateFormatUtils.format(it?.time, 'yyyy-MM-dd')
+						'helpTime'   : DateFormatUtils.format(it?.time, 'yyyy-MM-dd')
 				]
 			}
 		} else {
@@ -132,27 +132,39 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 					if (cit.userId == user.id) {
 						isGood = true
 					}
+					def id, name, avatar, type = 0
+					if (cit.doctorId) {
+						id = cit.doctorId
+						name = cit.doctorName
+						avatar = cit.doctorPath
+					} else {
+						id = cit.hospitalId
+						name = cit.hospitalName
+						avatar = cit.hospitalPath
+						type = 1
+					}
 					commentData << [
-						'commentId' : cit.commentId,
-						'doctorId' : cit.doctorId,
-						'doctorName' : cit.doctorName,
-						'hospitalId' : cit.hospitalId,
-						'hospitalName' : cit.hospitalName,
-						'doctorAvatar' : cit.doctorPath,
-						'hospitalAvatar' : cit.hospitalPath,
-						'content' : cit.commentContent,
-						'time' : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
-						'goods' : cit.gSize,
-						'isGood' : isGood
+							'commentId'     : cit.commentId,
+							'doctorId'      : id,
+							'doctorName'    : name,
+							'hospitalId'    : id,
+							'hospitalName'  : name,
+							'doctorAvatar'  : avatar,
+							'hospitalAvatar': avatar,
+							'content'       : cit.commentContent,
+							'time'          : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
+							'goods'         : cit.gSize,
+							'isGood'        : isGood,
+							'type'          : type
 					]
 				}
 				data << [
-					'helpId' : it?.id,
-					'helpContent' : it?.content,
-					'helpTime' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-					'userName' : it?.user?.userInfo?.nickName,
-					'userAvatar' : it?.user?.userInfo?.avatarPath,
-					'commentData' : commentData
+						'helpId'     : it?.id,
+						'helpContent': it?.content,
+						'helpTime'   : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+						'userName'   : it?.user?.userInfo?.nickName,
+						'userAvatar' : it?.user?.userInfo?.avatarPath,
+						'commentData': commentData
 				]
 			}
 		}
@@ -210,43 +222,56 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			def isGood = goods.any { g ->
 				g.user == user
 			}
+			def id, name, avatar, type = 0
+
+			if (it.doctor) {
+				id = it.doctor?.id
+				name = it.doctor?.doctorInfo?.name
+				avatar = it.doctor?.doctorInfo?.avatarPath
+			} else {
+				id = it.hospital?.id
+				name = it.hospital?.hospitalInfo?.name
+				avatar = it.hospital?.hospitalInfo?.hospitalAvatar
+				type = 1
+			}
 			commentData << [
 					'commentId'     : it?.id,
-					'doctorId'      : it?.doctor?.id,
-					'doctorName'    : it?.doctor?.doctorInfo?.name,
+					'doctorId'      : id,
+					'doctorName'    : name,
 					'doctorContent' : it?.content,
-					'doctorAvatar'  : it?.doctor?.doctorInfo?.avatarPath,
+					'doctorAvatar'  : avatar,
 					'doctorTime'    : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-					'hospitalId'    : it?.hospital?.id,
-					'hospitalName'  : it?.hospital?.hospitalInfo?.name,
-					'hospitalAvatar': it?.hospital?.hospitalInfo?.hospitalAvatar,
+					'hospitalId'    : id,
+					'hospitalName'  : name,
+					'hospitalAvatar': avatar,
 					'goods'         : gSize,
-					'isGood'        : isGood
+					'isGood'        : isGood,
+					'type'          : type
 			]
 		}
 		if (pageable.pageNumber > 0) {
 			return [
-				'success' : '1',
-				'helpId' : '',
-				'helpContent' : '',
-				'helpTime' : '',
-				'userName' : '',
-				'userAvatar' : '',
-				'more' : more,
-				'data' : commentData,
-				'commentCount' : commentCount
+					'success'     : '1',
+					'helpId'      : '',
+					'helpContent' : '',
+					'helpTime'    : '',
+					'userName'    : '',
+					'userAvatar'  : '',
+					'more'        : more,
+					'data'        : commentData,
+					'commentCount': commentCount
 			]
 		}
 		[
-			'success' : '1',
-			'helpId' : help?.id,
-			'helpContent' : help?.content,
-			'helpTime' : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
-			'userName' : help?.user?.userInfo?.nickName,
-			'userAvatar' : help?.user?.userInfo?.avatarPath,
-			'more' : more,
-			'data' : commentData,
-			'commentCount' : commentCount
+				'success'     : '1',
+				'helpId'      : help?.id,
+				'helpContent' : help?.content,
+				'helpTime'    : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
+				'userName'    : help?.user?.userInfo?.nickName,
+				'userAvatar'  : help?.user?.userInfo?.avatarPath,
+				'more'        : more,
+				'data'        : commentData,
+				'commentCount': commentCount
 		]
 	}
 

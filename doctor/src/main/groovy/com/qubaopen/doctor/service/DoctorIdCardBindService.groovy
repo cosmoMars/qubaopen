@@ -64,6 +64,10 @@ public class DoctorIdCardBindService {
 					name : name,
 					status : 'local'
 				)
+//				userIdCard.name = name
+				if (userIdCard.name != name) {
+					return '{"success" : "0", "message" : "err205"}'
+				}
 				def di = doctorInfoRepository.findOne(doctor.id)
 				def infoMap = retrieveBirthdayAndSex(idCard),
 				birthday = infoMap['birthday'],
@@ -77,7 +81,6 @@ public class DoctorIdCardBindService {
 				}
 				di.name = name
 				doctorInfoRepository.save(di)
-				userIdCard.name = name
 				doctorIdCardLogRepository.save(doctorIdCardLog)
 			} else {
 				def result,
@@ -159,7 +162,10 @@ public class DoctorIdCardBindService {
 					name : name,
 					status : 'local'
 				)
-				userIdCard.name = name
+//				userIdCard.name = name
+				if (userIdCard.name != name) {
+					return '{"success" : "0", "message" : "err205"}'
+				}
 				userIdCardRepository.save(userIdCard)
 				doctorIdCardLogRepository.save(dcotorIdCardLog)
 				

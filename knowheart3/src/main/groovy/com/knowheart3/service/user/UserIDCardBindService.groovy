@@ -65,7 +65,10 @@ public class UserIDCardBindService {
 					name : name,
 					status : 'local'
 				)
-				userIdCard.name = name
+//				userIdCard.name = name
+				if (userIdCard.name != name) {
+					return '{"success" : "0", "message" : "err200"}'
+				}
 				userIDCardLogRepository.save(userIdCardLog)
 				
 				def infoMap = retrieveBirthdayAndSex(idCard),
@@ -159,7 +162,10 @@ public class UserIDCardBindService {
 					name : name,
 					status : 'local'
 				)
-				userIdCard.name = name
+//				userIdCard.name = name
+				if (userIdCard.name != name) {
+					return '{"success" : "0", "message" : "err200"}'
+				}
 				userIDCardRepository.save(userIdCard)
 				userIDCardLogRepository.save(userIdCardLog)
 				def infoMap = retrieveBirthdayAndSex(idCard),

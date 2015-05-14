@@ -96,25 +96,37 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			def commentSize = helpCommentRepository.countCommentByHelp(it)
 			def commentData = []
 			comments.each { cit ->
+				def id, name, avatar, type = 0 // 0医师，1诊所
+
+				if (cit.doctorId) {
+					id = cit.doctorId
+					name = cit.doctorName
+					avatar = cit.doctorPath
+				} else {
+					id = cit.hospitalId
+					name = cit.hospitalName
+					avatar = cit.hospitalPath
+					type = 1
+				}
+
 				commentData << [
-						'commentId'     : cit.commentId,
-						'doctorId'      : cit.doctorId,
-						'doctorName'    : cit.doctorName,
-						'hospitalId'    : cit.hospitalId,
-						'hospitalName'  : cit.hospitalName,
-						'doctorAvatar'  : cit.doctorPath,
-						'hospitalAvatar': cit.hospitalPath,
-						'content'       : cit.commentContent,
-						'time'          : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
-						'goods'         : cit.gSize
+						'commentId': cit.commentId,
+						'id'       : id,
+						'name'     : name,
+						'name'     : cit.hospitalName,
+						'avatar'   : avatar,
+						'content'  : cit.commentContent,
+						'time'     : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
+						'goods'    : cit.gSize,
+						'type'     : type
 				]
 			}
 			data << [
-					'helpId'     : it?.id,
-					'helpContent': it?.content,
+					'helpId'     : it.id,
+					'helpContent': it.content,
 					'helpTime'   : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-					'userName'   : it?.user?.userInfo?.nickName,
-					'userAvatar' : it?.user?.userInfo?.avatarPath,
+					'userName'   : it.user?.userInfo?.nickName,
+					'userAvatar' : it.user?.userInfo?.avatarPath,
 					'commentSize': commentSize,
 					'commentData': commentData
 			]
@@ -167,17 +179,25 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			
 		comments.each {
 			def goods = helpCommentGoodRepository.countByHelpComment(it)
+			def id, name, avatar, type = 0
+			if (it.doctor) {
+				id = it.doctor?.id
+				name = it.doctor?.doctorInfo?.name
+				avatar = it?.doctor?.doctorInfo?.avatarPath
+			} else {
+				id = it.hospital?.id
+				name = it.hospital?.hospitalInfo?.name
+				avatar = it.hospital?.hospitalInfo?.hospitalAvatar
+				type = 1
+			}
 			commentData << [
-					'commentId'     : it?.id,
-					'doctorId'      : it?.doctor?.id,
-					'doctorName'    : it?.doctor?.doctorInfo?.name,
-					'hospitalId'    : it?.hospital?.id,
-					'hospitalName'  : it?.hospital?.hospitalInfo?.name,
-					'content'       : it?.content,
-					'doctorAvatar'  : it?.doctor?.doctorInfo?.avatarPath,
-					'hospitalAvatar': it?.hospital?.hospitalInfo?.hospitalAvatar,
-					'time'          : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-					'goods'         : goods
+					'commentId': it?.id,
+					'd'        : id,
+					'name'     : name,
+					'avatar'   : avatar,
+					'content'  : it?.content,
+					'time'     : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+					'goods'    : goods
 			]
 		}
 		if (pageable.pageNumber > 0) {

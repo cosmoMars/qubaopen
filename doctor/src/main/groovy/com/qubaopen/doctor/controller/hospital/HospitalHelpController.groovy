@@ -1,16 +1,4 @@
-package com.qubaopen.doctor.controller.hospital;
-
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort.Direction
-import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes;
+package com.qubaopen.doctor.controller.hospital
 
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
@@ -19,7 +7,13 @@ import com.qubaopen.doctor.repository.comment.HelpCommentRepository
 import com.qubaopen.doctor.repository.comment.HelpRepository
 import com.qubaopen.survey.entity.comment.Help
 import com.qubaopen.survey.entity.hospital.Hospital
-import com.qubaopen.survey.entity.user.User;
+import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('hospitalHelp')
@@ -65,27 +59,41 @@ public class HospitalHelpController extends AbstractBaseController<Help, Long>{
 			def commentData = []
 			comments.each { cit ->
 				def goods = helpCommentGoodRepository.countByHelpComment(cit)
+				def id, name, avatar, type = 0 // 0医师，1诊所
+				if (cit?.doctor) {
+					id = cit?.doctor?.id
+					name = cit?.doctor?.doctorInfo?.name
+					avatar = cit?.doctor?.doctorInfo?.avatarPath
+				} else {
+					id = cit?.hospital?.id
+					name = cit?.hospital?.hospitalInfo?.name
+					avatar = cit?.hospital?.hospitalInfo?.hospitalAvatar
+					type = 1
+				}
+
+
+
 				commentData << [
-					'commentId' : cit?.id,
-					'doctorId' : cit?.doctor?.id,
-					'doctorName' : cit.doctor?.doctorInfo?.name,
-					'doctorAvatar' : cit?.doctor?.doctorInfo?.avatarPath,
-					'hospitalName' : cit?.hospital?.hospitalInfo?.name,
-					'content' : cit?.content,
-					'time' : cit?.time,
-					'goods' : goods
+						'commentId': cit?.id,
+						'id'       : id,
+						'name'     : name,
+						'avatar'   : avatar,
+						'content'  : cit?.content,
+						'time'     : cit?.time,
+						'goods'    : goods,
+						'type'     : type
 				]
 					
 			}
 			data << [
-				'helpId' : it?.id,
-				'helpContent' : it?.content,
-				'helpTime' : DateFormatUtils.format(it?.time, 'yyyy-MM-dd'),
-				'userName' : it?.user?.userInfo?.nickName,
-				'userAvatar' : it?.user?.userInfo?.avatarPath,
-				'userSex' : it?.user?.userInfo?.sex?.ordinal(),
-				'commentSize' : commentSize,
-				'commentData' : commentData
+					'helpId'     : it?.id,
+					'helpContent': it?.content,
+					'helpTime'   : DateFormatUtils.format(it?.time, 'yyyy-MM-dd'),
+					'userName'   : it?.user?.userInfo?.nickName,
+					'userAvatar' : it?.user?.userInfo?.avatarPath,
+					'userSex'    : it?.user?.userInfo?.sex?.ordinal(),
+					'commentSize': commentSize,
+					'commentData': commentData
 			]
 		}
 		
@@ -94,9 +102,9 @@ public class HospitalHelpController extends AbstractBaseController<Help, Long>{
 			more = false
 		}
 		[
-			'success' : '1',
-			'data' : data,
-			'more' : more
+				'success': '1',
+				'data'   : data,
+				'more'   : more
 		]
 	}
 	/**
@@ -133,38 +141,178 @@ public class HospitalHelpController extends AbstractBaseController<Help, Long>{
 			
 		comments.each {
 			def goods = helpCommentGoodRepository.countByHelpComment(it)
+			def id, name, avatar, type = 0 // 0医师，1诊所
+
+			if (it.doctor) {
+				id = it?.doctor?.id
+				name = it?.doctor?.doctorInfo?.name
+				avatar = it?.doctor?.doctorInfo?.avatarPath
+			} else {
+				id = it?.hospital?.id
+				name = it?.hospital?.hospitalInfo?.name
+				avatar = it?.hospital?.hospitalInfo?.hospitalAvatar
+				type = 1
+			}
 			commentData << [
-				'commentId' : it?.id,
-				'doctorId' : it?.doctor?.id,
-				'doctorName' : it?.doctor?.doctorInfo?.name,
-				'hospitalName' : it?.hospital?.hospitalInfo?.name,
-				'content' : it?.content,
-				'doctorAvatar' : it?.doctor?.doctorInfo?.avatarPath,
-				'time' : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-				'goods' : goods
+					'commentId': it?.id,
+					'id'       : id,
+					'name'     : name,
+					'avatar'   : avatar,
+					'content'  : it?.content,
+					'time'     : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+					'goods'    : goods,
+					'type'     : type
 			]
 		}
 		if (pageable.pageNumber > 0) {
 			return [
-				'success' : '1',
-				'helpId' : '',
-				'helpContent' : '',
-				'helpTime' : '',
-				'userName' : '',
-				'userAvatar' : '',
-				'more' : more,
-				'data' : commentData
+					'success'    : '1',
+					'helpId'     : '',
+					'helpContent': '',
+					'helpTime'   : '',
+					'userName'   : '',
+					'userAvatar' : '',
+					'more'       : more,
+					'data'       : commentData
 			]
 		}
 		[
-			'success' : '1',
-			'helpId' : help?.id,
-			'helpContent' : help?.content,
-			'helpTime' : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
-			'userName' : help?.user?.userInfo?.nickName,
-			'userAvatar' : help?.user?.userInfo?.avatarPath,
-			'more' : more,
-			'data' : commentData
+				'success'    : '1',
+				'helpId'     : help?.id,
+				'helpContent': help?.content,
+				'helpTime'   : DateFormatUtils.format(help.time, 'yyyy-MM-dd'),
+				'userName'   : help?.user?.userInfo?.nickName,
+				'userAvatar' : help?.user?.userInfo?.avatarPath,
+				'more'       : more,
+				'data'       : commentData
+		]
+	}
+
+	/**
+	 * 查看被点赞的评论
+	 * @param ids
+	 * @param hospital
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveGoodComment', method = RequestMethod.POST)
+	retrieveGoodComment(@RequestParam(required = false) String ids,
+						@ModelAttribute('currentHospital') Hospital hospital) {
+
+		def list = [], commentIds = [], data = [], commentMap = [:]
+		if (ids) {
+			def strIds = ids.split(',')
+			strIds.each {
+				list << Long.valueOf(it.trim())
+			}
+		}
+		if (list.size() <= 0) {
+			return '{"success" : "1"}'
+		}
+		// 查找点赞纪录
+		def goodComments = helpCommentGoodRepository.findByIds(list)
+		goodComments.each {
+			// 设置已阅
+			it.view = true
+			commentIds << it.helpComment.id
+
+			if (commentMap.get(it.helpComment)) {
+				def size = commentMap.get(it.helpComment) + 1
+				commentMap.put(it.helpComment, size)
+			} else {
+				commentMap.put(it.helpComment, 1)
+			}
+		}
+
+		// 查找点赞的求助主题
+		def helps = helpRepository.findByComment(commentIds)
+
+		helps.each {
+			def commentData = []
+
+			commentMap.each { k, v ->
+
+				// 比配求助
+				if (k.help.id == it.id) {
+					commentData << [
+							commentId     : k.id,
+							commentContent: k.content,
+							commentTime   : k.time,
+							commentSize   : v
+					]
+				}
+
+			}
+
+			data << [
+					helpId     : it.id,
+					helpContent: it.content,
+					helpTime   : it.time,
+					commentData: commentData
+			]
+		}
+
+		helpCommentGoodRepository.save(goodComments)
+
+		[
+				success: '1',
+				data   : data
+		]
+	}
+
+	/**
+	 * 获取点赞信息
+	 * @param ids
+	 * @param hospital
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveGoodHelpComment', method = RequestMethod.POST)
+	retrieveGoodHelpComment(@RequestParam(required = false) String ids,
+							@ModelAttribute('currentHospital') Hospital hospital) {
+
+		def idList = []
+
+		if (ids) {
+			def idStr = ids.split(',')
+
+			idStr.each {
+				idList << Long.valueOf(it.trim())
+			}
+		}
+		if (idList.size() <= 0) {
+			return '{"success" : "1"}'
+		}
+		// 查找点赞纪录
+		def goodComments = helpCommentGoodRepository.findByIds(idList),
+			data = []
+
+		def now = new Date()
+
+		goodComments.each {
+			it.view = true
+
+			def minTime = (now.time - it.createdDate.millis) / 1000 / 60 as int,
+				time
+			if (minTime < 60) {
+				time = "${minTime == 0 ? 1 : minTime}分钟之前" as String
+			} else {
+				time = DateFormatUtils.format(it.createdDate.toDate(), 'M月d日 H:mm') as String
+			}
+
+			data << [
+					helpId        : it.id,
+					userAvatar    : it.user?.userInfo?.avatarPath,
+					userName      : it.user?.userInfo?.nickName,
+					hospitalName  : it.helpComment?.hospital?.hospitalInfo?.name,
+					commentContent: it.helpComment?.content,
+					time          : time
+			]
+		}
+
+		helpCommentGoodRepository.save(goodComments)
+
+		[
+				success: '1',
+				data   : data
 		]
 	}
 

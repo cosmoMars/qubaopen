@@ -1,21 +1,5 @@
 package com.qubaopen.backend.controller.doctor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.qubaopen.backend.repository.assistant.AssistantRepository;
 import com.qubaopen.backend.repository.doctor.DoctorInfoRepository;
 import com.qubaopen.backend.repository.doctor.DoctorRecordRepository;
@@ -26,12 +10,17 @@ import com.qubaopen.backend.service.SmsService;
 import com.qubaopen.backend.utils.UploadUtils;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.survey.entity.doctor.Assistant;
-import com.qubaopen.survey.entity.doctor.Doctor;
-import com.qubaopen.survey.entity.doctor.DoctorInfo;
-import com.qubaopen.survey.entity.doctor.DoctorRecord;
-import com.qubaopen.survey.entity.doctor.Genre;
-import com.qubaopen.survey.entity.doctor.TargetUser;
+import com.qubaopen.survey.entity.doctor.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.*;
 
 
 @RestController
@@ -209,14 +198,19 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
             //修改咨询师info
             //添加咨询师 流派 以及对象
             di.setIntroduce(introduce);
-            
-            List<Genre> genreList=genreRepository.findByIds(genres);
-            Set<Genre> genreSet = new HashSet<Genre>(genreList);
-            di.setGenres(genreSet);
-            
-            List<TargetUser> targetList=targetUserRepository.findByIds(targetUsers);
-            Set<TargetUser> targetSet = new HashSet<TargetUser>(targetList);
-            di.setTargetUsers(targetSet);
+			if (genres.size() > 0) {
+				List<Genre> genreList = genreRepository.findByIds(genres);
+				Set<Genre> genreSet = new HashSet<Genre>(genreList);
+				di.setGenres(genreSet);
+			}
+
+
+			if (targetUsers.size() > 0) {
+				List<TargetUser> targetList = targetUserRepository.findByIds(targetUsers);
+
+				Set<TargetUser> targetSet = new HashSet<TargetUser>(targetList);
+				di.setTargetUsers(targetSet);
+			}
 
 			String param = "{\"name\" : \"" + assistant.getName() + "\",\"phone\" : \"" + assistant.getPhone() + "\"}";
             Map<String, Object> result;
@@ -231,7 +225,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long>{
 					//如果是第一次审核通过的 发送短信
 	                result = smsService.sendSmsMessage(di.getPhone(), 2, param);
 	                if (!StringUtils.equals((String)result.get("resCode"), "0")) {
-	                    return "{\"success\" : \"0\", \"message\" : \"resCode = " + result.get("resCode") + "\"}";
+						System.out.println("{\"success\" : \"0\", \"message\" : \"resCode = " + result.get("resCode") + "\"}");
 	                }
 				}
 				

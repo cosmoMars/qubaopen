@@ -1721,6 +1721,15 @@ public class MapStatisticsService {
 
 		// 查找答案
 		def mStatistics = mapStatisticsRepository.findBySelfGroupAndUser(selfGroup, user)
+
+		if (!mStatistics) {
+			return [
+					'success' : '1',
+					'message' : '成功',
+					'userId' : user.id,
+					'data' : data
+			]
+		}
 		def groupResultMaps = [:]
 
 		mStatistics.each {
@@ -1737,8 +1746,6 @@ public class MapStatisticsService {
 		def	specialGroup = selfGroupRepository.findSpecialSelfGroup()
 
 		def singleMaps = []
-
-
 
 		groupResultMaps.each { k, v -> // k -> selfGroup, v -> map
 			if (v.size() < k.selfs.size() && v != null) {

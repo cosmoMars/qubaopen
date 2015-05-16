@@ -23,12 +23,13 @@ public class AssistantRepositoryImpl implements AssistantRepositoryCustom {
                 "from doctor_info di group by di.assistant_id) dia ");
         sql.append(" on a.id = dia.id order by count ");
 
-        List<Long> ids = entityManager.createNativeQuery(sql.toString())
+        List resultList = entityManager.createNativeQuery(sql.toString())
                 .setMaxResults(1)
                 .getResultList();
 
-        if (ids.size() > 0) {
-            return ids.get(0);
+        if (resultList.size() > 0) {
+            System.out.println(resultList.get(0).toString());
+            return Long.parseLong(resultList.get(0).toString());
         }
         return 0;
     }

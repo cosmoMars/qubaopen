@@ -11,7 +11,7 @@ import java.util.Date;
  * 诊所文章
  */
 @Entity
-@Table(name = "hosptial_article")
+@Table(name = "hospital_article")
 @Audited
 public  class HospitalArticle extends AbstractBaseEntity<Long> {
 

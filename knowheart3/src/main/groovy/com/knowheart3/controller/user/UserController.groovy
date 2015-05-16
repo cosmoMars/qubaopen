@@ -172,12 +172,12 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (!loginUser) {
 			return '{"success" : "0", "message": "err001"}'
 		}
-		if ((captcha && captcha != whitePassword) && (loginUser.password != DigestUtils.md5Hex("knowheart$captcha"))) {
-			return '{"success" : "0", "message": "err002"}'
-		}
-//		if (loginUser.password != DigestUtils.md5Hex("knowheart$captcha")) {
+//		if ((captcha && captcha != whitePassword) && (loginUser.password != DigestUtils.md5Hex("knowheart$captcha"))) {
 //			return '{"success" : "0", "message": "err002"}'
 //		}
+		if (loginUser.password != DigestUtils.md5Hex("knowheart$captcha")) {
+			return '{"success" : "0", "message": "err002"}'
+		}
 
 		def now = new Date()
 		if (loginUser.loginDate == null) {

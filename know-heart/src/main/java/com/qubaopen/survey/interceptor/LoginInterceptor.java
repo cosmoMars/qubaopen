@@ -1,17 +1,15 @@
 package com.qubaopen.survey.interceptor;
 
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.qubaopen.survey.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qubaopen.survey.entity.user.User;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
 
 public class LoginInterceptor implements HandlerInterceptor {
 
@@ -22,9 +20,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
 		logger.info(" =================== request preHandle =========================");
 		
-		System.out.println(request.getRequestURI() + " *******************");
+//		System.out.println(request.getRequestURI() + " *******************");
 
-		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic") || request.getRequestURI().contains("systemVersions") || request.getRequestURI().contains("notify")
+		if (request.getRequestURI().contains("users") || request.getRequestURI().contains("pic") || request.getRequestURI().contains("systemVersions") || request.getRequestURI().contains("notify") || request.getRequestURI().contains("system")
 				|| request.getRequestURI().contains("doctorDir") || request.getRequestURI().contains("breakTalk")) {
 			return true;
 		}

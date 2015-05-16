@@ -109,6 +109,7 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	/**
 	 * 自我介绍
 	 */
+	@Column(columnDefinition = "TEXT")
 	private String introduce;
 
 	/**

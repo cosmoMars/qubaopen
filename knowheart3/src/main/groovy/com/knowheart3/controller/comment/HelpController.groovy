@@ -118,7 +118,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 						'helpId'     : it?.id,
 						'userName'   : it?.user?.userInfo?.nickName,
 						'helpContent': it?.content,
-					'userAvatar' : it?.user?.userInfo?.avatarPath,
+						'userAvatar' : it?.user?.userInfo?.avatarPath,
 						'helpTime'   : DateFormatUtils.format(it?.time, 'yyyy-MM-dd')
 				]
 			}

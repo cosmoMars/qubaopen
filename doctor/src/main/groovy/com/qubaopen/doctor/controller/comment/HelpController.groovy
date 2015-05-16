@@ -113,7 +113,6 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 						'commentId': cit.commentId,
 						'id'       : id,
 						'name'     : name,
-						'name'     : cit.hospitalName,
 						'avatar'   : avatar,
 						'content'  : cit.commentContent,
 						'time'     : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
@@ -192,12 +191,13 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			}
 			commentData << [
 					'commentId': it?.id,
-					'd'        : id,
+					'id'       : id,
 					'name'     : name,
 					'avatar'   : avatar,
 					'content'  : it?.content,
 					'time'     : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-					'goods'    : goods
+					'goods'    : goods,
+					'type'     : type
 			]
 		}
 		if (pageable.pageNumber > 0) {

@@ -11,7 +11,7 @@ import com.qubaopen.survey.entity.topic.ExerciseInfo;
 
 public interface ExerciseInfoRepository extends MyRepository<ExerciseInfo, Long> {
 
-	@Query("from ExerciseInfo ei where ei.exercise.id = :exerciseId order by ei.number asc")
+	@Query("from ExerciseInfo ei where ei.exercise.id = :exerciseId order by abs(ei.number) asc")
 	List<ExerciseInfo> findAllByExerciseIdOrderByNumber(@Param("exerciseId") Long exerciseId);
 	
 	int countByExercise(Exercise exercise);

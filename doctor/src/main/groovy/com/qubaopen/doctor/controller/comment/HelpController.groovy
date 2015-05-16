@@ -110,14 +110,17 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				}
 
 				commentData << [
-						'commentId': cit.commentId,
-						'id'       : id,
-						'name'     : name,
-						'avatar'   : avatar,
-						'content'  : cit.commentContent,
-						'time'     : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
-						'goods'    : cit.gSize,
-						'type'     : type
+						'commentId'   : cit.commentId,
+						'doctorId'    : id,
+						'doctorName'  : name,
+						'doctorAvatar': avatar,
+						'id'          : id,
+						'name'        : name,
+						'avatar'      : avatar,
+						'content'     : cit.commentContent,
+						'time'        : cit.commentTime ? DateFormatUtils.format(cit.commentTime, 'yyyy-MM-dd') : "",
+						'goods'       : cit.gSize,
+						'type'        : type
 				]
 			}
 			data << [
@@ -190,14 +193,17 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				type = 1
 			}
 			commentData << [
-					'commentId': it?.id,
-					'id'       : id,
-					'name'     : name,
-					'avatar'   : avatar,
-					'content'  : it?.content,
-					'time'     : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
-					'goods'    : goods,
-					'type'     : type
+					'commentId'   : it?.id,
+					'doctorId'    : id,
+					'doctorName'  : name,
+					'doctorAvatar': avatar,
+					'id'          : id,
+					'name'        : name,
+					'avatar'      : avatar,
+					'content'     : it?.content,
+					'time'        : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+					'goods'       : goods,
+					'type'        : type
 			]
 		}
 		if (pageable.pageNumber > 0) {

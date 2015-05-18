@@ -1,34 +1,23 @@
-package com.qubaopen.survey.controller.booking;
-
-import javax.xml.ws.RequestWrapper;
-
-import org.apache.commons.httpclient.util.DateUtil;
-import org.apache.commons.lang3.time.DateFormatUtils
-import org.apache.commons.lang3.time.DateUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction
-import org.springframework.data.web.PageableDefault
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
+package com.qubaopen.survey.controller.booking
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.booking.Booking
-import com.qubaopen.survey.entity.doctor.ConsultType
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.repository.booking.BookingRepository
-import com.qubaopen.survey.repository.booking.BookingSelfTimeRepository;
+import com.qubaopen.survey.repository.booking.BookingSelfTimeRepository
 import com.qubaopen.survey.repository.booking.BookingTimeRepository
 import com.qubaopen.survey.repository.doctor.DoctorInfoRepository
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort.Direction
+import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.*
 
-import static com.qubaopen.survey.utils.ValidateUtil.*
+import static com.qubaopen.survey.utils.ValidateUtil.validatePhone
 
 /**
  * @author mars
@@ -434,7 +423,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		
 		def bookings = bookingRepository.findAll(
 			[
-				user_equal : user
+				user_equal : user,
+				status_notEqual: Booking.Status.Close
 			], pageable
 		)
 		def bookingContent = bookings.getContent()

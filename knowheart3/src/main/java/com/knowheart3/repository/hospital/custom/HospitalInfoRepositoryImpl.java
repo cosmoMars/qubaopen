@@ -34,11 +34,11 @@ public class HospitalInfoRepositoryImpl implements HospitalInfoRepositoryCustom{
         if (filters.get("targetId") != null) {
             hql.append("join fetch hi.targetUsers tu ");
         }
+        hql.append("where ");
+        hql.append("hi.loginStatus = 3 ");
 
         if (filters != null) {
-            if (filters.size() > 1) {
-                hql.append("where ");
-            }
+
             List<String> where = new ArrayList<>();
 
             if (filters.get("genreId") != null) {

@@ -1,19 +1,12 @@
 package com.qubaopen.survey.entity.comment;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.envers.Audited;
-
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.hospital.Hospital;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author mars
@@ -38,6 +31,7 @@ public class HelpComment extends AbstractBaseEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Hospital hospital;
 
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
 	@Temporal(TemporalType.TIMESTAMP)

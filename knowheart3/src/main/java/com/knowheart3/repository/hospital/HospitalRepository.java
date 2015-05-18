@@ -2,6 +2,7 @@ package com.knowheart3.repository.hospital;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -10,6 +11,6 @@ import com.qubaopen.survey.entity.hospital.Hospital;
 
 public interface HospitalRepository extends MyRepository<Hospital, Long> {
 
-	@Query("from Hospital h where h.id not in (:ids)")
-	List<Hospital> findOtherHospital(@Param("ids") List<Long> ids);
+	@Query("from Hospital h where h.id not in (:ids) and h.hospitalInfo.loginStatus = 3")
+	List<Hospital> findOtherHospital(@Param("ids") List<Long> ids, Pageable pageable);
 }

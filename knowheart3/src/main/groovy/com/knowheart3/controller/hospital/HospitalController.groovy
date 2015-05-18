@@ -7,6 +7,7 @@ import com.knowheart3.service.AreaCodeService
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.hospital.Hospital
+import com.qubaopen.survey.entity.hospital.HospitalInfo
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -63,7 +64,10 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
             }
             hospitals = hospitalRepository.findOtherHospital(list, pageable)
         } else {
-            hospitals = hospitalRepository.findAll(pageable)
+            hospitals = hospitalRepository.findAll(
+                    [
+                            'hospitalInfo.loginStatus_equal': HospitalInfo.LoginStatus.Audited
+                    ], pageable)
         }
         hospitals.each {
             data << [

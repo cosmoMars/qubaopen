@@ -162,5 +162,116 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
 		]
 		
 	}
+    /**
+     * @param id
+     * @param time
+     * @param user
+     * @return
+     * root获取发现内容
+     */
+    @Transactional(readOnly = true)
+    @RequestMapping(value = 'retrieveDiscoveryContentForRoot', method = RequestMethod.GET)
+    retrieveDiscoveryContentForRoot(@PageableDefault(page = 0, size = 1, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
+                             @ModelAttribute('currentUser') User user) {
+
+        def exercise, number, userExercise, mession = false, isLogin = false
+        def now = new Date(),
+            c = Calendar.getInstance()
+        c.setTime new Date()
+
+        def diff = -pageable.pageNumber
+        c.add(Calendar.DATE, diff)
+        def today = c.getTime()
+
+        if (null == user.id) {
+            exercise = exerciseRepository.findRandomExercise()
+            // 查找练习第一题
+            number = 1
+        } else {
+            isLogin = true
+            userExercise = userExerciseRepository.findOneByFilters([
+                    user_equal : user,
+                    complete_isFalse : null
+            ])
+
+            def eLog
+            if (!DateUtils.isSameDay(now, today) && today.compareTo(now) == -1) {
+                eLog = userExerciseInfoLogRepository.findLastLogByUserAndTime(user, today)
+            }
+            if (eLog) {
+                def exerciseInfo = eLog.exerciseInfo
+                exercise = exerciseInfo.exercise
+                number = exerciseInfo.number as int
+                mession = true
+            } else {
+                // 查找未完成的用户练习纪录
+                if (!userExercise) {
+                    // 查找刚完成的用户练习纪录
+                    userExercise = userExerciseRepository.findCompleteExerciseByUser(user)
+                    if (userExercise) {
+                        mession = true
+                    } else {
+                        exercise = exerciseRepository.findRandomExercise()
+                        number = 1
+                    }
+
+                } else {
+                    // 存在用户练习，得到练习大题
+                    if (DateUtils.isSameDay(userExercise.time, now)) {
+                        mession = true
+                        number = userExercise.number as int
+                    } else {
+                        number = (userExercise.number as int) + 1
+                    }
+                }
+                if (userExercise) {
+                    exercise = userExercise.exercise
+                }
+            }
+        }
+        def exerciseCount = exerciseInfoRepository.countByExercise(exercise)
+        if (userExercise?.complete == true) {
+            number = exerciseCount
+        }
+        def dailyDiscovery = dailyDiscoveryRepository.findByTime(today),
+            size = dailyDiscoveryRepository.countByTime(today)
+        def more = false
+        if (size > 0) {
+            more = true
+        }
+        def haveDone = false
+        if (dailyDiscovery && dailyDiscovery?.self != null && null != user.id) {
+            def count = selfUserQuestionnaireRepository.countBySelfAndUser(dailyDiscovery.self, user)
+            if (count > 0) {
+                haveDone = true
+            }
+        }
+
+        [
+                'success' : '1',
+                'exerciseId' : exercise?.id,
+                'exerciseName' : exercise?.name,
+                'exerciseContent' : exercise?.remark,
+                'exerciseNumber' : number,
+                'exerciseCount' : exerciseCount,
+                'userExerciseId' : userExercise ? userExercise.id : 0,
+                'exerciseComplete' : userExercise?.completeCount,
+                'messionComplete' : mession,
+                'exercisePic' : exercise?.url,
+                'selfId' : dailyDiscovery?.self?.id,
+                'selfName' : dailyDiscovery?.self?.title,
+                'selfContent' : dailyDiscovery?.self?.remark,
+                'selfPic' : dailyDiscovery?.self?.picPath,
+                'selfDone' : haveDone,
+                'topicId' : dailyDiscovery?.topic?.id,
+                'topicName' : dailyDiscovery?.topic?.name,
+                'topicContent' : dailyDiscovery?.topic?.content,
+                'topicPic' : dailyDiscovery?.topic?.picUrl,
+                'isLogin' : isLogin,
+                'time' : dailyDiscovery?.time,
+                'more' : more
+        ]
+
+    }
 
 }

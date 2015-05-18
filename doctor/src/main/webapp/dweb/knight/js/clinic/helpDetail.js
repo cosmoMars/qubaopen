@@ -120,7 +120,7 @@ function updateHelpDetailView(data,page){
     }
 
     //var appendHTML='<div class="panel panel-default "><div class="panel-body"><p>'+data.helpContent+'</p></div></div>';
-    var appendHTML='<div class="panel panel-warning "><div class="panel-body"><p><img class="img-circle" src="'+data.userAvatar+'" alt="Generic placeholder image" style="width: 40px; height: 40px;">'+
+    var appendHTML='<div class="panel panel-warning "><div class="panel-body"><p><img class="img-circle" src="'+data.userAvatar+'" style="width: 40px; height: 40px;"  onerror="defaultImg(this)";>'+
         data.userName+'</p><p>'+data.helpContent+'</p>' +
         '<p class="label-time">发表于 '+data.helpTime+'</p></div></div>';
 
@@ -148,13 +148,13 @@ function addReplyView(){
 /* 已有评论框*/
 function replyView(aData){
     var nameHTML="";
-    if(aData.doctorName){
-        nameHTML=aData.doctorName + ' 心理咨询师';
+    if(aData.type==0){
+        nameHTML=aData.name + ' 心理咨询师';
     }else{
-        nameHTML=aData.hospitalName + ' 心理诊所';
+        nameHTML=aData.name + ' 心理诊所';
     }
-    var appendHTML='<div class="panel panel-default "><div class="panel-body"><p><img class="img-circle" src="'+aData.doctorAvatar+'" ' +
-        'alt="Generic placeholder image" style="width: 40px; height: 40px;" onerror="defaultImg(this)";>' +
+    var appendHTML='<div class="panel panel-default "><div class="panel-body"><p><img class="img-circle" src="'+aData.avatar+'" ' +
+        'alt="e" style="width: 40px; height: 40px;" onerror="defaultImg(this)";>' +
     ' '+nameHTML +
     '</p><p>'+aData.content+'</p>' +
     '<p class="label-time">回答于 '+aData.time+'<span class="pull-right"><span>'+aData.goods+' </span><span class="color-orange glyphicon glyphicon-thumbs-up"></span></span></p></div></div>';

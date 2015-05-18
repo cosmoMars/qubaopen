@@ -3,8 +3,8 @@
  */
 
 
-//ContextUrl=window.location.protocol+"//"+window.location.host;
-ContextUrl=window.location.protocol+"//"+window.location.host+"/doctor";
+ContextUrl=window.location.protocol+"//"+window.location.host;
+//ContextUrl=window.location.protocol+"//"+window.location.host+"/doctor";
 //ContextUrl="http://zhixin.me:8080/doctor";
 //
 //if(!(location.hostname).match("www.qubaopen.com.cn")){
@@ -72,6 +72,38 @@ function backToSignIn(){
     self.location = "signin.html";
 }
 
+function autoSignIn(){
+    var jsonSent=eval("("+getCookie("doctor")+")");
+
+    $.ajax({
+        url: ContextUrl+"/uDoctor/login",
+        type: "POST",
+        dataType: "json",
+        data: jsonSent,
+        success: function (data, textStatus, jqXHR) {
+
+            var result = data.success;
+
+            console.log(data);
+
+            if (result == 1) {
+                //setCookie("cookie1",JSON.stringify(data),new Date() );
+
+                if(data.loginStatus==3){
+                    setCookie("phone",data.phone);
+                    self.location = "menu.html";
+                }else{
+                    self.location = "profile.html";
+                }
+            }
+            if (result == 0) {
+                var msg = data.message;
+                $("#help").html(returnMsgText(msg));
+            }
+        }
+    });
+}
+
 /* new date IE浏览器不支持NEW DATE()带参数的解决方法
  * str 格式 yyyy-MM-dd hh-ii-ss */
 function newDate(str){
@@ -94,3 +126,38 @@ function newDate(str){
     date.setUTCHours(parseInt(str.substring(11,13))-8, 0, 0, 0);
     return date;
 }
+
+
+function returnMsgText(message) {
+    var json = {};
+    json.err000="登录失败";
+    json.err001="亲，没有该用户呦！";
+    json.err002="亲，密码错误，可不能登录呦！";
+    json.err003="亲，您的手机号没有填对呢！";
+    json.err004="密码需要至少8位的字母或数字哦！";
+    json.err005="亲，您的邮箱没有填对呢！";
+    json.err006="亲，此号码已注册过咯！如有问题，麻烦联系我们微信客服哦！";
+    json.err007="您输的验证码不对哦！";
+    json.err008="您还没获取过验证码呦！";
+    json.err009="亲，请休息一会再验证呦！";
+    json.err010="亲，您让人家发了太多次验证码了啦";
+    json.err011="亲，短信被怪兽吃掉了~麻烦您联系我们微信客服吧~";
+    json.err012="亲，验证码都没填，我们还怎么愉快的玩耍呀~";
+    json.err013="亲，请重新申请验证码吧~";
+    json.err014="亲，您的信息有误，请检查有无遗漏哦";
+    json.err015="原密码格式不正确";
+    json.err016="原密码不匹配";
+    json.err018="亲，用户名或密码不正确哦~";
+    json.err019="亲，该用户不存在哦~";
+    json.err020="亲，该用户已经注册了哦~";
+    json.err021="亲，验证码平台开小差了，联系我们微信客服有奖励哦~~";
+
+    if(json[message]){
+        return json[message];
+    }else{
+        return message;
+    }
+
+}
+
+

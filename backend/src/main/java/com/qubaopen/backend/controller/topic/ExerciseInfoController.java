@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.qubaopen.backend.repository.topic.ExerciseInfoRepository;
-import com.qubaopen.backend.repository.topic.ExerciseRepository;
+import com.qubaopen.backend.repository.exercise.ExerciseInfoRepository;
+import com.qubaopen.backend.repository.exercise.ExerciseRepository;
 import com.qubaopen.backend.utils.UploadUtils;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;

@@ -1,4 +1,4 @@
-package com.qubaopen.backend.repository.topic;
+package com.qubaopen.backend.repository.exercise;
 
 import java.util.List;
 
@@ -13,4 +13,6 @@ import com.qubaopen.survey.entity.topic.ExerciseInfo;
 public interface ExerciseInfoRepository extends MyRepository<ExerciseInfo, Long> {
 	@Query("from ExerciseInfo e where e.exercise=:exercise order by e.createdDate desc,e.id desc")
 	List<ExerciseInfo> findExerciseInfo(Pageable pageable,@Param("exercise") Exercise exercise);
+
+	int countByExercise(Exercise exercise);
 }

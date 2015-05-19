@@ -1,5 +1,4 @@
 package com.knowheart3.service.user
-
 import com.knowheart3.repository.reward.RewardActivityRecordRepository
 import com.knowheart3.repository.user.*
 import com.knowheart3.service.SmsService
@@ -9,6 +8,7 @@ import com.knowheart3.utils.UploadUtils
 import com.qubaopen.survey.entity.user.*
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -250,7 +250,8 @@ public class UserService {
 
         if (!user) {
             user = new User(
-                    phone : phone
+                    phone : phone,
+					userName: "新用户${RandomStringUtils.random(6)}"
             )
             userRepository.save(user)
         }

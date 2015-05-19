@@ -216,24 +216,24 @@ class UserController extends AbstractBaseController<User, Long> {
 			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
 
 		return  [
-				'success' : '1',
-				'message' : '登录成功',
-				'userId' : loginUser?.id,
-				'phone' : loginUser?.phone,
-				'name' : userIdCardBind?.userIDCard?.name,
-				'sex' : userInfo?.sex?.ordinal(),
-				'nickName' : userInfo?.nickName,
-				'bloodType' : userInfo?.bloodType?.ordinal(),
-				'district' : '',
-				'email' : loginUser?.email,
-				'defaultAddress' : userReceiveAddress?.detialAddress,
-				'defaultAddressId' : userReceiveAddress?.id,
-				'consignee' : userReceiveAddress?.consignee,
-				'defaultAddressPhone' : userReceiveAddress?.phone,
-				'idCard' : userIdCardBind?.userIDCard?.IDCard,
-				'birthday' : userInfo?.birthday,
-				'avatarPath' : userInfo?.avatarPath,
-				'signature' : userInfo?.signature
+				'success'            : '1',
+				'message'            : '登录成功',
+				'userId'             : loginUser?.id,
+				'phone'              : loginUser?.phone,
+				'name'               : userIdCardBind?.userIDCard?.name,
+				'sex'                : userInfo?.sex?.ordinal(),
+				'nickName'           : userInfo?.nickName,
+				'bloodType'          : userInfo?.bloodType?.ordinal(),
+				'district'           : '',
+				'email'              : loginUser?.email,
+				'defaultAddress'     : userReceiveAddress?.detialAddress,
+				'defaultAddressId'   : userReceiveAddress?.id,
+				'consignee'          : userReceiveAddress?.consignee,
+				'defaultAddressPhone': userReceiveAddress?.phone,
+				'idCard'             : userIdCardBind?.userIDCard?.IDCard,
+				'birthday'           : userInfo?.birthday,
+				'avatarPath'         : userInfo?.avatarPath,
+				'signature'          : userInfo?.signature
 		]
     }
 
@@ -264,15 +264,17 @@ class UserController extends AbstractBaseController<User, Long> {
 		// 通过token和类型查找用户
 //		user = userRepository.findByTokenAndThirdType(token, ThirdType.values()[type])
 		user = userRepository.thirdLogin(token, ThirdType.values()[type])
+
 		def newUser = false
 		// 第一次登陆
 		if (!user) {
 			newUser = true
-			
+
 			user = new User(
-				token : token,
-				thirdType : ThirdType.values()[type],
-				activated : true
+					token: token,
+					thirdType: ThirdType.values()[type],
+					activated: true,
+					loginDate: new Date()
 			)
 			user = userRepository.save(user)
 
@@ -318,6 +320,7 @@ class UserController extends AbstractBaseController<User, Long> {
 		} else {
 			if (nickName || avatarUrl) {
 				userThird = userThirdRepository.findOne(user.id)
+				user.loginDate = new Date()
 				if (nickName) {
 					userThird.nickName = nickName
 				}
@@ -335,25 +338,25 @@ class UserController extends AbstractBaseController<User, Long> {
 		userService.saveUserCode(user, udid, idfa, imei)
 		
 		return  [
-			'success' : '1',
-			'message' : '登录成功',
-			'userId' : user?.id,
-			'phone' : user?.phone,
-			'name' : user?.userIdCardBind?.userIDCard?.name,
-			'sex' : userInfo?.sex?.ordinal(),
-			'nickName' : userInfo?.nickName,
-			'bloodType' : userInfo?.bloodType?.ordinal(),
-			'district' : '',
-			'email' : user?.email,
-			'defaultAddress' : userReceiveAddress?.detialAddress,
-			'defaultAddressId' : userReceiveAddress?.id,
-			'consignee' : userReceiveAddress?.consignee,
-			'defaultAddressPhone' : userReceiveAddress?.phone,
-			'idCard' : user?.userIdCardBind?.userIDCard?.IDCard,
-			'birthday' : userInfo?.birthday,
-			'avatarPath' : userInfo?.avatarPath,
-			'signature' : userInfo?.signature,
-			'newUser' : newUser
+				'success'            : '1',
+				'message'            : '登录成功',
+				'userId'             : user?.id,
+				'phone'              : user?.phone,
+				'name'               : user?.userIdCardBind?.userIDCard?.name,
+				'sex'                : userInfo?.sex?.ordinal(),
+				'nickName'           : userInfo?.nickName,
+				'bloodType'          : userInfo?.bloodType?.ordinal(),
+				'district'           : '',
+				'email'              : user?.email,
+				'defaultAddress'     : userReceiveAddress?.detialAddress,
+				'defaultAddressId'   : userReceiveAddress?.id,
+				'consignee'          : userReceiveAddress?.consignee,
+				'defaultAddressPhone': userReceiveAddress?.phone,
+				'idCard'             : user?.userIdCardBind?.userIDCard?.IDCard,
+				'birthday'           : userInfo?.birthday,
+				'avatarPath'         : userInfo?.avatarPath,
+				'signature'          : userInfo?.signature,
+				'newUser'            : newUser
 		]
 		
 	}

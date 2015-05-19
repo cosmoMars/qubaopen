@@ -1,33 +1,24 @@
 package com.qubaopen.backend.controller.topic;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.time.DateUtils;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.qubaopen.backend.repository.self.SelfRepository;
 import com.qubaopen.backend.repository.topic.DailyDiscoveryRepository;
-import com.qubaopen.backend.repository.topic.UserFavoriteRepository;
 import com.qubaopen.backend.repository.topic.TopicRepository;
+import com.qubaopen.backend.repository.topic.UserFavoriteRepository;
 import com.qubaopen.backend.vo.FavoriteVo;
 import com.qubaopen.core.controller.AbstractBaseController;
 import com.qubaopen.core.repository.MyRepository;
 import com.qubaopen.survey.entity.self.Self;
 import com.qubaopen.survey.entity.topic.DailyDiscovery;
 import com.qubaopen.survey.entity.topic.Topic;
+import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.*;
 
 
 @RestController
@@ -45,7 +36,7 @@ public class DailyDiscoveryController extends AbstractBaseController<DailyDiscov
 	
 	@Autowired
 	private UserFavoriteRepository favoriteRepository;
-	
+
 	@Override
 	protected MyRepository<DailyDiscovery, Long> getRepository() {
 		return dailyDiscoveryRepository;
@@ -237,4 +228,5 @@ public class DailyDiscoveryController extends AbstractBaseController<DailyDiscov
 		result.put("list", list);
 		return result;
 	}
+
 }

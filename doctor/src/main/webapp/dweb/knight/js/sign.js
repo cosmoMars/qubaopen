@@ -36,6 +36,12 @@ $(document).ready(function () {
     $("#btn-signup-clinic").click(function(){
         signupClinic();
     });
+
+
+    //focus
+    $("#phone,#password").on("focus",function(){
+        $("#help").empty();
+    });
 });
 
 
@@ -73,8 +79,8 @@ function signin(){
                     }
                 }
                 if (result == 0) {
-                    //msg = data.message;
-
+                    var msg = data.message;
+                    $("#help").html(returnMsgText(msg));
                 }
             }
         });
@@ -105,8 +111,8 @@ function signin(){
                     return;
                 }
                 if (result == 0) {
-                    //msg = data.message;
-
+                    var msg = data.message;
+                    $("#help").html(returnMsgText(msg));
                 }
             }
         });
@@ -129,9 +135,9 @@ function getCaptcha(){
         return false;
     }
 
-    var parmas="?phone="+phone;
+    var params="?phone="+phone;
     $.ajax({
-        url: ContextUrl+"/uDoctor/sendCaptcha"+parmas,
+        url: ContextUrl+"/uDoctor/sendCaptcha"+params,
         type: "GET",
         async:false,
         dataType: "json",
@@ -146,8 +152,8 @@ function getCaptcha(){
                 //self.location = location;
             }
             if (result == 0) {
-                //msg = data.message;
-
+                var msg = data.message;
+                $("#help").html(returnMsgText(msg));
             }
         }
     });
@@ -173,12 +179,12 @@ function signupDoctor(){
             console.log(data);
 
             if (result == 1) {
-                //setCookie("cookie1",JSON.stringify(data),new Date() );
+                setCookie("doctor",JSON.stringify(jsonSent),new Date() );
                 self.location = "profile.html";
             }
             if (result == 0) {
-                //msg = data.message;
-
+                var msg = data.message;
+                $("#help").html(returnMsgText(msg));
             }
         }
     });
@@ -209,8 +215,8 @@ function signupClinic(){
                 self.location = "clinic/profile.html";
             }
             if (result == 0) {
-                //msg = data.message;
-
+                var msg = data.message;
+                $("#help").html(returnMsgText(msg));
             }
         }
     });

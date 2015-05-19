@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -29,7 +29,11 @@ import java.util.Map;
 /**
  * Created by mars on 15/5/19.
  */
+@RestController
+@RequestMapping("discovery")
 public class DiscoveryController extends AbstractBaseController<DailyDiscovery, Long> {
+
+
 
     @Autowired
     private DiscoveryRepository discoveryRepository;
@@ -60,16 +64,10 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
         return discoveryRepository;
     }
 
-    /**
-     * @param pageable
-     * @return
-     */
-    @Transactional(readOnly = true)
-    @RequestMapping(value = "retrieveDiscoveryContentForRoot", method = RequestMethod.GET)
-    public Map<String, Object> retrieveDiscoveryContentForRoot(@PageableDefault(page = 0, size = 1, sort = "time", direction = Sort.Direction.DESC) Pageable pageable) {
+    @RequestMapping(value = "retrieveDiscovery")
+    public @ResponseBody Map<String, Object> retrieveDiscovery(@PageableDefault(page = 0, size = 1, sort = "time", direction = Sort.Direction.DESC) Pageable pageable) {
 
         User user = userRepository.findOne(2l);
-
         Exercise exercise = null;
         int number = 0;
         UserExercise userExercise = null;
@@ -145,7 +143,6 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
                 haveDone = true;
             }
         }
-
         Map<String, Object> result = new HashMap<>();
         result.put("success", "1");
         result.put("exerciseId", exercise.getId());
@@ -168,9 +165,8 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
         result.put("topicPic", dailyDiscovery == null ? "" : dailyDiscovery.getTopic().getPicUrl());
         result.put("isLogin", isLogin);
         result.put("time", dailyDiscovery == null ? "" : dailyDiscovery.getTime());
-        result.put("moew", more);
-
+        result.put("more", more);
         return result;
-    }
 
+    }
 }

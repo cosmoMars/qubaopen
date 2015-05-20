@@ -66,6 +66,7 @@ public class FeedBackController extends AbstractBaseController<UserFeedBack, Lon
         Map<String, Object> result = new HashMap<>();
         result.put("success", "1");
         result.put("data", data);
+        result.put("more", all.hasNext());
 
         return result;
     }

@@ -251,7 +251,7 @@ public class UserService {
         if (!user) {
             user = new User(
                     phone : phone,
-					userName: "新用户${RandomStringUtils.random(6)}"
+					userName: "新用户${RandomStringUtils.randomNumeric(6)}"
             )
             userRepository.save(user)
         }

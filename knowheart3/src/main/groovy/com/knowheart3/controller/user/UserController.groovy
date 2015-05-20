@@ -523,6 +523,11 @@ class UserController extends AbstractBaseController<User, Long> {
 		'{"success" : "1"}'
 	}
 
+	@RequestMapping(value = 'bindPhone')
+	bindPhone() {
+
+	}
+
 
     @RequestMapping(value = 'testMessage', method = RequestMethod.GET)
     testMessage() {

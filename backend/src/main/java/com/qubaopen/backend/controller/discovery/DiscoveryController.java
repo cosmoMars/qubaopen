@@ -14,10 +14,8 @@ import com.qubaopen.survey.entity.topic.*;
 import com.qubaopen.survey.entity.user.User;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -65,7 +63,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
     }
 
     @RequestMapping(value = "retrieveDiscovery")
-    public @ResponseBody Map<String, Object> retrieveDiscovery(@PageableDefault(page = 0, size = 1, sort = "time", direction = Sort.Direction.DESC) Pageable pageable) {
+    public @ResponseBody Map<String, Object> retrieveDiscovery(@RequestParam int page) {
 
         User user = userRepository.findOne(2l);
         Exercise exercise = null;
@@ -76,7 +74,7 @@ public class DiscoveryController extends AbstractBaseController<DailyDiscovery, 
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
 
-        int diff = -pageable.getPageNumber();
+        int diff = -page;
         c.add(Calendar.DATE, diff);
         Date today = c.getTime();
 

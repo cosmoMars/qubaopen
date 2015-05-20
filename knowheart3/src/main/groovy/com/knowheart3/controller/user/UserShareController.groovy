@@ -30,6 +30,10 @@ public class UserShareController extends AbstractBaseController<UserShare, Long>
 			@RequestParam(required = false) int origin,
 			@RequestParam(required = false) String remark,
 			@ModelAttribute('currentUser') User user) {
+
+		if (user == null) {
+			return '{"success": "0", "message": "err000"}'
+		}
 		if (target < 0 || target >= ShareTarget.values().length) {
 			return '{"success": "0", "message": "err500"}' // target参数错误
 		}

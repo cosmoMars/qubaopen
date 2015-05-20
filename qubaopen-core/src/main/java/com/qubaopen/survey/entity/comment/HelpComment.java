@@ -68,4 +68,12 @@ public class HelpComment extends AbstractBaseEntity<Long> {
 	public void setTime(Date time) {
 		this.time = time;
 	}
+
+	public Hospital getHospital() {
+		return hospital;
+	}
+
+	public void setHospital(Hospital hospital) {
+		this.hospital = hospital;
+	}
 }

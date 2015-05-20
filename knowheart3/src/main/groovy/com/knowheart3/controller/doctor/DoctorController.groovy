@@ -133,7 +133,7 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 			times = infoTime.split(','), timeData = []
 		times.eachWithIndex { value, index ->
 			for (i in 0..value.length() - 1) {
-				if ('1' == value[i] || '1'.equals(value)) {
+				if ('0' == value[i] || '0'.equals(value)) {
 					timeData << [
 						'dayId': index + 1,
 						'startTime' : "$i:00" as String,

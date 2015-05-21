@@ -86,6 +86,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	 * @return
 	 * 获取求助信息列表
 	 */
+	@Transactional(readOnly = true)
 	@RequestMapping(value = 'retrieveHelpComment', method = RequestMethod.POST)
 	retrieveHelpComment(@RequestParam(required = false) Boolean self,
 		@RequestParam(required = false) String ids,

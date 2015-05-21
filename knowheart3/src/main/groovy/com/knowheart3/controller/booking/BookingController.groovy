@@ -22,9 +22,9 @@ import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
-import org.springframework.data.web.PageableDefault
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
@@ -455,15 +455,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		@ModelAttribute('currentUser') User user) {
 		
 		logger.trace '-- 提交预约时间 --'
-		
+
 		def booking = bookingRepository.findOne(bookingId)
-		if (time)
+		if (time) {
 			def date = DateUtils.parseDate(time, 'yyyy-MM-dd HH')
 			def today = DateUtils.parseDate(DateFormatUtils.format(new Date(), 'yyyy-MM-dd HH'), 'yyyy-MM-dd HH')
 			if (date < today) {
 				return '{"success" : "0", "message" : "err801"}'
 			}
 			booking.time = DateUtils.parseDate(time, 'yyyy-MM-dd HH')
+		}
 		if (quick != null)
 			booking.quick = quick
 		if (money != null)
@@ -506,6 +507,99 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			'{"success" : "0", "message" : "没有订单"}'
 		}
 	}
+
+	/**
+	 * 获取订单列表
+	 * @param page
+	 * @param size
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'retrieveSelfBooking')
+	retrieveSelfBooking(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size,
+						@ModelAttribute('currentUser') User user) {
+
+		if (page == null) {
+			page = 0
+		}
+		if (size == null) {
+			size = 20
+		}
+		Pageable pageable = new PageRequest(page, size, Direction.DESC, 'createdDate')
+		def bookings = bookingRepository.findAll(
+				[
+						user_equal     : user,
+						status_notEqual: Booking.Status.Close
+				], pageable
+		)
+		def bookingContent = bookings.content, data = []
+		def outDateBooking = [], now = new Date()
+		bookingContent.each {
+			def outSecond
+			if (it.status == Booking.Status.Paying && it.outDated <= now) {
+				it.time = null
+				it.outDated = null
+				it.status = Booking.Status.Accept
+				outDateBooking << it
+			}
+			if (it.outDated != null) {
+				outSecond = (it.outDated.time - now.time) / 1000 as int
+			}
+			def doctorName
+			if (it.doctor) {
+				doctorName = it.doctor?.doctorInfo?.name
+			} else {
+				doctorName = it.doctorName
+			}
+
+			data << [
+					bookingId        : it.id,
+					doctorId         : it.doctor?.id,
+					doctorName       : doctorName,
+					doctorPhone      : it.doctor?.doctorInfo?.phone,
+					lastBookingTime  : it.lastBookingTime,
+					hospitalId       : it.hospital?.id,
+					hospitalName     : it.hospital?.hospitalInfo?.name,
+					hospitalPhone    : it.hospital?.hospitalInfo?.phone,
+					name             : it.name,
+					phone            : it.phone,
+					sex              : it.sex?.ordinal(),
+					birthday         : it.birthday,
+					profession       : it.profession,
+					onlineFee        : it.doctor?.doctorInfo?.onlineFee,
+					offlineFee       : it.doctor?.doctorInfo?.offlineFee,
+					city             : it.city,
+					married          : it.married,
+					haveChildren     : it.haveChildren,
+					helpReason       : it.helpReason,
+					otherProblem     : it.otherProblem,
+					treatmented      : it.treatmented,
+					haveConsulted    : it.haveConsulted,
+					refusalReason    : it.refusalReason,
+					time             : it.time,
+					quick            : it.quick,
+					consultType      : it.consultType?.ordinal(),
+					status           : it.status?.ordinal(),
+					baseMoney        : it.money,
+					money            : it.money + it.quickMoney,
+					userStatus       : it.userStatus?.ordinal(),
+					doctorStatus     : it.doctorStatus?.ordinal(),
+					doctorAvatar     : it.doctor?.doctorInfo?.avatarPath,
+					hospitalAvatar   : it.hospital?.hospitalInfo?.hospitalAvatar,
+					outSecond        : outSecond,
+					doctorAddress    : it.doctor?.doctorInfo?.address,
+					hospitalAddress  : it.hospital?.hospitalInfo?.address,
+					hospitalMinCharge: it.hospital?.hospitalInfo?.minCharge,
+					hospitalMaxCharge: it.hospital?.hospitalInfo?.maxCharge
+			]
+			bookingService.saveBooking(outDateBooking)
+		}
+		[
+				'success': '1',
+				'more'   : bookings.hasNext(),
+				'data'   : data
+		]
+	}
 	
 	/**
 	 * @param user
@@ -513,7 +607,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	 * 获取订单列表
 	 */
 //	@Transactional
-	@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
+	/*@RequestMapping(value = 'retrieveSelfBooking', method = RequestMethod.POST)
 	retrieveSelfBooking(
 			@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
 					Pageable pageable,
@@ -528,9 +622,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		def bookingContent = bookings.getContent()
 		def data = []
 
-		def outDateBooking = []
+		def outDateBooking = [], now = new Date()
 		bookingContent.each {
-			def outSecond, now = new Date()
+			def outSecond
 			if (it.status == Booking.Status.Paying && it.outDated <= now) {
 				it.time = null
 				it.outDated = null
@@ -597,7 +691,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				'data'   : data
 		]
 
-	}
+	}*/
 		
 	def dayForWeek(Date date) {
 		def c = Calendar.getInstance()

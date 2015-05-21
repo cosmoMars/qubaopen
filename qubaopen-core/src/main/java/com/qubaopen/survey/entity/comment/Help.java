@@ -1,18 +1,11 @@
 package com.qubaopen.survey.entity.comment;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.envers.Audited;
-
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.user.User;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author mars
@@ -25,7 +18,7 @@ public class Help extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 2741484760819353602L;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	private User user;
 
 	/**

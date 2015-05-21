@@ -391,9 +391,10 @@ class UserController extends AbstractBaseController<User, Long> {
 	}
 
 	/**
-	 * @author blues
-	 * @param phone 用户手机号
-	 * @return 判断手机用户，不存在创建，存在给用户手机发一条验证码短信
+	 * 判断手机用户，不存在创建，存在给用户手机发一条验证码短信
+	 * @param phone
+	 * @param activated
+	 * @return
 	 */
 	@RequestMapping(value = 'sendCaptcha', method = RequestMethod.GET)
 	sendCaptcha(@RequestParam(required = false) String phone, @RequestParam(required = false) Boolean activated) {
@@ -523,8 +524,24 @@ class UserController extends AbstractBaseController<User, Long> {
 		'{"success" : "1"}'
 	}
 
-	@RequestMapping(value = 'bindPhone')
-	bindPhone() {
+	/**
+	 * 绑定手机
+	 * @param phone
+	 * @param captcha
+	 * @param user
+	 */
+	@RequestMapping(value = 'bindingPhone')
+	bindingPhone(@RequestParam String phone, @RequestParam String captcha,
+				 @ModelAttribute('currentUser') User user) {
+
+		if (!validatePhone(phone)) {
+			return '{"success" : "0", "message": "err003"}'
+		}
+		def userCaptcha = userCaptchaRepository.findOne(user.id)
+		if (StringUtils.equals(userCaptcha.captcha, captcha)) {
+			return '{"success" : "0", "message": "err007"}'
+		}
+
 
 	}
 

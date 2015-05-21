@@ -64,12 +64,17 @@ public class HelpCommentController extends AbstractBaseController<HelpComment, L
         helpComment = helpCommentRepository.save(helpComment);
 
         result.put("commentId",helpComment.getId());
-        result.put("id", helpComment.getHospital().getId());
-        result.put("name",helpComment.getHospital().getHospitalInfo().getName());
-        result.put("content", helpComment.getContent());
-        result.put("time", helpComment.getTime());
-        result.put("avatar",helpComment.getHospital().getHospitalInfo().getHospitalAvatar());
-
+        result.put("doctorId", helpComment.getHospital().getId());
+        result.put("doctorName", helpComment.getHospital().getHospitalInfo().getName());
+        result.put("doctorContent", helpComment.getContent());
+        result.put("doctorAvatar", helpComment.getHospital().getHospitalInfo().getHospitalAvatar());
+        result.put("hospitalId", helpComment.getHospital().getId());
+        result.put("hospitalName", helpComment.getHospital().getHospitalInfo().getName());
+        result.put("hospitalAvatar", helpComment.getContent());
+        result.put("doctorTime", helpComment.getTime());
+        result.put("goods", 0);
+        result.put("isGood", false);
+        result.put("type", 1);
         result.put("success", "1");
 
         return result;

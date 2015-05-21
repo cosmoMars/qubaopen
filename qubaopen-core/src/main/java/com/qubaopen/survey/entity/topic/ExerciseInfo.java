@@ -1,14 +1,9 @@
 package com.qubaopen.survey.entity.topic;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import com.qubaopen.core.entity.AbstractBaseEntity;
 import org.hibernate.envers.Audited;
 
-import com.qubaopen.core.entity.AbstractBaseEntity;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "exercise_info")
@@ -43,6 +38,16 @@ public class ExerciseInfo extends AbstractBaseEntity<Long> {
 	 * 图片url
 	 */
 	private String picUrl;
+
+	/**
+	 * 开头语
+	 */
+	private String openingSentence;
+
+	/**
+	 * 结束语
+	 */
+	private String endingSentence;
 
 	public Exercise getExercise() {
 		return exercise;
@@ -84,4 +89,19 @@ public class ExerciseInfo extends AbstractBaseEntity<Long> {
 		this.picUrl = picUrl;
 	}
 
+	public String getOpeningSentence() {
+		return openingSentence;
+	}
+
+	public void setOpeningSentence(String openingSentence) {
+		this.openingSentence = openingSentence;
+	}
+
+	public String getEndingSentence() {
+		return endingSentence;
+	}
+
+	public void setEndingSentence(String endingSentence) {
+		this.endingSentence = endingSentence;
+	}
 }

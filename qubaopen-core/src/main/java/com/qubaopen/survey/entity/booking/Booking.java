@@ -20,7 +20,7 @@ public class Booking extends AbstractBaseEntity<Long> {
 
 	private static final long serialVersionUID = 6872015169540197635L;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)

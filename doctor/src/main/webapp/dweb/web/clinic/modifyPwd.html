@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../../img/29.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知心-登录</title>
+    <!-- Bootstrap core CSS -->
+    <link href="../../bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="../../knight/css/zhixin.css" rel="stylesheet">
+    <link href="../../knight/css/sign.css" rel="stylesheet">
+    <style>
+        .form-signin input[type="password"] {
+            border-radius: 4px;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+<div class="container">
+
+    <!-- Static navbar -->
+    <nav class="navbar navbar-zhixin navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header navbar-zhixin-header">
+                <a class="navbar-brand" href="profile.html"><p class="glyphicon glyphicon-chevron-left"></p></a>
+            </div>
+            <div class="navbar-text navbar-zhixin-title text-center">
+                修改密码
+            </div>
+        </div>
+    </nav>
+
+
+
+    <form  class="form-signin" role="form">
+        <input type="password" id="oldPwd" class="form-control" placeholder="输入旧密码" value="" required>
+        <input type="password" id="newPwd" class="form-control" placeholder="输入新密码" value="" required>
+        <input type="password" id="newPwd2" class="form-control" placeholder="重复新密码" value="" required>
+        <label id="help" class="text-danger">
+
+        </label>
+
+        <button id="btn-confirm" class="btn btn-lg btn-zhixin btn-block" type="button" onclick="modifyPwd(1);">确认</button>
+    </form>
+
+    <div id="target"></div>
+</div> <!-- /container -->
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../../jquery/jquery-1.11.1.min.js"></script>
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+<script src="../../knight/js/verifyUtils.js"></script>
+<script src="../../knight/js/main.js"></script>
+<script src="../../knight/js/sign.js"></script>
+<script>
+
+    $(document).ready(function () {
+
+        $(window).resize(function () {
+            resizeMenu();
+        });
+
+        resizeMenu();
+    });
+
+    /*动态更新 菜单界面*/
+    function resizeMenu(){
+        var windowHeight=$(window).height();
+
+        //console.log(windowHeight);
+        if(windowHeight>=500){
+            $(".container").css("margin-top",windowHeight/2-200);
+        }else{
+            $(".container").attr("style","");
+        }
+    }
+</script>
+
+
+</body>
+</html>

@@ -72,32 +72,60 @@ $(document).ready(function () {
  * 请求
  */
 
-/*登出*/
-function logout(){
-    $.ajax({
-        url: ContextUrl+"/uDoctor/logout",
-        type: "GET",
-        dataType: "json",
-        success: function (data, textStatus, jqXHR) {
+/*登出 0咨询师  1诊所 */
+function logout(type){
+    if(type==0){
+        $.ajax({
+            url: ContextUrl+"/uDoctor/logout",
+            type: "GET",
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
 
-            var result = data.success;
-            if (result == 1) {
-                setCookie("phone","");
-                alert("退出成功");
-                self.location = "signin.html";
-            }else if (result == 0) {
-                if(data.message=="err000"){
+                var result = data.success;
+                if (result == 1) {
+                    setCookie("phone","");
+                    alert("退出成功");
+                    self.location = "signin.html";
+                }else if (result == 0) {
+                    if(data.message=="err000"){
+                        backToSignIn();
+                    }
+                }
+
+            },
+            error: function(xhr,status,error){
+                if(xhr.status=="500"){
                     backToSignIn();
                 }
             }
+        });
+    } else{
+        $.ajax({
+            url: ContextUrl+"/uHospital/logout",
+            type: "GET",
+            dataType: "json",
+            success: function (data, textStatus, jqXHR) {
 
-        },
-        error: function(xhr,status,error){
-            if(xhr.status=="500"){
-                backToSignIn();
+                var result = data.success;
+                if (result == 1) {
+                    setCookie("email","");
+                    alert("退出成功");
+                    self.location = "../signin.html";
+                }else if (result == 0) {
+                    if(data.message=="err000"){
+                        backToSignIn();
+                    }
+                }
+
+            },
+            error: function(xhr,status,error){
+                if(xhr.status=="500"){
+                    backToSignIn();
+                }
             }
-        }
-    });
+        });
+    }
+
 
 }
 

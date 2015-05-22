@@ -20,8 +20,7 @@ $(document).ready(function () {
  */
 /*获取求助列表*/
 function getHelpListRequest(){
-    var jsonSent={};
-    jsonSent.userId=6;
+    loading(true);
     $.ajax({
         url: ContextUrl+"/help/retrieveHelpComment",
         type: "POST",
@@ -29,8 +28,7 @@ function getHelpListRequest(){
         success: function (data, textStatus, jqXHR) {
 
             var result = data.success;
-            console.log(data);
-
+            //console.log(data);
             if (result == 1) {
                 updateHelpListView(data.data);
             }else if (result == 0) {
@@ -38,6 +36,14 @@ function getHelpListRequest(){
                     backToSignIn();
                 }
             }
+        },
+        complete:function(xhr){
+            if(xhr.status!=200){
+                $("#loading-view").empty().append("加载失败");
+                return;
+            }
+
+            loading(false);
         }
     });
 
@@ -74,10 +80,18 @@ function updateHelpListView(aData){
             '</div></div>';
         oMainView.append(appendHtml);
     }
-
-
 }
 
 /**
  * 其他逻辑处理
 */
+function loading(type){
+    // true =show  false =hide
+    var oMainView=$("#main-view");
+    if(type){
+        var loadingHTML='<div id="loading-view" class="text-center"><img src="../img/loading.gif"/>加载中... </div>';
+        oMainView.append(loadingHTML);
+    }else{
+        $("#loading-view").remove();
+    }
+}

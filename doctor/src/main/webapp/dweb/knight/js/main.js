@@ -10,6 +10,20 @@ ContextUrl=window.location.protocol+"//"+window.location.host;
 //if(!(location.hostname).match("www.qubaopen.com.cn")){
 //    location.hostname="www.qubaopen.com.cn";
 //}
+
+$.ajaxSetup({
+    error:function(xhr,status,error){
+        console.log(xhr.status);
+        if(xhr.status==404){
+            var reg=/doctor/i;
+            if(!(reg.test(ContextUrl)))
+                ContextUrl+="/doctor";
+        }else if(xhr.status==500){
+            console.log(xhr);
+        }
+    }
+});
+
 function getCookie(c_name)
 {
     if (document.cookie.length>0)

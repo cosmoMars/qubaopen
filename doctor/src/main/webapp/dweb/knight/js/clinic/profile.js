@@ -201,3 +201,17 @@ function updateProfileView(obj){
 /**
  * 其他逻辑处理
  */
+function modifyPwd(){
+    self.location="modifyPwd.html"
+}
+
+/*动态更新 导航栏标题的居中*/
+function resizeNavBar(){
+
+    //根据标题文字的长度和 窗口的宽度来改变 标题位置居中
+    var oBar=$(".navbar-zhixin-title");
+    var iMarginLeft=$(window).width()/2-parseInt(oBar.css("font-size"))*oBar.html().trim().length/2-15;
+
+    oBar.css("margin-left",iMarginLeft);
+
+}

@@ -156,3 +156,35 @@ fieldset[disabled] .btn-zhixin.active {
     color:#999;
     font-size: 12px;
 }
+
+
+/*loading*/
+.loading{
+    content: ' ';
+    width: 3px;
+    height: 3px;
+    margin: 10px 35px;
+    border-radius: 100%;
+    box-shadow: 0 -10px 0 1px #eee, 10px 0px #eee, 0 10px #eee, -10px 0 #eee, -7px -7px 0 0.5px #eee, 7px -7px 0 1.5px #eee, 7px 7px #eee, -7px 7px #eee;
+    position: absolute;
+    -webkit-transform: rotate(360deg);
+    -webkit-animation: ui-dialog-loading 1s infinite linear;
+    transform: rotate(360deg);
+    animation: ui-dialog-loading 1s infinite linear;
+}
+@-webkit-keyframes ui-dialog-loading {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+@keyframes ui-dialog-loading {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

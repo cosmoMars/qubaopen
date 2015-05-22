@@ -39,7 +39,7 @@ $(document).ready(function () {
 
 
     //focus
-    $("#phone,#password").on("focus",function(){
+    $("#phone,#password,#oldPwd,#newPwd,#newPwd2").on("focus",function(){
         $("#help").empty();
     });
 });
@@ -136,6 +136,9 @@ function getCaptcha(){
     }
 
     var params="?phone="+phone;
+
+
+
     $.ajax({
         url: ContextUrl+"/uDoctor/sendCaptcha"+params,
         type: "GET",
@@ -220,4 +223,65 @@ function signupClinic(){
             }
         }
     });
+}
+
+
+//修改密码 0咨询师  1诊所
+function modifyPwd(type){
+    var oldPwd=$("#oldPwd").val();
+    var newPwd=$("#newPwd").val();
+    var newPwd2=$("#newPwd2").val();
+
+    if(newPwd!=newPwd2){
+        $("#help").html("新密码两次输入不一致!");
+        return;
+    }
+
+    var jsonSent={};
+    jsonSent.oldPwd=oldPwd;
+    jsonSent.newPwd=newPwd;
+    if(type==0){
+        //咨询师
+        $.ajax({
+            url: ContextUrl+"/uDoctor/modifyPassword",
+            type: "POST",
+            dataType: "json",
+            data: jsonSent,
+            success: function (data, textStatus, jqXHR) {
+
+                var result = data.success;
+
+                if (result == 1) {
+                    alert("密码修改成功");
+                    self.location = "profile.html";
+                }
+                if (result == 0) {
+                    var msg = data.message;
+                    $("#help").html(returnMsgText(msg));
+                }
+            }
+        });
+
+    }else{
+        //诊所
+        $.ajax({
+            url: ContextUrl+"/uHospital/modifyPassword",
+            type: "POST",
+            dataType: "json",
+            data: jsonSent,
+            success: function (data, textStatus, jqXHR) {
+
+                var result = data.success;
+
+                if (result == 1) {
+                    alert("密码修改成功");
+                    self.location = "profile.html";
+                }
+                if (result == 0) {
+                    var msg = data.message;
+                    $("#help").html(returnMsgText(msg));
+                }
+            }
+        });
+    }
 }

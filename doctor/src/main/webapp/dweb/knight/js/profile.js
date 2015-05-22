@@ -67,7 +67,6 @@ function getInfo(){
     $.ajax({
         url: ContextUrl+"/doctorInfo/retrieveDoctorInfo",
         type: "GET",
-        async:false,
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
 
@@ -94,7 +93,6 @@ function retrieveDoctorRecord(){
     $.ajax({
         url: ContextUrl+"/doctorRecord/retrieveDoctorRecord",
         type: "GET",
-        async:false,
         dataType: "json",
         success: function (data, textStatus, jqXHR) {
 
@@ -370,4 +368,19 @@ function jsonFilter(json){
         }
     }
     return json;
+}
+
+function modifyPwd(){
+    self.location="modifyPwd.html"
+}
+
+/*动态更新 导航栏标题的居中*/
+function resizeNavBar(){
+
+    //根据标题文字的长度和 窗口的宽度来改变 标题位置居中
+    var oBar=$(".navbar-zhixin-title");
+    var iMarginLeft=$(window).width()/2-parseInt(oBar.css("font-size"))*oBar.html().trim().length/2-15;
+
+    oBar.css("margin-left",iMarginLeft);
+
 }

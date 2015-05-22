@@ -22,6 +22,7 @@ $(document).ready(function () {
 function getHelpListRequest(){
     var jsonSent={};
     jsonSent.self=false;
+    loading(true);
     $.ajax({
         url: ContextUrl+"/hospitalHelp/retrieveHelpComment",
         type: "POST",
@@ -39,6 +40,14 @@ function getHelpListRequest(){
                     backToSignIn();
                 }
             }
+        },
+        complete:function(xhr){
+            if(xhr.status!=200){
+                $("#loading-view").empty().append("加载失败");
+                return;
+            }
+
+            loading(false);
         }
     });
 
@@ -82,3 +91,13 @@ function updateHelpListView(aData){
 /**
  * 其他逻辑处理
 */
+function loading(type){
+    // true =show  false =hide
+    var oMainView=$("#main-view");
+    if(type){
+        var loadingHTML='<div id="loading-view" class="text-center"><img src="../../img/loading.gif"/>加载中... </div>';
+        oMainView.append(loadingHTML);
+    }else{
+        $("#loading-view").remove();
+    }
+}

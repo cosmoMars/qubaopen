@@ -6,8 +6,10 @@ import com.knowheart3.repository.hospital.HospitalRepository
 import com.knowheart3.service.AreaCodeService
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.doctor.TargetUser
 import com.qubaopen.survey.entity.hospital.Hospital
 import com.qubaopen.survey.entity.hospital.HospitalInfo
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -71,8 +73,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
         }
         hospitals.each {
             data << [
-                    'hospitalId'  : it?.id,
-                    'hospitalName': it?.hospitalInfo?.name
+                    'hospitalId'  : it.id,
+                    'hospitalName': it.hospitalInfo?.name,
+                    'appellation' : it.hospitalInfo?.appellation
             ]
         }
         [
@@ -85,25 +88,26 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
 	retrieveHosptialDetial(@PathVariable long id) {
 		
 		logger.trace '-- 获取诊所详细 --'
-		
-		def hospital = hospitalInfoRepository.findOne(id)
+
+        def hi = hospitalInfoRepository.findOne(id)
 		
 		[
                 success       : '1',
-                name          : hospital.name,
-                address       : hospital.address,
-                establishTime : hospital.establishTime,
-                phone         : hospital.phone,
-                urgentPhone   : hospital.urgentPhone,
-                qq            : hospital.qq,
-                introduce     : hospital.introduce,
-                wordsConsult  : hospital.wordsConsult,
-                minCharge     : hospital.minCharge,
-                maxCharge     : hospital.maxCharge,
-                records       : hospital.hospitalDoctorRecords?.size(),
-                video         : hospital.video,
-                faceToFace    : hospital.faceToFace,
-                hospitalAvatar: hospital.hospitalAvatar
+                name          : hi.name,
+                address       : hi.address,
+                establishTime : hi.establishTime,
+                phone         : hi.phone,
+                urgentPhone   : hi.urgentPhone,
+                qq            : hi.qq,
+                introduce     : hi.introduce,
+                wordsConsult  : hi.wordsConsult,
+                minCharge     : hi.minCharge,
+                maxCharge     : hi.maxCharge,
+                records       : hi.hospitalDoctorRecords?.size(),
+                video         : hi.video,
+                faceToFace    : hi.faceToFace,
+                hospitalAvatar: hi.hospitalAvatar,
+                appellation   : hi.appellation
 
 		]
 	}
@@ -160,6 +164,13 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
         }
         def hospitalInfos = hospitalInfoRepository.findByFilter(filters)
         hospitalInfos.each {
+            def targets = it.targetUsers, userTargets = []
+            for (TargetUser targetUser : targets) {
+                if (userTargets.size() < 3) {
+                    userTargets.add(targetUser.name)
+                }
+
+            }
             data << [
                     hospitalId       : it.id,
                     hospitalName     : it.name,
@@ -169,7 +180,9 @@ public class HospitalController extends AbstractBaseController<Hospital, Long> {
                     faceToFace       : it.faceToFace,
                     video            : it.video,
                     minCharge        : it.minCharge,
-                    maxCharge        : it.maxCharge
+                    maxCharge        : it.maxCharge,
+                    appellation      : it.appellation,
+                    targetUser       : StringUtils.join(userTargets, "  ")
             ]
         }
         def more = true

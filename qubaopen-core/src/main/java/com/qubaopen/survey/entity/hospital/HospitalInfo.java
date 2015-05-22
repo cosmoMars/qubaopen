@@ -126,6 +126,7 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 	 * 擅长人群
 	 */
 	@ManyToMany
+	@OrderBy(value = "id asc")
 	@JoinTable(name = "hospital_target_relation", joinColumns = @JoinColumn(name = "hospital_id"), inverseJoinColumns = @JoinColumn(name = "target_id"))
 	private Set<TargetUser> targetUsers;
 
@@ -166,7 +167,12 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 	 */
 	private int clearDay = 1;
 
-    @Override
+	/**
+	 * 称号
+	 */
+	private String appellation;
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -420,5 +426,13 @@ public class HospitalInfo extends AbstractBaseEntity2<Long> {
 
 	public void setClearDay(int clearDay) {
 		this.clearDay = clearDay;
+	}
+
+	public String getAppellation() {
+		return appellation;
+	}
+
+	public void setAppellation(String appellation) {
+		this.appellation = appellation;
 	}
 }

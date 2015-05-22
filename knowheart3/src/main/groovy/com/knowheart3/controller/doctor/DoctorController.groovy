@@ -7,7 +7,9 @@ import com.knowheart3.service.AreaCodeService
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.doctor.Doctor
+import com.qubaopen.survey.entity.doctor.TargetUser
 import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -94,16 +96,29 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		}
 		doctorInfos = doctorInfoRepository.findByFilter(filters)
 		doctorInfos.each {
-			data << [
-					'doctorId'       : it?.id,
-					'doctorName'     : it?.name,
-					'doctorAvatar'   : it?.avatarPath,
-					'doctorAddress'  : it?.address,
-					'doctorIntroduce': it?.introduce,
-					'faceToFace'     : it?.faceToFace,
-					'video'          : it?.video,
-					'onlineFee'      : it?.onlineFee,
-					'offlineFee'     : it?.offlineFee
+
+            def targets = it.targetUsers, userTargets = []
+
+            for (TargetUser targetUser : targets) {
+                if (userTargets.size() < 3) {
+                    userTargets.add(targetUser.name)
+                }
+
+            }
+
+            data << [
+                    'doctorId'       : it.id,
+                    'doctorName'     : it.name,
+                    'doctorAvatar'   : it.avatarPath,
+                    'doctorAddress'  : it.address,
+                    'doctorIntroduce': it.introduce,
+                    'faceToFace'     : it.faceToFace,
+                    'video'          : it.video,
+                    'onlineFee'      : it.onlineFee,
+                    'offlineFee'     : it.offlineFee,
+                    'appellation'    : it.appellation,
+                    'targetUser'     : StringUtils.join(userTargets, "  ")
+
 			]
 		}
 		def more = true
@@ -128,8 +143,8 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 		
 		logger.trace '-- 获取医师详细 --'
 
-		def doctorInfo = doctorInfoRepository.findOne(id),
-			infoTime = doctorInfo.bookingTime,
+		def di = doctorInfoRepository.findOne(id),
+			infoTime = di.bookingTime,
 			times = infoTime.split(','), timeData = []
 		times.eachWithIndex { value, index ->
 			for (i in 0..value.length() - 1) {
@@ -142,20 +157,30 @@ public class DoctorController extends AbstractBaseController<Doctor, Long> {
 				}
 			}
 		}
-		[
-			'success' : '1',
-			'name' : doctorInfo?.name,
-			'address' : doctorInfo?.address,
-			'introduce' : doctorInfo?.introduce,
-			'field' : doctorInfo?.field,
-			'targetUser' : doctorInfo?.targetUser,
-			'genre' : doctorInfo?.genre,
-			'faceToFace' : doctorInfo?.faceToFace,
-			'video' : doctorInfo?.video,
-			'avatar' : doctorInfo?.avatarPath,
-			'onlineFee' : doctorInfo?.onlineFee,
-			'offlineFee' : doctorInfo?.offlineFee,
-			'timeData' : timeData
+        def targets = di.targetUsers, userTargets = []
+
+        for (TargetUser targetUser : targets) {
+            if (userTargets.size() < 3) {
+                userTargets.add(targetUser.name)
+            }
+
+        }
+
+        [
+                'success'    : '1',
+                'name'       : di.name,
+                'address'    : di.address,
+                'introduce'  : di.introduce,
+                'field'      : di.field,
+                'targetUser' : StringUtils.join(userTargets, "  "),
+                'genre'      : di.genre,
+                'faceToFace' : di.faceToFace,
+                'video'      : di.video,
+                'avatar'     : di.avatarPath,
+                'onlineFee'  : di.onlineFee,
+                'offlineFee' : di.offlineFee,
+                'appellation': di.appellation,
+                'timeData'   : timeData
 		]
 		
 	}

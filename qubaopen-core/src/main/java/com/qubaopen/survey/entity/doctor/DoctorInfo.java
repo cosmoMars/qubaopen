@@ -159,6 +159,7 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 * 擅长人群
 	 */
 	@ManyToMany
+	@OrderBy(value = "id asc")
 	@JoinTable(name = "doctor_target_relation", joinColumns = @JoinColumn(name = "doctor_id"), inverseJoinColumns = @JoinColumn(name = "target_id"))
 	private Set<TargetUser> targetUsers;
 
@@ -190,6 +191,11 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 	 */
 	@Enumerated
 	private OnLineStatus onLineStatus;
+
+	/**
+	 * 称号
+	 */
+	private String appellation;
 
 	public enum  OnLineStatus {
 		Online, Offline
@@ -482,5 +488,13 @@ public class DoctorInfo extends AbstractBaseEntity2<Long> {
 
 	public void setOnLineStatus(OnLineStatus onLineStatus) {
 		this.onLineStatus = onLineStatus;
+	}
+
+	public String getAppellation() {
+		return appellation;
+	}
+
+	public void setAppellation(String appellation) {
+		this.appellation = appellation;
 	}
 }

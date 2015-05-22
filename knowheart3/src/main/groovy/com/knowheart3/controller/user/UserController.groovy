@@ -13,6 +13,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
@@ -179,6 +180,9 @@ class UserController extends AbstractBaseController<User, Long> {
 			return '{"success" : "0", "message": "err002"}'
 		}
 
+		if (!loginUser.userName) {
+			loginUser.userName = "新用户${RandomStringUtils.randomNumeric(6)}"
+		}
 		def now = new Date()
 		if (loginUser.loginDate == null) {
 			loginUser.loginDate = now
@@ -215,25 +219,26 @@ class UserController extends AbstractBaseController<User, Long> {
 			userIdCardBind = loginUser.userIdCardBind,
 			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(loginUser, true)
 
+		userRepository.save(loginUser)
 		return  [
 				'success'            : '1',
 				'message'            : '登录成功',
-				'userId'             : loginUser?.id,
-				'phone'              : loginUser?.phone,
+				'userId'    : loginUser.id,
+				'phone'     : loginUser.phone,
 				'name'               : userIdCardBind?.userIDCard?.name,
-				'sex'                : userInfo?.sex?.ordinal(),
-				'nickName'           : userInfo?.nickName,
-				'bloodType'          : userInfo?.bloodType?.ordinal(),
+				'sex'       : userInfo.sex?.ordinal(),
+				'nickName'  : userInfo.nickName,
+				'bloodType' : userInfo.bloodType?.ordinal(),
 				'district'           : '',
-				'email'              : loginUser?.email,
+				'email'     : loginUser.email,
 				'defaultAddress'     : userReceiveAddress?.detialAddress,
 				'defaultAddressId'   : userReceiveAddress?.id,
 				'consignee'          : userReceiveAddress?.consignee,
 				'defaultAddressPhone': userReceiveAddress?.phone,
 				'idCard'             : userIdCardBind?.userIDCard?.IDCard,
-				'birthday'           : userInfo?.birthday,
-				'avatarPath'         : userInfo?.avatarPath,
-				'signature'          : userInfo?.signature
+				'birthday'  : userInfo.birthday,
+				'avatarPath': userInfo.avatarPath,
+				'signature' : userInfo.signature
 		]
     }
 
@@ -538,10 +543,28 @@ class UserController extends AbstractBaseController<User, Long> {
 			return '{"success" : "0", "message": "err003"}'
 		}
 		def userCaptcha = userCaptchaRepository.findOne(user.id)
-		if (StringUtils.equals(userCaptcha.captcha, captcha)) {
+		if (!StringUtils.equals(userCaptcha.captcha, captcha)) {
 			return '{"success" : "0", "message": "err007"}'
 		}
+		if (DateUtils.isSameDay(userCaptcha.lastSentDate, new Date())) {
+			userCaptcha.sentNum++
+		} else {
+			userCaptcha.sentNum = 1
+		}
 
+		userCaptcha.captcha = null
+
+		def u = userRepository.findByPhone(phone)
+
+		if (u && u.activated) {
+			return '{"success" : "0", "message": "err006"}'
+		}
+		user.phone = phone
+
+		userRepository.save(user)
+		userCaptchaRepository.save(userCaptcha)
+
+		'{"success" : "1"}'
 
 	}
 

@@ -1711,8 +1711,15 @@ public class MapStatisticsService {
 	 */
 	def retrieveMapByResultAndUser(long selfId, User user) {
 
-
 		def data = []
+		if (selfId == 15l) {
+			return [
+					'success': '1',
+					'message': '成功',
+					'userId' : user.id,
+					'data'   : data
+			]
+		}
 
 //		def userSelfResult = selfResultOptionRepository.findOne(resultId),
 		def self = selfRepository.findOne(selfId),

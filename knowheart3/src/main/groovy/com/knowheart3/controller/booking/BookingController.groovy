@@ -7,6 +7,7 @@ import com.knowheart3.repository.doctor.DoctorCashRepository
 import com.knowheart3.repository.doctor.DoctorInfoRepository
 import com.knowheart3.repository.doctor.DoctorRepository
 import com.knowheart3.repository.hospital.HospitalRepository
+import com.knowheart3.repository.user.UserAuthorizationRepository
 import com.knowheart3.service.SmsService
 import com.knowheart3.service.booking.BookingService
 import com.knowheart3.utils.CommonEmail
@@ -18,6 +19,7 @@ import com.qubaopen.survey.entity.cash.DoctorCash
 import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
+import com.qubaopen.survey.entity.user.UserAuthorization
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -71,6 +73,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	@Autowired
 	BookingService bookingService
 
+	@Autowired
+	UserAuthorizationRepository userAuthorizationRepository
+
 	@Value('${ratio}')
 	private double ratio
 	
@@ -102,38 +107,55 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 	@Transactional
 	@RequestMapping(value = 'createBooking', method = RequestMethod.POST)
 	createBooking(@RequestParam(required = false) Long doctorId,
-		@RequestParam(required = false) Long hospitalId,
-		@RequestParam(required = false) String name,
-		@RequestParam(required = false) String phone,
-		@RequestParam(required = false) Integer sexIndex,
-		@RequestParam(required = false) String birthdayStr,
-		@RequestParam(required = false) String profession,
-		@RequestParam(required = false) String city,
-		@RequestParam(required = false) boolean married,
-		@RequestParam(required = false) boolean haveChildren,
-		@RequestParam(required = false) String helpReason,
-		@RequestParam(required = false) String otherProblem,
-		@RequestParam(required = false) boolean treatmented,
-		@RequestParam(required = false) boolean haveConsulted,
-		@RequestParam(required = false) Integer consultTypeIndex,
-		@ModelAttribute('currentUser') User user
-		) {
+				  @RequestParam(required = false) Long hospitalId,
+				  @RequestParam(required = false) String name,
+				  @RequestParam(required = false) String phone,
+				  @RequestParam(required = false) Integer sexIndex,
+				  @RequestParam(required = false) String birthdayStr,
+				  @RequestParam(required = false) String profession,
+				  @RequestParam(required = false) String city,
+				  @RequestParam(required = false) boolean married,
+				  @RequestParam(required = false) boolean haveChildren,
+				  @RequestParam(required = false) String helpReason,
+				  @RequestParam(required = false) String otherProblem,
+				  @RequestParam(required = false) boolean treatmented,
+				  @RequestParam(required = false) boolean haveConsulted,
+				  @RequestParam(required = false) Integer consultTypeIndex,
+				  @RequestParam(required = false) Boolean authorise,
+				  @ModelAttribute('currentUser') User user
+	) {
 
 		if (!user || !user.id) {
 			return '{"success" : "0", "message": "err000"}'
 		}
-		
+
 		if (!validatePhone(phone)) {
 			return '{"success" : "0", "message": "err003"}'
 		}
-        if (!doctorId && !hospitalId) {
-            return '{"success" : "0", "message" : "err810"}'
-        }
+		if (!doctorId && !hospitalId) {
+			return '{"success" : "0", "message" : "err810"}'
+		}
 
 		def tradeNo
+		def sex, doctor, hospital
 		if (doctorId != null) {
+			doctor = doctorRepository.findOne(doctorId)
+
+			// 查看用户对医师授权
+			def ua = userAuthorizationRepository.findByUserAndDoctor(user, doctor)
+			// 存在授权，取消授权
+			if (ua && authorise == false) {
+				userAuthorizationRepository.delete(ua)
+			} else if (!ua && (authorise == null || authorise == true)) {
+				ua = new UserAuthorization(
+						user: user,
+						doctor: doctor
+				)
+				userAuthorizationRepository.save(ua)
+			}
+
 			tradeNo = "u${user.id}d${doctorId}t${DateFormatUtils.format(new Date(), 'yyyyMMddHHmmssssss')}"
-            /*def exist = bookingRepository.findAll([
+			/*def exist = bookingRepository.findAll([
                 'user.id_equal' : user.id,
                 'doctor.id_equal' : doctorId,
                 'status_equal' : Booking.Status.Paying
@@ -144,6 +166,7 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
             }*/
 		}
 		if (hospitalId != null) {
+			hospital = hospitalRepository.findOne(hospitalId)
 			tradeNo = "u${user.id}h${hospitalId}t${DateFormatUtils.format(new Date(), 'yyyyMMddHHmmssssss')}"
 
 //			def hospital = hospitalRepository.findOne(hospitalId)
@@ -151,36 +174,34 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //				return '{"success" : "0", "message" : "没有该诊所"}'
 //			}
 
-            def exist = bookingRepository.findExistHospitalBooking(user.id, hospitalId)
+			def exist = bookingRepository.findExistHospitalBooking(user.id, hospitalId)
 
-            if (exist && exist.size() > 0) {
-                return '{"success" : "0", "message" : "err809"}'
-            }
+			if (exist && exist.size() > 0) {
+				return '{"success" : "0", "message" : "err809"}'
+			}
 		}
 
-		def sex, doctor, hospital
+
 		def booking = new Booking(
-			tradeNo : tradeNo,
-			user : user,
-			name : name,
-			phone : phone,
-			profession : profession,
-			city : city,
-			married : married,
-			haveChildren : haveChildren,
-			helpReason : helpReason,
-			otherProblem : otherProblem,
-			treatmented : treatmented,
-			haveConsulted : haveConsulted,
-            resolveType: ResolveType.None
+				tradeNo: tradeNo,
+				user: user,
+				name: name,
+				phone: phone,
+				profession: profession,
+				city: city,
+				married: married,
+				haveChildren: haveChildren,
+				helpReason: helpReason,
+				otherProblem: otherProblem,
+				treatmented: treatmented,
+				haveConsulted: haveConsulted,
+				resolveType: ResolveType.None
 //			time : new Date()
 		)
 		if (doctorId != null) {
-			doctor = doctorRepository.findOne(doctorId)
 			booking.doctor = doctor
 		}
 		if (hospitalId != null) {
-			hospital = hospitalRepository.findOne(hospitalId)
 			booking.hospital = hospital
 		}
 		if (birthdayStr) {
@@ -217,8 +238,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 
 		[
-			'success' : '1',
-			'bookingId' : booking?.id
+				'success'  : '1',
+				'bookingId': booking?.id
 		]
 	}
 		
@@ -525,6 +546,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (size == null) {
 			size = 20
 		}
+
+		def uas = userAuthorizationRepository.findAll(
+				[
+						user_equal: user
+				]
+		)
 		Pageable pageable = new PageRequest(page, size, Direction.DESC, 'createdDate')
 		def bookings = bookingRepository.findAll(
 				[
@@ -550,6 +577,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 				doctorName = it.doctor?.doctorInfo?.name
 			} else {
 				doctorName = it.doctorName
+			}
+			def authorise = uas.any { auth ->
+				auth.doctor == it.doctor
 			}
 
 			data << [
@@ -590,7 +620,8 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 					doctorAddress    : it.doctor?.doctorInfo?.address,
 					hospitalAddress  : it.hospital?.hospitalInfo?.address,
 					hospitalMinCharge: it.hospital?.hospitalInfo?.minCharge,
-					hospitalMaxCharge: it.hospital?.hospitalInfo?.maxCharge
+					hospitalMaxCharge: it.hospital?.hospitalInfo?.maxCharge,
+					authorise        : authorise
 			]
 			bookingService.saveBooking(outDateBooking)
 		}

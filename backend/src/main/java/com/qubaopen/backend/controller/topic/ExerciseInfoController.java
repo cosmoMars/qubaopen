@@ -1,11 +1,12 @@
 package com.qubaopen.backend.controller.topic;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.qubaopen.backend.repository.exercise.ExerciseInfoRepository;
+import com.qubaopen.backend.repository.exercise.ExerciseRepository;
+import com.qubaopen.backend.utils.UploadUtils;
+import com.qubaopen.core.controller.AbstractBaseController;
+import com.qubaopen.core.repository.MyRepository;
+import com.qubaopen.survey.entity.topic.Exercise;
+import com.qubaopen.survey.entity.topic.ExerciseInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.qubaopen.backend.repository.exercise.ExerciseInfoRepository;
-import com.qubaopen.backend.repository.exercise.ExerciseRepository;
-import com.qubaopen.backend.utils.UploadUtils;
-import com.qubaopen.core.controller.AbstractBaseController;
-import com.qubaopen.core.repository.MyRepository;
-import com.qubaopen.survey.entity.topic.Exercise;
-import com.qubaopen.survey.entity.topic.ExerciseInfo;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("exerciseInfo")
@@ -35,8 +34,8 @@ public class ExerciseInfoController extends AbstractBaseController<ExerciseInfo,
 	private ExerciseInfoRepository exerciseInfoRepository;
 	
 
-    @Value("${exercise_url}")
-    private String exercise_url;
+    @Value("${exercise_info_url}")
+    private String exercise_info_url;
 
 	@Override
 	protected MyRepository<ExerciseInfo, Long> getRepository() {
@@ -78,6 +77,9 @@ public class ExerciseInfoController extends AbstractBaseController<ExerciseInfo,
 			map.put("content", exerciseInfo.getContent());
 			map.put("exerciseId", exerciseInfo.getExercise().getId());
 			map.put("number", exerciseInfo.getNumber());
+			map.put("openingSentence", exerciseInfo.getOpeningSentence());
+			map.put("endingSentence", exerciseInfo.getEndingSentence());
+			map.put("url", exerciseInfo.getPicUrl());
 			// map.put("createdDate", exerciseInfo.getCreatedDate().toDate());
 			list.add(map);
 		}
@@ -102,6 +104,8 @@ public class ExerciseInfoController extends AbstractBaseController<ExerciseInfo,
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String content,
 			@RequestParam(required = false) String number,
+			@RequestParam(required = false) String openingSentence,
+			@RequestParam(required = false) String endingSentence,
 			@RequestParam(required = false) MultipartFile multipartFile) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -122,13 +126,15 @@ public class ExerciseInfoController extends AbstractBaseController<ExerciseInfo,
 		exerciseInfo.setName(name);
 		exerciseInfo.setContent(content);
 		exerciseInfo.setNumber(number);
+		exerciseInfo.setOpeningSentence(openingSentence);
+		exerciseInfo.setEndingSentence(endingSentence);
 		
 		  if (null != multipartFile) {
 	            String uname;
 	            if (null == exerciseInfo.getId()) {
-	                uname = exercise_url;
+	                uname = exercise_info_url;
 	            } else {
-	                uname = exercise_url + exerciseInfo.getId();
+	                uname = exercise_info_url + exerciseInfo.getId();
 	            }
 
 	            String picUrl;

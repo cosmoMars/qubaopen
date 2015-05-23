@@ -19,6 +19,12 @@
             min-height: 407px;
         }
 
+        .previewImg{
+            max-height: 150px;
+            max-width: 300px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -106,7 +112,23 @@
                             </div>
                         </div>
 
-                        <div class="form-group gone">
+
+                        <div class="form-group">
+                            <label for="openingSentence" class="col-sm-2 control-label">开头语</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" name="openingSentence" id="openingSentence"  placeholder="请输入内容"></textarea>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="endingSentence" class="col-sm-2 control-label">结束语</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" name="endingSentence" id="endingSentence"  placeholder="请输入内容"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="multipartFile" class="col-sm-2 control-label">图片</label>
                             <div class="col-sm-10">
                                 <input type="file" class="form-control" id="multipartFile" name="multipartFile"
@@ -115,9 +137,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="img" class="col-sm-2 control-label">图片预览</label>
+                            <div class="col-sm-10">
+                                <img id="img" class="previewImg" src="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="content" class="col-sm-2 control-label">内容</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" rows="3" name="content" id="content"  placeholder="请输入内容"></textarea>
+                                <textarea class="form-control" rows="5" name="content" id="content"  placeholder="请输入内容"></textarea>
                             </div>
                         </div>
 
@@ -148,6 +177,18 @@
 <script>
     $(document).ready(function () {
 
+        //预览图片
+        $("#multipartFile").on("change",function(e){
+            var _this=this;
+            var file = e.target.files||e.dataTransfer.files;
+            if(file){
+                var reader = new FileReader();
+                reader.onload=function(){
+                    $("#img").attr("src",this.result).show();
+                }
+                reader.readAsDataURL(file[0]);
+            }
+        });
 
         //点击新增
         $("#btn-add").on("click",function(){
@@ -158,7 +199,10 @@
             $("#name").val("");
             $("#number").val("");
             $("#content").val("");
+            $("#openingSentence").val("");
+            $("#endingSentence").val("");
             $("#multipartFile").val("");
+            $("#img").attr("src","").hide();
         });
 
 
@@ -171,6 +215,9 @@
             var sContent=$(this).closest("tr").find(".content").html();
             var sNumber=$(this).closest("tr").find(".number").html();
             var sExerciseId=$(this).closest("tr").find(".exerciseId").html();
+            var sOpeningSentence=$(this).closest("tr").find(".openingSentence").html();
+            var sEndingSentence=$(this).closest("tr").find(".endingSentence").html();
+            var sUrl=$(this).closest("tr").find(".url").html();
 
             //显示数据
             $("#id").val(id);
@@ -178,6 +225,9 @@
             $("#content").val(sContent);
             $("#number").val(sNumber);
             $("#exerciseId").val(sExerciseId);
+            $("#openingSentence").val(sOpeningSentence);
+            $("#endingSentence").val(sEndingSentence);
+            $("#img").attr("src",sUrl).show();
         });
 
         //点击提交
@@ -350,7 +400,11 @@
                         '<td class="name">'+data[i].name+'</td>' +
                         '<td><span class="check">查看</span> <span class="delete">删除</span></td>' +
                         '<td class="gone content">'+data[i].content+'</td>' +
+                        '<td class="gone openingSentence">'+data[i].openingSentence+'</td>' +
+                        '<td class="gone endingSentence">'+data[i].endingSentence+'</td>' +
+                        '<td class="gone url">'+data[i].url+'</td>' +
                         '</tr>';
+
 
                 oTableView.append(appendHTML);
             }

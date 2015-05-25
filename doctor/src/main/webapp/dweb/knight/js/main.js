@@ -3,8 +3,8 @@
  */
 
 
-ContextUrl=window.location.protocol+"//"+window.location.host;
-//ContextUrl=window.location.protocol+"//"+window.location.host+"/doctor";
+//ContextUrl=window.location.protocol+"//"+window.location.host;
+ContextUrl=window.location.protocol+"//"+window.location.host+"/doctor";
 //ContextUrl="http://zhixin.me:8080/doctor";
 //
 //if(!(location.hostname).match("www.qubaopen.com.cn")){

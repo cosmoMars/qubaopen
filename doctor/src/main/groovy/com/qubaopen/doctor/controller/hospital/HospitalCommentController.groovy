@@ -54,7 +54,8 @@ public class HospitalCommentController extends AbstractBaseController<HelpCommen
 		
 		def hi = hospitalInfoRepository.findOne(hospital.id)
 		
-		if (hi.loginStatus != HospitalInfo.LoginStatus.Audited) {
+		//诊所未通过认证 不能评论，除非是知小心
+		if (hi.loginStatus != HospitalInfo.LoginStatus.Audited && hi.id!=1l) {
 			return '{"success" : "0", "message" : "err1000"}'
 		}
 		

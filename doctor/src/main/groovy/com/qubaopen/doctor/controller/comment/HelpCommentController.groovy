@@ -2,11 +2,13 @@ package com.qubaopen.doctor.controller.comment
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.doctor.repository.comment.HelpCommentRepository
+import com.qubaopen.doctor.repository.comment.HelpRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
-import com.qubaopen.survey.entity.comment.Help
+import com.qubaopen.doctor.repository.user.UserHelpDataRepository
 import com.qubaopen.survey.entity.comment.HelpComment
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.doctor.DoctorInfo
+import com.qubaopen.survey.entity.user.UserHelpData
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -16,10 +18,16 @@ import org.springframework.web.bind.annotation.*
 public class HelpCommentController extends AbstractBaseController<HelpComment, Long> {
 
 	@Autowired
+	HelpRepository helpRepository
+
+	@Autowired
 	HelpCommentRepository helpCommentRepository
 	
 	@Autowired
 	DoctorInfoRepository doctorInfoRepository
+
+	@Autowired
+	UserHelpDataRepository userHelpDataRepository
 	
 	@Override
 	MyRepository<HelpComment, Long> getRepository() {
@@ -50,13 +58,27 @@ public class HelpCommentController extends AbstractBaseController<HelpComment, L
 		if (!helpId) {
 			return '{"success" : "0", "message" : "err807"}'
 		}
-		
+
+		def help = helpRepository.findOne(helpId)
 		def helpComment = new HelpComment(
-			help : new Help(id : helpId),
+				help: help,
 			content : content,
 			doctor : doctor,
 			time : new Date()
 		)
+
+		// 没有用户求助信息
+		def currentHelp = helpRepository.findCurrentHelp()
+		def userHelpData = new UserHelpData(
+				user: help.user,
+				helpComment: helpComment,
+				helpCommentCount: 1,
+				currentHelpId: currentHelp.id,
+				refresh: true
+		)
+
+		userHelpDataRepository.save(userHelpData)
+
 		helpComment = helpCommentRepository.save(helpComment)
 		[
 			'success' : '1',

@@ -1,5 +1,14 @@
-package com.knowheart3.controller.comment;
+package com.knowheart3.controller.comment
 
+import com.knowheart3.repository.comment.HelpCommentGoodRepository
+import com.knowheart3.repository.comment.HelpCommentRepository
+import com.knowheart3.repository.comment.HelpRepository
+import com.knowheart3.repository.user.UserBookingDataRepository
+import com.knowheart3.repository.user.UserHelpDataRepository
+import com.qubaopen.core.controller.AbstractBaseController
+import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.comment.Help
+import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -8,20 +17,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.web.PageableDefault
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
-import com.knowheart3.repository.comment.HelpCommentGoodRepository
-import com.knowheart3.repository.comment.HelpCommentRepository
-import com.knowheart3.repository.comment.HelpRepository
-import com.qubaopen.core.controller.AbstractBaseController
-import com.qubaopen.core.repository.MyRepository
-import com.qubaopen.survey.entity.comment.Help
-import com.qubaopen.survey.entity.user.User
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('help')
@@ -37,6 +33,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	
 	@Autowired
 	HelpCommentGoodRepository helpCommentGoodRepository
+
+	@Autowired
+	UserHelpDataRepository userHelpDataRepository
+
+	@Autowired
+	UserBookingDataRepository userBookingDataRepository
 	
 	@Override
 	protected MyRepository<Help, Long> getRepository() {
@@ -86,13 +88,13 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	 * @return
 	 * 获取求助信息列表
 	 */
-	@Transactional(readOnly = true)
+	@Transactional
 	@RequestMapping(value = 'retrieveHelpComment', method = RequestMethod.POST)
 	retrieveHelpComment(@RequestParam(required = false) Boolean self,
-		@RequestParam(required = false) String ids,
-		@ModelAttribute('currentUser') User user,
-		@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
-		Pageable pageable) {
+						@RequestParam(required = false) String ids,
+						@ModelAttribute('currentUser') User user,
+						@PageableDefault(page = 0, size = 20, sort = 'createdDate', direction = Direction.DESC)
+								Pageable pageable) {
 		
 		logger.trace('-- 获取求助信息 --')
 		
@@ -103,6 +105,28 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				list << Long.valueOf(it.trim())
 			}
 		}
+
+		// 当前最新求助
+		def commentIds = []
+		if (user.id != null) {
+			def currentHelp = helpRepository.findCurrentHelp()
+			// 查询有新的评论的求助
+			def userHelpDatas = userHelpDataRepository.findAll(
+					[
+							user_equal   : user,
+							refresh_equal: true
+					]
+			)
+
+			userHelpDatas.each {
+				it.refresh = false
+				it.currentHelpId = currentHelp.id
+				commentIds << it.helpComment.id
+			}
+
+			userHelpDataRepository.save(userHelpDatas)
+		}
+
 		if (self) {
 			if (ids) {
 				helps = helpRepository.findByUser(user, list, pageable)
@@ -174,9 +198,11 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			more = false
 		}
 		[
-				'success': '1',
-				'more'   : more,
-				'data'   : data
+				'success'    : '1',
+				'commentIds' : commentIds,
+				'commentSize': commentIds.size(),
+				'more'       : more,
+				'data'       : data
 		]
 	}
 		
@@ -313,6 +339,119 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		helpRepository.delete(help)
 
 		'{"success" : "1"}'
+
+	}
+
+
+	@RequestMapping(value = 'retrieveCommentCount')
+	retrieveCommentCount(@ModelAttribute('currentUser') User user) {
+
+		if (null == user.id) {
+			return '{"success" : "0", "message" : "err000"}'
+		}
+
+		// 查询有新的评论的求助
+		def userHelpDatas = userHelpDataRepository.findAll(
+				[
+						user_equal   : user,
+						refresh_equal: true
+				]
+		)
+		// 当前最新求助
+		def currentHelp = helpRepository.findCurrentHelp()
+		def haveNewHelp = false
+
+		userHelpDatas.each {
+			// 比对最新的求助
+			if (haveNewHelp) {
+				if (it.currentHelpId != currentHelp.id) {
+					haveNewHelp = true
+				}
+			}
+		}
+
+		def bookingRefresh = false
+		def ubd = userBookingDataRepository.findAll(
+				[
+						user_equal        : user,
+						thirdRefresh_equal: true
+				]
+		)
+
+		if (ubd.size() > 0) {
+			bookingRefresh = true
+		}
+
+		[
+				success       : "1",
+				commentCount  : userHelpDatas.size(),
+				haveNewHelp   : haveNewHelp,
+				bookingRefresh: bookingRefresh
+		]
+
+	}
+
+	/**
+	 * 获取评论详情
+	 * @param ids
+	 * @param user
+	 */
+	@RequestMapping(value = 'retrieveCommentDetial')
+	retrieveCommentDetial(@RequestParam(required = false) String ids,
+						  @ModelAttribute('currentUser') User user) {
+
+		if (null == user.id) {
+			return '{"success" : "0", "message" : "err000"}'
+		}
+
+		def idsList = [], data = []
+		if (ids == null) {
+			return [
+					success: '1',
+					data   : data
+			]
+		}
+		def strIds = ids.split(',')
+		strIds.each {
+			idsList << Long.valueOf(it.trim())
+		}
+
+		def helpComments = helpCommentRepository.findByIds(idsList)
+
+		helpComments.each {
+
+			def id, name, avatar, type = 0 // 0医师，1诊所
+
+			if (it.doctor.id) {
+				id = it.doctor.id
+				name = it.doctor.doctorInfo.name
+				avatar = it.doctor.doctorInfo.avatarPath
+			} else {
+				id = it.hospital.id
+				name = it.hospital.hospitalInfo.name
+				avatar = it.hospital.hospitalInfo.hospitalAvatar
+				type = 1
+			}
+			data << [
+					helpId       : it.help.id,
+					helpContent  : it.help.content,
+					helpTime     : it.help.time ? DateFormatUtils.format(it.help.time, 'yyyy-MM-dd') : "",
+					userName     : it.help.user.userInfo.name,
+					userAvatar   : it.help.user.userInfo.avatarPath,
+					helpCommentId: it.id,
+					content      : it.content,
+					id           : id,
+					name         : name,
+					avatar       : avatar,
+					time         : it.time,
+					type         : type
+			]
+
+			[
+					success: '1',
+					data   : data
+			]
+		}
 
 	}
 

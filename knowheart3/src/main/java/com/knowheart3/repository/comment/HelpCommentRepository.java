@@ -20,4 +20,7 @@ public interface HelpCommentRepository extends MyRepository<HelpComment, Long>, 
 	List<HelpComment> findByHelp(@Param("help") Help Help, @Param("ids") List<Long> ids, Pageable pageable);
 
 	int countByHelp(Help help);
+
+	@Query("from HelpComment hc where hc.id in (:ids) ")
+	List<HelpComment> findByIds(@Param("ids") List<Long> ids);
 }

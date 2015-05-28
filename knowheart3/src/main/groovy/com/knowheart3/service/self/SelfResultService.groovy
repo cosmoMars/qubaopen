@@ -116,6 +116,9 @@ public class SelfResultService {
 			case 'Bass' :
 				result = calculateBass(user, self, questionOptions, questionVos, questions, refresh)
 				break
+			case 'ECR' :
+				result = calculateECR(user, self, questionOptions, questionVos, questions, refresh)
+				break
 		}
 		result
 	}
@@ -886,4 +889,86 @@ public class SelfResultService {
 		
 		resultOption
 	}
+
+	/**
+	 * 计算SDS
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculateECR(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+		def optionMap = [:]
+		questionOptions.each {
+			def questionType = it.selfQuestion.selfQuestionType.name
+
+			if (optionMap.get(questionType)) { // key: 种类 : avoidance,anxiety, value: 题目
+				optionMap.get(questionType) << it
+			} else {
+				def optionList = []
+				optionList << it
+				optionMap.put(questionType, optionList)
+			}
+		}
+
+		def resultMap = [:]
+
+		def result = []
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def score = 0
+			v.each {
+				score = score + it.score
+			}
+			def mapRecord = new MapRecord(
+					name: k,
+					value: score
+			)
+			result << mapRecord
+
+			resultMap.put(k, score)
+
+		}
+		def avoidance = resultMap['Avoidance'] / optionMap['Avoidance'].size()
+		def anxiety = resultMap['Anxiety'] / optionMap['Anxiety'].size()
+
+		def sec2 = avoidance * 3.2893296 + anxiety * 5.4725318 - 1.5307833
+		def fear2 = avoidance * 7.2371075 + anxiety * 8.1776448 - 32.3553266
+		def pre2 = avoidance * 3.9246754 + anxiety * 9.7102446 - 28.4573220
+		def dis2 = avoidance * 7.3654621 + anxiety * 4.9392039 - 22.22810880
+
+
+		def ATT2 = 1
+		if (sec2 > fear2 && sec2 > pre2 && sec2 > dis2) {
+			ATT2 = 1
+		}
+		if (fear2 > sec2 && fear2 > pre2 && fear2 > dis2) {
+			ATT2 = 2
+		}
+		if (pre2 > sec2 && pre2 > fear2 && pre2 > dis2) {
+			ATT2 = 3
+		}
+		if (dis2 > sec2 && dis2 > fear2 && dis2 > pre2) {
+			ATT2 = 4
+		}
+
+		def resultOption = selfResultOptionRepository.findOneByFilters(
+				'selfResult.self_equal' : self,
+				'highestScore_greaterThanOrEqualTo' : ATT2,
+				'lowestScore_lessThanOrEqualTo' : ATT2
+		)
+
+		if (resultOption) {
+			def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh, 0)
+			if (refresh) {
+				selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, 0) // 保存心理地图
+			}
+		}
+
+		resultOption
+	}
+
 }

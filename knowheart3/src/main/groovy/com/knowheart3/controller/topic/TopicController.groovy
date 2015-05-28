@@ -70,12 +70,13 @@ public class TopicController extends AbstractBaseController<Topic, Long> {
 		}
 		
 		[
-			'success' : '1',
-			'id' : topic.id,
-			'name' : topic.name,
-			'content' : topic.content,
-            'topicPic' : topic.picUrl,
-			'isFavorite' : isFavorite	
+				'success'   : '1',
+				'id'        : topic.id,
+				'name'      : topic.name,
+				'content'   : topic.content,
+				'topicPic'  : topic.picUrl,
+				'author'    : topic.author,
+				'isFavorite': isFavorite
 		]
 	}
 

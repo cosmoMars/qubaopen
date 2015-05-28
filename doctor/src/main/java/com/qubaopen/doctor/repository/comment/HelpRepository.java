@@ -32,4 +32,7 @@ public interface HelpRepository extends MyRepository<Help, Long> {
 	@Query("from Help h where h.id in (select hc.help.id from HelpComment hc where hc.id in (:ids))")
 	List<Help> findByComment(@Param("ids") List<Long> ids);
 
+	@Query("from Help h where h.id = (select max(he.id) from Help he)")
+	Help findCurrentHelp();
+
 }

@@ -8,6 +8,7 @@ import com.qubaopen.doctor.repository.cash.DoctorCashRepository
 import com.qubaopen.doctor.repository.doctor.BookingRepository
 import com.qubaopen.doctor.repository.doctor.DoctorInfoRepository
 import com.qubaopen.doctor.repository.payEntity.PayEntityRepository
+import com.qubaopen.doctor.repository.user.UserBookingDataRepository
 import com.qubaopen.doctor.service.SmsService
 import com.qubaopen.survey.entity.booking.Booking
 import com.qubaopen.survey.entity.booking.ResolveType
@@ -59,6 +60,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
     @Autowired
     SmsService smsService
+
+	@Autowired
+	UserBookingDataRepository userBookingDataRepository
 
 	@Value('${ratio}')
 	double ratio
@@ -565,8 +569,6 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (bookingStatus && bookingStatus == Booking.Status.Refusal) {
 			booking.refusalReason = content
 
-//			payEntityRepository.deleteByBooking(booking)
-			
 		}
 		
 		if (bookingStatus && bookingStatus == Booking.Status.Next) {
@@ -577,10 +579,23 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			def newTime = cal.getTime()
 			booking.time = newTime
 		}
+
+
         booking.lastModifiedDate = new DateTime()
 
         booking.resolveType = ResolveType.None
         booking.sendEmail = false
+
+		// 查找修改信息
+		def userBookingData = userBookingDataRepository.findOneByFilters(
+				[
+						user_equal   : booking.user,
+						booking_equal: booking
+				]
+		)
+		userBookingData.thirdRefresh = true
+
+		userBookingDataRepository.save(userBookingData)
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}
@@ -668,6 +683,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			booking.time = DateUtils.parseDate(date, 'yyyy-MM-dd HH')
 			booking.status = Booking.Status.ChangeDate
 		}
+		// 查找修改信息
+		def userBookingData = userBookingDataRepository.findOneByFilters(
+				[
+						user_equal   : booking.user,
+						booking_equal: booking
+				]
+		)
+		userBookingData.thirdRefresh = true
+
+		userBookingDataRepository.save(userBookingData)
 
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
@@ -728,16 +753,19 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		booking.resolveType = ResolveType.None
 		booking.sendEmail = false
+
+		// 查找修改信息
+		def userBookingData = userBookingDataRepository.findOneByFilters(
+				[
+						user_equal   : booking.user,
+						booking_equal: booking
+				]
+		)
+		userBookingData.thirdRefresh = true
+
+		userBookingDataRepository.save(userBookingData)
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
 	}
 		
-//	class QuestionComparator implements Comparator {
-//		public int compare(Object o1, Object o2) {
-//			InterestQuestion io1 = (InterestQuestion) o1
-//			InterestQuestion io2 = (InterestQuestion) o2
-//			return io1.questionNum.compareTo(io2.questionNum)
-//		}
-//	}
-	
 }

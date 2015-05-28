@@ -23,6 +23,11 @@ public class Topic extends AbstractBaseEntity<Long> {
 	private String name;
 
 	/**
+	 * 作者
+	 */
+	private String author;
+
+	/**
 	 * 内容
 	 */
 //	@Column(name = "cnt", length = 10000)
@@ -34,7 +39,7 @@ public class Topic extends AbstractBaseEntity<Long> {
 	 * 图片url
 	 */
 	private String picUrl;
-	
+
 	public String getName() {
 		return name;
 	}
@@ -43,12 +48,12 @@ public class Topic extends AbstractBaseEntity<Long> {
 		this.name = name;
 	}
 
-	public String getPicUrl() {
-		return picUrl;
+	public String getAuthor() {
+		return author;
 	}
 
-	public void setPicUrl(String picUrl) {
-		this.picUrl = picUrl;
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	public String getContent() {
@@ -59,4 +64,11 @@ public class Topic extends AbstractBaseEntity<Long> {
 		this.content = content;
 	}
 
+	public String getPicUrl() {
+		return picUrl;
+	}
+
+	public void setPicUrl(String picUrl) {
+		this.picUrl = picUrl;
+	}
 }

@@ -14,5 +14,8 @@ public interface HelpRepository extends MyRepository<Help, Long> {
 	
 	@Query("from Help h where h.user = :user and h.id not in (:ids)")
 	List<Help> findByUser(@Param("user") User user, @Param("ids") List<Long> ids, Pageable pageable);
+
+	@Query("from Help h where h.id = (select max(he.id) from Help he)")
+	Help findCurrentHelp();
 	
 }

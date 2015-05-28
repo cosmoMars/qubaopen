@@ -8,6 +8,7 @@ import com.knowheart3.repository.doctor.DoctorInfoRepository
 import com.knowheart3.repository.doctor.DoctorRepository
 import com.knowheart3.repository.hospital.HospitalRepository
 import com.knowheart3.repository.user.UserAuthorizationRepository
+import com.knowheart3.repository.user.UserBookingDataRepository
 import com.knowheart3.service.SmsService
 import com.knowheart3.service.booking.BookingService
 import com.knowheart3.utils.CommonEmail
@@ -20,6 +21,7 @@ import com.qubaopen.survey.entity.cash.DoctorCashLog
 import com.qubaopen.survey.entity.doctor.Doctor
 import com.qubaopen.survey.entity.user.User
 import com.qubaopen.survey.entity.user.UserAuthorization
+import com.qubaopen.survey.entity.user.UserBookingData
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -75,6 +77,9 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 
 	@Autowired
 	UserAuthorizationRepository userAuthorizationRepository
+
+	@Autowired
+	UserBookingDataRepository userBookingDataRepository
 
 	@Value('${ratio}')
 	private double ratio
@@ -236,6 +241,12 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		if (hospital) {
 			commonEmail.sendTextMail(hospital.email)
 		}
+
+		def userBookingData = new UserBookingData(
+				user: user,
+				booking: booking
+		)
+		userBookingDataRepository.save(userBookingData)
 
 		[
 				'success'  : '1',
@@ -785,6 +796,16 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
         booking.resolveType = ResolveType.None
         booking.sendEmail = false
+
+		def userBookingData = userBookingDataRepository.findOneByFilters(
+				[
+						user_equal   : user,
+						booking_equal: booking
+				]
+		)
+		userBookingData.userRefresh = true
+
+		userBookingDataRepository.save(userBookingData)
 		
 		bookingRepository.save(booking)
 		'{"success" : "1"}'
@@ -862,6 +883,14 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			nextBooking.tradeNo = "u${user.id}h${hospitalId}s${System.currentTimeMillis()}"
 		}
 		nextBooking = bookingRepository.save(nextBooking)
+
+		// 保存用户订单状态
+		def userBookingData = new UserBookingData(
+				user: user,
+				booking: nextBooking
+		)
+		userBookingDataRepository.save(userBookingData)
+
 		bookingRepository.save(booking)
 		[
 			'success' : '1',

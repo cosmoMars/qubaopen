@@ -13,6 +13,8 @@ public class FavoriteVo implements Serializable {
 
 	private String content;
 
+	private String author;
+
 	private Date createDate;
 
 	private Date favoriteCreateDate;
@@ -41,6 +43,14 @@ public class FavoriteVo implements Serializable {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	public Date getCreateDate() {

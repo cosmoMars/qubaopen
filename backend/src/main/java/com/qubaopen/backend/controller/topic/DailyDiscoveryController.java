@@ -61,6 +61,7 @@ public class DailyDiscoveryController extends AbstractBaseController<DailyDiscov
 				map.put("id", topic.getId());
 				map.put("name", topic.getName());
 				map.put("content", topic.getContent());
+				map.put("author", topic.getAuthor());
 				map.put("dailyTime", "");
 				map.put("createdDate", topic.getCreatedDate().toDate());
 				map.put("url", topic.getPicUrl());
@@ -73,6 +74,7 @@ public class DailyDiscoveryController extends AbstractBaseController<DailyDiscov
 				map.put("id", vo.getId());
 				map.put("name", vo.getName());
 				map.put("content", vo.getContent());
+				map.put("author", vo.getAuthor());
 				map.put("dailyTime", vo.getFavoriteCreateDate());
 				map.put("createdDate", vo.getCreateDate());
 				map.put("url", vo.getPicUrl());

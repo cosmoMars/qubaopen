@@ -50,6 +50,7 @@ public class TopicController extends AbstractBaseController<Topic, Long> {
 	private Object generateTopic(@RequestParam(required = false) Long id,
 			@RequestParam(required = false) String name, 
 			@RequestParam(required = false) String content,
+			@RequestParam(required = false) String author,
 			@RequestParam(required = false) MultipartFile multipartFile) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		Topic topic = null;
@@ -62,6 +63,8 @@ public class TopicController extends AbstractBaseController<Topic, Long> {
 			topic.setName(name);
 		if (content != null)
 			topic.setContent(content);
+		if (author != null)
+			topic.setAuthor(author);
 
 		if (null != multipartFile) {
 			String uname;

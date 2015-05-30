@@ -2,6 +2,7 @@ package com.knowheart3.service.mindmap
 
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
+import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -808,28 +809,52 @@ public class MapStatisticsService {
 	
 	@Transactional
 	retrieveSpecialMap(User user) {
-		
+
 		def data = [], tip
 		def specialSelf = selfRepository.findSpecialSelf()
 		def specialMap = mapStatisticsRepository.findOneByFilters(
-			[
-				self_equal : specialSelf,
-				user_equal : user
-			]
+				[
+						self_equal: specialSelf,
+						user_equal: user
+				]
 		)// 4小时题目
-		def specialMapRecords
 		if (specialMap) {
-			specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
-		}
-		if (!specialMap) {
-			tip = "亲，为准确推断您的情绪周期\n    至少需要记录七天数据哦~\n       加油！7天后就有惊喜~ " as String
-		} else if (specialMap && specialMapRecords.size() >= 7) { // 特殊题
+
+			def specialMapRecords = mapRecordRepository.findEveryDayMapRecords(specialMap)
 			def chart, c = []
 			def resultContent = "err"
-			if (specialMap?.self?.graphicsType) {
-				def timeChart = [], paChart = [], naChart = [], midChart = []
-//					def mapRecords = specialMaps.mapRecords as List
+			if (specialMap.self?.graphicsType) {
+
+				// 排序记录
 				Collections.sort(specialMapRecords, new MapRecordComparator())
+
+				// 少于4条记录
+				if (specialMapRecords.size() < 4) {
+					def specialSize = specialMapRecords.size()
+					def ran = new Random()
+					for (int i = specialSize; i < 4; i++) {
+						// 不满4条，查询最后一条
+						def lastRecord = specialMapRecords[specialMapRecords.size() - 1]
+
+						def thatTime = new Date(lastRecord.name as long),
+							cal = Calendar.getInstance()
+						cal.setTime(thatTime)
+						cal.add(Calendar.DATE, 1)
+
+						def newMapRecord = new MapRecord(
+								name: cal.getTime().time as String,
+								value: (lastRecord.value + ran.nextInt(45 - lastRecord.value)),
+								naValue: (lastRecord.naValue - ran.nextInt(lastRecord.naValue - 9)),
+								createdDate: new DateTime(cal.getTimeInMillis())
+						)
+
+						specialMapRecords << newMapRecord
+					}
+				}
+
+				// 超过4条记录
+
+				def timeChart = [], paChart = [], naChart = [], midChart = []
 				specialMapRecords.each {
 					def thatTime = new Date(it.name as long),
 						time = DateUtils.parseDate(DateFormatUtils.format(thatTime, 'yyyy-MM-dd') + ' 12:00', 'yyyy-MM-dd HH:mm')
@@ -840,11 +865,11 @@ public class MapStatisticsService {
 				}
 
 				def paChartC = [], naChartC = [], midChartC = []
-				
+
 				def coefficient = mapCoefficientRepository.findOne(user.id)
 				// 计算时间差
 				if (coefficient) {
-					def chartTime = new Date(timeChart[timeChart.size() - 1] as long) 
+					def chartTime = new Date(timeChart[timeChart.size() - 1] as long)
 					if (chartTime - coefficient.time > 0) {
 						paChartC = calculatePoint.getPoint(timeChart, paChart)
 						naChartC = calculatePoint.getPoint(timeChart, naChart)
@@ -869,105 +894,90 @@ public class MapStatisticsService {
 					naChartC = calculatePoint.getPoint(timeChart, naChart)
 					midChartC = calculatePoint.getPoint(timeChart, midChart)
 					coefficient = new MapCoefficient(
-						id : user.id,
-						pa1 : paChartC[0],
-						pa2 : paChartC[1],
-						pa3 : paChartC[2],
-						pa4 : paChartC[3],
-						na1 : naChartC[0],
-						na2 : naChartC[1],
-						na3 : naChartC[2],
-						na4 : naChartC[3],
-						mid1 : midChartC[0],
-						mid2 : midChartC[1],
-						mid3 : midChartC[2],
-						mid4 : midChartC[3],
-						time : new Date(timeChart[timeChart.size() - 1] as long)
+							id: user.id,
+							pa1: paChartC[0],
+							pa2: paChartC[1],
+							pa3: paChartC[2],
+							pa4: paChartC[3],
+							na1: naChartC[0],
+							na2: naChartC[1],
+							na3: naChartC[2],
+							na4: naChartC[3],
+							mid1: midChartC[0],
+							mid2: midChartC[1],
+							mid3: midChartC[2],
+							mid4: midChartC[3],
+							time: new Date(timeChart[timeChart.size() - 1] as long)
 					)
 					mapCoefficientRepository.save(coefficient)
 				}
-				
+
 				//计算 正负情感趋势 上升 下降
 				def time = System.currentTimeMillis(),
 					timeBefore = time - 60 * 60 * 24 * 1000 * 2,
 					timeAfter = time + 60 * 60 * 24 * 1000 * 2
-				
+
 				def resultToday = coefficient.mid1 + coefficient.mid2 * Math.cos(time * coefficient.mid4) + coefficient.mid3 * Math.sin(time * coefficient.mid4)
 				def resultBefore = coefficient.mid1 + coefficient.mid2 * Math.cos(timeBefore * coefficient.mid4) + coefficient.mid3 * Math.sin(timeBefore * coefficient.mid4)
 				def resultAfter = coefficient.mid1 + coefficient.mid2 * Math.cos(timeAfter * coefficient.mid4) + coefficient.mid3 * Math.sin(timeAfter * coefficient.mid4)
-				
-				def selfUserQuestionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id : 17l), true),
+
+				def selfUserQuestionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id: 17l), true),
 					moodContent = ''
 				if (selfUserQuestionnaire) {
 					if (137l == selfUserQuestionnaire.selfResultOption.id || '137'.equals(selfUserQuestionnaire.selfResultOption.id)) {
 						moodContent = MapContent.outbound
-					}else if (138l == selfUserQuestionnaire.selfResultOption.id || '138'.equals(selfUserQuestionnaire.selfResultOption.id)) {
+					} else if (138l == selfUserQuestionnaire.selfResultOption.id || '138'.equals(selfUserQuestionnaire.selfResultOption.id)) {
 						moodContent = MapContent.within
 					}
-				}	
-			
-				if(resultBefore <= resultToday && resultToday < resultAfter){ // 上升
+				}
+
+				if (resultBefore <= resultToday && resultToday < resultAfter) { // 上升
 					resultContent = MapContent.lowToHighTitle + MapContent.lowToHighContent + moodContent + MapContent.lowToHighMethod
-				}else if (resultBefore > resultToday && resultToday >= resultAfter){ // 下降
+				} else if (resultBefore > resultToday && resultToday >= resultAfter) { // 下降
 					resultContent = MapContent.highToLowTitle + MapContent.highToLowContent + moodContent + MapContent.highToLowMethod
-				}else if (resultBefore <= resultToday && resultToday >= resultAfter){ // 最高处
+				} else if (resultBefore <= resultToday && resultToday >= resultAfter) { // 最高处
 					resultContent = MapContent.highTideTitle + MapContent.highTideContent + moodContent
-				}else if (resultBefore > resultToday && resultToday < resultAfter){ // 最底处
+				} else if (resultBefore > resultToday && resultToday < resultAfter) { // 最底处
 					resultContent = MapContent.lowTideTitle + MapContent.lowTideContent + moodContent + MapContent.lowTideMethod
 				}
-				
+
 				chart = [
-					timeChart : timeChart,
-					midChart : midChart,
-					paChartC : [coefficient.pa1, coefficient.pa2, coefficient.pa3, coefficient.pa4],
-					naChartC : [coefficient.na1, coefficient.na2, coefficient.na3, coefficient.na4],
-					midChartC : [coefficient.mid1, coefficient.mid2, coefficient.mid3, coefficient.mid4]
+						timeChart: timeChart,
+						midChart : midChart,
+						paChartC : [coefficient.pa1, coefficient.pa2, coefficient.pa3, coefficient.pa4],
+						naChartC : [coefficient.na1, coefficient.na2, coefficient.na3, coefficient.na4],
+						midChartC: [coefficient.mid1, coefficient.mid2, coefficient.mid3, coefficient.mid4]
 				]
-				
+
 				c << chart
 			}
 			data << [
-				'groupId' : specialMap?.self?.selfGroup?.id,
-				'chart' : c,
-				'mapMax' : specialMap?.mapMax,
-				'resultName' : specialMap?.selfResultOption?.name,
-				'resultScore' : '',
-				'resultContent' : resultContent,
-				'managementType' : specialMap?.selfManagementType?.id,
-				'recommendedValue' : specialMap?.recommendedValue,
-				'graphicsType' : specialMap?.self?.graphicsType?.id,
-				'special' : true,
-				'lock' : false
+					'groupId'         : specialMap?.self?.selfGroup?.id,
+					'chart'           : c,
+					'mapMax'          : specialMap?.mapMax,
+					'resultName'      : specialMap?.selfResultOption?.name,
+					'resultScore'     : '',
+					'resultContent'   : resultContent,
+					'managementType'  : specialMap?.selfManagementType?.id,
+					'recommendedValue': specialMap?.recommendedValue,
+					'graphicsType'    : specialMap?.self?.graphicsType?.id,
+					'special'         : true,
+					'lock'            : false
 			]
-		} else if (specialMap && specialMapRecords.size() < 7) {
-			def days = 7 - specialMapRecords.size()
-			tip = "亲，为准确推断您的情绪周期\n    至少需要记录七天数据哦~\n       加油！${days}天后就有惊喜~ " as String
-			/*data << [
-				'groupId' : specialMap?.self?.selfGroup?.id,
-				'chart' : '',
-				'mapMax' : '',
-				'resultName' : '',
-				'resultScore' : '',
-				'resultContent' : '',
-				'managementType' : specialMap?.selfManagementType?.id,
-				'recommendedValue' : specialMap?.recommendedValue,
-				'graphicsType' : specialMap?.self?.graphicsType?.id,
-				'special' : true,
-				'lock' : true
-//				'tips' : "该问卷需要答满7天方可得出结果，您已完成［${specialMapRecords.size()}］天" as String
-			]*/
+
 		}
 		def result = [
-			'success' : '1',
-			'message' : '成功',
-			'specialId' : specialSelf.id,
-			'mapTitle' : specialMap?.self?.title,
-			'userId' : user.id,
-			'data' : data
+				'success'  : '1',
+				'message'  : '成功',
+				'specialId': specialSelf.id,
+				'mapTitle' : specialMap?.self?.title,
+				'userId'   : user.id,
+				'data'     : data,
+				'tips'     : "知心独创的情绪预测技术会根据记录次数的增加，逐步描绘出专属于您的情绪周期，建议周期5天以上" as String
 		]
-		if (tip) {
-			result << ['tips' : tip]
-		}
+//		if (tip) {
+//			result << ['tips': "知心独创的情绪预测技术会根据记录次数的增加，逐步描绘出专属于您的情绪周期，建议周期5天以上" as String]
+//		}
 		result
 	}
 	

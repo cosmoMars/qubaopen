@@ -1,15 +1,8 @@
-package com.knowheart3.service.mindmap;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.mathworks.toolbox.javabuilder.MWClassID;
-import com.mathworks.toolbox.javabuilder.MWNumericArray;
-
-import createFit.MatFactory;
+package com.knowheart3.service.mindmap
+import com.mathworks.toolbox.javabuilder.MWClassID
+import com.mathworks.toolbox.javabuilder.MWNumericArray
+import createFit.MatFactory
+import org.springframework.stereotype.Service
 
 @Service
 public class CalculatePoint {

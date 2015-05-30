@@ -205,7 +205,7 @@ public class UserService {
 
         // 给指定的用户手机号发送6位随机数的验证码
 		def result = smsService.sendCaptcha(phone, captcha)
-		
+
 		def userCaptchaLog = new UserCaptchaLog(
 			user : user,
 			captcha : captcha,

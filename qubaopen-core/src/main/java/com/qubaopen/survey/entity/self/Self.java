@@ -1,17 +1,10 @@
 package com.qubaopen.survey.entity.self;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import org.hibernate.envers.Audited;
-
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.QuestionnaireType;
+import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
 
 /**
  * @author mars 自测
@@ -135,6 +128,16 @@ public class Self extends AbstractBaseEntity<Long> {
 	 * 问卷版本
 	 */
 	private String version = "1";
+
+	/**
+	 * 基础总数
+	 */
+	private int basisAmount;
+
+	/**
+	 * 基础准确总数
+	 */
+	private int basicAccuracyAmount;
 
 	public QuestionnaireType getQuestionnaireType() {
 		return questionnaireType;
@@ -286,5 +289,21 @@ public class Self extends AbstractBaseEntity<Long> {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public int getBasisAmount() {
+		return basisAmount;
+	}
+
+	public void setBasisAmount(int basisAmount) {
+		this.basisAmount = basisAmount;
+	}
+
+	public int getBasicAccuracyAmount() {
+		return basicAccuracyAmount;
+	}
+
+	public void setBasicAccuracyAmount(int basicAccuracyAmount) {
+		this.basicAccuracyAmount = basicAccuracyAmount;
 	}
 }

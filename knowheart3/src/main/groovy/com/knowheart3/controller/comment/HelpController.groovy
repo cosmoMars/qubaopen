@@ -342,7 +342,11 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 
 	}
 
-
+	/**
+	 * 获取评论数
+	 * @param user
+	 * @return
+	 */
 	@RequestMapping(value = 'retrieveCommentCount')
 	retrieveCommentCount(@ModelAttribute('currentUser') User user) {
 
@@ -390,6 +394,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		]
 
 	}
+
 
 	/**
 	 * 获取评论详情
@@ -447,12 +452,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 					type         : type
 			]
 
-			[
-					success: '1',
-					data   : data
-			]
-		}
 
+		}
+		[
+				success: '1',
+				data   : data
+		]
 	}
 
 }

@@ -51,4 +51,8 @@ public interface SelfUserQuestionnaireRepository extends MyRepository<SelfUserQu
 	SelfUserQuestionnaire findRecentQuestionnarie(@Param("user") User user, @Param("questionnaireId") long questionnaireId);
 
 
+	int countBySelfAndAccuracy(Self self, boolean accuracy);
+
+	int countBySelf(Self self);
+
 }

@@ -89,10 +89,10 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 		}
 		def tradeNo
 		if (doctorId != null) {
-			tradeNo = "${user.id}_D${doctorId}_${System.currentTimeMillis()}"
+			tradeNo = "${user.id}D${doctorId}S${System.currentTimeMillis()}"
 		}
 		if (hospitalId != null) {
-			tradeNo = "${user.id}_H${hospitalId}_${System.currentTimeMillis()}"
+			tradeNo = "${user.id}H${hospitalId}S${System.currentTimeMillis()}"
 		}
 		
 		def sex, consultType, birthday

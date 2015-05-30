@@ -279,7 +279,8 @@ class UserController extends AbstractBaseController<User, Long> {
 					token: token,
 					thirdType: ThirdType.values()[type],
 					activated: true,
-					loginDate: new Date()
+					loginDate: new Date(),
+					userName: "新用户${RandomStringUtils.randomNumeric(6)}"
 			)
 			user = userRepository.save(user)
 
@@ -318,6 +319,7 @@ class UserController extends AbstractBaseController<User, Long> {
 				avatarUrl : avatarUrl,
 				thirdType : type
 			)
+			
 			userThirdRepository.save(userThird)
 			userInfoRepository.save(userInfo)
 			userGoldRepository.save(userGold)
@@ -335,13 +337,21 @@ class UserController extends AbstractBaseController<User, Long> {
 				userThirdRepository.save(userThird)
 			}
 			userInfo = user.userInfo
+
 		}
+		def	userLog = new UserLog(
+				user : user,
+				time : new Date(),
+				userLogType: new UserLogType(id: 1l)
+		)
+
+		userLogRepository.save(userLog)
 		model.addAttribute('currentUser', user)
 		
 		def userIdCardBind = user.userIdCardBind,
 			userReceiveAddress = userReceiveAddressRepository.findByUserAndTrueAddress(user, true)
 		userService.saveUserCode(user, udid, idfa, imei)
-		
+
 		return  [
 				'success'            : '1',
 				'message'            : '登录成功',

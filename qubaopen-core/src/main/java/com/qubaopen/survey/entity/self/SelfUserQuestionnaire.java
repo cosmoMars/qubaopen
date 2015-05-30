@@ -1,22 +1,11 @@
 package com.qubaopen.survey.entity.self;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import com.qubaopen.survey.entity.user.User;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import com.qubaopen.survey.entity.user.User;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author mars 兴趣问卷用户答卷
@@ -125,6 +114,11 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 	 * 是否公开 0 不公开 1 公开 默认为空
 	 */
 	private Boolean publicToAll;
+
+	/**
+	 * 准确
+	 */
+	private Boolean accuracy;
 
 	public User getUser() {
 		return user;
@@ -246,4 +240,11 @@ public class SelfUserQuestionnaire extends AbstractPersistable<Long> {
 		this.publicToAll = publicToAll;
 	}
 
+	public Boolean getAccuracy() {
+		return accuracy;
+	}
+
+	public void setAccuracy(Boolean accuracy) {
+		this.accuracy = accuracy;
+	}
 }

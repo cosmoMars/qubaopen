@@ -202,9 +202,7 @@ public class SelfController extends AbstractBaseController<Self, Long> {
                 gradeHint = true
             }
         }
-
         def questionnaire = selfUserQuestionnaireRepository.findByUserAndSelfAndUsed(user, new Self(id: selfId), true)
-
         def isFavorite = false,
             userFavorite = userFavoriteRepository.findBySelfAndUser(new Self(id: selfId), user)
         if (userFavorite) {

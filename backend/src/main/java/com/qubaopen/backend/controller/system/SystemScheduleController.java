@@ -1,10 +1,12 @@
 package com.qubaopen.backend.controller.system;
 
+import com.qubaopen.backend.repository.assistant.AssistantRepository;
 import com.qubaopen.backend.repository.booking.BookingRepository;
 import com.qubaopen.backend.service.SmsService;
 import com.qubaopen.backend.utils.CommonEmail;
 import com.qubaopen.survey.entity.booking.Booking;
 import com.qubaopen.survey.entity.booking.ResolveType;
+import com.qubaopen.survey.entity.doctor.Assistant;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -31,6 +33,9 @@ public class SystemScheduleController {
 
     @Autowired
     private CommonEmail commonEmail;
+
+    @Autowired
+    private AssistantRepository assistantRepository;
 
 
     @Scheduled(cron = "0 0/2 * * * ?")
@@ -227,7 +232,10 @@ public class SystemScheduleController {
             content.append(" 状态中，请及时处理");
 
             String url = "http://zhixin.com/dl?bookingId=" + booking.getId();
-            commonEmail.sendTextMail(content.toString(), "349280576@qq.com", url);
+
+            Assistant assistant = assistantRepository.findOne(assistantRepository.findSpaceAssistant());
+
+            commonEmail.sendTextMail(content.toString(), assistant.getEmail(), url);
             // todo 接受菲菲url
 
             booking.setSendEmail(true);

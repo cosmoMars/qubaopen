@@ -1,6 +1,8 @@
 package com.knowheart3.repository.self.custom;
 
 import com.knowheart3.vo.SelfResultVo;
+import com.qubaopen.survey.entity.self.Self;
+import com.qubaopen.survey.entity.self.SelfUserQuestionnaire;
 import com.qubaopen.survey.entity.user.User;
 import org.springframework.data.domain.Pageable;
 
@@ -98,5 +100,29 @@ public class SelfUserQuestionnaireRepositoryImpl implements SelfUserQuestionnair
             result.add(vo);
         }
         return result;
+    }
+
+    @Override
+    public SelfUserQuestionnaire findByUserAndSelfAndUsed(User user, Self self, boolean used) {
+
+        StringBuffer sql = new StringBuffer();
+        sql.append("from SelfUserQuestionnaire suq ");
+        sql.append("where suq.user.id = :userId ");
+        sql.append("and suq.self.id = :selfId ");
+        sql.append("and suq.used = :used ");
+        sql.append("order by suq.time desc");
+
+        System.out.println(sql.toString());
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter("userId", user.getId())
+                .setParameter("selfId", self.getId())
+                .setParameter("used" , used)
+                .setMaxResults(1);
+
+        List<SelfUserQuestionnaire> results = query.getResultList();
+        if (results.size() > 0) {
+            return results.get(0);
+        }
+        return null;
     }
 }

@@ -38,6 +38,7 @@ import com.qubaopen.survey.entity.self.SelfGroup;
 import com.qubaopen.survey.entity.self.SelfManagementType;
 import com.qubaopen.survey.entity.self.SelfQuestion;
 import com.qubaopen.survey.entity.self.SelfQuestionOption;
+import com.qubaopen.survey.entity.self.SelfQuestionOrder;
 import com.qubaopen.survey.entity.self.SelfResult;
 import com.qubaopen.survey.entity.self.SelfResultOption;
 
@@ -127,12 +128,14 @@ public class SelfNewController extends AbstractBaseController<Self, Long> {
 			self.setSelfManagementType(managementType);
 			self.setQuestionnaireType(qType);
 			self.setStatus(Self.Status.INITIAL);
-			self.setSelfGroup(selfGroup);
+			self.setBasicAccuracyAmount(0);
+			self.setBasisAmount(0);
 
 
 			self = selfRepository.save(self);
 
 			ArrayNode questions = (ArrayNode) jsonNode.path("questions");
+			List<Long> qidList= new ArrayList<Long>();
 			for (JsonNode question : questions) {
 				SelfQuestion sq = new SelfQuestion();
 				sq.setQuestionNum(question.get("questionNo").asInt());
@@ -171,9 +174,28 @@ public class SelfNewController extends AbstractBaseController<Self, Long> {
 					option.setSelfQuestion(sq);
 					selfQuestionOptionRepository.save(option);
 				}	
+				qidList.add(sq.getId());
 				// interestQuestions.add(iq);
 			}
-			// interestQuestionRepository.save(interestQuestions);
+			SelfQuestionOrder sqo;
+			for (int i=0;i<qidList.size();i++) {
+				sqo=new SelfQuestionOrder();
+				sqo.setJump(false);
+				sqo.setOptionId(0);
+				sqo.setAnswer(false);
+				sqo.setInterrupt(false);
+				sqo.setResultOptionId(0);
+				sqo.setSelf(self);
+				sqo.setQuestionId(qidList.get(i));
+				if(i==qidList.size()-1){
+					sqo.setNextQuestionId(0);
+				}else{
+					sqo.setNextQuestionId(qidList.get(i+1));
+				}
+				
+				selfQuestionOrderRepository.save(sqo);
+			}
+			
 			// 结果
 			List<SelfResultOption> selfResultOptions = new ArrayList<SelfResultOption>();
 

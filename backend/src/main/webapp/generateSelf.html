@@ -288,7 +288,6 @@ $(document).ready(
 
                 console.log(JSON.stringify(json));
                 console.log(json);
-                return;
 
                 $(":text").attr("readonly", "true");
                 $("textarea").attr("readonly", "true");
@@ -369,17 +368,17 @@ function changeCredit(){
 
 <div>
     <label>问卷标题:</label><input type="text" id="questionnaireTitle" maxlength="50" size="50"/>
-    <label>问卷指导语:</label><input type="text" id="guidanceSentence" maxlength="50" size="50"/>
 </div>
 <div>
-    <label>问卷简介:</label> <textarea rows='3' cols='80' class='remark'></textarea>
+    <label>问卷简介:</label><textarea rows='3' cols='80' class='remark'></textarea>
+    <label>问卷指导语:</label><textarea id="guidanceSentence" rows='3' cols='80'></textarea>
 </div>
 <div>
     <label>问卷缩写:</label><input type="text" id="abbreviation" maxlength="50" size="20"/>
-    <label>问卷推荐值:</label><input type="text" id="recommendedValue" maxlength="50" size="20"/>
-    <label>问卷地图区间大小:</label><input type="text" id="mapMax" maxlength="50" size="20"/>
-    <label>间隔时间 单位：小时:</label><input type="text" id="intervalTime" maxlength="50" size="20"/>
-    <label>提示:</label><input type="text" id="tips" maxlength="50" size="20"/>
+    <label>问卷推荐值:</label><input type="text" id="recommendedValue" maxlength="50" size="20" value="0"/>
+    <label>问卷地图区间大小:</label><input type="text" id="mapMax" maxlength="50" size="20" value="0"/>
+    <label>间隔时间 单位：小时:</label><input type="text" id="intervalTime" maxlength="50" size="20" value="9999"/>
+    <label>提示:</label><input type="text" id="tips" maxlength="50" size="20" value="本结果建立在真实作答的前提下，答案仅供参考"/>
 </div>
 
 <div>
@@ -400,10 +399,11 @@ function changeCredit(){
     </select>
     <label>自测问卷类型</label>
     <select id="selfManagementType">
+        <option value="">无</option>
         <option value="1">性格</option>
         <option value="2">健康</option>
         <option value="3">职导</option>
-        <option value="3">交往</option>
+        <option value="4">交往</option>
     </select>
     <label>问卷图形</label>
     <select id="graphicsType">

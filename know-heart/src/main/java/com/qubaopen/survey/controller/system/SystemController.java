@@ -17,6 +17,9 @@ public class SystemController {
     @Value("${isNew}")
     boolean isNew;
 
+    @Value("${nextNew}")
+    boolean nextNew;
+
     @RequestMapping(value = "retrieveIsNew")
     Map<String, Object> retrieveIsNew() {
 
@@ -25,5 +28,14 @@ public class SystemController {
         return map;
     }
 
+
+    @RequestMapping(value = "retrieveNextNew")
+    Map<String, Object> retrieveNextNew() {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("success", "1");
+        map.put("nextNew", nextNew);
+        return map;
+    }
 
 }

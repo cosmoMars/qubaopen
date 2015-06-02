@@ -1,6 +1,8 @@
 package com.knowheart3.repository.self.custom;
 
 import com.knowheart3.vo.SelfResultVo;
+import com.qubaopen.survey.entity.self.Self;
+import com.qubaopen.survey.entity.self.SelfUserQuestionnaire;
 import com.qubaopen.survey.entity.user.User;
 import org.springframework.data.domain.Pageable;
 
@@ -14,5 +16,7 @@ public interface SelfUserQuestionnairerRepositoryCustom {
     List<Long> findGroupId(User user, Pageable pageable);
 
     List<SelfResultVo> findSelfResultVo(User user, List<Long> groupIds);
+
+    SelfUserQuestionnaire findByUserAndSelfAndUsed(User user, Self self, boolean used);
 
 }

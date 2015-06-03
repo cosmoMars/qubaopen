@@ -26,5 +26,12 @@ public interface MapRecordRepository extends MyRepository<MapRecord, Long> {
 
 	@Query("from MapRecord m where m.mapStatistics.id = (select ms.id from MapStatistics ms where ms.self = :self and ms.user = :user)")
 	List<MapRecord> findBySelfAndUser(@Param("self") Self self, @Param("user") User user);
-	
+
+
+	@Query("from MapRecord m where m.mapStatistics = :mapStatistics and date_format(m.createdDate, '%Y-%m-%d') = :createDate")
+	List<MapRecord> findByMapStatisticsAndCreateDate(@Param("mapStatistics") MapStatistics mapStatistics, @Param("createDate") String createDate);
+
+	@Query("from MapRecord m where m.mapStatistics = :mapStatistics and date_format(m.createdDate, '%Y-%m-%d') = :createDate and m.accurary is not null")
+	List<MapRecord> findByMapStatisticsAndCreateDateWithAccurary(@Param("mapStatistics") MapStatistics mapStatistics, @Param("createDate") String createDate);
+
 }

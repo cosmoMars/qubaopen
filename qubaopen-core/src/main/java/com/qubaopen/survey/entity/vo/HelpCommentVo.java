@@ -32,6 +32,12 @@ public class HelpCommentVo implements Serializable {
 
     private String userId;
 
+    private String hcUserId;
+
+    private String nickName;
+
+    private String userPath;
+
     public String getCommentId() {
         return commentId;
     }
@@ -118,5 +124,29 @@ public class HelpCommentVo implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getHcUserId() {
+        return hcUserId;
+    }
+
+    public void setHcUserId(String hcUserId) {
+        this.hcUserId = hcUserId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getUserPath() {
+        return userPath;
+    }
+
+    public void setUserPath(String userPath) {
+        this.userPath = userPath;
     }
 }

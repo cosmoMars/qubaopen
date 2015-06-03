@@ -1,5 +1,4 @@
 package com.knowheart3.controller.comment
-
 import com.knowheart3.repository.comment.HelpCommentGoodRepository
 import com.knowheart3.repository.comment.HelpCommentRepository
 import com.knowheart3.repository.comment.HelpRepository
@@ -8,6 +7,7 @@ import com.knowheart3.repository.user.UserHelpDataRepository
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
 import com.qubaopen.survey.entity.comment.Help
+import com.qubaopen.survey.entity.comment.HelpComment
 import com.qubaopen.survey.entity.user.User
 import org.apache.commons.lang3.time.DateFormatUtils
 import org.slf4j.Logger
@@ -162,11 +162,16 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 						id = cit.doctorId
 						name = cit.doctorName
 						avatar = cit.doctorPath
-					} else {
+					} else if (cit.hospitalId) {
 						id = cit.hospitalId
 						name = cit.hospitalName
 						avatar = cit.hospitalPath
 						type = 1
+					} else if (cit.hcUserId) {
+						id = cit.hcUserId
+						name = cit.nickName
+						avatar = cit.userPath
+						type = 2
 					}
 					commentData << [
 							'commentId'     : cit.commentId,
@@ -255,11 +260,16 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				id = it.doctor?.id
 				name = it.doctor?.doctorInfo?.name
 				avatar = it.doctor?.doctorInfo?.avatarPath
-			} else {
+			} else if (it.hospital) {
 				id = it.hospital?.id
 				name = it.hospital?.hospitalInfo?.name
 				avatar = it.hospital?.hospitalInfo?.hospitalAvatar
 				type = 1
+			} else if (it.user) {
+				id = it.user?.id
+				name = it.user?.userInfo?.nickName
+				avatar = it.user?.userInfo?.avatarPath
+				type = 2
 			}
 			commentData << [
 					'commentId'     : it?.id,
@@ -458,6 +468,40 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				success: '1',
 				data   : data
 		]
+	}
+
+	/**
+	 * 用户添加评论
+	 * @param helpId
+	 * @param content
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("userAddComment")
+	userAddComment(@RequestParam long helpId,
+				   @RequestParam String content,
+				   @ModelAttribute('currentUser') User user) {
+
+		def help = helpRepository.findOne(helpId)
+
+		if (!help) {
+			return '{"success" : "1", "message" : "该评论不存在"}'
+		}
+		if (help.user.id != user.id) {
+			return '{"success" : "1", "message" : "该评论不是您发布的"}'
+		}
+
+		def helpComment = new HelpComment(
+				help: new Help(id: helpId),
+				user: user,
+				content: content,
+				time: new Date()
+		)
+
+		helpCommentRepository.save(helpComment)
+
+		'{"success" : "1"}'
+
 	}
 
 }

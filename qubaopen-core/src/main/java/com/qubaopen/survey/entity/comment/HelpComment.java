@@ -3,6 +3,7 @@ package com.qubaopen.survey.entity.comment;
 import com.qubaopen.core.entity.AbstractBaseEntity;
 import com.qubaopen.survey.entity.doctor.Doctor;
 import com.qubaopen.survey.entity.hospital.Hospital;
+import com.qubaopen.survey.entity.user.User;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -24,6 +25,9 @@ public class HelpComment extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Doctor doctor;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User user;
 	
 	/**
 	 * 诊所
@@ -75,5 +79,13 @@ public class HelpComment extends AbstractBaseEntity<Long> {
 
 	public void setHospital(Hospital hospital) {
 		this.hospital = hospital;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

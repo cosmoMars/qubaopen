@@ -69,6 +69,7 @@ public class HelpCommentController extends AbstractBaseController<HelpComment, L
 
 		// 没有用户求助信息
 		def currentHelp = helpRepository.findCurrentHelp()
+		helpComment = helpCommentRepository.save(helpComment)
 		def userHelpData = new UserHelpData(
 				user: help.user,
 				helpComment: helpComment,
@@ -79,7 +80,7 @@ public class HelpCommentController extends AbstractBaseController<HelpComment, L
 
 		userHelpDataRepository.save(userHelpData)
 
-		helpComment = helpCommentRepository.save(helpComment)
+
 		[
 			'success' : '1',
 			'commentId' : helpComment?.id

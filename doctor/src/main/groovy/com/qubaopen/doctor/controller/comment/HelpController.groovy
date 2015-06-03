@@ -68,7 +68,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		def hcGoods = helpCommentGoodRepository.findAll(
 				[
 						'helpComment.doctor_equal': doctor,
-						view_isFalse              : null,
+						view_isFalse              : null
 				]
 		)
 
@@ -102,11 +102,16 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 					id = cit.doctorId
 					name = cit.doctorName
 					avatar = cit.doctorPath
-				} else {
+				} else if (cit.hospitalId) {
 					id = cit.hospitalId
 					name = cit.hospitalName
 					avatar = cit.hospitalPath
 					type = 1
+				} else if (cit.hcUserId) {
+					id = cit.hcUserId
+					name = cit.nickName
+					avatar = cit.userPath
+					type = 2
 				}
 
 				commentData << [
@@ -186,10 +191,15 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				id = it.doctor?.id
 				name = it.doctor?.doctorInfo?.name
 				avatar = it?.doctor?.doctorInfo?.avatarPath
-			} else {
+			} else if (it.hospital) {
 				id = it.hospital?.id
 				name = it.hospital?.hospitalInfo?.name
 				avatar = it.hospital?.hospitalInfo?.hospitalAvatar
+				type = 1
+			} else if (it.user) {
+				id = it.user?.id
+				name = it.user?.userInfo?.name
+				avatar = it.user?.userInfo?.avatarPath
 				type = 1
 			}
 			commentData << [

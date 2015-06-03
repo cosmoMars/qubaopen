@@ -5,6 +5,7 @@ import com.knowheart3.repository.mindmap.MapStatisticsRepository
 import com.knowheart3.repository.self.SelfRepository
 import com.knowheart3.repository.user.UserMoodPicRepository
 import com.qubaopen.survey.entity.user.UserMoodPic
+import org.apache.commons.lang3.time.DateFormatUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -329,6 +330,9 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
 
         def moods = userMoodRepository.findTimeMood(date, user)
 
+		def mrs = mapRecordRepository.findByMapStatisticsAndCreateDateWithAccurary(specialMap, DateFormatUtils.format(date, 'yyyy-MM-dd'))
+
+
         def data = []
         moods.each {
             data << [
@@ -338,12 +342,13 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
                 'moodType' : it?.moodType?.ordinal()
             ]
         }
-        [
+		[
             'success' : '1',
             'data' : data,
 			'picPath' : pic,
 			'moreThan7' : moreThan7,
-            'moodContent' : moodContent
+            'moodContent' : moodContent,
+			'accurary' : mrs?.get(0)?.accurary
         ]
 
     }

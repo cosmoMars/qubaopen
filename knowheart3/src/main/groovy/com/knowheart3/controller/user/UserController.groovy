@@ -223,22 +223,22 @@ class UserController extends AbstractBaseController<User, Long> {
 		return  [
 				'success'            : '1',
 				'message'            : '登录成功',
-				'userId'    : loginUser.id,
-				'phone'     : loginUser.phone,
+				'userId'             : loginUser.id,
+				'phone'              : loginUser.phone,
 				'name'               : userIdCardBind?.userIDCard?.name,
-				'sex'       : userInfo.sex?.ordinal(),
-				'nickName'  : userInfo.nickName,
-				'bloodType' : userInfo.bloodType?.ordinal(),
+				'sex'                : userInfo?.sex?.ordinal(),
+				'nickName'           : userInfo?.nickName,
+				'bloodType'          : userInfo?.bloodType?.ordinal(),
 				'district'           : '',
-				'email'     : loginUser.email,
+				'email'              : loginUser.email,
 				'defaultAddress'     : userReceiveAddress?.detialAddress,
 				'defaultAddressId'   : userReceiveAddress?.id,
 				'consignee'          : userReceiveAddress?.consignee,
 				'defaultAddressPhone': userReceiveAddress?.phone,
 				'idCard'             : userIdCardBind?.userIDCard?.IDCard,
-				'birthday'  : userInfo.birthday,
-				'avatarPath': userInfo.avatarPath,
-				'signature' : userInfo.signature
+				'birthday'           : userInfo.birthday,
+				'avatarPath'         : userInfo.avatarPath,
+				'signature'          : userInfo.signature
 		]
     }
 

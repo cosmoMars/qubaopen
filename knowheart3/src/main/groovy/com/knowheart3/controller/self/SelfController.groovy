@@ -212,7 +212,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
                 'success'     : '1',
                 'message'     : '成功',
                 'id'          : result?.id,
-                'qId'         : questionnaire?.accuracy == null ? questionnaire?.id : 0,
+                'qId'     : questionnaire?.id,
+                'accuracy': questionnaire?.accuracy,
                 'resultTitle' : result?.selfResult?.title,
                 'content'     : result?.content,
                 'optionTitle' : result?.title,
@@ -443,7 +444,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
 
         [
                 'success'     : '1',
-                'qId'         : questionnaire?.accuracy == null ? questionnaire?.id : 0,
+                'qId'         : questionnaire?.id,
+                'accuracy'    : questionnaire?.accuracy,
                 'id'          : questionnaire?.selfResultOption?.id,
                 'resultTitle' : questionnaire?.selfResultOption?.selfResult?.title,
                 'content'     : questionnaire?.selfResultOption?.content,

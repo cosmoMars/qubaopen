@@ -39,10 +39,11 @@ public class HelpCommentRepositoryImpl implements HelpCommentRepositoryCustom {
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("select hc.id hcid, hc.doctor_id, di.name dname, hc.hospital_id hid, hi.name hname, di.avatar_path dpath, ");
-		sql.append("hi.hospital_avatar, hc.content, hc.time, a.hsum , a.uid uid ");
+		sql.append("hi.hospital_avatar, hc.content, hc.time, a.hsum, a.uid uid, hc.user_id userid, ui.nick_name nickname, ui.avatar_path userpath ");
 		sql.append("from help_comment hc ");
 		sql.append("left join doctor_info di on hc.doctor_id = di.id ");
 		sql.append("left join hospital_info hi on hc.hospital_id = hi.id ");
+		sql.append("left join user_info ui on ui.id = hc.user_id ");
 		sql.append("left join ( " );
 		sql.append("select help_comment_id id, count(help_comment_id) hsum, user_id uid ");
 		sql.append("from help_comment_good group by help_comment_id) a ");
@@ -69,6 +70,9 @@ public class HelpCommentRepositoryImpl implements HelpCommentRepositoryCustom {
 			vo.setCommentTime((Date) objects[8]);
 			vo.setgSize(objects[9] != null ? Integer.parseInt(objects[9].toString()): 0);
 			vo.setUserId(objects[10] != null ? objects[10].toString() : null);
+			vo.setHcUserId(objects[11] != null ? objects[11].toString() : null);
+			vo.setNickName(objects[12] != null ? objects[12].toString() : null);
+			vo.setUserPath(objects[13] != null ? objects[13].toString() : null);
 			result.add(vo);
 		}
 

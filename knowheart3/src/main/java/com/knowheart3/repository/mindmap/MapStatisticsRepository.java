@@ -50,6 +50,8 @@ public interface MapStatisticsRepository extends MyRepository<MapStatistics, Lon
 
 	@Query("from MapStatistics ms where ms.user = :user and ms.self.selfGroup = :selfGroup and ms.self.selfGroup.status = true")
 	List<MapStatistics> findBySelfGroupAndUser(@Param("selfGroup") SelfGroup selfGroup, @Param("user") User user);
+
+	MapStatistics findBySelfAndUser(Self self, User user);
 	
 	
 }

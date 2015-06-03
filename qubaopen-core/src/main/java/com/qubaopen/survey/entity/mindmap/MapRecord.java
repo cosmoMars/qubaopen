@@ -1,13 +1,12 @@
 package com.qubaopen.survey.entity.mindmap;
 
+import com.qubaopen.core.entity.AbstractBaseEntity;
+import org.hibernate.envers.Audited;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.envers.Audited;
-
-import com.qubaopen.core.entity.AbstractBaseEntity;
 
 @Entity
 @Table(name = "map_record")
@@ -24,6 +23,11 @@ public class MapRecord extends AbstractBaseEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private MapStatistics mapStatistics;
+
+	/**
+	 * 是否是准确按钮
+	 */
+	private Boolean accurary;
 
 	public String getName() {
 		return name;
@@ -55,5 +59,13 @@ public class MapRecord extends AbstractBaseEntity<Long> {
 
 	public void setNaValue(int naValue) {
 		this.naValue = naValue;
+	}
+
+	public Boolean getAccurary() {
+		return accurary;
+	}
+
+	public void setAccurary(Boolean accurary) {
+		this.accurary = accurary;
 	}
 }

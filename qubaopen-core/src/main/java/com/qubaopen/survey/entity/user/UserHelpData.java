@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
+ * 用户求助评论信息
  * Created by mars on 15/5/28.
  */
 @Entity
@@ -31,6 +32,7 @@ public class UserHelpData extends AbstractPersistable<Long> {
     /**
      * 求助评论
      */
+    @ManyToOne(fetch = FetchType.LAZY)
     private HelpComment helpComment;
 
     /**

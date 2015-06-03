@@ -1,21 +1,20 @@
 package com.knowheart3.controller.mindmap
 
-import org.apache.commons.lang3.time.DateUtils
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.SessionAttributes
-
+import com.knowheart3.repository.mindmap.MapCoefficientRepository
+import com.knowheart3.repository.mindmap.MapRecordRepository
 import com.knowheart3.repository.mindmap.MapStatisticsRepository
-import com.knowheart3.repository.user.UserMoodRecordRepository;
+import com.knowheart3.repository.self.SelfRepository
+import com.knowheart3.repository.user.UserMoodRecordRepository
 import com.knowheart3.service.mindmap.MapStatisticsService
 import com.qubaopen.core.controller.AbstractBaseController
 import com.qubaopen.core.repository.MyRepository
+import com.qubaopen.survey.entity.mindmap.MapRecord
 import com.qubaopen.survey.entity.mindmap.MapStatistics
 import com.qubaopen.survey.entity.user.User
+import org.apache.commons.lang3.time.DateFormatUtils
+import org.apache.commons.lang3.time.DateUtils
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping('mapStatistics')
@@ -30,6 +29,15 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 	
 	@Autowired
 	UserMoodRecordRepository userMoodRecordRepository
+
+	@Autowired
+	MapRecordRepository mapRecordRepository
+
+	@Autowired
+	MapCoefficientRepository mapCoefficientRepository
+
+	@Autowired
+	SelfRepository selfRepository
 
 	@Override
 	protected MyRepository<MapStatistics, Long> getRepository() {
@@ -120,5 +128,53 @@ public class MapStatisticsController extends AbstractBaseController<MapStatistic
 		}
 
 		mapStatisticsService.retrieveMapByResultAndUser(selfId, user)
+	}
+
+	/**
+	 * 情绪准确
+	 * @param timeStr
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping(value = 'confirmMapRecord')
+	confirmMapRecord(@RequestParam String timeStr,
+					 @RequestParam boolean accurary,
+					 @ModelAttribute('currentUser') User user) {
+
+		def time = DateUtils.parseDate(timeStr, "yyyyy-MM-dd")
+
+		def specialSelf = selfRepository.findSpecialSelf(),
+			mapStatistics = mapStatisticsRepository.findBySelfAndUser(specialSelf, user),
+			localRecord = mapRecordRepository.findByMapStatisticsAndCreateDate(mapStatistics, DateFormatUtils.format(time, "yyyy-MM-dd"))
+		def mapRecord
+		if (localRecord) {
+			mapRecord = localRecord.get(0)
+			mapRecord.accurary = accurary
+			mapRecordRepository.save(mapRecord)
+			return '{"success" : "1"}'
+		}
+		def c = Calendar.getInstance()
+		c.time = time
+		c.set(Calendar.HOUR, 12)
+		c.set(Calendar.MINUTE, 0)
+		c.set(Calendar.SECOND, 0)
+
+		def longTime = c.getTimeInMillis()
+
+		def coefficient = mapCoefficientRepository.findOne(user.id)
+
+		def pa = coefficient.pa1 + coefficient.pa2 * Math.cos(longTime * coefficient.pa4) + coefficient.pa3 * Math.sin(longTime * coefficient.pa4),
+			na = coefficient.na1 + coefficient.na2 * Math.cos(longTime * coefficient.na4) + coefficient.na3 * Math.sin(longTime * coefficient.na4)
+
+		mapRecord = new MapRecord(
+				name: c.getTime().getTime(),
+				value: Math.abs(pa as int),
+				naValue: Math.abs(na as int),
+				mapStatistics: mapStatistics,
+				accurary: accurary
+		)
+		mapRecordRepository.save(mapRecord)
+
+		'{"success" : "1"}'
 	}
 }

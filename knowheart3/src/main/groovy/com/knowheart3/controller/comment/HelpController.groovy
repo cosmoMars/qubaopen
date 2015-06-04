@@ -192,6 +192,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 						'helpId'     : it?.id,
 						'helpContent': it?.content,
 						'helpTime'   : DateFormatUtils.format(it.time, 'yyyy-MM-dd'),
+						'userId'     : it?.user?.id,
 						'userName'   : it?.user?.userInfo?.nickName,
 						'userAvatar' : it?.user?.userInfo?.avatarPath,
 						'commentData': commentData
@@ -498,9 +499,24 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				time: new Date()
 		)
 
-		helpCommentRepository.save(helpComment)
+		helpComment = helpCommentRepository.save(helpComment)
 
-		'{"success" : "1"}'
+		[
+				success       : "1",
+				commentId     : helpComment.id,
+				doctorId      : helpComment.user.id,
+				doctorName    : helpComment.user.userInfo?.nickName,
+				doctorContent : helpComment.content,
+				doctorAvatar  : helpComment.user.userInfo?.avatarPath,
+				doctorTime    : helpComment.time,
+				hospitalId    : helpComment.user.id,
+				hospitalName  : helpComment.user.userInfo?.nickName,
+				hospitalAvatar: helpComment.user.userInfo?.avatarPath,
+				goods         : 0,
+				isGood        : false,
+				type          : 2
+		]
+
 
 	}
 

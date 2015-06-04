@@ -467,8 +467,11 @@ public class SelfController extends AbstractBaseController<Self, Long> {
             @PageableDefault(page = 0, size = 20, sort = 'time', direction = Sort.Direction.DESC) Pageable pageable,
             @ModelAttribute('currentUser') User user) {
 
+        def specialSelf = selfRepository.findSpecialSelf()
         // 查找groupids
         def groupIds = selfUserQuestionnaireRepository.findGroupId(user, pageable)
+        println specialSelf.selfGroup.id
+        groupIds.remove(specialSelf.selfGroup.id)
         def more = true, list = []
 
         if (groupIds.size() > 0) {

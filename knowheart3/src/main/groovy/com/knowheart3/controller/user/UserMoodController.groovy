@@ -343,12 +343,12 @@ public class UserMoodController extends AbstractBaseController<UserMood, Long>{
             ]
         }
 		[
-            'success' : '1',
-            'data' : data,
-			'picPath' : pic,
-			'moreThan7' : moreThan7,
-            'moodContent' : moodContent,
-			'accurary' : mrs?.get(0)?.accurary
+				'success'    : '1',
+				'data'       : data,
+				'picPath'    : pic,
+				'moreThan7'  : moreThan7,
+				'moodContent': moodContent,
+				'accurary'   : mrs.size() > 0 ? mrs.get(0)?.accurary : ""
         ]
 
     }

@@ -39,7 +39,7 @@ public class HelpCommentRepositoryImpl implements HelpCommentRepositoryCustom {
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("select hc.id hcid, hc.doctor_id, di.name dname, hc.hospital_id hid, hi.name hname, di.avatar_path dpath, ");
-		sql.append("hi.hospital_avatar, hc.content, hc.time, a.hsum , a.uid uid, hc.user_id uid, ui.nick_name, ui.avatar_path ");
+		sql.append("hi.hospital_avatar, hc.content, hc.time, a.hsum , a.uid uid, hc.user_id userid, ui.nick_name, ui.avatar_path ");
 		sql.append("from help_comment hc ");
 		sql.append("left join doctor_info di on hc.doctor_id = di.id ");
 		sql.append("left join hospital_info hi on hc.hospital_id = hi.id ");
@@ -86,7 +86,7 @@ public class HelpCommentRepositoryImpl implements HelpCommentRepositoryCustom {
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("select hc.id hcid, hc.doctor_id, di.name dname, hc.hospital_id hid, hi.name hname, di.avatar_path dpath, ");
-		sql.append("hi.hospital_avatar, hc.content, hc.time, a.hsum , a.uid uid, hc.user_id uid, ui.nick_name, ui.avatar_path ");
+		sql.append("hi.hospital_avatar, hc.content, hc.time, a.hsum , a.uid uid, hc.user_id userid, ui.nick_name, ui.avatar_path ");
 		sql.append("from help_comment hc ");
 		sql.append("left join doctor_info di on hc.doctor_id = di.id ");
 		sql.append("left join hospital_info hi on hc.hospital_id = hi.id ");

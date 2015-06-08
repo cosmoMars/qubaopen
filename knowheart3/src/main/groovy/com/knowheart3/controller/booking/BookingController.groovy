@@ -558,6 +558,19 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 			size = 20
 		}
 
+		// 设置用户订单信息 医师，诊所为false，以查看
+		def userBookingDatas = userBookingDataRepository.findAll(
+				[
+						user_equal        : user,
+						thirdRefresh_equal: true
+				]
+		)
+		userBookingDatas.each {
+			it.thirdRefresh = false
+		}
+		userBookingDataRepository.save(userBookingDatas)
+
+
 		def uas = userAuthorizationRepository.findAll(
 				[
 						user_equal: user

@@ -109,7 +109,7 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 		// 当前最新求助
 		def commentIds = []
 		if (user.id != null) {
-			def currentHelp = helpRepository.findCurrentHelp()
+//			def currentHelp = helpRepository.findCurrentHelp()
 			// 查询有新的评论的求助
 			def userHelpDatas = userHelpDataRepository.findAll(
 					[
@@ -119,12 +119,12 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			)
 
 			userHelpDatas.each {
-				it.refresh = false
-				it.currentHelpId = currentHelp.id
+//				it.refresh = false
+//				it.currentHelpId = currentHelp.id
 				commentIds << it.helpComment.id
 			}
 
-			userHelpDataRepository.save(userHelpDatas)
+//			userHelpDataRepository.save(userHelpDatas)
 		}
 
 		if (self) {
@@ -378,10 +378,8 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 
 		userHelpDatas.each {
 			// 比对最新的求助
-			if (haveNewHelp) {
-				if (it.currentHelpId != currentHelp.id) {
-					haveNewHelp = true
-				}
+			if (it.currentHelpId != currentHelp.id) {
+				haveNewHelp = true
 			}
 		}
 
@@ -432,21 +430,36 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 			idsList << Long.valueOf(it.trim())
 		}
 
+
 		def helpComments = helpCommentRepository.findByIds(idsList)
+
+		def currentHelp = helpRepository.findCurrentHelp()
+
+		def userHelpDatas = userHelpDataRepository.findByHelpCommentsAndUser(idsList, user)
+		userHelpDatas.each {
+			it.refresh = false
+			it.currentHelpId = currentHelp.id
+		}
+		userHelpDataRepository.save(userHelpDatas)
 
 		helpComments.each {
 
 			def id, name, avatar, type = 0 // 0医师，1诊所
 
-			if (it.doctor.id) {
-				id = it.doctor.id
-				name = it.doctor.doctorInfo.name
-				avatar = it.doctor.doctorInfo.avatarPath
-			} else {
-				id = it.hospital.id
-				name = it.hospital.hospitalInfo.name
-				avatar = it.hospital.hospitalInfo.hospitalAvatar
+			if (it.doctor) {
+				id = it.doctor?.id
+				name = it.doctor?.doctorInfo?.name
+				avatar = it.doctor?.doctorInfo?.avatarPath
+			} else if (it.hospital) {
+				id = it.hospital?.id
+				name = it.hospital?.hospitalInfo?.name
+				avatar = it.hospital?.hospitalInfo?.hospitalAvatar
 				type = 1
+			} else if (it.user) {
+				id = it.user?.id
+				name = it.user?.userInfo?.name
+				avatar = it.user?.userInfo?.avatarPath
+				type = 2
 			}
 			data << [
 					helpId       : it.help.id,

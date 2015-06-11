@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface UserFavoriteRepositoryCustom {
 
-    List<UserFavorite> findByTypeAndUser(String type, User user,Pageable pageable);
+    List<UserFavorite> findByTypeAndUser(String type, User user, Pageable pageable);
 
 }

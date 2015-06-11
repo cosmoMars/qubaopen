@@ -285,15 +285,22 @@ class UserController extends AbstractBaseController<User, Long> {
 			user = userRepository.save(user)
 
 			def tempName = ''
-			switch (type) {
-				case 0 : tempName = "微博用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
-					break
-				case 1 : tempName = "微信用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
-					break
-				case 2 : tempName = "QQ用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
-					break
+			def isNotName = true
+			while (isNotName) {
+				switch (type) {
+					case 0 : tempName = "微博用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+						break
+					case 1 : tempName = "微信用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+						break
+					case 2 : tempName = "QQ用户${RandomStringUtils.random(1, '123456789') + RandomStringUtils.randomNumeric(5)}"
+						break
+				}
+				def u = userInfoRepository.findByNickName(tempName)
+				if (!u) {
+					isNotName = false
+				}
 			}
-			
+
 			userInfo = new UserInfo(
 				id : user.id,
 				nickName : tempName,
@@ -556,12 +563,13 @@ class UserController extends AbstractBaseController<User, Long> {
 		if (!StringUtils.equals(userCaptcha.captcha, captcha)) {
 			return '{"success" : "0", "message": "err007"}'
 		}
-		if (DateUtils.isSameDay(userCaptcha.lastSentDate, new Date())) {
+		if (userCaptcha.lastSentDate && DateUtils.isSameDay(userCaptcha.lastSentDate, new Date())) {
 			userCaptcha.sentNum++
 		} else {
 			userCaptcha.sentNum = 1
 		}
 
+		userCaptcha.lastSentDate = new Date()
 		userCaptcha.captcha = null
 
 		def u = userRepository.findByPhone(phone)

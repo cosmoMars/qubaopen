@@ -359,12 +359,28 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 	 * @return
 	 */
 	@RequestMapping(value = 'retrieveCommentCount')
-	retrieveCommentCount(@ModelAttribute('currentUser') User user) {
+	retrieveCommentCount(@RequestParam(required = false) Long lastHelpId,
+						 @ModelAttribute('currentUser') User user) {
 
-		if (null == user.id) {
-			return '{"success" : "0", "message" : "err000"}'
+		def haveNewHelp = false
+		if (lastHelpId != null) {
+			// 当前最新求助
+			def currentHelp = helpRepository.findCurrentHelp()
+			if (lastHelpId != currentHelp.id) {
+				haveNewHelp = true
+			}
+		} else {
+			haveNewHelp = true
 		}
 
+		if (user.id == null) {
+			return [
+					success     : "1",
+					commentCount: 0,
+					haveNewHelp : haveNewHelp,
+					bookingSize : 0
+			]
+		}
 		// 查询有新的评论的求助
 		def userHelpDatas = userHelpDataRepository.findAll(
 				[
@@ -372,18 +388,14 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 						refresh_equal: true
 				]
 		)
-		// 当前最新求助
-		def currentHelp = helpRepository.findCurrentHelp()
-		def haveNewHelp = false
 
-		userHelpDatas.each {
-			// 比对最新的求助
-			if (it.currentHelpId != currentHelp.id) {
-				haveNewHelp = true
-			}
-		}
+//		userHelpDatas.each {
+//			// 比对最新的求助
+//			if (it.currentHelpId != currentHelp.id) {
+//				haveNewHelp = true
+//			}
+//		}
 
-		def bookingRefresh = false
 		def ubd = userBookingDataRepository.findAll(
 				[
 						user_equal        : user,
@@ -391,15 +403,11 @@ public class HelpController extends AbstractBaseController<Help, Long> {
 				]
 		)
 
-		if (ubd.size() > 0) {
-			bookingRefresh = true
-		}
-
 		[
-				success       : "1",
-				commentCount  : userHelpDatas.size(),
-				haveNewHelp   : haveNewHelp,
-				bookingRefresh: bookingRefresh
+				success     : "1",
+				commentCount: userHelpDatas.size(),
+				haveNewHelp : haveNewHelp,
+				bookingSize : ubd.size()
 		]
 
 	}

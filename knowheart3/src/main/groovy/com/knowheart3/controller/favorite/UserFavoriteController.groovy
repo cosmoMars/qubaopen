@@ -50,24 +50,6 @@ public class UserFavoriteController extends AbstractBaseController<UserFavorite,
 
         def favorites = userFavoriteRepository.findByTypeAndUser(type, user, pageable)
 
-
-       /* // 0 自测， 1 专题
-        if ('0' == type) {
-            favorites = userFavoriteRepository.findAll(
-                [
-                    user_equal : user,
-                    topic_isNull : null
-                ], pageable
-            )
-        } else {
-            favorites = userFavoriteRepository.findAll(
-                [
-                    user_equal : user,
-                    self_isNull : null
-                ], pageable
-            )
-        }*/
-
 		def list = [], more = true
 		if (favorites.size() < pageable.pageSize) {
 			more = false

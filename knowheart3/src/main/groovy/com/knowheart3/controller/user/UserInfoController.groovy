@@ -73,6 +73,10 @@ public class UserInfoController extends AbstractBaseController<UserInfo, Long> {
 		logger.trace ' -- 获得修改个人信息 -- '
 		
 		if (userInfo.nickName) {
+			def ui = userInfoRepository.findByNickName(userInfo.nickName)
+			if (ui) {
+				return '{"success" : "0", "message" : "昵称已存在"}'
+			}
 			if (!validateNormalString(userInfo.nickName.trim())) {
 				return '{"success" : "0", "message" : "err103"}'
 			}

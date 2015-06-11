@@ -63,12 +63,12 @@ public class SelfController extends AbstractBaseController<Self, Long> {
         selfRepository
     }
 
-/**
- * @param id
- * @param user
- * @return
- * 获取自测信息
- */
+    /**
+     * @param id
+     * @param user
+     * @return
+     * 获取自测信息
+     */
     @RequestMapping(value = 'retrieveSelfContent', method = RequestMethod.POST)
     retrieveSelfContent(@RequestParam(required = false) Long id,
                         @ModelAttribute('currentUser') User user) {
@@ -212,8 +212,8 @@ public class SelfController extends AbstractBaseController<Self, Long> {
                 'success'     : '1',
                 'message'     : '成功',
                 'id'          : result?.id,
-                'qId'     : questionnaire?.id,
-                'accuracy': questionnaire?.accuracy,
+                'qId'         : questionnaire?.id,
+                'accuracy'    : questionnaire?.accuracy,
                 'resultTitle' : result?.selfResult?.title,
                 'content'     : result?.content,
                 'optionTitle' : result?.title,
@@ -397,14 +397,16 @@ public class SelfController extends AbstractBaseController<Self, Long> {
         def data = [], more = true
         if (questionnaires) {
             questionnaires.each {
-                data << [
-                        'id'          : it.selfResultOption?.id,
-                        'resultTitle' : it.selfResultOption?.selfResult?.title,
-                        'content'     : it.selfResultOption?.content,
-                        'optionTitle' : it.selfResultOption?.title,
-                        'resultRemark': it.selfResultOption?.selfResult?.remark,
-                        'optionNum'   : it.selfResultOption?.resultNum
-                ]
+                if (it.selfResultOption) {
+                    data << [
+                            'id'          : it.selfResultOption?.id,
+                            'resultTitle' : it.selfResultOption?.selfResult?.title,
+                            'content'     : it.selfResultOption?.content,
+                            'optionTitle' : it.selfResultOption?.title,
+                            'resultRemark': it.selfResultOption?.selfResult?.remark,
+                            'optionNum'   : it.selfResultOption?.resultNum
+                    ]
+                }
             }
         }
         if (questionnaires.size() < pageable.pageSize) {
@@ -470,7 +472,6 @@ public class SelfController extends AbstractBaseController<Self, Long> {
         def specialSelf = selfRepository.findSpecialSelf()
         // 查找groupids
         def groupIds = selfUserQuestionnaireRepository.findGroupId(user, pageable)
-        println specialSelf.selfGroup.id
         groupIds.remove(specialSelf.selfGroup.id)
         def more = true, list = []
 

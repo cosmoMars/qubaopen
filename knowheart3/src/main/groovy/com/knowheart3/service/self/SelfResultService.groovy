@@ -119,6 +119,12 @@ public class SelfResultService {
 			case 'ECR' :
 				result = calculateECR(user, self, questionOptions, questionVos, questions, refresh)
 				break
+			case 'RPUS' :
+				result = calculateRPUS(user, self, questionOptions, questionVos, questions, refresh)
+				break
+			case 'PSDQ' :
+				result = calculatePSDQ(user, self, questionOptions, questionVos, questions, refresh)
+				break
 		}
 		result
 	}
@@ -891,7 +897,7 @@ public class SelfResultService {
 	}
 
 	/**
-	 * 计算SDS
+	 * 计算ECR
 	 * @param user
 	 * @param self
 	 * @param questionOptions
@@ -971,4 +977,223 @@ public class SelfResultService {
 		resultOption
 	}
 
+	/**
+	 * 计算RPUS
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculateRPUS(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+
+		def allScore = 0
+		def optionMap = [:]
+		questionOptions.each {
+			allScore = allScore + it.score
+			def questionType = it.selfQuestion.selfQuestionType.name
+
+			if (optionMap.get(questionType)) { // key: 种类 : avoidance,anxiety, value: 题目
+				optionMap.get(questionType) << it
+			} else {
+				def optionList = []
+				optionList << it
+				optionMap.put(questionType, optionList)
+			}
+		}
+
+		def resultMap = [:]
+
+		def result = []
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def score = 0
+			v.each {
+				score = score + it.score
+			}
+			if (k == '成长性') {
+				score = (score / 70 * 10) as int
+			} else if (k == '满意感') {
+				score = (score / 63 * 10) as int
+			} else if (k == '冲突感') {
+				score = (score / 35 * 10) as int
+			} else if (k == '对等性') {
+				score = (score / 28 * 10) as int
+			}
+			def mapRecord = new MapRecord(
+					name: k,
+					value: score
+			)
+			result << mapRecord
+
+			resultMap.put(k, score)
+
+		}
+
+		def resultOption = selfResultOptionRepository.findOneByFilters(
+				'selfResult.self_equal' : self,
+				'highestScore_greaterThanOrEqualTo' : allScore,
+				'lowestScore_lessThanOrEqualTo' : allScore
+		)
+
+		if (resultOption) {
+			def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, resultOption, refresh, 0)
+			if (refresh) {
+				selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, resultOption, 0) // 保存心理地图
+			}
+		}
+
+		resultOption
+	}
+	/**
+	 * 计算PSDQ
+	 * @param user
+	 * @param self
+	 * @param questionOptions
+	 * @param questionVos
+	 * @param questions
+	 * @param refresh
+	 * @return
+	 */
+	@Transactional
+	calculatePSDQ(User user, Self self, List<SelfQuestionOption> questionOptions, List<QuestionVo> questionVos, List<SelfQuestion> questions, boolean refresh) {
+
+		def isMale = questionOptions.any {
+			it.id == 6908l
+		} // 男
+
+		def allScore = 0
+		def optionMap = [:]
+		questionOptions.each {
+			allScore = allScore + it.score
+			def questionType = it?.selfQuestion?.selfQuestionType?.name
+			if (questionType) {
+				if (optionMap.get(questionType)) { // key: 种类 : avoidance,anxiety, value: 题目
+					optionMap.get(questionType) << it
+				} else {
+					def optionList = []
+					optionList << it
+					optionMap.put(questionType, optionList)
+
+				}
+			}
+		}
+
+		def resultMap = [:], resultOption
+
+		def result = [], resultString = ''
+
+
+		optionMap.each { k, v -> // 计算每一个类型的分数
+			def score = 0
+			v.each {
+				score = score + it.score
+			}
+
+			if (isMale) {
+
+				if (k == '健康') {
+					resultOption = selfResultOptionRepository.findByMaleAndHealthy(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '协调') {
+					resultOption = selfResultOptionRepository.findByMaleAndCoordinate(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '体育活动') {
+					resultOption = selfResultOptionRepository.findByMaleAndSports(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '身体肥胖') {
+					resultOption = selfResultOptionRepository.findByMaleAndFat(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '运动能力') {
+					resultOption = selfResultOptionRepository.findByMaleAndExercise(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '整体身体') {
+					resultOption = selfResultOptionRepository.findByMaleAndBody(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '外表') {
+					resultOption = selfResultOptionRepository.findByMaleAndSurface(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '力量') {
+					resultOption = selfResultOptionRepository.findByMaleAndPower(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '灵活') {
+					resultOption = selfResultOptionRepository.findByMaleAndFlexible(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '耐力') {
+					resultOption = selfResultOptionRepository.findByMaleAndEndurance(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '自尊') {
+					resultOption = selfResultOptionRepository.findByMaleAndSelfEsteem(score)
+					resultString += resultOption.content + "\\n"
+				}
+			} else {
+				if (k == '健康') {
+					resultOption = selfResultOptionRepository.findByMaleAndHealthy(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '协调') {
+					resultOption = selfResultOptionRepository.findByFemaleAndCoordinate(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '体育活动') {
+					resultOption = selfResultOptionRepository.findByFemaleAndSports(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '身体肥胖') {
+					resultOption = selfResultOptionRepository.findByFemaleAndFat(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '运动能力') {
+					resultOption = selfResultOptionRepository.findByFemaleAndExercise(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '整体身体') {
+					resultOption = selfResultOptionRepository.findByFemaleAndBody(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '外表') {
+					resultOption = selfResultOptionRepository.findByFemaleAndSurface(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '力量') {
+					resultOption = selfResultOptionRepository.findByMaleAndPower(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '灵活') {
+					resultOption = selfResultOptionRepository.findByFemaleAndFlexible(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '耐力') {
+					resultOption = selfResultOptionRepository.findByFemaleAndEndurance(score)
+					resultString += resultOption.content + "\\n"
+				} else if (k == '自尊') {
+					resultOption = selfResultOptionRepository.findByFemaleAndSelfEsteem(score)
+					resultString += resultOption.content + "\\n"
+				}
+			}
+
+
+			def mapRecord = new MapRecord(
+					name: k,
+					value: score
+			)
+			result << mapRecord
+
+			resultMap.put(k, score)
+
+		}
+
+//		resultOption = selfResultOptionRepository.findOneByFilters(
+//				'selfResult.self_equal' : self,
+//				'highestScore_greaterThanOrEqualTo' : allScore,
+//				'lowestScore_lessThanOrEqualTo' : allScore
+//		)
+
+		def resultOpt = new SelfResultOption(
+				content: resultString,
+				title: '测试结果显示：'
+		)
+
+		if (resultOption) {
+			def selfUserQuestionnaire = selfPersistentService.saveQuestionnaireAndUserAnswer(user, self, questionVos, questions, questionOptions, null, refresh, 0)
+			if (refresh) {
+				selfPersistentService.saveMapStatistics(user, selfUserQuestionnaire, result, null, 0) // 保存心理地图
+			}
+		}
+
+		resultOpt
+	}
 }

@@ -6,4 +6,5 @@ import com.qubaopen.survey.entity.user.UserInfo;
 public interface UserInfoRepository extends MyRepository<UserInfo, Long> {
 
 
+    UserInfo findByNickName(String nickName);
 }

@@ -29,7 +29,7 @@ public class UserFavoriteRepositoryImpl implements UserFavoriteRepositoryCustom{
         } else if ("1".equals(type)) {
             sql.append("and uf.self_id is null ");
         }
-        sql.append("order by dd.time desc ");
+        sql.append("order by uf.created_date desc ");
 
         Query query = entityManager.createNativeQuery(sql.toString(), UserFavorite.class);
         query.setParameter("user" ,user.getId()).

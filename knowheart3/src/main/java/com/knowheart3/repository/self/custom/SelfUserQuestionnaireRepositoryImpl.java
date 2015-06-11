@@ -25,20 +25,21 @@ public class SelfUserQuestionnaireRepositoryImpl implements SelfUserQuestionnair
     public List<Long> findGroupId(User user, Pageable pageable) {
 
         StringBuffer sql = new StringBuffer();
-        sql.append("select distinct s.self_group_id groupId, s.title ");
+        sql.append("select distinct s.self_group_id groupId ");
         sql.append("from self_user_questionnaire suq ");
         sql.append("left join self s on suq.self_id = s.id ");
         sql.append("where suq.used = true and suq.user_id = :userId ");
+        sql.append("order by suq.time desc ");
 
         Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("userId", user.getId());
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
                 .setMaxResults(pageable.getPageSize());
 
-        List<Object[]> list = query.getResultList();
+        List<Object> list = query.getResultList();
         List<Long> ids = new ArrayList<>();
-        for (Object[] objects : list) {
-            ids.add(Long.parseLong(objects[0].toString()));
+        for (Object o : list) {
+            ids.add(Long.parseLong(o.toString()));
         }
         return ids;
     }
@@ -76,7 +77,7 @@ public class SelfUserQuestionnaireRepositoryImpl implements SelfUserQuestionnair
         if (groupIds.size() > 0) {
             sql.append("and s.self_group_id in (:groupIds) ");
         }
-        sql.append("order by dd.time desc ");
+        sql.append("order by suq.time desc ");
 
         Query query = entityManager.createNativeQuery(sql.toString());
         query.setParameter("userId", user.getId());

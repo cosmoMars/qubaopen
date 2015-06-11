@@ -496,9 +496,15 @@ public class SelfController extends AbstractBaseController<Self, Long> {
                 }
             }
 
-            groups.each { g ->
+            groupIds.each { gid ->
                 def groupData = []
-                g.selfs.each { s ->
+
+                def group = groups.find { g ->
+                    gid == g.id
+                }
+
+                group.selfs.each { s ->
+
                     def exist = selfResultVos.find { vo ->
                         s.id == Long.valueOf(vo.selfId)
                     }
@@ -532,10 +538,52 @@ public class SelfController extends AbstractBaseController<Self, Long> {
                     }
                 }
                 list << [
-                        'groupTitle': g.content,
+                        'groupTitle': group.content,
                         'list'      : groupData
                 ]
+
             }
+
+//            groups.each { g ->
+//                def groupData = []
+//                g.selfs.each { s ->
+//                    def exist = selfResultVos.find { vo ->
+//                        s.id == Long.valueOf(vo.selfId)
+//                    }
+//                    if (exist) {
+//                        groupData << [
+//                                'suqId'    : exist.suqId,
+//                                'selfId'   : exist.selfId,
+//                                'dailyDate': exist.ddTime,
+//                                'selfTitle': exist.selfTitle,
+//                                'suqTime'  : exist.suqTime,
+//                                'done'     : exist.done
+//                        ]
+//                    } else {
+//
+//                        pageable = new PageRequest(0, 1)
+//                        def dailyDiscovery = dailyDiscoveryRepository.findBySelfId(s.id, pageable)
+//
+//                        def time
+//                        if (dailyDiscovery.size() > 0) {
+//                            time = dailyDiscovery[0].time
+//                        }
+//
+//                        groupData << [
+//                                'suqId'    : '',
+//                                'selfId'   : s.id,
+//                                'dailyDate': time,
+//                                'selfTitle': s.title,
+//                                'suqTime'  : '',
+//                                'done'     : false
+//                        ]
+//                    }
+//                }
+//                list << [
+//                        'groupTitle': g.content,
+//                        'list'      : groupData
+//                ]
+//            }
 
             [
                     'success': '1',

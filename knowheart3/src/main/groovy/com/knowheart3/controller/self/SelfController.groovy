@@ -499,15 +499,19 @@ public class SelfController extends AbstractBaseController<Self, Long> {
             groupIds.each { gid ->
                 def groupData = []
 
+                // 查找selfGroup
                 def group = groups.find { g ->
                     gid == g.id
                 }
 
+                // 循环group中selfs
                 group.selfs.each { s ->
 
+                    // 查找vo实体
                     def exist = selfResultVos.find { vo ->
                         s.id == Long.valueOf(vo.selfId)
                     }
+                    // 存在vo
                     if (exist) {
                         groupData << [
                                 'suqId'    : exist.suqId,
@@ -626,6 +630,10 @@ public class SelfController extends AbstractBaseController<Self, Long> {
             accuracyAmount = selfUserQuestionnaireRepository.countBySelfAndAccuracy(self, true),
         // 完成总数
             allAmount = selfUserQuestionnaireRepository.countBySelf(self)
+
+        if ((self.basisAmount + allAmount) == 0) {
+            allAmount = 1
+        }
 
         def accuracyPercent = ((self.basicAccuracyAmount + accuracyAmount) / (self.basisAmount + allAmount)) * 100
 

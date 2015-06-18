@@ -113,7 +113,6 @@ public class SelfUserQuestionnaireRepositoryImpl implements SelfUserQuestionnair
         sql.append("and suq.used = :used ");
         sql.append("order by suq.time desc");
 
-        System.out.println(sql.toString());
         Query query = entityManager.createQuery(sql.toString());
         query.setParameter("userId", user.getId())
                 .setParameter("selfId", self.getId())

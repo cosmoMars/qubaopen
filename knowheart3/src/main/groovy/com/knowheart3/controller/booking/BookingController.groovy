@@ -881,17 +881,18 @@ public class BookingController extends AbstractBaseController<Booking, Long> {
 //			time : new Date(),
 			quick : false,
 			consultType : booking.consultType,
-			status : Booking.Status.Accept,
 			money : booking.money,
 			lastBookingTime : booking.time
 		)
 		if (booking.doctor != null) {
 			nextBooking.doctor = booking.doctor
+			nextBooking.status = Booking.Status.Accept
 			def doctorId = booking.doctor.id
 			nextBooking.tradeNo = "u${user.id}d${doctorId}s${System.currentTimeMillis()}"
 		}
 		if (booking.hospital != null) {
 			nextBooking.hospital = booking.hospital
+			nextBooking.status = Booking.Status.Booking
 			def hospitalId = booking.hospital.id
 			nextBooking.tradeNo = "u${user.id}h${hospitalId}s${System.currentTimeMillis()}"
 		}
